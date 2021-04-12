@@ -1,0 +1,42 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="/css/styles.css" rel="stylesheet" />
+  <title>
+    ETNA_Dashboard
+  </title>
+</head>
+
+<body class="font-body bg-black text-white h-full min-h-screen relative w-screen flex flex-col">
+  <header class="mx-8 w-100">
+    @@include('./templates/header.html')
+  </header>
+  <div id="p1" class="page">
+
+  </div>
+  <div id="p2" class="page active">
+    @@include('./templates/deposits.html')
+  </div>
+  <div id="p3" class="page">
+    @@include('./templates/borrow.html')
+  </div>
+  <div id="p4" class="page">
+    @@include('./templates/liquidity.html')
+  </div>
+
+  <div class="if-depos w-full mt-auto">
+    @@include('./templates/footer-expected.html')
+  </div>
+  <div class="if-credit w-full mt-auto">
+    @@include('./templates/footer-credit.html')
+  </div>
+
+  <script src="/js/common.min.js"></script>
+
+</body>
+
+</html>
