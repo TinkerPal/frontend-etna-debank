@@ -1,4 +1,4 @@
 # frontend-etna-debank
 
-I. npm i
+I. npm i,
 II. gulp
