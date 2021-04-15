@@ -22,7 +22,8 @@ module.exports = {
       'light-violet': '#7B7EB1',
       'primary-gray': '#6D7175',
       'ford-light': '#898989',
-      'faux': '#404047'
+      'faux': '#404047',
+      'electric-green': '#5EFF5A'
     }),
     borderColor: theme => ({
       ...theme('colors'),
@@ -55,6 +56,7 @@ module.exports = {
       ringOffsetWidth: ['focus'],
       ringOffsetColor: ['focus'],
       textDecoration: ['focus-visible'],
+      textOpacity: ['active'],
     },
   },
   plugins: [
