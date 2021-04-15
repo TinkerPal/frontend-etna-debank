@@ -11,10 +11,8 @@ var CustomSelect = function (options) {
     mainClass = 'js-Dropdown',
     titleClass = 'js-Dropdown-title',
     listClass = 'js-Dropdown-list',
-    optgroupClass = 'js-Dropdown-optgroup',
     selectedClass = 'is-selected',
     openClass = 'is-open',
-    selectOpgroups = elem.getElementsByTagName('optgroup'),
     selectOptions = elem.options,
     optionsLength = selectOptions.length,
     index = 0;
@@ -32,31 +30,18 @@ var CustomSelect = function (options) {
   var button = document.createElement('button');
 
   button.className = titleClass;
-  button.textContent = selectOptions[0].textContent;
+  button.innerHTML = selectOptions[0].innerHTML;
 
+  button.addEventListener('click', () => toggle())
   // creating the UL
   var ul = document.createElement('ul');
   ul.className = listClass;
 
-  // dealing with optgroups
-  if (selectOpgroups.length) {
-    for (var i = 0; i < selectOpgroups.length; i++) {
-      var div = document.createElement('div');
-      div.innerText = selectOpgroups[i].label;
-      div.classList.add(optgroupClass);
-
-      ul.appendChild(div);
-      generateOptions(selectOpgroups[i].getElementsByTagName('option'));
-    }
-  } else {
-    generateOptions(selectOptions);
-  }
+  generateOptions(selectOptions);
 
   // appending the button and the list
   selectContainer.appendChild(button);
   selectContainer.appendChild(ul);
-
-  selectContainer.addEventListener('click', onClick);
 
   // pseudo-select is ready - append it and hide the original
   elem.parentNode.insertBefore(selectContainer, elem);
@@ -71,14 +56,19 @@ var CustomSelect = function (options) {
     for (var i = 0; i < options.length; i++) {
       var li = document.createElement('li');
 
-      li.innerText = options[i].textContent;
+      li.innerHTML = options[i].innerHTML;
+
+      li.innerHTML = `<span class="flex items-center"><span class="dropdown-link"><a href="${options[i].getAttribute("data-href")}"><img src="../images/link.svg"></a></span><span class="dropdown-text">${options[i].innerHTML}</span></span>`;
+
       li.setAttribute('data-value', options[i].value);
       li.setAttribute('data-index', index++);
 
-      if (selectOptions[elem.selectedIndex].textContent === options[i].textContent) {
+      if (selectOptions[elem.selectedIndex].getAttribute('value') === options[i].getAttribute('value')) {
         li.classList.add(selectedClass);
-        button.textContent = options[i].textContent;
+        button.innerHTML = `<span class="flex items-center"><span class="dropdown-link"><a href="${options[i].getAttribute("data-href")}"><img src="../images/link.svg"></a></span><span class="dropdown-text">${options[i].innerHTML}</span></span>`;
       }
+
+      li.addEventListener('click', onClick, false);
 
       ul.appendChild(li);
     }
@@ -98,32 +88,26 @@ var CustomSelect = function (options) {
    * @param {object} e - The item the click occured on.
    */
   function onClick(e) {
-    e.preventDefault();
+ 
+    var t = e.currentTarget; // || e.srcElement; - uncomment for IE8
+    console.log(button);
+    console.log(e.currentTarget)
+    button.innerHTML = t.innerHTML;
+    elem.options.selectedIndex = t.getAttribute('data-index');
 
-    var t = e.target; // || e.srcElement; - uncomment for IE8
+    //trigger 'change' event
+    var evt = bubbles ? new CustomEvent('change', {
+      bubbles: true
+    }) : new CustomEvent('change');
+    elem.dispatchEvent(evt);
 
-    if (t.className === titleClass) {
-      toggle();
+    // highlight the selected
+    for (var i = 0; i < optionsLength; i++) {
+      ul.querySelectorAll('li')[i].classList.remove(selectedClass);
     }
+    t.classList.add(selectedClass);
 
-    if (t.tagName === 'LI') {
-      selectContainer.querySelector('.' + titleClass).innerText = t.innerText;
-      elem.options.selectedIndex = t.getAttribute('data-index');
-
-      //trigger 'change' event
-      var evt = bubbles ? new CustomEvent('change', {
-        bubbles: true
-      }) : new CustomEvent('change');
-      elem.dispatchEvent(evt);
-
-      // highlight the selected
-      for (var i = 0; i < optionsLength; i++) {
-        ul.querySelectorAll('li')[i].classList.remove(selectedClass);
-      }
-      t.classList.add(selectedClass);
-
-      close();
-    }
+    close();
   }
 
   /**
