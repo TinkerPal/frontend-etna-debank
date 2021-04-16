@@ -43,6 +43,55 @@ module.exports = {
     }),
     ringOffsetColor: {
       black: colors.black,
+    },
+    animation: {
+      wiggle: 'wiggle 12s ease-in-out infinite',
+      'wiggle-2': 'wiggle-2 14s ease-in-out infinite',
+      'wiggle-3': 'wiggle-3 18s ease-in-out infinite',
+      'bounce': 'bounce 10s ease infinite',
+      'bounce-2': 'bounceModified 8s ease-in-out infinite'
+    },
+    keyframes: {
+      wiggle: {
+        '0%, 100%': {
+          transform: 'rotate(-3deg)'
+        },
+        '50%': {
+          transform: 'rotate(3deg)'
+        },
+      },
+      bounce: {
+        '0%, 100%': {
+          transform: 'translateY(10%)'
+        },
+        '50%': {
+          transform: 'translateY(0)'
+        },
+      },
+      bounceModified: {
+        '0%, 100%': {
+          transform: 'translateX(-5%)'
+        },
+        '50%': {
+          transform: 'translateY(0)'
+        },
+      },
+      'wiggle-2': {
+        '0%, 100%': {
+          transform: 'rotate(4deg)'
+        },
+        '50%': {
+          transform: 'rotate(-4deg)'
+        },
+      },
+      'wiggle-3': {
+        '0%, 100%': {
+          transform: 'rotate(-2deg)'
+        },
+        '50%': {
+          transform: 'rotate(2deg)'
+        },
+      },
     }
   },
   variants: {
@@ -58,7 +107,7 @@ module.exports = {
       textDecoration: ['focus-visible'],
       textOpacity: ['active'],
     },
+    animation: ['responsive', 'motion-safe', 'motion-reduce']
   },
-  plugins: [
-  ]
+  plugins: []
 }

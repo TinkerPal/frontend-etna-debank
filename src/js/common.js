@@ -189,3 +189,8 @@ colorSelect.forEach(item => {
     elem: itemId // id of the original select element
   });
 });
+
+var scene = document.getElementById('scene');
+var parallaxInstance = new Parallax(scene, {
+  pointerEvents: true
+});
