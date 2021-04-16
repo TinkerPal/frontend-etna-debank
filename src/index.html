@@ -12,11 +12,11 @@
   </title>
 </head>
 
-<body class="font-body bg-black text-white h-full min-h-screen relative w-screen flex flex-col">
+<body class="font-body bg-black text-white h-full min-h-screen relative w-screen flex flex-col relative">
   <header class="mx-8 w-100">
     @@include('./templates/header.html')
   </header>
-  <div id="p1" class="page active">
+  <div id="p1" class="page">
     <div class="main mx-6 mt-11 text-white flex w-100">
       <div class="w-1/6">
         @@include('./templates/dashboard.html')
@@ -32,7 +32,7 @@
   <div id="p3" class="page">
     @@include('./templates/borrow.html')
   </div>
-  <div id="p4" class="page">
+  <div id="p4" class="page active">
     @@include('./templates/liquidity.html')
   </div>
 
@@ -42,6 +42,8 @@
   <div class="if-credit w-full mt-auto">
     @@include('./templates/footer-credit.html')
   </div>
+
+  @@include('./templates/modals.html')
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
   <script src="/js/common.min.js"></script>

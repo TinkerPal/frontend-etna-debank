@@ -23,12 +23,15 @@ module.exports = {
       'primary-gray': '#6D7175',
       'ford-light': '#898989',
       'faux': '#404047',
-      'electric-green': '#5EFF5A'
+      'electric-green': '#5EFF5A',
+      'grey-100': '#C4C4C4'
     }),
     borderColor: theme => ({
       ...theme('colors'),
       green: '#98EF10',
-      'light-violet': '#5A5A89'
+      'light-violet': '#5A5A89',
+      'light-grey': '#292948',
+      'medium-grey': '#35354E'
     }),
     gradientColorStops: theme => ({
       ...theme('colors'),

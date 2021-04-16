@@ -209,9 +209,14 @@
   cursor: pointer;
   padding: 8px 16px;
   font-size: 14px;
-    line-height: 20px;
+  line-height: 20px;
   background-color: #191932;
   color: #fff;
+  transition: background 0.35s;
+}
+
+.js-Dropdown-list li:hover {
+  background-color: #5A5A89;
 }
 
 .js-Dropdown-list li .flex {
@@ -226,4 +231,14 @@
 .js-Dropdown-list li:last-child {
   border-left-bottom-radius: 6px;
   border-right-bottom-radius: 6px;
+}
+
+.modal {
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+.modal.open {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
 }
