@@ -13,6 +13,7 @@ var CustomSelect = function (options) {
     listClass = 'js-Dropdown-list',
     selectedClass = 'is-selected',
     openClass = 'is-open',
+    activeClass = 'is-active',
     selectOptions = elem.options,
     optionsLength = selectOptions.length,
     index = 0;
@@ -58,14 +59,14 @@ var CustomSelect = function (options) {
 
       li.innerHTML = options[i].innerHTML;
 
-      li.innerHTML = `<span class="flex items-center"><span class="dropdown-link"><a href="${options[i].getAttribute("data-href")}"><img src="../images/link.svg"></a></span><span class="dropdown-text">${options[i].innerHTML}</span></span>`;
+      li.innerHTML = `<span class="flex items-center"><span class="dropdown-link"><a target="_blank" href="${options[i].getAttribute("data-href")}"><img src="../images/link-inside-li.svg" class="li-link"><img src="../images/link.svg" class="btn-link"></a></span><span class="dropdown-text">${options[i].innerHTML}</span></span>`;
 
       li.setAttribute('data-value', options[i].value);
       li.setAttribute('data-index', index++);
 
       if (selectOptions[elem.selectedIndex].getAttribute('value') === options[i].getAttribute('value')) {
         li.classList.add(selectedClass);
-        button.innerHTML = `<span class="flex items-center"><span class="dropdown-link"><a href="${options[i].getAttribute("data-href")}"><img src="../images/link.svg"></a></span><span class="dropdown-text">${options[i].innerHTML}</span></span>`;
+        button.innerHTML = `<span class="flex items-center"><span class="dropdown-link"><a target="_blank" href="${options[i].getAttribute("data-href")}"><img src="../images/link-inside-li.svg" class="li-link"><img src="../images/link.svg" class="btn-link"></a></span><span class="dropdown-text">${options[i].innerHTML}</span></span>`;
       }
 
       li.addEventListener('click', onClick, false);
@@ -88,7 +89,7 @@ var CustomSelect = function (options) {
    * @param {object} e - The item the click occured on.
    */
   function onClick(e) {
- 
+
     var t = e.currentTarget; // || e.srcElement; - uncomment for IE8
     console.log(button);
     console.log(e.currentTarget)
@@ -117,6 +118,7 @@ var CustomSelect = function (options) {
    */
   function toggle() {
     ul.classList.toggle(openClass);
+    button.classList.toggle(activeClass);
   }
 
   /**
@@ -126,6 +128,7 @@ var CustomSelect = function (options) {
    */
   function open() {
     ul.classList.add(openClass);
+    button.classList.add(activeClass);
   }
 
   /**
@@ -135,6 +138,7 @@ var CustomSelect = function (options) {
    */
   function close() {
     ul.classList.remove(openClass);
+    button.classList.remove(activeClass);
   }
 
   return {
