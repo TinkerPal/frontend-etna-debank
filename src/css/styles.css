@@ -51,7 +51,11 @@
   }
 
   .btn {
-    @apply py-2 px-3 text-sm cursor-pointer flex items-center justify-center shadow-sm rounded-md bg-gradient-to-r from-light-blue to-dark-blue hover:from-navy transition-all hover:to-navy focus:from-light-blue focus:to-dark-blue disabled:from-primrose disabled:to-primrose disabled:text-light-violet focus:ring-2 focus:ring-violet focus:outline-none focus:ring-offset-2 focus:ring-offset-black w-max;
+    @apply py-2 px-3 text-sm cursor-pointer flex items-center justify-center shadow-sm rounded-md bg-gradient-to-r from-light-blue to-dark-blue hover:from-navy transition-all hover:to-navy focus:from-light-blue focus:to-dark-blue disabled:from-primrose disabled:to-primrose disabled:text-light-violet focus:ring-2 focus:ring-violet focus:outline-none focus:ring-offset-2 focus:ring-offset-black w-max h-9;
+  }
+
+  .btn.btn-done {
+    @apply from-medium-blue to-medium-blue;
   }
 
   .table-title {
@@ -84,6 +88,12 @@
   }
   .input-type {
     @apply border-medium-grey border text-sm rounded-lg w-full h-11 bg-blueish-black focus:outline-none py-3 px-4;
+  }
+  .btn-checked {
+    @apply text-center flex items-center justify-center h-9 w-full text-gray-500 text-sm cursor-pointer;
+  }
+  input:checked + label {
+    @apply rounded-md bg-green bg-opacity-10 text-green;
   }
 }
 
@@ -267,4 +277,27 @@
 .without-link .js-Dropdown-title {
   border: 0px;
   height: 100%;
+}
+
+.special-select .js-Dropdown-list {
+  width: 50%;
+  right: 0px;
+}
+
+.special-select .is-selected {
+  position: relative;
+  z-index: 99;
+}
+
+.special-select .is-selected:after {
+  position: absolute;
+  content: '';
+  z-index: 999;
+  right: 12px;
+  top: calc(50% - 5px);
+  width: 14px;
+  height: 10px;
+  background-image: url('../images/check.svg');
+  background-repeat: no-repeat;
+  background-position: center;
 }

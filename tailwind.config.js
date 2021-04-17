@@ -11,6 +11,9 @@ module.exports = {
     extend: {
       maxWidth: {
         '460': '460px'
+      },
+      width: {
+        'fit-content': 'fit-content'
       }
     },
     fontFamily: {
@@ -19,6 +22,8 @@ module.exports = {
     backgroundColor: theme => ({
       ...theme('colors'),
       'blueish-black': '#191932',
+      green: '#98EF10',
+      'medium-grey': '#35354E'
     }),
     textColor: theme => ({
       ...theme('colors'),
@@ -28,7 +33,8 @@ module.exports = {
       'ford-light': '#898989',
       'faux': '#404047',
       'electric-green': '#5EFF5A',
-      'grey-100': '#C4C4C4'
+      'grey-100': '#C4C4C4',
+      green: '#98EF10',
     }),
     borderColor: theme => ({
       ...theme('colors'),
@@ -42,7 +48,8 @@ module.exports = {
       'light-blue': '#3541F1',
       'dark-blue': '#1F2386',
       navy: '#1F2497',
-      primrose: '#23287D'
+      primrose: '#23287D',
+      'medium-blue': 'rgba(31, 35, 134, 0.4)'
     }),
     ringColor: theme => ({
       ...theme('colors'),
@@ -56,9 +63,18 @@ module.exports = {
       'wiggle-2': 'wiggle-2 14s ease-in-out infinite',
       'wiggle-3': 'wiggle-3 18s ease-in-out infinite',
       'bounce': 'bounce 10s ease infinite',
-      'bounce-2': 'bounceModified 8s ease-in-out infinite'
+      'bounce-2': 'bounceModified 8s ease-in-out infinite',
+      spin: 'spin 1s linear infinite'
     },
     keyframes: {
+      spin: {
+        from: {
+          transform: 'rotate(0deg)'
+        },
+        to: {
+          transform: 'rotate(360deg)'
+        },
+      },
       wiggle: {
         '0%, 100%': {
           transform: 'rotate(-3deg)'
@@ -113,6 +129,7 @@ module.exports = {
       ringOffsetColor: ['focus'],
       textDecoration: ['focus-visible'],
       textOpacity: ['active'],
+      backgroundOpacity: ['active'],
     },
     animation: ['responsive', 'motion-safe', 'motion-reduce']
   },

@@ -177,6 +177,7 @@ function clickTab(e) {
   var currentPage = document.querySelector('#' + pageID)
   currentPage.classList.add('active'); {}
 }
+
 (Element.prototype.appendAfter = function (element) {
   element.parentNode.insertBefore(this, element.nextSibling);
 }),

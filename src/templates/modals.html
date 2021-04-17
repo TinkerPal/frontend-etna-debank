@@ -23,7 +23,7 @@
             </select>
           </div>
           <div class="w-5/12">
-            <div class="py-3 px-4 text-sm flex items-center border-l border-light-grey">In wallet: <span
+            <div class="py-3 px-4 text-sm flex items-center border-l border-light-grey justify-center">In wallet: <span
                 class="in-wallet flex items-center ml-1">9988.0000</span></div>
           </div>
         </div>
@@ -46,7 +46,7 @@
             </select>
           </div>
           <div class="w-5/12">
-            <div class="py-3 px-4 text-sm flex items-center border-l border-light-grey justify-center"><span
+            <div class="py-3 px-4 text-sm flex items-center border-l border-light-grey justify-center justify-center"><span
                 class="percent-data mr-1">12%</span> APY</div>
           </div>
         </div>
@@ -108,27 +108,182 @@
       </button>
     </div>
     <div class="flex flex-col p-5 border-light-grey border-t">
-      <div class="flex mb-4 w-full">
-        <div class="w-1/2">
-          <div class="btn-checked active">
+      <div class="flex mb-4 w-full btns-array">
+        <div class="w-1/2 flex">
+          <input type="radio" name="borrow" value="all-borrow" id="all-borrow" checked class="hidden">
+          <label for="all-borrow" class="btn-checked">
             All borrow
-          </div>
+          </label>
         </div>
-        <div class="w-1/2">
-          <div class="btn-checked">
+        <div class="w-1/2 flex">
+          <input type="radio" name="borrow" value="part-borrow" id="part" class="hidden">
+          <label for="part" class="btn-checked">
             Part
-          </div>
+          </label>
         </div>
       </div>
       <div class="flex flex-col mb-11">
-        <label for="repay-borrow" class="name-field text-sm text-grey-100 font-medium mb-1">Total repay</label>
-        <input type="text" name="repay-borrow" id="repay-borrow"
+        <label for="total-repay" class="name-field text-sm text-grey-100 font-medium mb-1">Total repay</label>
+        <input type="text" name="total-repay" id="total-repay"
           class="input-type"
           value="18.5000" placeholder="18.5000">
       </div>
       <div class="flex flex-col">
         <button type="submit" class="btn w-full mb-4">Approve tokens move</button>
         <button disabled="disabled" class="btn w-full">Repay borrow</button>
+      </div>
+    </div> 
+  </div>
+</div>
+
+<!-- open new credit -->
+
+<div class="modal" id="modal-open-new-credit">
+  <div class="modal-exit modal-exit__bg"></div>
+  <div class="pop-up">
+    <div class="flex items-center justify-between p-5 w-full h-auto">
+      <div class="text-lg font-normal">Open New Credit</div>
+      <button class="modal-close modal-exit w-6 h-6 flex items-center justify-center cursor-pointer focus:outline-none">
+        <img src="../images/close.svg" class="w-3 h-3" alt="#">
+      </button>
+    </div>
+    <div class="flex flex-col p-5 border-light-grey border-t">
+      <div class="flex flex-col mb-4">
+        <div class="name-field text-sm text-grey-100 font-medium mb-1">Select Collateral</div>
+        <div class="flex border-medium-grey border rounded-lg w-full without-link">
+          <select id="select-st" name="select-st" class="color-select">
+            <option value="st1" selected>ST1</option>
+            <option value="st2">ST2</option>
+            <option value="st3">ST3</option>
+            <option value="st4">ST4</option>
+            <option value="cytr">CYTR</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex mb-4 w-full btns-array">
+        <div class="w-1/2 flex">
+          <input type="radio" name="credit" value="full-credit" id="full-credit" checked class="hidden">
+          <label for="full-credit" class="btn-checked">
+            Full
+          </label>
+        </div>
+        <div class="w-1/2 flex">
+          <input type="radio" name="credit" value="part-credit" id="part-credit" class="hidden">
+          <label for="part-credit" class="btn-checked">
+            Part
+          </label>
+        </div>
+      </div>
+      <div class="flex flex-col mb-4">
+        <label for="assets-amount-value" class="name-field text-sm text-grey-100 font-medium mb-1">Assets amount</label>
+        <input type="text" name="assets-amount-value" id="assets-amount-value"
+          class="input-type"
+          value="1" placeholder="1">
+      </div>
+      <div class="flex flex-col mb-4">
+        <label for="coll-usd-value" class="name-field text-sm text-grey-100 font-medium mb-1">Coll. USD value</label>
+        <input type="text" name="coll-usd-value" id="coll-usd-value"
+          class="input-type"
+          value="400.00" placeholder="400.00">
+      </div>
+      <div class="flex flex-col mb-4">
+        <div class="name-field text-sm text-grey-100 font-medium mb-1">Get credit in:</div>
+        <div class="flex border-medium-grey border rounded-lg w-full">
+          <div class="w-8/12 without-link">
+            <select id="get-credit" name="get-credit" class="color-select">
+              <option value="st1" selected>ST1</option>
+              <option value="st2">ST2</option>
+              <option value="st3">ST3</option>
+              <option value="st4">ST4</option>
+              <option value="cytr">CYTR</option>
+            </select>
+          </div>
+          <div class="w-4/12">
+            <div class="py-3 px-4 text-sm flex items-center border-l border-light-grey justify-center">19.0000</div>
+          </div>
+        </div>
+      </div>
+      <div class="specify w-100 flex items-center justify-center mb-4">
+        <div class="line h-px w-full bg-medium-grey"></div>
+        <div class="flex whitespace-nowrap items-center w-fit-content justify-center py-1 px-2 text-xs text-center text-gray-500 border border-medium-grey rounded-2xl">Specify credit type</div>
+        <div class="line h-px w-full bg-medium-grey"></div>
+      </div>
+      <div class="flex mb-4 w-full btns-array">
+        <div class="w-1/2 flex">
+          <input type="radio" name="percent-type" value="percent-regular" id="percent-regular" checked class="hidden">
+          <label for="percent-regular" class="btn-checked">
+            Regular
+          </label>
+        </div>
+        <div class="w-1/2 flex">
+          <input type="radio" name="percent-type" value="percent-fixed" id="percent-fixed" class="hidden">
+          <label for="percent-fixed" class="btn-checked">
+            Fixed %
+          </label>
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <label for="total-credit" class="name-field text-sm text-grey-100 font-medium mb-1">Total credit %</label>
+        <input type="text" name="total-credit" id="total-credit"
+          class="input-type"
+          value="17.02" placeholder="17.02">
+      </div>
+      <div class="flex flex-col mt-11">
+        <button type="submit" class="btn w-full">Confirm</button>
+      </div>
+    </div> 
+  </div>
+</div>
+
+<!-- open new deposit -->
+
+<div class="modal" id="modal-new-deposit">
+  <div class="modal-exit modal-exit__bg"></div>
+  <div class="pop-up">
+    <div class="flex items-center justify-between p-5 w-full h-auto">
+      <div class="text-lg font-normal">Open New Deposit</div>
+      <button class="modal-close modal-exit w-6 h-6 flex items-center justify-center cursor-pointer focus:outline-none">
+        <img src="../images/close.svg" class="w-3 h-3" alt="#">
+      </button>
+    </div>
+    <div class="flex flex-col p-5 border-light-grey border-t">
+      <div class="name-field text-sm text-grey-100 font-medium mb-1">Select Asset</div>
+      <div class="without-link special-select flex border-medium-grey border rounded-lg w-full mb-4">
+        <select id="check-asset" name="check-asset" class="color-select">
+          <option value="-" selected>Either</option>
+          <option value="st1">ST1</option>
+          <option value="st2">ST2</option>
+          <option value="st3">ST3</option>
+          <option value="st4">ST4</option>
+          <option value="cytr">CYTR</option>
+        </select>
+      </div>
+      <div class="flex flex-col mb-4">
+        <label for="assets-amount" class="name-field text-sm text-grey-100 font-medium mb-1">Assets amount</label>
+        <input type="text" name="assets-amount" id="assets-amount"
+          class="input-type"
+          value="0" placeholder="0">
+      </div>
+      <div class="flex flex-col mb-11">
+        <label for="usd-value" class="name-field text-sm text-grey-100 font-medium mb-1">USD value</label>
+        <input type="text" name="usd-value" id="usd-value"
+          class="input-type"
+          value="0" placeholder="0">
+      </div>
+      <div class="flex flex-col">
+        <button type="submit" class="btn w-full mb-4">Approve tokens move</button>
+        <button type="submit" class="btn w-full mb-4 btn-load">
+          <span>
+            <svg class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path xmlns="http://www.w3.org/2000/svg" d="M8.67504 1.40795C6.84527 1.98325 5.1958 3.02288 3.88745 4.42547C2.57911 5.82806 1.65654 7.54574 1.2097 9.41105C0.762863 11.2764 0.807007 13.2256 1.33783 15.0688C1.86865 16.912 2.86803 18.5861 4.23853 19.928C5.60903 21.27 7.30387 22.2339 9.15781 22.7257C11.0118 23.2176 12.9615 23.2207 14.817 22.7346C16.6725 22.2486 18.3703 21.2901 19.7451 19.9525C21.1198 18.6148 22.1244 16.9438 22.661 15.1024C22.7208 14.9119 22.742 14.7114 22.7233 14.5126C22.7046 14.3138 22.6464 14.1208 22.5521 13.9448C22.4579 13.7688 22.3294 13.6134 22.1743 13.4877C22.0192 13.362 21.8405 13.2685 21.6488 13.2128C21.4571 13.157 21.2562 13.1401 21.0578 13.163C20.8595 13.1859 20.6677 13.2482 20.4938 13.3461C20.3198 13.4441 20.1672 13.5758 20.0448 13.7336C19.9224 13.8913 19.8327 14.0719 19.781 14.2648C19.3891 15.6083 18.6558 16.8273 17.6526 17.8031C16.6493 18.7788 15.4103 19.478 14.0565 19.8324C12.7026 20.1868 11.28 20.1844 9.9273 19.8254C8.57463 19.4664 7.33804 18.7631 6.3381 17.7839C5.33815 16.8048 4.60895 15.5833 4.22159 14.2384C3.83422 12.8936 3.80191 11.4714 4.12779 10.1103C4.45367 8.74929 5.12663 7.49592 6.08107 6.47237C7.03552 5.44882 8.23887 4.69003 9.57384 4.26995C9.76177 4.21086 9.93621 4.11533 10.0872 3.98882C10.2382 3.86231 10.3628 3.70729 10.4539 3.53263C10.545 3.35796 10.6008 3.16706 10.6181 2.97083C10.6354 2.7746 10.6139 2.57688 10.5548 2.38895C10.4957 2.20103 10.4002 2.02659 10.2737 1.87559C10.1472 1.72459 9.99218 1.59998 9.81752 1.50889C9.64285 1.41779 9.45195 1.36199 9.25572 1.34468C9.05949 1.32736 8.86177 1.34886 8.67384 1.40795H8.67504Z" fill="white"/>
+            </svg>
+          </span>
+        </button>
+        <button type="submit" class="btn w-full mb-4 btn-done">
+          <img src="../images/check-btn.svg" class="" alt="w-4 h-3">
+        </button>
+        <button disabled="disabled" class="btn w-full mb-4">Deposit tokens</button>
+        <button type="submit" class="btn w-full">Deposit tokens</button>
       </div>
     </div> 
   </div>
