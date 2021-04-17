@@ -82,6 +82,9 @@
   .pop-up {
     @apply max-w-460 w-full flex flex-col rounded-xl border border-light-grey bg-blueish-black relative shadow;
   }
+  .input-type {
+    @apply border-medium-grey border text-sm rounded-lg w-full h-11 bg-blueish-black focus:outline-none py-3 px-4;
+  }
 }
 
 .if-credit {
