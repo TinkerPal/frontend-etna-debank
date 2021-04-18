@@ -288,3 +288,42 @@
     </div> 
   </div>
 </div>
+
+<!-- withdraw deposit -->
+
+<div class="modal" id="modal-withdraw-deposit">
+  <div class="modal-exit modal-exit__bg"></div>
+  <div class="pop-up">
+    <div class="flex items-center justify-between p-5 w-full h-auto">
+      <div class="text-lg font-normal">Withdraw deposit</div>
+      <button class="modal-close modal-exit w-6 h-6 flex items-center justify-center cursor-pointer focus:outline-none">
+        <img src="../images/close.svg" class="w-3 h-3" alt="#">
+      </button>
+    </div>
+    <div class="flex flex-col p-5 border-light-grey border-t">
+      <div class="flex mb-4 w-full btns-array">
+        <div class="w-1/2 flex">
+          <input type="radio" name="deposit" value="all-deposit" id="all-deposit" checked class="hidden">
+          <label for="all-deposit" class="btn-checked">
+            All deposit
+          </label>
+        </div>
+        <div class="w-1/2 flex">
+          <input type="radio" name="deposit" value="part-deposit" id="part-deposit" class="hidden">
+          <label for="part-deposit" class="btn-checked">
+            Part
+          </label>
+        </div>
+      </div>
+      <div class="flex flex-col mb-11">
+        <label for="total-repay" class="name-field text-sm text-grey-100 font-medium mb-1">Total</label>
+        <input type="text" name="total-repay" id="total-repay"
+          class="input-type"
+          value="18.5000" placeholder="18.5000">
+      </div>
+      <div class="flex flex-col">
+        <button type="submit" class="btn w-full">Confirm</button>
+      </div>
+    </div> 
+  </div>
+</div>
