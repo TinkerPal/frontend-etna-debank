@@ -217,15 +217,20 @@ document.addEventListener("DOMContentLoaded", function (event) {
   var notifBlock = document.querySelector('.notif-block');
   var notifIcon = document.querySelector('.notif');
 
-  console.log(notifBlock);
-  console.log(notifIcon);
-
   notifBlock.querySelector('.modal-close').addEventListener('click', () => {
     notifBlock.classList.add('hidden');
   });
 
   notifIcon.addEventListener('click', () => {
     notifBlock.classList.remove('hidden');
+  });
+
+  var closeIcon = document.querySelectorAll('.close-icon');
+
+  closeIcon.forEach(item => {
+    item.addEventListener('click', () => {
+      item.closest('.notif-row').remove();
+    });
   });
 
 });

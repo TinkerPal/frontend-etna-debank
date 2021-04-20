@@ -149,6 +149,24 @@
   .notif {
     @apply bg-gray-800 rounded-full relative w-8 h-8 flex items-center justify-center mr-5 cursor-pointer;
   }
+  .social-icon svg {
+    @apply pointer-events-none;
+  }
+  .social-icon {
+    @apply mr-4 w-6 h-6 rounded-full bg-violet transition-all hover:bg-white flex items-center justify-center;
+  }
+  .notif-row {
+    @apply mb-6 flex items-center justify-between py-4 px-5 border-l-4 rounded-md border-green-3;
+  }
+  .notif-row.warning {
+    @apply border-yellow-400;
+  }
+  .notif-row.error {
+    @apply border-red;
+  }
+  .close-icon {
+    @apply w-5 h-5 flex items-center justify-center cursor-pointer;
+  }
 }
 
 .if-credit {
@@ -368,13 +386,20 @@
 @media(max-width: 1980px) {
   .parallax-main {
     width: 1400px;
-    height: 778px;
+    height: 900px;
   }
 }
 
 @media(max-width: 1600px) {
   .parallax-main {
     width: 100%;
-    height: 678px;
+    height: 748px;
+  }
+}
+
+@media(max-width: 991px) {
+  .parallax-main {
+    width: 100%;
+    height: 620px;
   }
 }

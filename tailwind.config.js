@@ -28,7 +28,11 @@ module.exports = {
       'blueish-black': '#191932',
       green: '#98EF10',
       'green-medium': '#34C759',
-      'medium-grey': '#35354E'
+      'medium-grey': '#35354E',
+      'green-success': 'rgba(39, 174, 96, 0.2)',
+      'warning': 'rgba(255, 235, 153, 0.25)',
+      'error': 'rgba(255, 70, 70, 0.15)',
+      violet: '#5A5A89'
     }),
     textColor: theme => ({
       ...theme('colors'),
@@ -40,14 +44,19 @@ module.exports = {
       'electric-green': '#5EFF5A',
       'grey-100': '#C4C4C4',
       green: '#98EF10',
-      'grey-200': '#C5C5CC'
+      'green-3': '#6FCF97',
+      'grey-200': '#C5C5CC',
+      red: '#EB5757',
+      yellow: '#FBBF24'
     }),
     borderColor: theme => ({
       ...theme('colors'),
       green: '#98EF10',
       'light-violet': '#5A5A89',
       'light-grey': '#292948',
-      'medium-grey': '#35354E'
+      'green-3': '#6FCF97',
+      'medium-grey': '#35354E',
+      red: '#EB5757'
     }),
     gradientColorStops: theme => ({
       ...theme('colors'),
@@ -65,11 +74,11 @@ module.exports = {
       black: colors.black,
     },
     animation: {
-      wiggle: 'wiggle 12s ease-in-out infinite',
-      'wiggle-2': 'wiggle-2 14s ease-in-out infinite',
-      'wiggle-3': 'wiggle-3 18s ease-in-out infinite',
-      'bounce': 'bounce 10s ease infinite',
-      'bounce-2': 'bounceModified 8s ease-in-out infinite',
+      wiggle: 'wiggle 58s ease-in-out infinite',
+      'wiggle-2': 'wiggle-2 66s ease-in-out infinite',
+      'wiggle-3': 'wiggle-3 74s ease-in-out infinite',
+      'bounce': 'bounce 48s ease infinite',
+      'bounce-2': 'bounceModified 46s ease-in-out infinite',
       spin: 'spin 1s linear infinite'
     },
     keyframes: {
