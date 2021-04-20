@@ -47,6 +47,27 @@ function fontsTask(cb) {
     cb();
 }
 
+function phpTask(cb) {
+    return src('./src/php/*')
+        .pipe(gulp.dest('./public/php/'))
+        .pipe(browserSync.stream());
+    cb();
+}
+
+function nftTask(cb) {
+    return src('./src/nft/*')
+        .pipe(gulp.dest('./public/nft/'))
+        .pipe(browserSync.stream());
+    cb();
+}
+
+function phpInCommonTask(cb) {
+    return src('./src/*.php')
+        .pipe(gulp.dest('./public/'))
+        .pipe(browserSync.stream());
+    cb();
+}
+
 function jsTask(cb) {
     return src('./src/js/*.js')
         .pipe(
@@ -93,4 +114,4 @@ function watchTask() {
 }
 
 // Default Gulp Task
-exports.default = series(fileIncludeTask, cssTask, jsTask, imageminTask, fontsTask, browsersyncServe, watchTask);
+exports.default = series(fileIncludeTask, cssTask, jsTask, imageminTask, fontsTask, phpTask, phpInCommonTask, nftTask, browsersyncServe, watchTask);
