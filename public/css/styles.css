@@ -1174,6 +1174,10 @@ input:checked + label {
   margin-right: auto;
 }
 
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
 .mr-1 {
   margin-right: 0.25rem;
 }
@@ -1475,6 +1479,10 @@ input:checked + label {
 
 .w-8\/12 {
   width: 66.666667%;
+}
+
+.w-11\/12 {
+  width: 91.666667%;
 }
 
 .w-full {
@@ -1942,6 +1950,10 @@ input:checked + label {
 
   .xl\:items-center {
     align-items: center;
+  }
+
+  .xl\:mt-0 {
+    margin-top: 0px;
   }
 
   .xl\:mr-0 {
