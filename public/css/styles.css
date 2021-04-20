@@ -1238,6 +1238,10 @@ input:checked + label {
   margin-bottom: 2.25rem;
 }
 
+.mr-10 {
+  margin-right: 2.5rem;
+}
+
 .mb-10 {
   margin-bottom: 2.5rem;
 }
@@ -1336,19 +1340,23 @@ input:checked + label {
   padding-bottom: 1.25rem;
 }
 
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
 .px-7 {
   padding-left: 1.75rem;
   padding-right: 1.75rem;
 }
 
-.px-8 {
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
-
 .px-9 {
   padding-left: 2.25rem;
   padding-right: 2.25rem;
+}
+
+.pb-2 {
+  padding-bottom: 0.5rem;
 }
 
 .relative {
@@ -1449,16 +1457,12 @@ input:checked + label {
   width: 20rem;
 }
 
+.w-96 {
+  width: 24rem;
+}
+
 .w-1\/2 {
   width: 50%;
-}
-
-.w-1\/6 {
-  width: 16.666667%;
-}
-
-.w-5\/6 {
-  width: 83.333333%;
 }
 
 .w-3\/12 {
@@ -1937,6 +1941,22 @@ input:checked + label {
 }
 
 @media (min-width: 1024px) {
+  .lg\:flex-row {
+    flex-direction: row;
+  }
+
+  .lg\:items-center {
+    align-items: center;
+  }
+
+  .lg\:px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .lg\:pb-0 {
+    padding-bottom: 0px;
+  }
 }
 
 @media (min-width: 1280px) {
@@ -1960,8 +1980,24 @@ input:checked + label {
     margin-right: 0px;
   }
 
+  .xl\:mb-0 {
+    margin-bottom: 0px;
+  }
+
+  .xl\:mr-3 {
+    margin-right: 0.75rem;
+  }
+
   .xl\:w-96 {
     width: 24rem;
+  }
+
+  .xl\:w-1\/6 {
+    width: 16.666667%;
+  }
+
+  .xl\:w-5\/6 {
+    width: 83.333333%;
   }
 
   .xl\:w-full {
