@@ -140,6 +140,15 @@
   .page {
     @apply w-full;
   }
+  .notif-block {
+    @apply h-auto px-5 pt-5 pb-4 bg-blueish-black flex flex-col rounded-xl border border-light-grey shadow absolute right-5 top-9 flex w-80;
+  }
+  .notif-amount {
+    @apply text-8 absolute -right-1 top-0.5 w-3 h-3 flex items-center justify-center bg-green-medium rounded-full;
+  }
+  .notif {
+    @apply bg-gray-800 rounded-full relative w-8 h-8 flex items-center justify-center mr-5 cursor-pointer;
+  }
 }
 
 .if-credit {

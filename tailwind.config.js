@@ -15,6 +15,9 @@ module.exports = {
       width: {
         'fit-content': 'fit-content',
         'rest': 'calc(100% - 24rem)'
+      },
+      fontSize: {
+        '8': ['8px', '10px']
       }
     },
     fontFamily: {
@@ -24,6 +27,7 @@ module.exports = {
       ...theme('colors'),
       'blueish-black': '#191932',
       green: '#98EF10',
+      'green-medium': '#34C759',
       'medium-grey': '#35354E'
     }),
     textColor: theme => ({
@@ -36,6 +40,7 @@ module.exports = {
       'electric-green': '#5EFF5A',
       'grey-100': '#C4C4C4',
       green: '#98EF10',
+      'grey-200': '#C5C5CC'
     }),
     borderColor: theme => ({
       ...theme('colors'),
