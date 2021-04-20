@@ -13,7 +13,8 @@ module.exports = {
         '460': '460px'
       },
       width: {
-        'fit-content': 'fit-content'
+        'fit-content': 'fit-content',
+        'rest': 'calc(100% - 24rem)'
       }
     },
     fontFamily: {

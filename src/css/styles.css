@@ -137,6 +137,9 @@
   .top-divider {
     @apply flex flex-col p-5 border-light-grey border-t;
   }
+  .page {
+    @apply w-full;
+  }
 }
 
 .if-credit {
@@ -300,7 +303,9 @@
 .modal {
   visibility: hidden;
   transition: all 0.3s ease;
+  opacity: 0;
 }
+
 .modal.open {
   visibility: visible;
   opacity: 1;
