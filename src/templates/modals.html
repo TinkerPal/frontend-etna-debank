@@ -3,15 +3,15 @@
 <div class="modal" id="modal-add-liquidity">
   <div class="modal-exit modal-exit__bg"></div>
   <div class="pop-up">
-    <div class="flex items-center justify-between p-5 w-full h-auto">
+    <div class="modal-top">
       <div class="text-lg font-normal">Add liquidity</div>
-      <button class="modal-close modal-exit w-6 h-6 flex items-center justify-center cursor-pointer focus:outline-none">
+      <button class="modal-close modal-exit ">
         <img src="../images/close.svg" class="w-3 h-3" alt="#">
       </button>
     </div>
-    <div class="flex flex-col p-5 border-light-grey border-t">
+    <div class="top-divider">
       <div class="flex flex-col mb-4">
-        <div class="name-field text-sm text-grey-100 font-medium mb-1">Select asset</div>
+        <div class="name-field ">Select asset</div>
         <div class="flex border-medium-grey border rounded-lg w-full">
           <div class="w-7/12 without-link">
             <select id="select-asset" name="select-asset" class="color-select">
@@ -23,18 +23,18 @@
             </select>
           </div>
           <div class="w-5/12">
-            <div class="py-3 px-4 text-sm flex items-center border-l border-light-grey justify-center">In wallet: <span
+            <div class="field-info">In wallet: <span
                 class="in-wallet flex items-center ml-1">9988.0000</span></div>
           </div>
         </div>
       </div>
       <div class="flex flex-col mb-4">
-        <label for="stake-qnt" class="name-field text-sm text-grey-100 font-medium mb-1">Stake qnt</label>
+        <label for="stake-qnt" class="name-field ">Stake qnt</label>
         <input type="text" name="stake-qnt" id="stake-qnt" placeholder="-"
           class="border-medium-grey border text-sm rounded-lg w-full h-11 bg-blueish-black focus:outline-none py-3 px-4">
       </div>
       <div class="flex flex-col mb-11">
-        <div class="name-field text-sm text-grey-100 font-medium mb-1">Period and Annual rate</div>
+        <div class="name-field ">Period and Annual rate</div>
         <div class="flex border-medium-grey border rounded-lg w-full">
           <div class="w-7/12 without-link">
             <select id="select-period" name="select-period" class="color-select">
@@ -46,7 +46,7 @@
             </select>
           </div>
           <div class="w-5/12">
-            <div class="py-3 px-4 text-sm flex items-center border-l border-light-grey justify-center justify-center"><span
+            <div class="field-info justify-center"><span
                 class="percent-data mr-1">12%</span> APY</div>
           </div>
         </div>
@@ -64,15 +64,15 @@
 <div class="modal" id="modal-set-leverage">
   <div class="modal-exit modal-exit__bg"></div>
   <div class="pop-up">
-    <div class="flex items-center justify-between p-5 w-full h-auto">
+    <div class="modal-top">
       <div class="text-lg font-normal">Set Leverage</div>
-      <button class="modal-close modal-exit w-6 h-6 flex items-center justify-center cursor-pointer focus:outline-none">
+      <button class="modal-close modal-exit ">
         <img src="../images/close.svg" class="w-3 h-3" alt="#">
       </button>
     </div>
-    <div class="flex flex-col p-5 border-light-grey border-t">
+    <div class="top-divider">
       <div class="flex flex-col mb-4">
-        <div class="name-field text-sm text-grey-100 font-medium mb-1">Leverage %</div>
+        <div class="name-field ">Leverage %</div>
         <div class="flex border-medium-grey border rounded-lg w-full without-link">
           <select id="select-leverage" name="select-leverage" class="color-select">
             <option value="25%" selected>25%</option>
@@ -84,7 +84,7 @@
         </div>
       </div>
       <div class="flex flex-col mb-11">
-        <div class="name-field text-sm text-grey-100 font-medium mb-1">CYTR Leverage</div>
+        <div class="name-field ">CYTR Leverage</div>
         <div
           class="input-type">
           72,27</div>
@@ -101,13 +101,13 @@
 <div class="modal" id="modal-repay-borrow">
   <div class="modal-exit modal-exit__bg"></div>
   <div class="pop-up">
-    <div class="flex items-center justify-between p-5 w-full h-auto">
+    <div class="modal-top">
       <div class="text-lg font-normal">Return credit body</div>
-      <button class="modal-close modal-exit w-6 h-6 flex items-center justify-center cursor-pointer focus:outline-none">
+      <button class="modal-close modal-exit ">
         <img src="../images/close.svg" class="w-3 h-3" alt="#">
       </button>
     </div>
-    <div class="flex flex-col p-5 border-light-grey border-t">
+    <div class="top-divider">
       <div class="flex mb-4 w-full btns-array">
         <div class="w-1/2 flex">
           <input type="radio" name="borrow" value="all-borrow" id="all-borrow" checked class="hidden">
@@ -123,7 +123,7 @@
         </div>
       </div>
       <div class="flex flex-col mb-11">
-        <label for="total-repay" class="name-field text-sm text-grey-100 font-medium mb-1">Total repay</label>
+        <label for="total-repay" class="name-field ">Total repay</label>
         <input type="text" name="total-repay" id="total-repay"
           class="input-type"
           value="18.5000" placeholder="18.5000">
@@ -141,15 +141,15 @@
 <div class="modal" id="modal-open-new-credit">
   <div class="modal-exit modal-exit__bg"></div>
   <div class="pop-up">
-    <div class="flex items-center justify-between p-5 w-full h-auto">
+    <div class="modal-top">
       <div class="text-lg font-normal">Open New Credit</div>
-      <button class="modal-close modal-exit w-6 h-6 flex items-center justify-center cursor-pointer focus:outline-none">
+      <button class="modal-close modal-exit ">
         <img src="../images/close.svg" class="w-3 h-3" alt="#">
       </button>
     </div>
-    <div class="flex flex-col p-5 border-light-grey border-t">
+    <div class="top-divider">
       <div class="flex flex-col mb-4">
-        <div class="name-field text-sm text-grey-100 font-medium mb-1">Select Collateral</div>
+        <div class="name-field ">Select Collateral</div>
         <div class="flex border-medium-grey border rounded-lg w-full without-link">
           <select id="select-st" name="select-st" class="color-select">
             <option value="st1" selected>ST1</option>
@@ -175,19 +175,19 @@
         </div>
       </div>
       <div class="flex flex-col mb-4">
-        <label for="assets-amount-value" class="name-field text-sm text-grey-100 font-medium mb-1">Assets amount</label>
+        <label for="assets-amount-value" class="name-field ">Assets amount</label>
         <input type="text" name="assets-amount-value" id="assets-amount-value"
           class="input-type"
           value="1" placeholder="1">
       </div>
       <div class="flex flex-col mb-4">
-        <label for="coll-usd-value" class="name-field text-sm text-grey-100 font-medium mb-1">Coll. USD value</label>
+        <label for="coll-usd-value" class="name-field ">Coll. USD value</label>
         <input type="text" name="coll-usd-value" id="coll-usd-value"
           class="input-type"
           value="400.00" placeholder="400.00">
       </div>
       <div class="flex flex-col mb-4">
-        <div class="name-field text-sm text-grey-100 font-medium mb-1">Get credit in:</div>
+        <div class="name-field ">Get credit in:</div>
         <div class="flex border-medium-grey border rounded-lg w-full">
           <div class="w-8/12 without-link">
             <select id="get-credit" name="get-credit" class="color-select">
@@ -199,7 +199,7 @@
             </select>
           </div>
           <div class="w-4/12">
-            <div class="py-3 px-4 text-sm flex items-center border-l border-light-grey justify-center">19.0000</div>
+            <div class="field-info">19.0000</div>
           </div>
         </div>
       </div>
@@ -223,7 +223,7 @@
         </div>
       </div>
       <div class="flex flex-col">
-        <label for="total-credit" class="name-field text-sm text-grey-100 font-medium mb-1">Total credit %</label>
+        <label for="total-credit" class="name-field ">Total credit %</label>
         <input type="text" name="total-credit" id="total-credit"
           class="input-type"
           value="17.02" placeholder="17.02">
@@ -240,14 +240,14 @@
 <div class="modal" id="modal-new-deposit">
   <div class="modal-exit modal-exit__bg"></div>
   <div class="pop-up">
-    <div class="flex items-center justify-between p-5 w-full h-auto">
+    <div class="modal-top">
       <div class="text-lg font-normal">Open New Deposit</div>
-      <button class="modal-close modal-exit w-6 h-6 flex items-center justify-center cursor-pointer focus:outline-none">
+      <button class="modal-close modal-exit ">
         <img src="../images/close.svg" class="w-3 h-3" alt="#">
       </button>
     </div>
-    <div class="flex flex-col p-5 border-light-grey border-t">
-      <div class="name-field text-sm text-grey-100 font-medium mb-1">Select Asset</div>
+    <div class="top-divider">
+      <div class="name-field ">Select Asset</div>
       <div class="without-link special-select flex border-medium-grey border rounded-lg w-full mb-4">
         <select id="check-asset" name="check-asset" class="color-select">
           <option value="-" selected>Either</option>
@@ -259,13 +259,13 @@
         </select>
       </div>
       <div class="flex flex-col mb-4">
-        <label for="assets-amount" class="name-field text-sm text-grey-100 font-medium mb-1">Assets amount</label>
+        <label for="assets-amount" class="name-field ">Assets amount</label>
         <input type="text" name="assets-amount" id="assets-amount"
           class="input-type"
           value="0" placeholder="0">
       </div>
       <div class="flex flex-col mb-11">
-        <label for="usd-value" class="name-field text-sm text-grey-100 font-medium mb-1">USD value</label>
+        <label for="usd-value" class="name-field ">USD value</label>
         <input type="text" name="usd-value" id="usd-value"
           class="input-type"
           value="0" placeholder="0">
@@ -294,13 +294,13 @@
 <div class="modal" id="modal-withdraw-deposit">
   <div class="modal-exit modal-exit__bg"></div>
   <div class="pop-up">
-    <div class="flex items-center justify-between p-5 w-full h-auto">
+    <div class="modal-top">
       <div class="text-lg font-normal">Withdraw deposit</div>
-      <button class="modal-close modal-exit w-6 h-6 flex items-center justify-center cursor-pointer focus:outline-none">
+      <button class="modal-close modal-exit ">
         <img src="../images/close.svg" class="w-3 h-3" alt="#">
       </button>
     </div>
-    <div class="flex flex-col p-5 border-light-grey border-t">
+    <div class="top-divider">
       <div class="flex mb-4 w-full btns-array">
         <div class="w-1/2 flex">
           <input type="radio" name="deposit" value="all-deposit" id="all-deposit" checked class="hidden">
@@ -316,7 +316,7 @@
         </div>
       </div>
       <div class="flex flex-col mb-11">
-        <label for="total-repay" class="name-field text-sm text-grey-100 font-medium mb-1">Total</label>
+        <label for="total-repay" class="name-field ">Total</label>
         <input type="text" name="total-repay" id="total-repay"
           class="input-type"
           value="18.5000" placeholder="18.5000">

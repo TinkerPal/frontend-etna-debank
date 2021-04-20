@@ -95,6 +95,48 @@
   input:checked + label {
     @apply rounded-md bg-green bg-opacity-10 text-green;
   }
+  .icon-cell {
+    @apply flex items-center justify-center w-4 h-5 mr-2;
+  }
+  .crypto-icon {
+    @apply flex items-center justify-center w-5 h-5 mr-2;
+  }
+  .main-row {
+    @apply flex items-center justify-between w-full mb-5;
+  }
+  .address-info {
+    @apply leading-6 font-medium text-base text-right;
+  }
+  .wrapper {
+    @apply flex items-center justify-between mx-2 mb-9;
+  }
+  .static-data {
+    @apply text-white mr-4 text-center tracking-wider font-normal text-sm text-opacity-50;
+  }
+  .static {
+    @apply text-white text-center tracking-wider font-normal text-sm;
+  }
+  .static-name {
+    @apply text-left tracking-wider font-normal text-sm;
+  }
+  .up-info {
+    @apply flex items-center justify-center up;
+  }
+  .modal-top {
+    @apply flex items-center justify-between p-5 w-full h-auto;
+  }
+  .modal-close {
+    @apply w-6 h-6 flex items-center justify-center cursor-pointer focus:outline-none;
+  }
+  .name-field {
+    @apply text-sm text-grey-100 font-medium mb-1;
+  }
+  .field-info {
+    @apply py-3 px-4 text-sm flex items-center border-l border-light-grey justify-center;
+  }
+  .top-divider {
+    @apply flex flex-col p-5 border-light-grey border-t;
+  }
 }
 
 .if-credit {
