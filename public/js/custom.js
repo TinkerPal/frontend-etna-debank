@@ -1925,9 +1925,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 		
 		//openTab({srcElement: document.getElementById(userObject.state.current_page_id+'-menu')}, userObject.state.current_page_id);
 		
-		initDepositProfilesDropdown();
-		initCreditProfilesDropdown();
-		initGetCreditDropdown();
+		//initDepositProfilesDropdown();
+		//initCreditProfilesDropdown();
+		//initGetCreditDropdown();
 
 	}
 	
