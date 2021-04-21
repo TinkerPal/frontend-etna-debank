@@ -5099,7 +5099,7 @@ function withdraw_reward(dep_id) {
 }
 
 function withdraw_deposit(dep_id) {
-  hide_withdraw_deposit(dep_id);
+  // hide_withdraw_deposit(dep_id);
   // $('.withdraw_params').show();
   // $('#withraw_dep_input' + dep_id.toString()).show();
   // $('#withraw_dep_all' + dep_id.toString()).show();
@@ -5109,8 +5109,9 @@ function withdraw_deposit(dep_id) {
 
   // $('.withdraw_params_to_hide').hide();
 
-  if (document.getElementById('withraw_dep_input' + dep_id.toString()))
-    document.getElementById('withraw_dep_input' + dep_id.toString()).readOnly = true;
+  // if (document.getElementById('withraw_dep_input' + dep_id.toString()))
+  //   document.getElementById('withraw_dep_input' + dep_id.toString()).readOnly = true;
+  alert(dep_id);
 }
 
 function hide_withdraw_deposit(dep_id) {
