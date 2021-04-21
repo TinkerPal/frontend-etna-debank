@@ -1494,7 +1494,7 @@ let userObject = {
 
             if (am_arr[2][i] > 0) {
               let lbl = '';
-              txt = '<td class="withdraw_rew_to_hide table-cell" onclick="withdraw_deposit(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false" data-modal="modal-withdraw-deposit"></span>' + lbl + '</td>';
+              txt = '<td class="withdraw_rew_to_hide table-cell" data-modal="modal-withdraw-deposit" onclick="withdraw_deposit(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
             } else {
               txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
             }
