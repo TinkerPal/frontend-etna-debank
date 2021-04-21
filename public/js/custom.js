@@ -1482,12 +1482,10 @@ let userObject = {
       if (current_timestamp > this.getWithdrawDepCol_last_call + CACHE_TIME || flag) {
         this.getWithdrawDepCol_last_call = current_timestamp;
 
-
         this.withdraw_dep_col.length = 0;
 
         let am_arr = userObject.deposits.am_arr;
         let rew_arr = userObject.deposits.rew_arr;
-
 
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
@@ -1496,7 +1494,7 @@ let userObject = {
 
             if (am_arr[2][i] > 0) {
               let lbl = '';
-              txt = '<td class="withdraw_rew_to_hide table-cell" onclick="withdraw_deposit(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
+              txt = '<td class="withdraw_rew_to_hide table-cell" onclick="withdraw_deposit(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false" data-modal="modal-withdraw-deposit"></span>' + lbl + '</td>';
             } else {
               txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
             }
@@ -1529,7 +1527,6 @@ let userObject = {
           if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
           if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
             let txt = '';
-
 
             if (am_arr[2][i] > 0) {
               //let am = window.web3js_reader.utils.fromWei(am_arr[2][i], 'ether');

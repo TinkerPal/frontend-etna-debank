@@ -2184,6 +2184,13 @@ input:checked + label {
   border-top-right-radius: 8px;
 }
 
+/* .small-text{
+  font-size: 70%;
+  display: inline;
+  margin: 2px;
+  padding: 0;
+} */
+
 @media (min-width: 640px) {
 }
 
