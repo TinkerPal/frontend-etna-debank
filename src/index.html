@@ -10,14 +10,13 @@
   <title>
     ETNA_Dashboard
   </title>
-  <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
 </head>
 
 <body class="font-body bg-black text-white h-full min-h-screen relative w-screen flex flex-col relative">
   <header class="w-full z-20">
     @@include('./templates/header.html')
   </header>
-  <div id="p1" class="page active">
+  <div id="p1" class="page ">
     <div class="main mx-6 mt-11 text-white xl:flex-row flex flex-col">
       <div class="dashboard-col xl:w-96 w-full">
         @@include('./templates/dashboard.html')
@@ -27,7 +26,7 @@
       </div>
     </div>
   </div>  
-  <div id="p2" class="page">
+  <div id="p2" class="page active">
     @@include('./templates/deposits.html')
   </div>
   <div id="p3" class="page">

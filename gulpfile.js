@@ -10,6 +10,8 @@ var postcss = require("gulp-postcss");
 var uglify = require("gulp-uglify");
 var concat = require("gulp-concat");
 var babel = require("gulp-babel");
+var sass = require("gulp-sass");
+var replace = require("gulp-replace");
 const imagemin = require("gulp-imagemin");
 const fileinclude = require('gulp-file-include');
 const gulp = require('gulp');
@@ -28,7 +30,10 @@ function fileIncludeTask(cb) {
 
 // Task for compiling our CSS files using PostCSS
 function cssTask(cb) {
-    return src('./src/css/*.css')
+    return src('./src/css/*.scss')
+        .pipe(sass().on('error', sass.logError))
+        .pipe(replace('hover: ', 'hover:'))
+        .pipe(replace('focus: ', 'focus:'))
         .pipe(postcss([
             tailwindcss('./tailwind.config.js'),
             require('autoprefixer'),
@@ -84,7 +89,7 @@ function jsTask(cb) {
 
 // Task for minifying images
 function imageminTask(cb) {
-    return src("./src/images/*")
+    return src("./src/images/**/*")
         .pipe(imagemin())
         .pipe(dest("./public/images/"));
     cb();
@@ -107,9 +112,10 @@ function browsersyncReload(cb) {
 
 // Watch Files & Reload browser after tasks
 function watchTask() {
-    watch("./src/*.html", series(fileIncludeTask, cssTask, browsersyncReload));
-    watch(["./src/css/*.css"], series(cssTask, browsersyncReload));
+    watch("./src/**/*.html", series(fileIncludeTask, cssTask, browsersyncReload));
+    watch(["./src/css/*.scss"], series(cssTask, browsersyncReload));
     watch(["./src/js/*.js"], series(jsTask, browsersyncReload));
+    watch(["./src/images/**/*"], series(imageminTask, browsersyncReload));
     watch(["tailwind.config.js"], series(fileIncludeTask, cssTask, browsersyncReload));
 }
 

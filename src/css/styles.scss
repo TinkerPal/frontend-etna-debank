@@ -35,7 +35,7 @@
 
 @layer components {
   .nav-link {
-    @apply py-3.5 px-3 mr-4 border-b-2 flex items-center text-gray-300 text-sm border-transparent hover:text-white whitespace-nowrap font-medium cursor-pointer;
+    @apply py-3.5 px-3 mr-4 border-b-2 flex items-center text-gray-300 text-sm border-transparent hover: text-white whitespace-nowrap font-medium cursor-pointer;
   }
 
   .nav-link.active {
@@ -51,7 +51,7 @@
   }
 
   .btn {
-    @apply py-2 px-3 text-sm cursor-pointer flex items-center justify-center shadow-sm rounded-md bg-gradient-to-r from-light-blue to-dark-blue hover:from-navy transition-all hover:to-navy focus:from-light-blue focus:to-dark-blue disabled:from-primrose disabled:to-primrose disabled:text-light-violet focus:ring-2 focus:ring-violet focus:outline-none focus:ring-offset-2 focus:ring-offset-black w-max h-9;
+    @apply py-2 px-3 text-sm cursor-pointer flex items-center justify-center shadow-sm rounded-md bg-gradient-to-r from-light-blue to-dark-blue hover: from-navy transition-all hover:to-navy focus:from-light-blue focus:to-dark-blue disabled:from-primrose disabled:to-primrose disabled:text-light-violet focus:ring-2 focus:ring-violet focus:outline-none focus:ring-offset-2 focus:ring-offset-black w-max h-9;
   }
 
   .btn.btn-done {
@@ -59,12 +59,22 @@
   }
 
   .table-title {
-    @apply py-1 px-5 tracking-wider text-primary-gray text-left text-xs font-medium hover:text-white transition-all cursor-default;
+    @apply py-1 px-5 tracking-wider text-primary-gray text-left text-xs font-medium hover: text-white transition-all cursor-default;
   }
 
   .table-cell {
-    @apply p-4 px-5 whitespace-nowrap text-sm font-normal text-white flex items-center justify-start truncate h-14;
+    @apply p-4 px-5 py-2 text-sm font-normal text-white flex items-center justify-start truncate h-14;
   }
+
+  .table-title,
+  .table-cell {
+    &:nth-child(2) {
+      @apply pl-2;
+    }
+    &:nth-child(1) {
+      @apply w-5 h-5 pr-0;
+    }   
+   }
 
   .table-row {
     @apply bg-blueish-black mb-3 rounded-lg;
@@ -77,100 +87,141 @@
   .up {
     @apply text-electric-green tracking-wider;
   }
+
   .modal {
-    @apply flex items-center justify-center w-full h-screen opacity-0 top-0 left-0 fixed;
+    @apply flex items-center justify-center w-full h-screen opacity-0 top-0 left-0 fixed z-50;
   }
+
   .modal-exit__bg {
     @apply w-full h-full bg-black bg-opacity-70 absolute;
   }
+
   .pop-up {
     @apply max-w-460 w-full flex flex-col rounded-xl border border-light-grey bg-blueish-black relative shadow;
   }
+
   .input-type {
-    @apply border-medium-grey border text-sm rounded-lg w-full h-11 bg-blueish-black focus:outline-none py-3 px-4;
+    @apply border-medium-grey border text-sm rounded-lg w-full h-11 bg-blueish-black focus: outline-none py-3 px-4;
   }
+
   .btn-checked {
     @apply text-center flex items-center justify-center h-9 w-full text-gray-500 text-sm cursor-pointer;
   }
-  input:checked + label {
+
+  input:checked+label {
     @apply rounded-md bg-green bg-opacity-10 text-green;
   }
+
   .icon-cell {
     @apply flex items-center justify-center w-4 h-5 mr-2;
   }
+
   .crypto-icon {
     @apply flex items-center justify-center w-5 h-5 mr-2;
   }
+
+  .crypto-icon-no-spaces {
+    @apply flex items-center justify-center w-5 h-5;
+  }
+
+  .crypto-icon-no-spaces img {
+    @apply w-full h-full;
+  }
+
   .main-row {
     @apply flex items-center justify-between w-full mb-5;
   }
+
   .address-info {
     @apply leading-6 font-medium text-base text-right;
   }
+
   .wrapper {
     @apply flex items-center justify-between mx-2 mb-9;
   }
+
   .static-data {
     @apply text-white mr-4 text-center tracking-wider font-normal text-sm text-opacity-50;
   }
+
   .static {
     @apply text-white text-center tracking-wider font-normal text-sm;
   }
+
   .static-name {
     @apply text-left tracking-wider font-normal text-sm;
   }
+
   .up-info {
     @apply flex items-center justify-center up;
   }
+
   .modal-top {
     @apply flex items-center justify-between p-5 w-full h-auto;
   }
+
   .modal-close {
-    @apply w-6 h-6 flex items-center justify-center cursor-pointer focus:outline-none;
+    @apply w-6 h-6 flex items-center justify-center cursor-pointer focus: outline-none;
   }
+
   .name-field {
     @apply text-sm text-grey-100 font-medium mb-1;
   }
+
   .field-info {
     @apply py-3 px-4 text-sm flex items-center border-l border-light-grey justify-center;
   }
+
   .top-divider {
     @apply flex flex-col p-5 border-light-grey border-t;
   }
+
   .page {
     @apply w-full;
   }
+
   .notif-block {
     @apply h-auto px-5 pt-5 pb-4 bg-blueish-black flex flex-col rounded-xl border border-light-grey shadow absolute right-5 top-9 flex w-80;
   }
+
   .notif-amount {
     @apply text-8 absolute -right-1 top-0.5 w-3 h-3 flex items-center justify-center bg-green-medium rounded-full;
   }
+
   .notif {
     @apply bg-gray-800 rounded-full relative w-8 h-8 flex items-center justify-center mr-5 cursor-pointer;
   }
+
   .social-icon svg {
     @apply pointer-events-none;
   }
+
   .social-icon {
-    @apply mr-4 w-6 h-6 rounded-full bg-violet transition-all hover:bg-white flex items-center justify-center;
+    @apply mr-4 w-6 h-6 rounded-full bg-violet transition-all hover: bg-white flex items-center justify-center;
   }
+
   .notif-row {
     @apply mb-6 flex items-center justify-between py-4 px-5 border-l-4 rounded-md border-green-3;
   }
+
   .notif-row.warning {
     @apply border-yellow-400;
   }
+
   .notif-row.error {
     @apply border-red;
   }
+
   .close-icon {
     @apply w-5 h-5 flex items-center justify-center cursor-pointer;
   }
+
   .info-block__popup {
     @apply absolute bottom-8 left-5/6 text-gray-700 text-sm py-3 px-4 bg-white rounded-md shadow w-44 h-auto transition-all;
   }
 }
+
+
 
 .info-block__popup {
   display: none;
@@ -234,7 +285,7 @@
   align-items: center;
 }
 
-.js-Dropdown-title .li-link{
+.js-Dropdown-title .li-link {
   display: none;
 }
 
@@ -252,7 +303,7 @@
   height: 16px;
 }
 
-.js-Dropdown-list .btn-link{
+.js-Dropdown-list .btn-link {
   display: none;
 }
 
@@ -351,7 +402,7 @@
 }
 
 .without-link .dropdown-link {
-  display: none!important;
+  display: none !important;
 }
 
 .without-link .js-Dropdown {
@@ -425,9 +476,14 @@
   border-top-right-radius: 8px;
 }
 
-/* .small-text{
-  font-size: 70%;
-  display: inline;
-  margin: 2px;
-  padding: 0;
-} */
+table {
+  border-collapse: separate;
+  width: 100%;
+  border-spacing: 0px 12px;
+}
+
+input{
+  &::-webkit-inner-spin-button {
+    display: none;
+  }
+}

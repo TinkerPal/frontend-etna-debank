@@ -1,3 +1,25 @@
+function Modal(modalId) {
+  this.modal = document.getElementById(modalId);
+
+  this.show = () => {
+    this.modal.classList.add("open");
+  }
+
+  this.hide = () => this.modal.classList.remove("open");
+
+  init = () => {
+    const exits = this.modal.querySelectorAll(".modal-exit");
+    exits.forEach(exit => {
+      exit.addEventListener("click", this.hide);
+    });
+  }
+
+  init();
+}
+
+const withdraw_modal = new Modal('modal-withdraw-deposit');
+const open_new_deposit_modal = new Modal('modal-withdraw-deposit');
+
 const WALLETS_API_URL = "https://bsc-debank-wallet-api.etna.network";
 //const NFT_PUB_API_URL = "https://bsc-debank-pub-api.etna.network";
 //const NFT_ROOT_URL = "https://debank.etna.network/nft";
@@ -5429,6 +5451,8 @@ const liqlev_contract_abi = [{
 
 window.cyclops_nft_contract_address = '0x6ab7E5B00a6e4A7E56160FAc1BCcAcEad1614554'; //kovan
 
+window.cyclops_nft_contract_address = '0x6ab7E5B00a6e4A7E56160FAc1BCcAcEad1614554'; //kovan
+
 const apy_scale = 100000;
 const CACHE_TIME = 30000; //ms, i.e 30 sec.
 
@@ -5454,21 +5478,7 @@ rev_dep_types[2] = "ERC721";
 rev_dep_types[3] = "Uniswap pair";
 rev_dep_types[4] = "Ether";
 
-const crypto_icons = new Array();
-crypto_icons['bnb'] = '<span class="iconify" data-icon="cryptocurrency:bnb" data-inline="false"></span>';
-crypto_icons['ST1'] = '<span class="usdt-icon"></span>';
-crypto_icons['ST2'] = '<span class="iconify" data-icon="ps:token" data-inline="false"></span>';
-crypto_icons['ST3'] = '<span class="iconify" data-icon="ps:token" data-inline="false"></span>';
-crypto_icons['ST4'] = '<span class="iconify" data-icon="ps:token" data-inline="false"></span>';
-crypto_icons['nft'] = '<span class="iconify" data-icon="ps:token" data-inline="false"></span>';
-crypto_icons['CYTR'] = '<span class="etna-icon"></span>';
-crypto_icons['BNB-ST1-1W'] = '<span class="iconify" data-icon="noto:pancakes" data-inline="false"></span>';
-crypto_icons['BNB-ST1-2W'] = '<span class="iconify" data-icon="noto:pancakes" data-inline="false"></span>';
-crypto_icons['BNB-ST1-1M'] = '<span class="iconify" data-icon="noto:pancakes" data-inline="false"></span>';
-crypto_icons['BNB-ST2-1W'] = '<span class="iconify" data-icon="noto:pancakes" data-inline="false"></span>';
-crypto_icons['BNB-ST2-2W'] = '<span class="iconify" data-icon="noto:pancakes" data-inline="false"></span>';
-crypto_icons['BNB-ST2-1M'] = '<span class="iconify" data-icon="noto:pancakes" data-inline="false"></span>';
-
+const CRYPTO_ICONS = ['bnb', 'st1', 'cytr', 'etna'];
 
 const period_name_from_code = new Array();
 period_name_from_code['1W'] = "1 week";
@@ -5487,12 +5497,6 @@ to_bool["No"] = false;
 const rev_to_bool = new Array();
 rev_to_bool[true] = "Yes";
 rev_to_bool[false] = "No";
-
-
-
-
-
-
 
 const infura_endpoint = new Array();
 infura_endpoint['0x1'] = "https://mainnet.infura.io/v3/e399e7df7f9149d08b2e91939e056007";
@@ -5550,6 +5554,21 @@ const providerOptions = {
 const walletButton = document.getElementById("enableEthereumButton");
 const forwardedOrigin = "https://debank.etna.network";
 
+const createTableBtnWithIcon = (icon, text, callback) => {
+  return `<span class="table-btn" onclick="${callback}">
+  <i class="icon-cell">
+    <img src="/images/${icon}.svg" class="w-full h-full" alt="#">
+  </i> 
+  ${text}
+</span>`
+}
+
+const createCellWithIcon = (iconSrc) => {
+  iconSrc = iconSrc.toLowerCase();
+  iconSrc = CRYPTO_ICONS.indexOf(iconSrc) === -1 ? 'b' : iconSrc;
+
+  return `<span class="crypto-icon-no-spaces"><img src="/images/crypto-icons/icon-${iconSrc}.svg"></span>`
+}
 
 const isMetaMaskInstalled = () => {
   if (typeof window.ethereum != undefined) {
@@ -5593,14 +5612,12 @@ let userObject = {
         let profiles = userObject.deposit_profiles;
 
         for (let i = 0; i < profiles.length; i++) {
-          this.icon_column.push('<td class="table-cell">' + crypto_icons[profiles[i]['p_name']] + '</td>');
+          this.icon_column.push('<td class="table-cell">' + createCellWithIcon(profiles[i]['p_name']) + '</td>');
           this.assets_column.push('<td class="table-cell">' + profiles[i]['p_name'] + '</td>');
         }
       }
       return [this.icon_column, this.assets_column];
     },
-
-
 
     am_arr: new Array(),
     getAmArr_last_call: 0,
@@ -5647,7 +5664,7 @@ let userObject = {
           let apy = await getAPY(profiles[i]['p_id']);
           let apy_adj = (apy / apy_scale) * 100;
 
-          this.apy_column.push('<th scope="col" class="table-row">' + ((parseFloat(apy_adj)).toFixed(2)).toString() + '</th>');
+          this.apy_column.push('<td class="table-cell">' + ((parseFloat(apy_adj)).toFixed(2)).toString() + '</td>');
         }
       }
       return this.apy_column;
@@ -5858,8 +5875,8 @@ let userObject = {
           for (let i = 0; i < am_arr[0].length; i++) { //i == deposit id
             if (am_arr[0][i] == profiles[j]['p_id'] && am_arr[2][i] > 0) {
               let lbl = '';
-              if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) lbl = '<span class="small-text">&nbspNFTs</span>';
-              txt = '<td class="withdraw_rew_to_hide table-cell" onclick="withdraw_deposit(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
+              if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) lbl = '<span>&nbspNFTs</span>';
+              txt = `<td class="table-cell">${createTableBtnWithIcon('withdraw', 'Withdraw deposit', `withdraw_deposit(${i.toString()})`)}</td>`;
               break;
             }
           }
@@ -5994,8 +6011,8 @@ let userObject = {
           for (let i = 0; i < rew_arr[0].length; i++) {
             if (rew_arr[0][i] == profiles[j]['p_id'] && rew_arr[2][i] > 0) {
               let lbl = '';
-              if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) lbl = '<span class="small-text">&nbsp;CYTR</span>';
-              txt = '<td class="withdraw_params_to_hide table-cell" onclick="withdraw_reward(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
+              if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) lbl = '&nbsp;CYTR</span>';
+              txt = '<td class="withdraw_params_to_hide table-cell" onclick="withdraw_reward(' + i.toString() + ')">' + createTableBtnWithIcon('withdraw', 'Withdraw yield', '') + '</td>';
               break;
             }
           }
@@ -6004,43 +6021,6 @@ let userObject = {
         }
       }
       return this.withdraw_rew_col;
-    },
-
-    withdraw_rew_inputs_col: new Array(),
-    getWithdrawRewInputsCol_last_call: 0,
-    getWithdrawRewInputsCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getWithdrawRewInputsCol_last_call + CACHE_TIME || flag) {
-        this.getWithdrawRewInputsCol_last_call = current_timestamp;
-
-        this.withdraw_rew_inputs_col.length = 0;
-        let profiles = userObject.deposit_profiles;
-        let am_arr = this.am_arr;
-
-        for (let j = 0; j < profiles.length; j++) {
-          let txt = '';
-          for (let i = 0; i < am_arr[0].length; i++) { //i == deposit id
-            if (am_arr[0][i] == profiles[j]['p_id']) {
-
-
-              txt = '<td class="withdraw_reward_params table-cell" style="display:none">';
-              txt += '<div style="display:block; margin-top: 1vh;"></div>'
-              txt += '<button id="withdraw_rew_confirm' + i.toString() + '" class="transparent_button withdraw_rew_input" style="display:none;width: 10vw" onclick="withdraw_reward_confirm(' + i.toString() + ')">Confirm</button>';
-              txt += '</td>';
-
-
-
-              break;
-            }
-          }
-          if (!txt) txt = '<td class="withdraw_reward_params table-cell" style="display:none">-</td>';
-          this.withdraw_rew_inputs_col.push(txt);
-        }
-
-
-      }
-      return this.withdraw_rew_inputs_col;
-
     },
 
 
@@ -6103,8 +6083,8 @@ let userObject = {
         this.icon_column.length = 0;
         this.assets_column.length = 0;
         for (let i = 0; i < this.cred_arr[0].length; i++) {
-          this.icon_column.push('<td class="table-cell">' + crypto_icons[profileNameByProfileId(this.cred_arr[0][i])] + '</td>');
-          this.assets_column.push('<th scope="col" class="table-row">' + profileNameByProfileId(this.cred_arr[0][i]) + '</th>');
+          this.icon_column.push('<td class="table-cell">' + createCellWithIcon(profileNameByProfileId(this.cred_arr[0][i])) + '</td>');
+          this.assets_column.push('<td class="table-cell">' + profileNameByProfileId(this.cred_arr[0][i]) + '</td>');
         }
       }
       return [this.icon_column, this.assets_column];
@@ -6440,7 +6420,7 @@ let userObject = {
             //let am = window.web3js_reader.utils.fromWei(lev_arr[i], 'ether');
 
             let adj_am = toTokens(lev_arr[i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-            txt = '<td class="table-cell">' + adj_am + '<br>' + lev_ratio_arr[i] + '%</td>';
+            txt = '<td class="table-cell">' + adj_am + ' ' + lev_ratio_arr[i] + '%</td>';
           }
 
           //	}
@@ -6476,7 +6456,7 @@ let userObject = {
 
             let lbl = '';
 
-            txt = '<td class="table-cell" onclick="compensate_with_leverage(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
+            txt = '<td class="table-cell" onclick="compensate_with_leverage(' + i.toString() + ')"><span class="icon-cell"><img src="../images/bag.svg"></span>' + lbl + '</td>';
           }
 
           if (!txt) txt = '<td class="table-cell">-</td>';
@@ -6570,7 +6550,7 @@ let userObject = {
 
           if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
             let lbl = '';
-            txt = '<td class="hide_for_set_leverage_panel table-cell" onclick="return_credit(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
+            txt = '<td class="hide_for_set_leverage_panel table-cell" onclick="return_credit(' + i.toString() + ')"><span class="icon-cell"><img src="../images/bag.svg"></span>' + lbl + '</td>';
           }
           if (!txt) txt = '<td class="hide_for_set_leverage_panel table-cell">-</td>';
           this.return_credit_col.push(txt);
@@ -6656,7 +6636,7 @@ let userObject = {
           if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
           if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
             //console.log('u_p_id', am_arr[0][i]);
-            this.icon_column.push('<td class="table-cell">' + crypto_icons[await unswProfileNameByProfileId(am_arr[0][i])] + '</td>');
+            this.icon_column.push('<td class="table-cell">' + createCellWithIcon(await unswProfileNameByProfileId(am_arr[0][i])) + '</td>');
             let aname = (await unswProfileNameByProfileId(am_arr[0][i])).slice(0, -3);
             this.asset_column.push('<th scope="col" class="table-row">' + aname + '</th>');
             let period_code = (await unswProfileNameByProfileId(am_arr[0][i])).slice(-2);
@@ -6893,7 +6873,7 @@ let userObject = {
 
             if (am_arr[2][i] > 0) {
               let lbl = '';
-              txt = '<td class="withdraw_rew_to_hide table-cell" data-modal="modal-withdraw-deposit" onclick="withdraw_deposit(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
+              txt = '<td class="withdraw_rew_to_hide table-cell" data-modal="modal-withdraw-deposit" onclick="withdraw_deposit(' + i.toString() + ')"><span class="icon-cell"><img src="../images/bag.svg"></span>' + lbl + '</td>';
             } else {
               txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
             }
@@ -6999,13 +6979,10 @@ let userObject = {
       let current_timestamp = Date.now();
       if (current_timestamp > this.getExtractableRewardCol_last_call + CACHE_TIME || flag) {
         this.getExtractableRewardCol_last_call = current_timestamp;
-
-
         this.extractable_reward_col.length = 0;
 
         let am_arr = userObject.deposits.am_arr;
         let rew_arr = userObject.deposits.rew_arr;
-
 
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
@@ -7050,7 +7027,7 @@ let userObject = {
 
             if (rew_arr[2][i] > 0) {
               let lbl = '';
-              txt = '<td class="withdraw_params_to_hide table-cell" onclick="withdraw_reward(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
+              txt = '<td class="withdraw_params_to_hide table-cell" onclick="withdraw_reward(' + i.toString() + ')"><span class="icon-cell"><img src="../images/bag.svg"></span>' + lbl + '</td>';
             } else {
               txt = '<td class="withdraw_params_to_hide table-cell">-</td>';
             }
@@ -7064,55 +7041,11 @@ let userObject = {
 
     },
 
-    withdraw_rew_inputs_col: new Array(),
-    getWithdrawRewInputsCol_last_call: 0,
-    getWithdrawRewInputsCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getWithdrawRewInputsCol_last_call + CACHE_TIME || flag) {
-        this.getWithdrawRewInputsCol_last_call = current_timestamp;
-
-
-        this.withdraw_rew_inputs_col.length = 0;
-
-        let am_arr = userObject.deposits.am_arr;
-        let rew_arr = userObject.deposits.rew_arr;
-
-
-        for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
-            let txt = '';
-
-            if (rew_arr[2][i] > 0) {
-              txt = '<td class="withdraw_reward_params table-cell" style="display:none">';
-              txt += '<div style="display:block; margin-top: 1vh;"></div>'
-              txt += '<button id="withdraw_rew_confirm' + i.toString() + '" class="transparent_button withdraw_rew_input" style="display:none;width: 10vw" onclick="withdraw_reward_confirm(' + i.toString() + ')">Confirm</button>';
-              txt += '</td>';
-            } else {
-              txt = '<td class="withdraw_reward_params table-cell" style="display:none">-</td>';
-            }
-
-
-            this.withdraw_rew_inputs_col.push(txt);
-          }
-        }
-
-      }
-      return this.withdraw_rew_inputs_col;
-
-    },
-
-
-
   },
 
 
   load: async function () {
     if (this.loaded) return;
-
-
-
-
 
     [this.deposit_profiles,
       this.deposit_profiles_liqpairs,
@@ -9296,8 +9229,8 @@ async function buildTotalDashboard() {
     '<th class="table-title">Total Deposits</th>' +
     '<th class="table-title">Total Borrowed</th>' +
     '<th class="table-title">Deposit APY<sup>*</sup></th>' +
-    '<th class="table-title">Variable<br>Borrow APR<sup>*</sup></th>' +
-    '<th class="table-title">Fixed<br>Borrow APR<sup>*</sup></th>' +
+    '<th class="table-title">Variable Borrow APR<sup>*</sup></th>' +
+    '<th class="table-title">Fixed Borrow APR<sup>*</sup></th>' +
     '</tr>' +
     '</thead>' +
     '<tbody>';
@@ -9315,7 +9248,7 @@ async function buildTotalDashboard() {
   //let fee_column = new Array();
 
   for (let i = 0; i < profiles.length; i++) {
-    icon_column.push('<td class="table-cell">' + crypto_icons[profiles[i]['p_name']] + '</td>');
+    icon_column.push('<td class="table-cell">' + createCellWithIcon(profiles[i]['p_name']) + '</td>');
     asset_column.push('<td class="table-cell">' + profiles[i]['p_name'] + '</td>');
     let dep_stat = await stakingContractInstance.methods.depositsStat(parseInt(profiles[i]['p_id'])).call({
       from: userObject.account
@@ -9396,7 +9329,6 @@ async function buildTotalDashboard() {
       if (max_apr < apr_adj) max_apr = apr_adj;
       if (min_apr > apr_adj) min_apr = apr_adj;
     }
-    //from: '+((parseFloat(min_apr)).toFixed(2)).toString()+'<br>'
     apr_column.push('<th scope="col" class="table-row">' + ((parseFloat(max_apr)).toFixed(2)).toString() + '</th>');
   }
 
@@ -9414,41 +9346,8 @@ async function buildTotalDashboard() {
       if (min_apr > apr_adj) min_apr = apr_adj;
     }
 
-    //from: '+((parseFloat(min_apr)).toFixed(2)).toString()+'<br>'
     apr_fix_column.push('<th scope="col" class="table-row">' + ((parseFloat(max_apr)).toFixed(2)).toString() + '</th>');
   }
-
-  /*
-		let earned_column = new Array();
-		await stakingContractInstance.getPastEvents('CustomerWithdrawDepositRewardById', {	fromBlock: 0, toBlock: 'latest'})
-				.then(function(events){
-				   for (let i = 0; i < profiles.length; i++){
-				   		let flag = false;
-				   		
-				   		let v = new BN(0);
-						events.forEach(function(item) {
-							
-							if (profiles[i]['p_id'] == item.returnValues.profile_id){
-								v =v.add(new BN(item.returnValues.reward));
-								flag = true;
-							
-							}								
-						});
-						
-						if (flag){
-							let vf = window.web3js_reader.utils.fromWei(v, 'ether');
-							let f = (parseFloat(vf)).toFixed(3);
-							earned_column.push('<td class="table-cell">'+f.toString()+'</td>');
-						} else {
-							earned_column.push('<td class="table-cell">-</td>');
-						}
-						
-					}
-				})
-				.catch(error => 	{
-		  			errorMsg('cannot get events from smartcontract');
-		});       
-	      */
 
   for (let i = 0; i < profiles.length; i++) {
     //0 means max amount for ERC20 compatible and ignored for ERC721
@@ -9740,16 +9639,16 @@ async function getCreditsDashboard(callback = null) {
     '<tr>' +
     '<th class="table-title"></th>' +
     '<th class="table-title">Asset</th>' +
-    '<th class="table-title">Borrowed<br>amount</th>' +
+    '<th class="table-title">Borrowed mount</th>' +
     '<th class="hide_for_set_leverage_paneltable-title">USD value</th>' +
     '<th class="hide_for_set_leverage_panel table-title">Collateral</th>' +
-    '<th class="hide_for_credit_return_panel table-title">Duration<br>days</th>' +
-    '<th class="table-title">Curent<br>APR<sup>*</sup></th>' +
+    '<th class="hide_for_credit_return_panel table-title">Duration days</th>' +
+    '<th class="table-title">Curent APR<sup>*</sup></th>' +
     '<th class="table-title">Fee</th>' +
-    '<th class="table-title">Leverage<br>Level</th>' +
-    '<th class="table-title">Cover Fees<br>with CYTR<br>Leverage</th>' +
+    '<th class="table-title">Leverage Level</th>' +
+    '<th class="table-title">Cover Fees with CYTR Leverage</th>' +
     '<th class="set_leverage_panel set_leverage_panel_header table-title" style="display:none"><button class="transparent_button"  onclick="hide_set_leverage()">Hide</button></th>' +
-    '<th class="hide_for_set_leverage_panel table-title">Repay<br>borrow</th>' +
+    '<th class="hide_for_set_leverage_panel table-title">Repay borrow</th>' +
     '<th class="credit_return_panel credit_return_panel_header table-title" style="display:none"><button class="transparent_button"  onclick="hide_return_credit()">Hide</button></th>' +
     '<th class="hide_for_credit_return_panel tab-vert-line-left table-title">In wallet</th>' +
     '<th class="hide_for_credit_return_panel table-title">Deposit</th>' +
@@ -9863,17 +9762,15 @@ async function getLiquidityDashboard(callback = null) {
     //'<th>In wallet</th>'+
     '<th class="table-title">Quantity</th>' +
     '<th class="table-title">Lockup</th>' +
-    '<th class="table-title">Days till<br>Withdraw</th>' +
+    '<th class="table-title">Days till Withdraw</th>' +
     '<th class="table-title">USD value</th>' +
     '<th class="table-title">APY</th>' +
-    '<th class="withdraw_rew_to_hide table-title">Duration<br>days</th>' +
-    '<th class="withdraw_rew_to_hide table-title">Extractable</th>' +
-    '<th class="withdraw_rew_to_hide table-title">Withdraw<br>deposit</th>' +
-    '<th class="withdraw_params table-title" style="display:none"><button class="transparent_button"  onclick="hide_withdraw_deposit()">Hide</button></th>' +
-    '<th class="withdraw_params_to_hide table-title" >Current<br>Yield<br>CYTR</th>' +
-    '<th class="withdraw_params_to_hide table-title" >Extractable<br>Yield<br>CYTR</th>' +
-    '<th class="withdraw_params_to_hide table-title" >Withdraw<br>Yield</th>' +
-    '<th class="withdraw_reward_params table-title" style="display:none"><button class="transparent_button"  onclick="hide_withdraw_reward()">Hide</button></th>' +
+    '<th class="table-title">Duration days</th>' +
+    '<th class="table-title">Extractable</th>' +
+    '<th class="table-title">Withdraw deposit</th>' +
+    '<th class="table-title">Current Yield CYTR</th>' +
+    '<th class="table-title">Extractable Yield CYTR</th>' +
+    '<th class="ttable-title">Withdraw Yield</th>' +
     '</tr>' +
     '</thead>' +
     '<tbody>';
@@ -9896,7 +9793,6 @@ async function getLiquidityDashboard(callback = null) {
     reward_col,
     extractable_reward_col,
     withdraw_rew_col,
-    withdraw_rew_inputs_col
   ] = await Promise.all([userObject.liq_earn.getIconAssetLockupCols(),
     userObject.liq_earn.getApyCol(),
     userObject.liq_earn.getDepCol(),
@@ -9907,45 +9803,8 @@ async function getLiquidityDashboard(callback = null) {
     userObject.liq_earn.getWithdrawDepInputsCol(),
     userObject.liq_earn.getRewardCol(),
     userObject.liq_earn.getExtractableRewardCol(),
-    userObject.liq_earn.getWithdrawRewCol(),
-    userObject.liq_earn.getWithdrawRewInputsCol()
+    userObject.liq_earn.getWithdrawRewCol()
   ]);
-
-  /*
-  		let withdraw_rew_col = new Array();
-  		for (let i = 0; i < am_arr[0].length; i++){
-  			if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
-  			if ((await unswDepTypeByProfileId( am_arr[0][i])) == UNISWAP_PAIR ){
-  				let txt = '';
-  				
-  				if (rew_arr[2][i] > 0){
-  	    			let lbl='';
-  	    			txt =  '<td class="withdraw_params_to_hide table-cell" onclick="withdraw_reward('+i.toString()+')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>'+lbl+'</td>';
-  	    		} else {
-  	    			txt =  '<td class="withdraw_params_to_hide table-cell">-</td>'; 
-  	    		}
-  		        withdraw_rew_col.push(txt);
-  		    }
-  		}
-
-  		let withdraw_rew_inputs_col = new Array();
-  		for (let i = 0; i < am_arr[0].length; i++){
-  			if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
-  			if ((await unswDepTypeByProfileId( am_arr[0][i])) == UNISWAP_PAIR ){
-  				let txt = '';
-  				
-  		        if (rew_arr[2][i] > 0){    	
-  	    			txt = '<td class="withdraw_reward_params table-cell" style="display:none">';
-  	    			txt += '<div style="display:block; margin-top: 1vh;"></div>'
-  	    			txt += '<button id="withdraw_rew_confirm'+i.toString()+'" class="transparent_button withdraw_rew_input" style="display:none;width: 10vw" onclick="withdraw_reward_confirm('+i.toString()+')">Confirm</button>';
-  	    			txt += '</td>'; 
-  	    		} else {
-  	    			txt =  '<td class="withdraw_reward_params table-cell" style="display:none">-</td>'; 
-  	    		}
-  		        withdraw_rew_inputs_col.push(txt);
-  		    }
-  		}
-  */
 
   let icon_column_s = new Array(icon_column.length);
   let asset_column_s = new Array(icon_column.length);
@@ -9962,7 +9821,6 @@ async function getLiquidityDashboard(callback = null) {
   let reward_col_s = new Array(icon_column.length);
   let extractable_reward_col_s = new Array(icon_column.length);
   let withdraw_rew_col_s = new Array(icon_column.length);
-  let withdraw_rew_inputs_col_s = new Array(icon_column.length);
 
   //console.log('usd_val_only_col before sort', usd_val_only_col);
   usd_val_only_col.sort((a, b) => parseInt(b.val) - parseInt(a.val));
@@ -9986,7 +9844,6 @@ async function getLiquidityDashboard(callback = null) {
     reward_col_s[i] = reward_col[old_index];
     extractable_reward_col_s[i] = extractable_reward_col[old_index];
     withdraw_rew_col_s[i] = withdraw_rew_col[old_index];
-    withdraw_rew_inputs_col_s[i] = withdraw_rew_inputs_col[old_index];
   }
 
   for (let i = 0; i < icon_column.length; i++) {
@@ -10023,8 +9880,6 @@ async function getLiquidityDashboard(callback = null) {
 
     html += withdraw_rew_col_s[i];
 
-    html += withdraw_rew_inputs_col_s[i];
-
     html += '</tr>';
   }
 
@@ -10050,13 +9905,13 @@ async function getDepositsDashboard(callback = null) {
     '<th class="table-title">Deposit</th>' +
     '<th class="table-title">USD value</th>' +
     '<th class="table-title">APY</th>' +
-    '<th class="withdraw_rew_to_hide table-title">Duration<br>days</th>' +
+    '<th class="withdraw_rew_to_hide table-title">Duration days</th>' +
     '<th class="withdraw_rew_to_hide table-title">Extractable</th>' +
-    '<th class="withdraw_rew_to_hide table-title">Withdraw<br>deposit</th>' +
+    '<th class="withdraw_rew_to_hide table-title">Withdraw deposit</th>' +
     '<th class="withdraw_params table-title" style="display:none"><button class="transparent_button"  onclick="hide_withdraw_deposit()">Hide</button></th>' +
-    '<th class="withdraw_params_to_hide table-title" >Current<br>Yield</th>' +
-    '<th class="withdraw_params_to_hide table-title" >Extractable<br>Yield</th>' +
-    '<th class="withdraw_params_to_hide table-title" >Withdraw<br>Yield</th>' +
+    '<th class="withdraw_params_to_hide table-title" >Current Yield</th>' +
+    '<th class="withdraw_params_to_hide table-title" >Extractable Yield</th>' +
+    '<th class="withdraw_params_to_hide table-title" >Withdraw Yield</th>' +
     '<th class="withdraw_reward_params table-title" style="display:none"><button class="transparent_button"  onclick="hide_withdraw_reward()">Hide</button></th>' +
     '</tr>' +
     '</thead>' +
@@ -10082,8 +9937,7 @@ async function getDepositsDashboard(callback = null) {
     withdraw_dep_inputs_col,
     reward_col,
     extractable_reward_col,
-    withdraw_rew_col,
-    withdraw_rew_inputs_col
+    withdraw_rew_col
   ] = await Promise.all([userObject.deposits.getIconAssetsCols(),
     userObject.deposits.getApyCol(),
     userObject.deposits.getInWalletCol(),
@@ -10095,8 +9949,7 @@ async function getDepositsDashboard(callback = null) {
     userObject.deposits.getWithdrawDepInputsCol(),
     userObject.deposits.getRewardCol(),
     userObject.deposits.getExtractableRewardCol(),
-    userObject.deposits.getWithdrawRewCol(),
-    userObject.deposits.getWithdrawRewInputsCol()
+    userObject.deposits.getWithdrawRewCol()
   ]);
 
   let icon_column_s = new Array(profiles.length);
@@ -10112,7 +9965,6 @@ async function getDepositsDashboard(callback = null) {
   let reward_col_s = new Array(profiles.length);
   let extractable_reward_col_s = new Array(profiles.length);
   let withdraw_rew_col_s = new Array(profiles.length);
-  let withdraw_rew_inputs_col_s = new Array(profiles.length);
 
   usd_val_only_col.sort((a, b) => parseInt(b.val) - parseInt(a.val));
 
@@ -10133,7 +9985,6 @@ async function getDepositsDashboard(callback = null) {
     reward_col_s[i] = reward_col[old_index];
     extractable_reward_col_s[i] = extractable_reward_col[old_index];
     withdraw_rew_col_s[i] = withdraw_rew_col[old_index];
-    withdraw_rew_inputs_col_s[i] = withdraw_rew_inputs_col[old_index];
   }
 
   for (let i = 0; i < profiles.length; i++) {
@@ -10165,8 +10016,6 @@ async function getDepositsDashboard(callback = null) {
     html += extractable_reward_col_s[i];
 
     html += withdraw_rew_col_s[i];
-
-    html += withdraw_rew_inputs_col_s[i];
 
     html += '</tr>';
   }
@@ -10498,37 +10347,19 @@ function withdraw_reward(dep_id) {
 }
 
 function withdraw_deposit(dep_id) {
-  // hide_withdraw_deposit(dep_id);
-  // $('.withdraw_params').show();
-  // $('#withraw_dep_input' + dep_id.toString()).show();
-  // $('#withraw_dep_all' + dep_id.toString()).show();
-  // $('#withraw_dep_part' + dep_id.toString()).show();
-  // $('#withraw_dep_confirm' + dep_id.toString()).show();
-  //$('#withraw_dep_rew'+dep_id.toString()).show();
+  const modalElement = withdraw_modal.modal;
+  const allDepositsBtn = modalElement.querySelector('#withraw_dep_all');
+  const partDepositsBtn = modalElement.querySelector('#withraw_dep_part');
+  const submitBtn = modalElement.querySelector('#withraw_dep_confirm');
+  const withdrawInput = modalElement.querySelector('#withraw_dep_input');
+  const adj_am = toTokens(userObject.deposits.am_arr[2][dep_id], 4);
 
-  // $('.withdraw_params_to_hide').hide();
+  withdrawInput.value = adj_am;
+  allDepositsBtn.onchange = () => withdraw_deposit_all_btn(dep_id);
+  partDepositsBtn.onchange = () => withdraw_deposit_part_btn(dep_id);
+  submitBtn.onclick = () => withdraw_deposit_confirm(dep_id);
 
-  // if (document.getElementById('withraw_dep_input' + dep_id.toString()))
-  //   document.getElementById('withraw_dep_input' + dep_id.toString()).readOnly = true;
-
-  var modals = document.querySelectorAll("[data-modal]");
-
-  modals.forEach(function (trigger) {
-    trigger.addEventListener("click", function (event) {
-      event.preventDefault();
-      var modal = document.getElementById(trigger.dataset.modal);
-      modal.classList.add("open");
-      var exits = modal.querySelectorAll(".modal-exit");
-      exits.forEach(function (exit) {
-        exit.addEventListener("click", function (event) {
-          event.preventDefault();
-          modal.classList.remove("open");
-        });
-      });
-    });
-  });
-
-  alert(dep_id);
+  withdraw_modal.show();
 }
 
 function hide_withdraw_deposit(dep_id) {
@@ -10593,7 +10424,6 @@ function withdraw_deposit_confirm(dep_id) {
     withdraw_amount = 0; //doesn't matter, smartcontract will extract whole deposit amount;
   } else {
     withdraw_amount = safeFloatToWei(document.getElementById('withraw_dep_input' + dep_id.toString()).value);
-
   }
 
   initStakingContract(async (stakingContractInstance) => {
@@ -10902,24 +10732,22 @@ function return_credit_part_btn(dep_id) {
 }
 
 function withdraw_deposit_all_btn(dep_id) {
-  //alert(dep_id);
-  document.getElementById('withraw_dep_all' + dep_id.toString()).classList.add('transparent_button_pressed');
-  document.getElementById('withraw_dep_part' + dep_id.toString()).classList.remove('transparent_button_pressed');
+  const modalElement = withdraw_modal.modal;
+  const withdrawInput = modalElement.querySelector('#withraw_dep_input');
+
   //let am = window.web3js_reader.utils.fromWei(userObject.deposits.am_arr[2][dep_id], 'ether');
-  let adj_am = toTokens(userObject.deposits.am_arr[2][dep_id], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-  document.getElementById('withraw_dep_input' + dep_id.toString()).value = adj_am;
-  document.getElementById('withraw_dep_input' + dep_id.toString()).readOnly = true;
-
-
+  const adj_am = toTokens(userObject.deposits.am_arr[2][dep_id], 4); //((parseFloat(am)).toFixed(4)).toString(); 
+  console.log(adj_am)
+  withdrawInput.value = adj_am;
+  withdrawInput.readOnly = true;
 }
 
-function withdraw_deposit_part_btn(dep_id) {
-  //alert(dep_id);
-  document.getElementById('withraw_dep_all' + dep_id.toString()).classList.remove('transparent_button_pressed');
-  document.getElementById('withraw_dep_part' + dep_id.toString()).classList.add('transparent_button_pressed');
-  document.getElementById('withraw_dep_input' + dep_id.toString()).value = 0.;
-  document.getElementById('withraw_dep_input' + dep_id.toString()).readOnly = false;
+function withdraw_deposit_part_btn() {
+  const modalElement = withdraw_modal.modal;
+  const withdrawInput = modalElement.querySelector('#withraw_dep_input');
 
+  withdrawInput.value = 0.;
+  withdrawInput.readOnly = false;
 }
 
 function reorder_divs(id1, id2) {

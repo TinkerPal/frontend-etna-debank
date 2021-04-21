@@ -299,33 +299,33 @@
   <div class="pop-up">
     <div class="modal-top">
       <div class="text-lg font-normal">Withdraw deposit</div>
-      <button class="modal-close modal-exit ">
+      <button class="modal-close modal-exit">
         <img src="../images/close.svg" class="w-3 h-3" alt="#">
       </button>
     </div>
     <div class="top-divider">
       <div class="flex mb-4 w-full btns-array">
         <div class="w-1/2 flex">
-          <input type="radio" name="deposit" value="all-deposit" id="all-deposit" checked class="hidden">
-          <label for="all-deposit" class="btn-checked">
+          <input type="radio" name="deposit" value="all-deposit" id="withraw_dep_all" checked class="hidden">
+          <label for="withraw_dep_all" class="btn-checked">
             All deposit
           </label>
         </div>
         <div class="w-1/2 flex">
-          <input type="radio" name="deposit" value="part-deposit" id="part-deposit" class="hidden">
-          <label for="part-deposit" class="btn-checked">
+          <input type="radio" name="deposit" value="part-deposit" id="withraw_dep_part" class="hidden">
+          <label for="withraw_dep_part" class="btn-checked">
             Part
           </label>
         </div>
       </div>
       <div class="flex flex-col mb-11">
-        <label for="total-repay" class="name-field ">Total</label>
-        <input type="text" name="total-repay" id="total-repay"
-          class="input-type"
+        <label for="withraw_dep_input" class="name-field ">Total</label>
+        <input type="number" name="total-repay" id="withraw_dep_input"
+          class="input-type" readonly
           value="18.5000" placeholder="18.5000">
       </div>
       <div class="flex flex-col">
-        <button type="submit" class="btn w-full">Confirm</button>
+        <button type="submit" id="withraw_dep_confirm" class="btn w-full">Confirm</button>
       </div>
     </div> 
   </div>
