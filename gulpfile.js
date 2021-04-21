@@ -70,12 +70,12 @@ function phpInCommonTask(cb) {
 
 function jsTask(cb) {
     return src('./src/js/*.js')
-        .pipe(
-            babel({
-                presets: ["@babel/preset-env"]
-            })
-        )
-        .pipe(uglify())
+        // .pipe(
+        //     babel({
+        //         presets: ["@babel/preset-env"]
+        //     })
+        // )
+        // .pipe(uglify())
         .pipe(concat("common.min.js"))
         .pipe(gulp.dest('./public/js/'))
         .pipe(browserSync.stream());
