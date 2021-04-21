@@ -191,7 +191,7 @@ let userObject = {
 
         for (let i = 0; i < profiles.length; i++) {
           this.icon_column.push('<td class="table-cell">' + crypto_icons[profiles[i]['p_name']] + '</td>');
-          this.assets_column.push('<th scope="col" class="table-row">' + profiles[i]['p_name'] + '</th>');
+          this.assets_column.push('<td class="table-cell">' + profiles[i]['p_name'] + '</td>');
         }
       }
       return [this.icon_column, this.assets_column];
@@ -1928,7 +1928,7 @@ async function getAccount() {
 
     //document.getElementById('debank_load_bar').ldBar.set(25);
 
-    // if (window.location.pathname == '/'){
+    if (window.location.pathname == '/'){
 
     // 	window.barCheck = setInterval(barChecker, 1000);
     // 		async function barChecker() {
@@ -1961,13 +1961,13 @@ async function getAccount() {
     // 		document.getElementById('net_txt').innerHTML=" BSC-Test";
     // 	}
 
-    // 	// await updateData();
+    	await updateData();
 
     // 	initAssetsDropdown();
     // 	//initFamersDropdowns();
     // 	initLiqTermsDropdown();
     // 	initLiqPairsDropdown();
-    // }
+    }
 
 
     window.gp = await window.web3js.eth.getGasPrice();
@@ -2026,7 +2026,6 @@ async function getAccountWalletConnect() {
 
     if (window.location.pathname == '/') {
 
-
       // if (window.chainId == undefined){
       // 	document.getElementById('net_name').innerHTML="unknown net";
       // 	document.getElementById('net_info').style.display ="block";
@@ -2043,7 +2042,7 @@ async function getAccountWalletConnect() {
       // 	document.getElementById('net_txt').innerHTML=" BSC-Test";
       // }
 
-      // await updateData();
+      await updateData();
 
       //initAssetsDropdown();
       //initFamersDropdowns();
@@ -2054,9 +2053,6 @@ async function getAccountWalletConnect() {
 
     window.gp = await window.web3js.eth.getGasPrice();
     window.gp = window.gp * 2;
-
-
-
 
   } catch (error) {
     errorMsg('cannot access wallet');
