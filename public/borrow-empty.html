@@ -37,11 +37,12 @@
       </nav>
     </div>
     <div class="flex ml-auto items-center h-full lg:pb-0 pb-2">
-      <div class="flex items-center mr-7 cursor-pointer">
+      <div class="flex items-center mr-7 cursor-pointer" id="net_info">
         <div class="user flex items-center rounded-full w-5 h-5">
           <img src="../images/user.svg" alt="#" class="w-full h-full rounded-full">
         </div>
-        <div class="user-name ml-2 text-sm leading-5 font-medium">
+        <div id="net_name"></div>
+        <div class="user-name ml-2 text-sm leading-5 font-medium" id="net_txt">
           kovan
         </div>
       </div>
@@ -1084,7 +1085,7 @@
     </div>
     <div class="address-info">
       Connected address:
-      <span>
+      <span class="current-wallet">
         0x6cea79e4d4dea3461b4d8452c911db1aa90f9b58
       </span>
     </div>
@@ -1096,6 +1097,9 @@
     <div class="overflow-x-auto">
       <div class="align-middle inline-block min-w-full">
         <div class="overflow-hidden">
+
+          <div id="deposits_uniswap"></div>
+
           <table class="min-w-full">
             <thead class="">
               <tr>
@@ -1518,7 +1522,7 @@
     </div>
     <div class="address-info">
       Connected address:
-      <span>
+      <span class="current-wallet">
         0x6cea79e4d4dea3461b4d8452c911db1aa90f9b58
       </span>
     </div>
@@ -1798,7 +1802,7 @@
     </div>
     <div class="address-info">
       Connected address:
-      <span>
+      <span class="current-wallet">
         0x6cea79e4d4dea3461b4d8452c911db1aa90f9b58
       </span>
     </div>

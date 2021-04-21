@@ -2,5439 +2,32 @@ const WALLETS_API_URL = "https://bsc-debank-wallet-api.etna.network";
 //const NFT_PUB_API_URL = "https://bsc-debank-pub-api.etna.network";
 //const NFT_ROOT_URL = "https://debank.etna.network/nft";
 
-const erc20TokenContractAbi = [{
-  "constant": true,
-  "inputs": [],
-  "name": "name",
-  "outputs": [{
-    "name": "",
-    "type": "string"
-  }],
-  "payable": false,
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "constant": false,
-  "inputs": [{
-    "name": "spender",
-    "type": "address"
-  }, {
-    "name": "tokens",
-    "type": "uint256"
-  }],
-  "name": "approve",
-  "outputs": [{
-    "name": "success",
-    "type": "bool"
-  }],
-  "payable": false,
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [],
-  "name": "totalSupply",
-  "outputs": [{
-    "name": "",
-    "type": "uint256"
-  }],
-  "payable": false,
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "constant": false,
-  "inputs": [{
-    "name": "from",
-    "type": "address"
-  }, {
-    "name": "to",
-    "type": "address"
-  }, {
-    "name": "tokens",
-    "type": "uint256"
-  }],
-  "name": "transferFrom",
-  "outputs": [{
-    "name": "success",
-    "type": "bool"
-  }],
-  "payable": false,
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [],
-  "name": "decimals",
-  "outputs": [{
-    "name": "",
-    "type": "uint8"
-  }],
-  "payable": false,
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "constant": false,
-  "inputs": [{
-    "name": "amount",
-    "type": "uint256"
-  }],
-  "name": "withdrawEther",
-  "outputs": [],
-  "payable": false,
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [],
-  "name": "_totalSupply",
-  "outputs": [{
-    "name": "",
-    "type": "uint256"
-  }],
-  "payable": false,
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [{
-    "name": "tokenOwner",
-    "type": "address"
-  }],
-  "name": "balanceOf",
-  "outputs": [{
-    "name": "balance",
-    "type": "uint256"
-  }],
-  "payable": false,
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "constant": false,
-  "inputs": [],
-  "name": "acceptOwnership",
-  "outputs": [],
-  "payable": false,
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [],
-  "name": "owner",
-  "outputs": [{
-    "name": "",
-    "type": "address"
-  }],
-  "payable": false,
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [],
-  "name": "symbol",
-  "outputs": [{
-    "name": "",
-    "type": "string"
-  }],
-  "payable": false,
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [{
-    "name": "a",
-    "type": "uint256"
-  }, {
-    "name": "b",
-    "type": "uint256"
-  }],
-  "name": "safeSub",
-  "outputs": [{
-    "name": "c",
-    "type": "uint256"
-  }],
-  "payable": false,
-  "stateMutability": "pure",
-  "type": "function"
-}, {
-  "constant": false,
-  "inputs": [{
-    "name": "to",
-    "type": "address"
-  }, {
-    "name": "tokens",
-    "type": "uint256"
-  }],
-  "name": "transfer",
-  "outputs": [{
-    "name": "success",
-    "type": "bool"
-  }],
-  "payable": false,
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [{
-    "name": "a",
-    "type": "uint256"
-  }, {
-    "name": "b",
-    "type": "uint256"
-  }],
-  "name": "safeDiv",
-  "outputs": [{
-    "name": "c",
-    "type": "uint256"
-  }],
-  "payable": false,
-  "stateMutability": "pure",
-  "type": "function"
-}, {
-  "constant": false,
-  "inputs": [{
-    "name": "spender",
-    "type": "address"
-  }, {
-    "name": "tokens",
-    "type": "uint256"
-  }, {
-    "name": "data",
-    "type": "bytes"
-  }],
-  "name": "approveAndCall",
-  "outputs": [{
-    "name": "success",
-    "type": "bool"
-  }],
-  "payable": false,
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [{
-    "name": "a",
-    "type": "uint256"
-  }, {
-    "name": "b",
-    "type": "uint256"
-  }],
-  "name": "safeMul",
-  "outputs": [{
-    "name": "c",
-    "type": "uint256"
-  }],
-  "payable": false,
-  "stateMutability": "pure",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [],
-  "name": "newOwner",
-  "outputs": [{
-    "name": "",
-    "type": "address"
-  }],
-  "payable": false,
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "constant": false,
-  "inputs": [{
-    "name": "tokenAddress",
-    "type": "address"
-  }, {
-    "name": "tokens",
-    "type": "uint256"
-  }],
-  "name": "transferAnyERC20Token",
-  "outputs": [{
-    "name": "success",
-    "type": "bool"
-  }],
-  "payable": false,
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [{
-    "name": "tokenOwner",
-    "type": "address"
-  }, {
-    "name": "spender",
-    "type": "address"
-  }],
-  "name": "allowance",
-  "outputs": [{
-    "name": "remaining",
-    "type": "uint256"
-  }],
-  "payable": false,
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "constant": true,
-  "inputs": [{
-    "name": "a",
-    "type": "uint256"
-  }, {
-    "name": "b",
-    "type": "uint256"
-  }],
-  "name": "safeAdd",
-  "outputs": [{
-    "name": "c",
-    "type": "uint256"
-  }],
-  "payable": false,
-  "stateMutability": "pure",
-  "type": "function"
-}, {
-  "constant": false,
-  "inputs": [{
-    "name": "_newOwner",
-    "type": "address"
-  }],
-  "name": "transferOwnership",
-  "outputs": [],
-  "payable": false,
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [],
-  "payable": false,
-  "stateMutability": "nonpayable",
-  "type": "constructor"
-}, {
-  "payable": true,
-  "stateMutability": "payable",
-  "type": "fallback"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "name": "_from",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "name": "_to",
-    "type": "address"
-  }],
-  "name": "OwnershipTransferred",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "name": "from",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "name": "to",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "name": "tokens",
-    "type": "uint256"
-  }],
-  "name": "Transfer",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "name": "tokenOwner",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "name": "spender",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "name": "tokens",
-    "type": "uint256"
-  }],
-  "name": "Approval",
-  "type": "event"
-}];
+const erc20TokenContractAbi = [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"spender","type":"address"},{"name":"tokens","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"from","type":"address"},{"name":"to","type":"address"},{"name":"tokens","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"amount","type":"uint256"}],"name":"withdrawEther","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"_totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"tokenOwner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"acceptOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"a","type":"uint256"},{"name":"b","type":"uint256"}],"name":"safeSub","outputs":[{"name":"c","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":false,"inputs":[{"name":"to","type":"address"},{"name":"tokens","type":"uint256"}],"name":"transfer","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"a","type":"uint256"},{"name":"b","type":"uint256"}],"name":"safeDiv","outputs":[{"name":"c","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":false,"inputs":[{"name":"spender","type":"address"},{"name":"tokens","type":"uint256"},{"name":"data","type":"bytes"}],"name":"approveAndCall","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"a","type":"uint256"},{"name":"b","type":"uint256"}],"name":"safeMul","outputs":[{"name":"c","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[],"name":"newOwner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"tokenAddress","type":"address"},{"name":"tokens","type":"uint256"}],"name":"transferAnyERC20Token","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"tokenOwner","type":"address"},{"name":"spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"a","type":"uint256"},{"name":"b","type":"uint256"}],"name":"safeAdd","outputs":[{"name":"c","type":"uint256"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"tokens","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"tokenOwner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"tokens","type":"uint256"}],"name":"Approval","type":"event"}];
 
-const staking_contract_abi = [{
-  "inputs": [],
-  "stateMutability": "nonpayable",
-  "type": "constructor"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "address",
-    "name": "wallet",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }],
-  "name": "ApprovedContractBlockDeposit",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "address",
-    "name": "wallet",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }],
-  "name": "CustomerWithdrawDeposit",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "address",
-    "name": "wallet",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "reward",
-    "type": "uint256"
-  }],
-  "name": "CustomerWithdrawDepositRewardById",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "address",
-    "name": "wallet",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint8",
-    "name": "deposit_type",
-    "type": "uint8"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }, {
-    "indexed": false,
-    "internalType": "uint256[]",
-    "name": "token_ids",
-    "type": "uint256[]"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "timestamp",
-    "type": "uint256"
-  }],
-  "name": "DepositPlaced",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "address",
-    "name": "token_address",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "real_amount_tokens",
-    "type": "uint256"
-  }, {
-    "indexed": false,
-    "internalType": "address",
-    "name": "to_wallet",
-    "type": "address"
-  }],
-  "name": "ERC20ownerWithdrawTokens",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "address",
-    "name": "_operator",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "address",
-    "name": "_from",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "_tokenId",
-    "type": "uint256"
-  }, {
-    "indexed": false,
-    "internalType": "bytes",
-    "name": "_data",
-    "type": "bytes"
-  }],
-  "name": "ERC721Received",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "address",
-    "name": "token_address",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "tokens_count",
-    "type": "uint256"
-  }, {
-    "indexed": false,
-    "internalType": "address",
-    "name": "to_wallet",
-    "type": "address"
-  }],
-  "name": "ERC721ownerWithdrawTokens",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }, {
-    "indexed": false,
-    "internalType": "address",
-    "name": "to_wallet",
-    "type": "address"
-  }],
-  "name": "OwnerWithdrawEther",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "internalType": "address",
-    "name": "previousOwner",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "address",
-    "name": "newOwner",
-    "type": "address"
-  }],
-  "name": "OwnershipTransferred",
-  "type": "event"
-}, {
-  "inputs": [],
-  "name": "CANNOT_TRANSFER_TO_ZERO_ADDRESS",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "NOT_CURRENT_OWNER",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "_own_address",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "index",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "tokens_number",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "deposit_date",
-    "type": "uint256"
-  }, {
-    "internalType": "bool",
-    "name": "imply_lock",
-    "type": "bool"
-  }],
-  "name": "addToCustomerDeposit",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }],
-  "name": "amountsPerDeposits",
-  "outputs": [{
-    "internalType": "uint32[]",
-    "name": "",
-    "type": "uint32[]"
-  }, {
-    "internalType": "uint256[]",
-    "name": "",
-    "type": "uint256[]"
-  }, {
-    "internalType": "uint256[]",
-    "name": "",
-    "type": "uint256[]"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256[]",
-    "name": "token_ids",
-    "type": "uint256[]"
-  }, {
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "famer_id",
-    "type": "uint32"
-  }],
-  "name": "deposit",
-  "outputs": [],
-  "stateMutability": "payable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }],
-  "name": "depositDays",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "index",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }],
-  "name": "depositReward",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }],
-  "name": "depositsStat",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "tot_am",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "tot_extr_am",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "tot_rew",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "tot_extr_rew",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }],
-  "name": "depositsTotAmount",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "tot_am",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getContractDay",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getCreditContract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "index",
-    "type": "uint256"
-  }],
-  "name": "getCustomersDepositsItem",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getCustomersDepositsLength",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getDepProfilesRegister",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getLiqLevContract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getManager",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getRewardToken",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getUsageCalcContract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getVotesCalcContract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "isActive",
-  "outputs": [{
-    "internalType": "bool",
-    "name": "",
-    "type": "bool"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_operator",
-    "type": "address"
-  }, {
-    "internalType": "address",
-    "name": "_from",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "_tokenId",
-    "type": "uint256"
-  }, {
-    "internalType": "bytes",
-    "name": "_data",
-    "type": "bytes"
-  }],
-  "name": "onERC721Received",
-  "outputs": [{
-    "internalType": "bytes4",
-    "name": "",
-    "type": "bytes4"
-  }],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "owner",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "addresspayable",
-    "name": "to_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }],
-  "name": "ownerWithdrawEther",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "to_wallet",
-    "type": "address"
-  }, {
-    "internalType": "address",
-    "name": "token_address",
-    "type": "address"
-  }, {
-    "internalType": "uint8",
-    "name": "token_type",
-    "type": "uint8"
-  }, {
-    "internalType": "uint256",
-    "name": "real_amount_tokens",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256[]",
-    "name": "token_ids",
-    "type": "uint256[]"
-  }],
-  "name": "ownerWithdrawTokens",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "pause",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }],
-  "name": "rewardsPerDeposits",
-  "outputs": [{
-    "internalType": "uint32[]",
-    "name": "",
-    "type": "uint32[]"
-  }, {
-    "internalType": "uint256[]",
-    "name": "",
-    "type": "uint256[]"
-  }, {
-    "internalType": "uint256[]",
-    "name": "",
-    "type": "uint256[]"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "period",
-    "type": "uint256"
-  }],
-  "name": "setContractDay",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_credit_contract",
-    "type": "address"
-  }],
-  "name": "setCreditContract",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_dep_profiles_register",
-    "type": "address"
-  }],
-  "name": "setDepProfilesRegister",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_liq_lev_contract",
-    "type": "address"
-  }],
-  "name": "setLiqLevContract",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_manager",
-    "type": "address"
-  }],
-  "name": "setManagerRight",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_reward_token_address",
-    "type": "address"
-  }],
-  "name": "setRewardToken",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_usage_calc_contract",
-    "type": "address"
-  }],
-  "name": "setUsageCalcContract",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_votes_calc_contract",
-    "type": "address"
-  }],
-  "name": "setVotesCalcContract",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "prevContractAddress",
-    "type": "address"
-  }],
-  "name": "setupFromConfig",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "prevContractAddress",
-    "type": "address"
-  }],
-  "name": "setupFromDeposits",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "start",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }],
-  "name": "totalNFTValue",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "tot_val",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_newOwner",
-    "type": "address"
-  }],
-  "name": "transferOwnership",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }],
-  "name": "viewCustomerDeposit",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "deposit_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "index",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "index",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }],
-  "name": "viewCustomerDepositByIndex",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "deposit_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "deposit_amount",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "tokens_number",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "deposit_date",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "acc_reward",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "nft_value",
-    "type": "uint256"
-  }, {
-    "internalType": "bool",
-    "name": "imply_lock",
-    "type": "bool"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "index",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "token_id_num",
-    "type": "uint256"
-  }],
-  "name": "viewCustomerDepositTokenByIndex",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "token_id",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "withdraw_amount",
-    "type": "uint256"
-  }, {
-    "internalType": "bool",
-    "name": "whole",
-    "type": "bool"
-  }],
-  "name": "withdrawDepositById",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }],
-  "name": "withdrawDepositRewardById",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "stateMutability": "payable",
-  "type": "receive"
-}];
+const staking_contract_abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"wallet","type":"address"},{"indexed":false,"internalType":"uint32","name":"profile_id","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"dep_id","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ApprovedContractBlockDeposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"wallet","type":"address"},{"indexed":false,"internalType":"uint32","name":"profile_id","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"dep_id","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"CustomerWithdrawDeposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"wallet","type":"address"},{"indexed":false,"internalType":"uint32","name":"profile_id","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"dep_id","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"reward","type":"uint256"}],"name":"CustomerWithdrawDepositRewardById","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"wallet","type":"address"},{"indexed":false,"internalType":"uint32","name":"profile_id","type":"uint32"},{"indexed":false,"internalType":"uint8","name":"deposit_type","type":"uint8"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256[]","name":"token_ids","type":"uint256[]"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"DepositPlaced","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"token_address","type":"address"},{"indexed":false,"internalType":"uint256","name":"real_amount_tokens","type":"uint256"},{"indexed":false,"internalType":"address","name":"to_wallet","type":"address"}],"name":"ERC20ownerWithdrawTokens","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"_operator","type":"address"},{"indexed":false,"internalType":"address","name":"_from","type":"address"},{"indexed":false,"internalType":"uint256","name":"_tokenId","type":"uint256"},{"indexed":false,"internalType":"bytes","name":"_data","type":"bytes"}],"name":"ERC721Received","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"token_address","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokens_count","type":"uint256"},{"indexed":false,"internalType":"address","name":"to_wallet","type":"address"}],"name":"ERC721ownerWithdrawTokens","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"address","name":"to_wallet","type":"address"}],"name":"OwnerWithdrawEther","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[],"name":"CANNOT_TRANSFER_TO_ZERO_ADDRESS","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"NOT_CURRENT_OWNER","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"_own_address","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"},{"internalType":"uint32","name":"dep_id","type":"uint32"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"tokens_number","type":"uint256"},{"internalType":"uint256","name":"deposit_date","type":"uint256"},{"internalType":"bool","name":"imply_lock","type":"bool"}],"name":"addToCustomerDeposit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"}],"name":"amountsPerDeposits","outputs":[{"internalType":"uint32[]","name":"","type":"uint32[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256[]","name":"token_ids","type":"uint256[]"},{"internalType":"uint32","name":"profile_id","type":"uint32"},{"internalType":"uint32","name":"famer_id","type":"uint32"}],"name":"deposit","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"dep_id","type":"uint32"}],"name":"depositDays","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"},{"internalType":"uint32","name":"dep_id","type":"uint32"}],"name":"depositReward","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"}],"name":"depositsStat","outputs":[{"internalType":"uint256","name":"tot_am","type":"uint256"},{"internalType":"uint256","name":"tot_extr_am","type":"uint256"},{"internalType":"uint256","name":"tot_rew","type":"uint256"},{"internalType":"uint256","name":"tot_extr_rew","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"}],"name":"depositsTotAmount","outputs":[{"internalType":"uint256","name":"tot_am","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getContractDay","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getCreditContract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"getCustomersDepositsItem","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getCustomersDepositsLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDepProfilesRegister","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getLiqLevContract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getManager","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getRewardToken","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getUsageCalcContract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getVotesCalcContract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"isActive","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_operator","type":"address"},{"internalType":"address","name":"_from","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"onERC721Received","outputs":[{"internalType":"bytes4","name":"","type":"bytes4"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"addresspayable","name":"to_wallet","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ownerWithdrawEther","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"to_wallet","type":"address"},{"internalType":"address","name":"token_address","type":"address"},{"internalType":"uint8","name":"token_type","type":"uint8"},{"internalType":"uint256","name":"real_amount_tokens","type":"uint256"},{"internalType":"uint256[]","name":"token_ids","type":"uint256[]"}],"name":"ownerWithdrawTokens","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"}],"name":"rewardsPerDeposits","outputs":[{"internalType":"uint32[]","name":"","type":"uint32[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"period","type":"uint256"}],"name":"setContractDay","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_credit_contract","type":"address"}],"name":"setCreditContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_dep_profiles_register","type":"address"}],"name":"setDepProfilesRegister","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_liq_lev_contract","type":"address"}],"name":"setLiqLevContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_manager","type":"address"}],"name":"setManagerRight","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_reward_token_address","type":"address"}],"name":"setRewardToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_usage_calc_contract","type":"address"}],"name":"setUsageCalcContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_votes_calc_contract","type":"address"}],"name":"setVotesCalcContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"prevContractAddress","type":"address"}],"name":"setupFromConfig","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"prevContractAddress","type":"address"}],"name":"setupFromDeposits","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"start","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"}],"name":"totalNFTValue","outputs":[{"internalType":"uint256","name":"tot_val","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"dep_id","type":"uint32"}],"name":"viewCustomerDeposit","outputs":[{"internalType":"uint32","name":"deposit_profile_id","type":"uint32"},{"internalType":"uint256","name":"index","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"},{"internalType":"uint32","name":"dep_id","type":"uint32"}],"name":"viewCustomerDepositByIndex","outputs":[{"internalType":"uint32","name":"deposit_profile_id","type":"uint32"},{"internalType":"uint256","name":"deposit_amount","type":"uint256"},{"internalType":"uint256","name":"tokens_number","type":"uint256"},{"internalType":"uint256","name":"deposit_date","type":"uint256"},{"internalType":"uint256","name":"acc_reward","type":"uint256"},{"internalType":"uint256","name":"nft_value","type":"uint256"},{"internalType":"bool","name":"imply_lock","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"},{"internalType":"uint32","name":"dep_id","type":"uint32"},{"internalType":"uint256","name":"token_id_num","type":"uint256"}],"name":"viewCustomerDepositTokenByIndex","outputs":[{"internalType":"uint256","name":"token_id","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"dep_id","type":"uint32"},{"internalType":"uint256","name":"withdraw_amount","type":"uint256"},{"internalType":"bool","name":"whole","type":"bool"}],"name":"withdrawDepositById","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"dep_id","type":"uint32"}],"name":"withdrawDepositRewardById","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
 
-const famers_register_abi = [{
-  "inputs": [],
-  "stateMutability": "nonpayable",
-  "type": "constructor"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "address",
-    "name": "famer_token_address",
-    "type": "address"
-  }],
-  "name": "FamerTokenRegistered",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }, {
-    "indexed": false,
-    "internalType": "address",
-    "name": "to_wallet",
-    "type": "address"
-  }],
-  "name": "OwnerWithdrawEther",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "internalType": "address",
-    "name": "previousOwner",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "address",
-    "name": "newOwner",
-    "type": "address"
-  }],
-  "name": "OwnershipTransferred",
-  "type": "event"
-}, {
-  "inputs": [],
-  "name": "CANNOT_TRANSFER_TO_ZERO_ADDRESS",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "NOT_CURRENT_OWNER",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "name": "famers",
-  "outputs": [{
-    "internalType": "address",
-    "name": "famer_token_address",
-    "type": "address"
-  }, {
-    "internalType": "bool",
-    "name": "sold",
-    "type": "bool"
-  }, {
-    "internalType": "uint256",
-    "name": "sold_for",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "famersLength",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getBankContract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getContractBalance",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "i",
-    "type": "uint32"
-  }],
-  "name": "getFamerName",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "i",
-    "type": "uint32"
-  }],
-  "name": "getFamerUri",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "famer_token_address",
-    "type": "address"
-  }],
-  "name": "isRegisteredFamer",
-  "outputs": [{
-    "internalType": "bool",
-    "name": "",
-    "type": "bool"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "addresspayable",
-    "name": "killAddress",
-    "type": "address"
-  }],
-  "name": "kill",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "owner",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "addresspayable",
-    "name": "to_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }],
-  "name": "ownerWithdrawEther",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "famer_token_address",
-    "type": "address"
-  }, {
-    "internalType": "bool",
-    "name": "sold",
-    "type": "bool"
-  }, {
-    "internalType": "uint256",
-    "name": "sold_for",
-    "type": "uint256"
-  }],
-  "name": "registerFamer",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "famer_token_address",
-    "type": "address"
-  }],
-  "name": "removeFamer",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "famer_token_address",
-    "type": "address"
-  }, {
-    "internalType": "bool",
-    "name": "sold",
-    "type": "bool"
-  }, {
-    "internalType": "uint256",
-    "name": "sold_for",
-    "type": "uint256"
-  }],
-  "name": "replaceFamer",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "prevContractAddress",
-    "type": "address"
-  }],
-  "name": "setupFrom",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "newBankContract",
-    "type": "address"
-  }],
-  "name": "transferBankRight",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_newOwner",
-    "type": "address"
-  }],
-  "name": "transferOwnership",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}];
+const famers_register_abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"famer_token_address","type":"address"}],"name":"FamerTokenRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"address","name":"to_wallet","type":"address"}],"name":"OwnerWithdrawEther","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[],"name":"CANNOT_TRANSFER_TO_ZERO_ADDRESS","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"NOT_CURRENT_OWNER","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"famers","outputs":[{"internalType":"address","name":"famer_token_address","type":"address"},{"internalType":"bool","name":"sold","type":"bool"},{"internalType":"uint256","name":"sold_for","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"famersLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getBankContract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getContractBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"i","type":"uint32"}],"name":"getFamerName","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"i","type":"uint32"}],"name":"getFamerUri","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"famer_token_address","type":"address"}],"name":"isRegisteredFamer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"addresspayable","name":"killAddress","type":"address"}],"name":"kill","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"addresspayable","name":"to_wallet","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ownerWithdrawEther","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"famer_token_address","type":"address"},{"internalType":"bool","name":"sold","type":"bool"},{"internalType":"uint256","name":"sold_for","type":"uint256"}],"name":"registerFamer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"famer_token_address","type":"address"}],"name":"removeFamer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"famer_token_address","type":"address"},{"internalType":"bool","name":"sold","type":"bool"},{"internalType":"uint256","name":"sold_for","type":"uint256"}],"name":"replaceFamer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"prevContractAddress","type":"address"}],"name":"setupFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newBankContract","type":"address"}],"name":"transferBankRight","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
-const nftpub_contracts_abi = [{
-  "inputs": [],
-  "stateMutability": "nonpayable",
-  "type": "constructor"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "internalType": "address",
-    "name": "_owner",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "address",
-    "name": "_approved",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "uint256",
-    "name": "_tokenId",
-    "type": "uint256"
-  }],
-  "name": "Approval",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "internalType": "address",
-    "name": "_owner",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "address",
-    "name": "_operator",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "bool",
-    "name": "_approved",
-    "type": "bool"
-  }],
-  "name": "ApprovalForAll",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "internalType": "address",
-    "name": "previousOwner",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "address",
-    "name": "newOwner",
-    "type": "address"
-  }],
-  "name": "OwnershipTransferred",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "internalType": "address",
-    "name": "_from",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "address",
-    "name": "_to",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "uint256",
-    "name": "_tokenId",
-    "type": "uint256"
-  }],
-  "name": "Transfer",
-  "type": "event"
-}, {
-  "inputs": [],
-  "name": "CANNOT_TRANSFER_TO_ZERO_ADDRESS",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "NOT_CURRENT_OWNER",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_approved",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "_tokenId",
-    "type": "uint256"
-  }],
-  "name": "approve",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_owner",
-    "type": "address"
-  }],
-  "name": "balanceOf",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "_tokenId",
-    "type": "uint256"
-  }],
-  "name": "burn",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "_tokenId",
-    "type": "uint256"
-  }],
-  "name": "getApproved",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getBankContract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getContractBalance",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getPublisher",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_owner",
-    "type": "address"
-  }, {
-    "internalType": "address",
-    "name": "_operator",
-    "type": "address"
-  }],
-  "name": "isApprovedForAll",
-  "outputs": [{
-    "internalType": "bool",
-    "name": "",
-    "type": "bool"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_to",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "_tokenId",
-    "type": "uint256"
-  }, {
-    "internalType": "string",
-    "name": "_uri",
-    "type": "string"
-  }],
-  "name": "mint",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "name",
-  "outputs": [{
-    "internalType": "string",
-    "name": "_name",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "owner",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "_tokenId",
-    "type": "uint256"
-  }],
-  "name": "ownerOf",
-  "outputs": [{
-    "internalType": "address",
-    "name": "_owner",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_from",
-    "type": "address"
-  }, {
-    "internalType": "address",
-    "name": "_to",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "_tokenId",
-    "type": "uint256"
-  }],
-  "name": "safeTransferFrom",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_from",
-    "type": "address"
-  }, {
-    "internalType": "address",
-    "name": "_to",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "_tokenId",
-    "type": "uint256"
-  }, {
-    "internalType": "bytes",
-    "name": "_data",
-    "type": "bytes"
-  }],
-  "name": "safeTransferFrom",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_operator",
-    "type": "address"
-  }, {
-    "internalType": "bool",
-    "name": "_approved",
-    "type": "bool"
-  }],
-  "name": "setApprovalForAll",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "string",
-    "name": "new_name",
-    "type": "string"
-  }],
-  "name": "setNFTName",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "string",
-    "name": "new_symbol",
-    "type": "string"
-  }],
-  "name": "setNFTSymbol",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "bytes4",
-    "name": "_interfaceID",
-    "type": "bytes4"
-  }],
-  "name": "supportsInterface",
-  "outputs": [{
-    "internalType": "bool",
-    "name": "",
-    "type": "bool"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "symbol",
-  "outputs": [{
-    "internalType": "string",
-    "name": "_symbol",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "_index",
-    "type": "uint256"
-  }],
-  "name": "tokenByIndex",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_owner",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "_index",
-    "type": "uint256"
-  }],
-  "name": "tokenOfOwnerByIndex",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "_tokenId",
-    "type": "uint256"
-  }],
-  "name": "tokenURI",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "totalSupply",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "newBankContract",
-    "type": "address"
-  }],
-  "name": "transferBankRight",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_from",
-    "type": "address"
-  }, {
-    "internalType": "address",
-    "name": "_to",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "_tokenId",
-    "type": "uint256"
-  }],
-  "name": "transferFrom",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_newOwner",
-    "type": "address"
-  }],
-  "name": "transferOwnership",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "newPublisher",
-    "type": "address"
-  }],
-  "name": "transferPublishRight",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address payable",
-    "name": "sendTo",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }],
-  "name": "withdraw",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}];
+const nftpub_contracts_abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"_owner","type":"address"},{"indexed":true,"internalType":"address","name":"_approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"_owner","type":"address"},{"indexed":true,"internalType":"address","name":"_operator","type":"address"},{"indexed":false,"internalType":"bool","name":"_approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"_from","type":"address"},{"indexed":true,"internalType":"address","name":"_to","type":"address"},{"indexed":true,"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[],"name":"CANNOT_TRANSFER_TO_ZERO_ADDRESS","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"NOT_CURRENT_OWNER","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_approved","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getBankContract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getContractBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getPublisher","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"string","name":"_uri","type":"string"}],"name":"mint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"_name","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"_owner","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_operator","type":"address"},{"internalType":"bool","name":"_approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"new_name","type":"string"}],"name":"setNFTName","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"new_symbol","type":"string"}],"name":"setNFTSymbol","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"_interfaceID","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"_symbol","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newBankContract","type":"address"}],"name":"transferBankRight","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newPublisher","type":"address"}],"name":"transferPublishRight","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address payable","name":"sendTo","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
-const profiles_register_abi = [{
-  "inputs": [],
-  "stateMutability": "nonpayable",
-  "type": "constructor"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "internalType": "address",
-    "name": "previousOwner",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "address",
-    "name": "newOwner",
-    "type": "address"
-  }],
-  "name": "OwnershipTransferred",
-  "type": "event"
-}, {
-  "inputs": [],
-  "name": "CANNOT_TRANSFER_TO_ZERO_ADDRESS",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "NOT_CURRENT_OWNER",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "id",
-    "type": "uint32"
-  }, {
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "internalType": "uint8",
-    "name": "deposit_type",
-    "type": "uint8"
-  }, {
-    "internalType": "address",
-    "name": "deposit_token_address",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "init_apy",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "rate",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "reward_per_day",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "min_lock_time",
-    "type": "uint256"
-  }],
-  "name": "addDepositProfile",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "name": "depositProfiles",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "id",
-    "type": "uint32"
-  }, {
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "internalType": "uint8",
-    "name": "deposit_type",
-    "type": "uint8"
-  }, {
-    "internalType": "address",
-    "name": "deposit_token_address",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "init_apy",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "rate",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "reward_per_day",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "min_lock_time",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "depositProfilesLength",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "id",
-    "type": "uint256"
-  }],
-  "name": "getDepositProfileById",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "",
-    "type": "uint32"
-  }, {
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }, {
-    "internalType": "uint8",
-    "name": "",
-    "type": "uint8"
-  }, {
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "owner",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "id",
-    "type": "uint32"
-  }],
-  "name": "removeDepositProfileAtId",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "id",
-    "type": "uint32"
-  }, {
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "internalType": "uint8",
-    "name": "deposit_type",
-    "type": "uint8"
-  }, {
-    "internalType": "address",
-    "name": "deposit_token_address",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "init_apy",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "rate",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "reward_per_day",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "min_lock_time",
-    "type": "uint256"
-  }],
-  "name": "replaceDepositProfileAtId",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "i",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "id",
-    "type": "uint32"
-  }, {
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "internalType": "uint8",
-    "name": "deposit_type",
-    "type": "uint8"
-  }, {
-    "internalType": "address",
-    "name": "deposit_token_address",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "init_apy",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "rate",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "reward_per_day",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "min_lock_time",
-    "type": "uint256"
-  }],
-  "name": "replaceDepositProfileAtIndex",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "prevContractAddress",
-    "type": "address"
-  }],
-  "name": "setupFrom",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_newOwner",
-    "type": "address"
-  }],
-  "name": "transferOwnership",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}];
+const profiles_register_abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[],"name":"CANNOT_TRANSFER_TO_ZERO_ADDRESS","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"NOT_CURRENT_OWNER","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"id","type":"uint32"},{"internalType":"string","name":"name","type":"string"},{"internalType":"uint8","name":"deposit_type","type":"uint8"},{"internalType":"address","name":"deposit_token_address","type":"address"},{"internalType":"uint256","name":"init_apy","type":"uint256"},{"internalType":"uint256","name":"rate","type":"uint256"},{"internalType":"uint256","name":"reward_per_day","type":"uint256"},{"internalType":"uint256","name":"min_lock_time","type":"uint256"}],"name":"addDepositProfile","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"depositProfiles","outputs":[{"internalType":"uint32","name":"id","type":"uint32"},{"internalType":"string","name":"name","type":"string"},{"internalType":"uint8","name":"deposit_type","type":"uint8"},{"internalType":"address","name":"deposit_token_address","type":"address"},{"internalType":"uint256","name":"init_apy","type":"uint256"},{"internalType":"uint256","name":"rate","type":"uint256"},{"internalType":"uint256","name":"reward_per_day","type":"uint256"},{"internalType":"uint256","name":"min_lock_time","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"depositProfilesLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"id","type":"uint256"}],"name":"getDepositProfileById","outputs":[{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"string","name":"","type":"string"},{"internalType":"uint8","name":"","type":"uint8"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"id","type":"uint32"}],"name":"removeDepositProfileAtId","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"id","type":"uint32"},{"internalType":"string","name":"name","type":"string"},{"internalType":"uint8","name":"deposit_type","type":"uint8"},{"internalType":"address","name":"deposit_token_address","type":"address"},{"internalType":"uint256","name":"init_apy","type":"uint256"},{"internalType":"uint256","name":"rate","type":"uint256"},{"internalType":"uint256","name":"reward_per_day","type":"uint256"},{"internalType":"uint256","name":"min_lock_time","type":"uint256"}],"name":"replaceDepositProfileAtId","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"i","type":"uint32"},{"internalType":"uint32","name":"id","type":"uint32"},{"internalType":"string","name":"name","type":"string"},{"internalType":"uint8","name":"deposit_type","type":"uint8"},{"internalType":"address","name":"deposit_token_address","type":"address"},{"internalType":"uint256","name":"init_apy","type":"uint256"},{"internalType":"uint256","name":"rate","type":"uint256"},{"internalType":"uint256","name":"reward_per_day","type":"uint256"},{"internalType":"uint256","name":"min_lock_time","type":"uint256"}],"name":"replaceDepositProfileAtIndex","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"prevContractAddress","type":"address"}],"name":"setupFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
-const data_provider_abi = [{
-  "inputs": [],
-  "stateMutability": "nonpayable",
-  "type": "constructor"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "indexed": false,
-    "internalType": "address",
-    "name": "contract_addr",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "bool",
-    "name": "isInternal",
-    "type": "bool"
-  }],
-  "name": "DataProfileRegistered",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "internalType": "address",
-    "name": "previousOwner",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "address",
-    "name": "newOwner",
-    "type": "address"
-  }],
-  "name": "OwnershipTransferred",
-  "type": "event"
-}, {
-  "inputs": [],
-  "name": "CANNOT_TRANSFER_TO_ZERO_ADDRESS",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "NOT_CURRENT_OWNER",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "name": "data_profiles",
-  "outputs": [{
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "internalType": "address",
-    "name": "data_provider_contract",
-    "type": "address"
-  }, {
-    "internalType": "bool",
-    "name": "isInternal",
-    "type": "bool"
-  }, {
-    "internalType": "int256",
-    "name": "_data",
-    "type": "int256"
-  }, {
-    "internalType": "uint8",
-    "name": "_decimals",
-    "type": "uint8"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "data_profiles_length",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }],
-  "name": "getData",
-  "outputs": [{
-    "internalType": "int256",
-    "name": "",
-    "type": "int256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getDataManager",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }],
-  "name": "getDecimals",
-  "outputs": [{
-    "internalType": "uint8",
-    "name": "",
-    "type": "uint8"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }],
-  "name": "isRegisteredDataProfile",
-  "outputs": [{
-    "internalType": "bool",
-    "name": "",
-    "type": "bool"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "owner",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "internalType": "address",
-    "name": "data_provider_contract",
-    "type": "address"
-  }, {
-    "internalType": "bool",
-    "name": "isInternal",
-    "type": "bool"
-  }, {
-    "internalType": "int256",
-    "name": "_data",
-    "type": "int256"
-  }, {
-    "internalType": "uint8",
-    "name": "_dec",
-    "type": "uint8"
-  }],
-  "name": "registerDataProfile",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }],
-  "name": "removeDataProfile",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "internalType": "address",
-    "name": "data_provider_contract",
-    "type": "address"
-  }, {
-    "internalType": "bool",
-    "name": "isInternal",
-    "type": "bool"
-  }, {
-    "internalType": "int256",
-    "name": "_data",
-    "type": "int256"
-  }, {
-    "internalType": "uint8",
-    "name": "_dec",
-    "type": "uint8"
-  }],
-  "name": "replaceDataProfile",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "internalType": "int256",
-    "name": "new_data",
-    "type": "int256"
-  }],
-  "name": "setData",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_data_manager",
-    "type": "address"
-  }],
-  "name": "setDataManagerRight",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "internalType": "uint8",
-    "name": "new_decimals",
-    "type": "uint8"
-  }],
-  "name": "setDecimals",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "prevContractAddress",
-    "type": "address"
-  }],
-  "name": "setupFrom",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_newOwner",
-    "type": "address"
-  }],
-  "name": "transferOwnership",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}];
+const data_provider_abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"name","type":"string"},{"indexed":false,"internalType":"address","name":"contract_addr","type":"address"},{"indexed":false,"internalType":"bool","name":"isInternal","type":"bool"}],"name":"DataProfileRegistered","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[],"name":"CANNOT_TRANSFER_TO_ZERO_ADDRESS","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"NOT_CURRENT_OWNER","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"data_profiles","outputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"address","name":"data_provider_contract","type":"address"},{"internalType":"bool","name":"isInternal","type":"bool"},{"internalType":"int256","name":"_data","type":"int256"},{"internalType":"uint8","name":"_decimals","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"data_profiles_length","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"}],"name":"getData","outputs":[{"internalType":"int256","name":"","type":"int256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDataManager","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"}],"name":"getDecimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"}],"name":"isRegisteredDataProfile","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"address","name":"data_provider_contract","type":"address"},{"internalType":"bool","name":"isInternal","type":"bool"},{"internalType":"int256","name":"_data","type":"int256"},{"internalType":"uint8","name":"_dec","type":"uint8"}],"name":"registerDataProfile","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"}],"name":"removeDataProfile","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"address","name":"data_provider_contract","type":"address"},{"internalType":"bool","name":"isInternal","type":"bool"},{"internalType":"int256","name":"_data","type":"int256"},{"internalType":"uint8","name":"_dec","type":"uint8"}],"name":"replaceDataProfile","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"int256","name":"new_data","type":"int256"}],"name":"setData","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_data_manager","type":"address"}],"name":"setDataManagerRight","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"uint8","name":"new_decimals","type":"uint8"}],"name":"setDecimals","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"prevContractAddress","type":"address"}],"name":"setupFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
-const votes_calc_abi = [{
-  "inputs": [],
-  "stateMutability": "nonpayable",
-  "type": "constructor"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "internalType": "address",
-    "name": "previousOwner",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "address",
-    "name": "newOwner",
-    "type": "address"
-  }],
-  "name": "OwnershipTransferred",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "indexed": false,
-    "internalType": "address",
-    "name": "contract_addr",
-    "type": "address"
-  }],
-  "name": "TokenDataRegistered",
-  "type": "event"
-}, {
-  "inputs": [],
-  "name": "CANNOT_TRANSFER_TO_ZERO_ADDRESS",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "NOT_CURRENT_OWNER",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256[]",
-    "name": "token_ids",
-    "type": "uint256[]"
-  }],
-  "name": "calcNFTTokensValue",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint8",
-    "name": "deposit_type",
-    "type": "uint8"
-  }, {
-    "internalType": "string",
-    "name": "dep_name",
-    "type": "string"
-  }, {
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256[]",
-    "name": "token_ids",
-    "type": "uint256[]"
-  }],
-  "name": "calcVotes",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "string",
-    "name": "data_label",
-    "type": "string"
-  }, {
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }],
-  "name": "calcVotesForERC20",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256[]",
-    "name": "token_ids",
-    "type": "uint256[]"
-  }],
-  "name": "calcVotesForERC721",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }],
-  "name": "calcVotesForETH",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getDataProviderContract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getDepositContract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "index",
-    "type": "uint256"
-  }],
-  "name": "getFamerVote",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "famer_id",
-    "type": "uint256"
-  }],
-  "name": "getFamerVoteByFamer",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getFamerVotesLength",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getNFTMarketplaceContract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "owner",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "base",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "exponent",
-    "type": "uint256"
-  }],
-  "name": "pow",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "pure",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "famer_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "vote",
-    "type": "uint256"
-  }],
-  "name": "registerFamerVote",
-  "outputs": [{
-    "internalType": "bool",
-    "name": "",
-    "type": "bool"
-  }],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_data_provider_contract",
-    "type": "address"
-  }],
-  "name": "setDataProviderContract",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_deposit_contract",
-    "type": "address"
-  }],
-  "name": "setDepositContract",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_nft_marketplace_contract",
-    "type": "address"
-  }],
-  "name": "setNFTMarketplaceContract",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "prevContractAddress",
-    "type": "address"
-  }],
-  "name": "setupFrom",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "name": "token_data_sources",
-  "outputs": [{
-    "internalType": "string",
-    "name": "data_profile_name",
-    "type": "string"
-  }, {
-    "internalType": "address",
-    "name": "stakable_token_addr",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_newOwner",
-    "type": "address"
-  }],
-  "name": "transferOwnership",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}];
+const votes_calc_abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"name","type":"string"},{"indexed":false,"internalType":"address","name":"contract_addr","type":"address"}],"name":"TokenDataRegistered","type":"event"},{"inputs":[],"name":"CANNOT_TRANSFER_TO_ZERO_ADDRESS","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"NOT_CURRENT_OWNER","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"token_ids","type":"uint256[]"}],"name":"calcNFTTokensValue","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint8","name":"deposit_type","type":"uint8"},{"internalType":"string","name":"dep_name","type":"string"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256[]","name":"token_ids","type":"uint256[]"}],"name":"calcVotes","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"data_label","type":"string"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"calcVotesForERC20","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256[]","name":"token_ids","type":"uint256[]"}],"name":"calcVotesForERC721","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"calcVotesForETH","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDataProviderContract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDepositContract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"getFamerVote","outputs":[{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"famer_id","type":"uint256"}],"name":"getFamerVoteByFamer","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getFamerVotesLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getNFTMarketplaceContract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"base","type":"uint256"},{"internalType":"uint256","name":"exponent","type":"uint256"}],"name":"pow","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint32","name":"famer_id","type":"uint32"},{"internalType":"uint256","name":"vote","type":"uint256"}],"name":"registerFamerVote","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_data_provider_contract","type":"address"}],"name":"setDataProviderContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_deposit_contract","type":"address"}],"name":"setDepositContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_nft_marketplace_contract","type":"address"}],"name":"setNFTMarketplaceContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"prevContractAddress","type":"address"}],"name":"setupFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"token_data_sources","outputs":[{"internalType":"string","name":"data_profile_name","type":"string"},{"internalType":"address","name":"stakable_token_addr","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
-const usage_calc_abi = [{
-  "inputs": [],
-  "stateMutability": "nonpayable",
-  "type": "constructor"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "internalType": "address",
-    "name": "previousOwner",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "address",
-    "name": "newOwner",
-    "type": "address"
-  }],
-  "name": "OwnershipTransferred",
-  "type": "event"
-}, {
-  "inputs": [],
-  "name": "CANNOT_TRANSFER_TO_ZERO_ADDRESS",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "NOT_CURRENT_OWNER",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "_own_address",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "profile_id",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }],
-  "name": "adjustedAsset",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "profile_id",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }],
-  "name": "adjustedCollateral",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }],
-  "name": "calcDepApy",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "dep_apy",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "collateral_profile_id",
-    "type": "uint256"
-  }],
-  "name": "calcFixedApy",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "fixed_apy",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "usd_value",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "profile_id",
-    "type": "uint256"
-  }],
-  "name": "calcFromUSDValue",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "est_tokens",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "credit_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "collateral_profile_id",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "credit_amount",
-    "type": "uint256"
-  }, {
-    "internalType": "bool",
-    "name": "is_fixed_apy",
-    "type": "bool"
-  }, {
-    "internalType": "uint256",
-    "name": "days_num",
-    "type": "uint256"
-  }],
-  "name": "calcFutureCreditFee",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "fee",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "credit_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "collateral_profile_id",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "lev_asset_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "credit_amount",
-    "type": "uint256"
-  }, {
-    "internalType": "bool",
-    "name": "is_fixed_apy",
-    "type": "bool"
-  }],
-  "name": "calcNeededLeverageByCreditSize",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "needed_leverage",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "dep_amount",
-    "type": "uint256"
-  }],
-  "name": "calcUSDValue",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "est_usd",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "profile_id",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "dep_amount",
-    "type": "uint256"
-  }],
-  "name": "calcUSDValueByProfileNonNFT",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "est_usd",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "profile_id",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "dep_amount",
-    "type": "uint256"
-  }],
-  "name": "calcUSDValueByProfileNonNFT_mwei",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "est_usd",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "dep_amount",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "get_credit_profile_id",
-    "type": "uint32"
-  }],
-  "name": "calcUSDValueCollateral",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "est_usd",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "dep_amount",
-    "type": "uint256"
-  }],
-  "name": "calcUSDValue_mwei",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "est_usd_apy_scale",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "collateral_profile_id",
-    "type": "uint256"
-  }],
-  "name": "calcVarApy",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "variable_apy",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "cred_profiles_register",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }],
-  "name": "creditFee",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "fee",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "num_periods",
-    "type": "uint256"
-  }],
-  "name": "creditFeeFuture",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "fee",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "credit_contract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "dep_profiles_register",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "index",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }],
-  "name": "depositReward",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "rew_size",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "num_periods",
-    "type": "uint256"
-  }],
-  "name": "depositSizeFromReward",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "dep_size",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "deposit_contract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "asset_profile_id",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "cred_amount",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "get_credit_profile_id",
-    "type": "uint256"
-  }],
-  "name": "estimateCollateralForCredit",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "est_collat",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "dep_amount",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "get_credit_profile_id",
-    "type": "uint256"
-  }],
-  "name": "estimateCreditForCollateral",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "est_usd",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "est_asset",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "collateral_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "get_credit_profile_id",
-    "type": "uint32"
-  }],
-  "name": "getAdjCoeffByPair",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "adj_coeff",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }],
-  "name": "getAssetUsage",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getDepositContract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "index",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "tokens_number",
-    "type": "uint256"
-  }],
-  "name": "getDepositNFTs",
-  "outputs": [{
-    "internalType": "uint256[]",
-    "name": "token_ids_ret",
-    "type": "uint256[]"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }],
-  "name": "getFixedAddPecentByProfileId",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "add_percent",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }],
-  "name": "getLiquidationLimitByProfileId",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "limit_percent",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getVotesCalcContract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "collateral_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "get_credit_profile_id",
-    "type": "uint32"
-  }],
-  "name": "getZeroFeeByPair",
-  "outputs": [{
-    "internalType": "bool",
-    "name": "is_free",
-    "type": "bool"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "liqlev_contract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "owner",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "rewtoken_profile_id",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "",
-    "type": "uint32"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "collateral_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "get_credit_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "adj_coeff",
-    "type": "uint256"
-  }],
-  "name": "setAdjCoeffByPair",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_deposit_contract",
-    "type": "address"
-  }],
-  "name": "setDepositContract",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "add_percent",
-    "type": "uint256"
-  }],
-  "name": "setFixedAddPecentByProfileId",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "limit_percent",
-    "type": "uint256"
-  }],
-  "name": "setLiquidationLimitByProfileId",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "new_rewtoken_profile_id",
-    "type": "uint32"
-  }],
-  "name": "setRewardTokenProfileId",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_votes_calc_contract",
-    "type": "address"
-  }],
-  "name": "setVotesCalcContract",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "collateral_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "get_credit_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "bool",
-    "name": "is_free",
-    "type": "bool"
-  }],
-  "name": "setZeroFeeByPair",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "prev_contract_address",
-    "type": "address"
-  }],
-  "name": "setupFromData",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_newOwner",
-    "type": "address"
-  }],
-  "name": "transferOwnership",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "index",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }],
-  "name": "viewCustomerDepositByIndex",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "deposit_profile_id_r",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "deposit_amount_r",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "deposit_date_r",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "acc_reward_r",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "nft_value_r",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "votes_calc_contract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}];
+const usage_calc_abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[],"name":"CANNOT_TRANSFER_TO_ZERO_ADDRESS","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"NOT_CURRENT_OWNER","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"_own_address","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"profile_id","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"adjustedAsset","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"profile_id","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"adjustedCollateral","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"}],"name":"calcDepApy","outputs":[{"internalType":"uint256","name":"dep_apy","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"},{"internalType":"uint256","name":"collateral_profile_id","type":"uint256"}],"name":"calcFixedApy","outputs":[{"internalType":"uint256","name":"fixed_apy","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"usd_value","type":"uint256"},{"internalType":"uint256","name":"profile_id","type":"uint256"}],"name":"calcFromUSDValue","outputs":[{"internalType":"uint256","name":"est_tokens","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"credit_profile_id","type":"uint32"},{"internalType":"uint256","name":"collateral_profile_id","type":"uint256"},{"internalType":"uint256","name":"credit_amount","type":"uint256"},{"internalType":"bool","name":"is_fixed_apy","type":"bool"},{"internalType":"uint256","name":"days_num","type":"uint256"}],"name":"calcFutureCreditFee","outputs":[{"internalType":"uint256","name":"fee","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"credit_profile_id","type":"uint32"},{"internalType":"uint256","name":"collateral_profile_id","type":"uint256"},{"internalType":"uint32","name":"lev_asset_profile_id","type":"uint32"},{"internalType":"uint256","name":"credit_amount","type":"uint256"},{"internalType":"bool","name":"is_fixed_apy","type":"bool"}],"name":"calcNeededLeverageByCreditSize","outputs":[{"internalType":"uint256","name":"needed_leverage","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"dep_id","type":"uint32"},{"internalType":"uint256","name":"dep_amount","type":"uint256"}],"name":"calcUSDValue","outputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"},{"internalType":"uint256","name":"est_usd","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"profile_id","type":"uint256"},{"internalType":"uint256","name":"dep_amount","type":"uint256"}],"name":"calcUSDValueByProfileNonNFT","outputs":[{"internalType":"uint256","name":"est_usd","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"profile_id","type":"uint256"},{"internalType":"uint256","name":"dep_amount","type":"uint256"}],"name":"calcUSDValueByProfileNonNFT_mwei","outputs":[{"internalType":"uint256","name":"est_usd","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"dep_id","type":"uint32"},{"internalType":"uint256","name":"dep_amount","type":"uint256"},{"internalType":"uint32","name":"get_credit_profile_id","type":"uint32"}],"name":"calcUSDValueCollateral","outputs":[{"internalType":"uint256","name":"est_usd","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"dep_id","type":"uint32"},{"internalType":"uint256","name":"dep_amount","type":"uint256"}],"name":"calcUSDValue_mwei","outputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"},{"internalType":"uint256","name":"est_usd_apy_scale","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"},{"internalType":"uint256","name":"collateral_profile_id","type":"uint256"}],"name":"calcVarApy","outputs":[{"internalType":"uint256","name":"variable_apy","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"cred_profiles_register","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"},{"internalType":"uint32","name":"cred_id","type":"uint32"}],"name":"creditFee","outputs":[{"internalType":"uint256","name":"fee","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"},{"internalType":"uint32","name":"cred_id","type":"uint32"},{"internalType":"uint256","name":"num_periods","type":"uint256"}],"name":"creditFeeFuture","outputs":[{"internalType":"uint256","name":"fee","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"credit_contract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"dep_profiles_register","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"},{"internalType":"uint32","name":"dep_id","type":"uint32"}],"name":"depositReward","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"},{"internalType":"uint256","name":"rew_size","type":"uint256"},{"internalType":"uint256","name":"num_periods","type":"uint256"}],"name":"depositSizeFromReward","outputs":[{"internalType":"uint256","name":"dep_size","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"deposit_contract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"asset_profile_id","type":"uint256"},{"internalType":"uint256","name":"cred_amount","type":"uint256"},{"internalType":"uint256","name":"get_credit_profile_id","type":"uint256"}],"name":"estimateCollateralForCredit","outputs":[{"internalType":"uint256","name":"est_collat","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"dep_id","type":"uint32"},{"internalType":"uint256","name":"dep_amount","type":"uint256"},{"internalType":"uint256","name":"get_credit_profile_id","type":"uint256"}],"name":"estimateCreditForCollateral","outputs":[{"internalType":"uint256","name":"est_usd","type":"uint256"},{"internalType":"uint256","name":"est_asset","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"collateral_profile_id","type":"uint32"},{"internalType":"uint32","name":"get_credit_profile_id","type":"uint32"}],"name":"getAdjCoeffByPair","outputs":[{"internalType":"uint256","name":"adj_coeff","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"}],"name":"getAssetUsage","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDepositContract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"},{"internalType":"uint32","name":"dep_id","type":"uint32"},{"internalType":"uint256","name":"tokens_number","type":"uint256"}],"name":"getDepositNFTs","outputs":[{"internalType":"uint256[]","name":"token_ids_ret","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"}],"name":"getFixedAddPecentByProfileId","outputs":[{"internalType":"uint256","name":"add_percent","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"}],"name":"getLiquidationLimitByProfileId","outputs":[{"internalType":"uint256","name":"limit_percent","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getVotesCalcContract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"collateral_profile_id","type":"uint32"},{"internalType":"uint32","name":"get_credit_profile_id","type":"uint32"}],"name":"getZeroFeeByPair","outputs":[{"internalType":"bool","name":"is_free","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"liqlev_contract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"rewtoken_profile_id","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"collateral_profile_id","type":"uint32"},{"internalType":"uint32","name":"get_credit_profile_id","type":"uint32"},{"internalType":"uint256","name":"adj_coeff","type":"uint256"}],"name":"setAdjCoeffByPair","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_deposit_contract","type":"address"}],"name":"setDepositContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"},{"internalType":"uint256","name":"add_percent","type":"uint256"}],"name":"setFixedAddPecentByProfileId","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"},{"internalType":"uint256","name":"limit_percent","type":"uint256"}],"name":"setLiquidationLimitByProfileId","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"new_rewtoken_profile_id","type":"uint32"}],"name":"setRewardTokenProfileId","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_votes_calc_contract","type":"address"}],"name":"setVotesCalcContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"collateral_profile_id","type":"uint32"},{"internalType":"uint32","name":"get_credit_profile_id","type":"uint32"},{"internalType":"bool","name":"is_free","type":"bool"}],"name":"setZeroFeeByPair","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"prev_contract_address","type":"address"}],"name":"setupFromData","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"},{"internalType":"uint32","name":"dep_id","type":"uint32"}],"name":"viewCustomerDepositByIndex","outputs":[{"internalType":"uint32","name":"deposit_profile_id_r","type":"uint32"},{"internalType":"uint256","name":"deposit_amount_r","type":"uint256"},{"internalType":"uint256","name":"deposit_date_r","type":"uint256"},{"internalType":"uint256","name":"acc_reward_r","type":"uint256"},{"internalType":"uint256","name":"nft_value_r","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"votes_calc_contract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"}];
 
-const credit_profiles_register_abi = [{
-  "inputs": [],
-  "stateMutability": "nonpayable",
-  "type": "constructor"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "internalType": "address",
-    "name": "previousOwner",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "address",
-    "name": "newOwner",
-    "type": "address"
-  }],
-  "name": "OwnershipTransferred",
-  "type": "event"
-}, {
-  "inputs": [],
-  "name": "CANNOT_TRANSFER_TO_ZERO_ADDRESS",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "NOT_CURRENT_OWNER",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "id",
-    "type": "uint32"
-  }, {
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "internalType": "uint8",
-    "name": "_type",
-    "type": "uint8"
-  }, {
-    "internalType": "address",
-    "name": "_token_address",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "valuation_percent",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "init_apy",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "rate",
-    "type": "uint256"
-  }],
-  "name": "addCreditProfile",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "name": "creditProfiles",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "id",
-    "type": "uint32"
-  }, {
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "internalType": "uint8",
-    "name": "_type",
-    "type": "uint8"
-  }, {
-    "internalType": "address",
-    "name": "_token_address",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "valuation_percent",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "init_apy",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "rate",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "creditProfilesLength",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint256",
-    "name": "id",
-    "type": "uint256"
-  }],
-  "name": "getCreditProfileById",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "",
-    "type": "uint32"
-  }, {
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }, {
-    "internalType": "uint8",
-    "name": "",
-    "type": "uint8"
-  }, {
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "owner",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "id",
-    "type": "uint32"
-  }],
-  "name": "removeCreditProfileAtId",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "id",
-    "type": "uint32"
-  }, {
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "internalType": "uint8",
-    "name": "_type",
-    "type": "uint8"
-  }, {
-    "internalType": "address",
-    "name": "_token_address",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "valuation_percent",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "init_apy",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "rate",
-    "type": "uint256"
-  }],
-  "name": "replaceCreditProfileAtId",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "i",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "id",
-    "type": "uint32"
-  }, {
-    "internalType": "string",
-    "name": "name",
-    "type": "string"
-  }, {
-    "internalType": "uint8",
-    "name": "_type",
-    "type": "uint8"
-  }, {
-    "internalType": "address",
-    "name": "_token_address",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "valuation_percent",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "init_apy",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "rate",
-    "type": "uint256"
-  }],
-  "name": "replaceCreditProfileAtIndex",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "prevContractAddress",
-    "type": "address"
-  }],
-  "name": "setupFrom",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_newOwner",
-    "type": "address"
-  }],
-  "name": "transferOwnership",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}];
+const credit_profiles_register_abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[],"name":"CANNOT_TRANSFER_TO_ZERO_ADDRESS","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"NOT_CURRENT_OWNER","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"id","type":"uint32"},{"internalType":"string","name":"name","type":"string"},{"internalType":"uint8","name":"_type","type":"uint8"},{"internalType":"address","name":"_token_address","type":"address"},{"internalType":"uint256","name":"valuation_percent","type":"uint256"},{"internalType":"uint256","name":"init_apy","type":"uint256"},{"internalType":"uint256","name":"rate","type":"uint256"}],"name":"addCreditProfile","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"creditProfiles","outputs":[{"internalType":"uint32","name":"id","type":"uint32"},{"internalType":"string","name":"name","type":"string"},{"internalType":"uint8","name":"_type","type":"uint8"},{"internalType":"address","name":"_token_address","type":"address"},{"internalType":"uint256","name":"valuation_percent","type":"uint256"},{"internalType":"uint256","name":"init_apy","type":"uint256"},{"internalType":"uint256","name":"rate","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"creditProfilesLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"id","type":"uint256"}],"name":"getCreditProfileById","outputs":[{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"string","name":"","type":"string"},{"internalType":"uint8","name":"","type":"uint8"},{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"id","type":"uint32"}],"name":"removeCreditProfileAtId","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"id","type":"uint32"},{"internalType":"string","name":"name","type":"string"},{"internalType":"uint8","name":"_type","type":"uint8"},{"internalType":"address","name":"_token_address","type":"address"},{"internalType":"uint256","name":"valuation_percent","type":"uint256"},{"internalType":"uint256","name":"init_apy","type":"uint256"},{"internalType":"uint256","name":"rate","type":"uint256"}],"name":"replaceCreditProfileAtId","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"i","type":"uint32"},{"internalType":"uint32","name":"id","type":"uint32"},{"internalType":"string","name":"name","type":"string"},{"internalType":"uint8","name":"_type","type":"uint8"},{"internalType":"address","name":"_token_address","type":"address"},{"internalType":"uint256","name":"valuation_percent","type":"uint256"},{"internalType":"uint256","name":"init_apy","type":"uint256"},{"internalType":"uint256","name":"rate","type":"uint256"}],"name":"replaceCreditProfileAtIndex","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"prevContractAddress","type":"address"}],"name":"setupFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
-const credit_contract_abi = [{
-  "inputs": [],
-  "stateMutability": "nonpayable",
-  "type": "constructor"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "time",
-    "type": "uint256"
-  }],
-  "name": "CreditDecreased",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "dep_collateral_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "cred_amount",
-    "type": "uint256"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "cred_profile_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "time",
-    "type": "uint256"
-  }],
-  "name": "CreditGot",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "time",
-    "type": "uint256"
-  }],
-  "name": "FeeZeroed",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "internalType": "address",
-    "name": "previousOwner",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "address",
-    "name": "newOwner",
-    "type": "address"
-  }],
-  "name": "OwnershipTransferred",
-  "type": "event"
-}, {
-  "inputs": [],
-  "name": "CANNOT_TRANSFER_TO_ZERO_ADDRESS",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "NOT_CURRENT_OWNER",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "_manager",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "_own_address",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }],
-  "name": "amountsPerCollaterals",
-  "outputs": [{
-    "internalType": "uint32[]",
-    "name": "",
-    "type": "uint32[]"
-  }, {
-    "internalType": "uint256[]",
-    "name": "",
-    "type": "uint256[]"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "credit_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "collateral_profile_id",
-    "type": "uint256"
-  }],
-  "name": "calcFixedApy",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "fixed_apy",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "cred_profiles_register",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }],
-  "name": "creditFee",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "fee",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }],
-  "name": "creditsStat",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "tot_am",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "tot_f",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }],
-  "name": "creditsTotAmount",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "tot_am",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }],
-  "name": "currentCredit",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "cred_body",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "cred_fee",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "cust_index",
-    "type": "uint32"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }],
-  "name": "dataPerCredits",
-  "outputs": [{
-    "internalType": "uint32[]",
-    "name": "",
-    "type": "uint32[]"
-  }, {
-    "internalType": "uint256[]",
-    "name": "",
-    "type": "uint256[]"
-  }, {
-    "internalType": "uint256[]",
-    "name": "",
-    "type": "uint256[]"
-  }, {
-    "internalType": "uint32[]",
-    "name": "",
-    "type": "uint32[]"
-  }, {
-    "internalType": "uint32[]",
-    "name": "",
-    "type": "uint32[]"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "clt_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }],
-  "name": "decreaseCollateral",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }],
-  "name": "decreaseCredit",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "dep_profiles_register",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "deposit_contract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "_new_number",
-    "type": "uint32"
-  }],
-  "name": "directEditCredNumber",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getCredProfilesRegister",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "cred_amount",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "get_credit_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "bool",
-    "name": "whole",
-    "type": "bool"
-  }, {
-    "internalType": "bool",
-    "name": "is_fixed_apy",
-    "type": "bool"
-  }],
-  "name": "getCredit",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }],
-  "name": "getCustomersCollateralsItem",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getCustomersCollateralsLength",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }],
-  "name": "getCustomersCreditsItem",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getCustomersCreditsLength",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }],
-  "name": "getCustomersDepositAmount",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "tokens_number_ret",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getDepositContract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "dep_contract",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "liq_lev_contract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "owner",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }],
-  "name": "returnCredit",
-  "outputs": [],
-  "stateMutability": "payable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "amount",
-    "type": "uint256"
-  }],
-  "name": "returnFee",
-  "outputs": [],
-  "stateMutability": "payable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_cred_profiles_register",
-    "type": "address"
-  }],
-  "name": "setCredProfilesRegister",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_deposit_contract",
-    "type": "address"
-  }],
-  "name": "setDepositContract",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_manager",
-    "type": "address"
-  }],
-  "name": "setManagerRight",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "prevContractAddress",
-    "type": "address"
-  }],
-  "name": "setupFromConfig",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "prevContractAddress",
-    "type": "address"
-  }],
-  "name": "setupFromData",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "apy_value",
-    "type": "uint256"
-  }],
-  "name": "startCreditLeverage",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }, {
-    "internalType": "bool",
-    "name": "prev_is_fixed_apy",
-    "type": "bool"
-  }, {
-    "internalType": "uint256",
-    "name": "prev_apy_value",
-    "type": "uint256"
-  }],
-  "name": "stopCreditLeverage",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_newOwner",
-    "type": "address"
-  }],
-  "name": "transferOwnership",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "usage_calc_contract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }],
-  "name": "viewCreditAmount",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "credit_amount",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "dep_id",
-    "type": "uint256"
-  }],
-  "name": "viewCustomerCollateral",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "deposit_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "index",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }],
-  "name": "viewCustomerCollateralByIndex",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "deposit_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "deposit_amount",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "tokens_number",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "deposit_date",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "acc_reward",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "nft_value",
-    "type": "uint256"
-  }, {
-    "internalType": "bool",
-    "name": "imply_lock",
-    "type": "bool"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "token_id_num",
-    "type": "uint256"
-  }],
-  "name": "viewCustomerCollateralTokenByIndex",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "token_id",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "cred_id",
-    "type": "uint256"
-  }],
-  "name": "viewCustomerCredit",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "credit_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }],
-  "name": "viewCustomerCreditByIndex",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "collateral_profile_id",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "collateral_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "credit_amount",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "credit_date",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "acc_fee",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "linked_dep_id",
-    "type": "uint32"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }],
-  "name": "viewCustomerCreditExtraDataByIndex",
-  "outputs": [{
-    "internalType": "bool",
-    "name": "is_fixed_apy",
-    "type": "bool"
-  }, {
-    "internalType": "uint256",
-    "name": "fixed_apy",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}];
+const credit_contract_abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"cust_wallet","type":"address"},{"indexed":false,"internalType":"uint32","name":"cred_id","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint32","name":"profile_id","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"time","type":"uint256"}],"name":"CreditDecreased","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"cust_wallet","type":"address"},{"indexed":false,"internalType":"uint32","name":"dep_collateral_id","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"cred_amount","type":"uint256"},{"indexed":false,"internalType":"uint32","name":"cred_profile_id","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"time","type":"uint256"}],"name":"CreditGot","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"cust_wallet","type":"address"},{"indexed":false,"internalType":"uint32","name":"cred_id","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint32","name":"profile_id","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"time","type":"uint256"}],"name":"FeeZeroed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[],"name":"CANNOT_TRANSFER_TO_ZERO_ADDRESS","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"NOT_CURRENT_OWNER","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"_manager","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"_own_address","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"}],"name":"amountsPerCollaterals","outputs":[{"internalType":"uint32[]","name":"","type":"uint32[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"credit_profile_id","type":"uint32"},{"internalType":"uint256","name":"collateral_profile_id","type":"uint256"}],"name":"calcFixedApy","outputs":[{"internalType":"uint256","name":"fixed_apy","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"cred_profiles_register","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"},{"internalType":"uint32","name":"cred_id","type":"uint32"}],"name":"creditFee","outputs":[{"internalType":"uint256","name":"fee","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"}],"name":"creditsStat","outputs":[{"internalType":"uint256","name":"tot_am","type":"uint256"},{"internalType":"uint256","name":"tot_f","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"}],"name":"creditsTotAmount","outputs":[{"internalType":"uint256","name":"tot_am","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"cred_id","type":"uint32"}],"name":"currentCredit","outputs":[{"internalType":"uint256","name":"cred_body","type":"uint256"},{"internalType":"uint256","name":"cred_fee","type":"uint256"},{"internalType":"uint32","name":"cust_index","type":"uint32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"}],"name":"dataPerCredits","outputs":[{"internalType":"uint32[]","name":"","type":"uint32[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint256[]","name":"","type":"uint256[]"},{"internalType":"uint32[]","name":"","type":"uint32[]"},{"internalType":"uint32[]","name":"","type":"uint32[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"clt_id","type":"uint32"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"decreaseCollateral","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"cred_id","type":"uint32"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"decreaseCredit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"dep_profiles_register","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"deposit_contract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"},{"internalType":"uint32","name":"_new_number","type":"uint32"}],"name":"directEditCredNumber","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getCredProfilesRegister","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"dep_id","type":"uint32"},{"internalType":"uint256","name":"cred_amount","type":"uint256"},{"internalType":"uint32","name":"get_credit_profile_id","type":"uint32"},{"internalType":"bool","name":"whole","type":"bool"},{"internalType":"bool","name":"is_fixed_apy","type":"bool"}],"name":"getCredit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"}],"name":"getCustomersCollateralsItem","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getCustomersCollateralsLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"}],"name":"getCustomersCreditsItem","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getCustomersCreditsLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"dep_id","type":"uint32"}],"name":"getCustomersDepositAmount","outputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"uint256","name":"tokens_number_ret","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDepositContract","outputs":[{"internalType":"address","name":"dep_contract","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"liq_lev_contract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"cred_id","type":"uint32"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"returnCredit","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"cred_id","type":"uint32"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"returnFee","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"new_cred_profiles_register","type":"address"}],"name":"setCredProfilesRegister","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_deposit_contract","type":"address"}],"name":"setDepositContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_manager","type":"address"}],"name":"setManagerRight","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"prevContractAddress","type":"address"}],"name":"setupFromConfig","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"prevContractAddress","type":"address"}],"name":"setupFromData","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"},{"internalType":"uint32","name":"cred_id","type":"uint32"},{"internalType":"uint256","name":"apy_value","type":"uint256"}],"name":"startCreditLeverage","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"},{"internalType":"uint32","name":"cred_id","type":"uint32"},{"internalType":"bool","name":"prev_is_fixed_apy","type":"bool"},{"internalType":"uint256","name":"prev_apy_value","type":"uint256"}],"name":"stopCreditLeverage","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"usage_calc_contract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"cred_id","type":"uint32"}],"name":"viewCreditAmount","outputs":[{"internalType":"uint256","name":"credit_amount","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint256","name":"dep_id","type":"uint256"}],"name":"viewCustomerCollateral","outputs":[{"internalType":"uint32","name":"deposit_profile_id","type":"uint32"},{"internalType":"uint256","name":"index","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"},{"internalType":"uint32","name":"dep_id","type":"uint32"}],"name":"viewCustomerCollateralByIndex","outputs":[{"internalType":"uint32","name":"deposit_profile_id","type":"uint32"},{"internalType":"uint256","name":"deposit_amount","type":"uint256"},{"internalType":"uint256","name":"tokens_number","type":"uint256"},{"internalType":"uint256","name":"deposit_date","type":"uint256"},{"internalType":"uint256","name":"acc_reward","type":"uint256"},{"internalType":"uint256","name":"nft_value","type":"uint256"},{"internalType":"bool","name":"imply_lock","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"},{"internalType":"uint32","name":"dep_id","type":"uint32"},{"internalType":"uint256","name":"token_id_num","type":"uint256"}],"name":"viewCustomerCollateralTokenByIndex","outputs":[{"internalType":"uint256","name":"token_id","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint256","name":"cred_id","type":"uint256"}],"name":"viewCustomerCredit","outputs":[{"internalType":"uint32","name":"credit_profile_id","type":"uint32"},{"internalType":"uint32","name":"index","type":"uint32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"},{"internalType":"uint32","name":"cred_id","type":"uint32"}],"name":"viewCustomerCreditByIndex","outputs":[{"internalType":"uint32","name":"profile_id","type":"uint32"},{"internalType":"uint256","name":"collateral_profile_id","type":"uint256"},{"internalType":"uint32","name":"collateral_id","type":"uint32"},{"internalType":"uint256","name":"credit_amount","type":"uint256"},{"internalType":"uint256","name":"credit_date","type":"uint256"},{"internalType":"uint256","name":"acc_fee","type":"uint256"},{"internalType":"uint32","name":"linked_dep_id","type":"uint32"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"},{"internalType":"uint32","name":"cred_id","type":"uint32"}],"name":"viewCustomerCreditExtraDataByIndex","outputs":[{"internalType":"bool","name":"is_fixed_apy","type":"bool"},{"internalType":"uint256","name":"fixed_apy","type":"uint256"}],"stateMutability":"view","type":"function"}];
 
-const liqlev_contract_abi = [{
-  "inputs": [],
-  "stateMutability": "nonpayable",
-  "type": "constructor"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "lev_dep_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "lev_profile_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "lev_amount",
-    "type": "uint256"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "timestamp",
-    "type": "uint256"
-  }],
-  "name": "LeverageFrozen",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": false,
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint32",
-    "name": "lev_dep_id",
-    "type": "uint32"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "lev_amount",
-    "type": "uint256"
-  }, {
-    "indexed": false,
-    "internalType": "uint256",
-    "name": "timestamp",
-    "type": "uint256"
-  }],
-  "name": "LeverageUnFrozen",
-  "type": "event"
-}, {
-  "anonymous": false,
-  "inputs": [{
-    "indexed": true,
-    "internalType": "address",
-    "name": "previousOwner",
-    "type": "address"
-  }, {
-    "indexed": true,
-    "internalType": "address",
-    "name": "newOwner",
-    "type": "address"
-  }],
-  "name": "OwnershipTransferred",
-  "type": "event"
-}, {
-  "inputs": [],
-  "name": "CANNOT_TRANSFER_TO_ZERO_ADDRESS",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "NOT_CURRENT_OWNER",
-  "outputs": [{
-    "internalType": "string",
-    "name": "",
-    "type": "string"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "_manager",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "cust_index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "credit_index",
-    "type": "uint32"
-  }, {
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }],
-  "name": "analyzeLiquidation",
-  "outputs": [{
-    "internalType": "bool",
-    "name": "action_needed",
-    "type": "bool"
-  }, {
-    "internalType": "uint256",
-    "name": "coll_am_liq",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "credit_am_liq",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "analyzeLiquidationAll",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "bad_credits_cnt",
-    "type": "uint32"
-  }, {
-    "internalType": "bool[]",
-    "name": "customer_is_bad",
-    "type": "bool[]"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "cust_index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "credit_index",
-    "type": "uint32"
-  }, {
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }],
-  "name": "analyzeLiquidationForCredit",
-  "outputs": [{
-    "internalType": "bool",
-    "name": "action_needed",
-    "type": "bool"
-  }, {
-    "internalType": "uint256",
-    "name": "r_coll_am_liq",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "r_credit_am_liq",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "cust_index",
-    "type": "uint32"
-  }],
-  "name": "analyzeLiquidationForCustomer",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "r_bad_credits_count",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32[]",
-    "name": "r_bad_credits_ids_for_customer",
-    "type": "uint32[]"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }],
-  "name": "calcVarApyByCredId",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "cred_profiles_register",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "credit_contract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "dep_profiles_register",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint8",
-    "name": "ratio",
-    "type": "uint8"
-  }],
-  "name": "freezeLeverageForCredit",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }],
-  "name": "getCustomersLeveragesItem",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getCustomersLeveragesLength",
-  "outputs": [{
-    "internalType": "uint256",
-    "name": "",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getDepositContract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "getManager",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "cust_index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "credit_index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "coll_am_liq",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "credit_am_liq",
-    "type": "uint256"
-  }],
-  "name": "liquidate",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "owner",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "processLiquidationAll",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "cust_index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "credit_index",
-    "type": "uint32"
-  }, {
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }],
-  "name": "processLiquidationForCredit",
-  "outputs": [{
-    "internalType": "bool",
-    "name": "action_needed",
-    "type": "bool"
-  }, {
-    "internalType": "uint256",
-    "name": "r_coll_am_liq",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "r_credit_am_liq",
-    "type": "uint256"
-  }],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "cust_index",
-    "type": "uint32"
-  }],
-  "name": "processLiquidationForCustomer",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_deposit_contract",
-    "type": "address"
-  }],
-  "name": "setDepositContract",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "new_manager",
-    "type": "address"
-  }],
-  "name": "setManagerRight",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "prevContractAddress",
-    "type": "address"
-  }],
-  "name": "setupFromConfig",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "prevContractAddress",
-    "type": "address"
-  }],
-  "name": "setupFromData",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "_newOwner",
-    "type": "address"
-  }],
-  "name": "transferOwnership",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }],
-  "name": "unfreezeLeverageForCredit",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "usage_calc_contract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "dep_id",
-    "type": "uint256"
-  }],
-  "name": "viewCustomerLeverage",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "deposit_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "index",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "address",
-    "name": "cust_wallet",
-    "type": "address"
-  }, {
-    "internalType": "uint256",
-    "name": "cred_id",
-    "type": "uint256"
-  }],
-  "name": "viewCustomerLeverageByCredId",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "lev_dep_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "cust_index",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "lev_index",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "deposit_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "lev_amount",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "lev_date",
-    "type": "uint256"
-  }, {
-    "internalType": "uint8",
-    "name": "ratio",
-    "type": "uint8"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }],
-  "name": "viewCustomerLeverageByIndex1",
-  "outputs": [{
-    "internalType": "uint32",
-    "name": "deposit_profile_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint256",
-    "name": "deposit_amount",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "deposit_date",
-    "type": "uint256"
-  }, {
-    "internalType": "uint256",
-    "name": "acc_reward",
-    "type": "uint256"
-  }, {
-    "internalType": "uint32",
-    "name": "cred_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "ldep_id",
-    "type": "uint32"
-  }, {
-    "internalType": "uint8",
-    "name": "ratio",
-    "type": "uint8"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "uint32",
-    "name": "index",
-    "type": "uint32"
-  }, {
-    "internalType": "uint32",
-    "name": "dep_id",
-    "type": "uint32"
-  }],
-  "name": "viewCustomerLeverageByIndex2",
-  "outputs": [{
-    "internalType": "bool",
-    "name": "credit_is_fixed_apy",
-    "type": "bool"
-  }, {
-    "internalType": "uint256",
-    "name": "credit_fixed_apy",
-    "type": "uint256"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}, {
-  "inputs": [],
-  "name": "votes_calc_contract",
-  "outputs": [{
-    "internalType": "address",
-    "name": "",
-    "type": "address"
-  }],
-  "stateMutability": "view",
-  "type": "function"
-}];
+const liqlev_contract_abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"cust_wallet","type":"address"},{"indexed":false,"internalType":"uint32","name":"lev_dep_id","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"cred_id","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"lev_profile_id","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"lev_amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"LeverageFrozen","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"cust_wallet","type":"address"},{"indexed":false,"internalType":"uint32","name":"cred_id","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"lev_dep_id","type":"uint32"},{"indexed":false,"internalType":"uint256","name":"lev_amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"LeverageUnFrozen","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[],"name":"CANNOT_TRANSFER_TO_ZERO_ADDRESS","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"NOT_CURRENT_OWNER","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"_manager","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"cust_index","type":"uint32"},{"internalType":"uint32","name":"credit_index","type":"uint32"},{"internalType":"address","name":"cust_wallet","type":"address"}],"name":"analyzeLiquidation","outputs":[{"internalType":"bool","name":"action_needed","type":"bool"},{"internalType":"uint256","name":"coll_am_liq","type":"uint256"},{"internalType":"uint256","name":"credit_am_liq","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"analyzeLiquidationAll","outputs":[{"internalType":"uint32","name":"bad_credits_cnt","type":"uint32"},{"internalType":"bool[]","name":"customer_is_bad","type":"bool[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"cust_index","type":"uint32"},{"internalType":"uint32","name":"credit_index","type":"uint32"},{"internalType":"address","name":"cust_wallet","type":"address"}],"name":"analyzeLiquidationForCredit","outputs":[{"internalType":"bool","name":"action_needed","type":"bool"},{"internalType":"uint256","name":"r_coll_am_liq","type":"uint256"},{"internalType":"uint256","name":"r_credit_am_liq","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"cust_index","type":"uint32"}],"name":"analyzeLiquidationForCustomer","outputs":[{"internalType":"uint32","name":"r_bad_credits_count","type":"uint32"},{"internalType":"uint32[]","name":"r_bad_credits_ids_for_customer","type":"uint32[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"cred_id","type":"uint32"}],"name":"calcVarApyByCredId","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"cred_profiles_register","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"credit_contract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"dep_profiles_register","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"dep_id","type":"uint32"},{"internalType":"uint32","name":"cred_id","type":"uint32"},{"internalType":"uint8","name":"ratio","type":"uint8"}],"name":"freezeLeverageForCredit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"}],"name":"getCustomersLeveragesItem","outputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getCustomersLeveragesLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getDepositContract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getManager","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"cust_index","type":"uint32"},{"internalType":"uint32","name":"credit_index","type":"uint32"},{"internalType":"uint256","name":"coll_am_liq","type":"uint256"},{"internalType":"uint256","name":"credit_am_liq","type":"uint256"}],"name":"liquidate","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"processLiquidationAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"cust_index","type":"uint32"},{"internalType":"uint32","name":"credit_index","type":"uint32"},{"internalType":"address","name":"cust_wallet","type":"address"}],"name":"processLiquidationForCredit","outputs":[{"internalType":"bool","name":"action_needed","type":"bool"},{"internalType":"uint256","name":"r_coll_am_liq","type":"uint256"},{"internalType":"uint256","name":"r_credit_am_liq","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint32","name":"cust_index","type":"uint32"}],"name":"processLiquidationForCustomer","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_deposit_contract","type":"address"}],"name":"setDepositContract","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"new_manager","type":"address"}],"name":"setManagerRight","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"prevContractAddress","type":"address"}],"name":"setupFromConfig","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"prevContractAddress","type":"address"}],"name":"setupFromData","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint32","name":"cred_id","type":"uint32"}],"name":"unfreezeLeverageForCredit","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"usage_calc_contract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint256","name":"dep_id","type":"uint256"}],"name":"viewCustomerLeverage","outputs":[{"internalType":"uint32","name":"deposit_profile_id","type":"uint32"},{"internalType":"uint256","name":"index","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"cust_wallet","type":"address"},{"internalType":"uint256","name":"cred_id","type":"uint256"}],"name":"viewCustomerLeverageByCredId","outputs":[{"internalType":"uint32","name":"lev_dep_id","type":"uint32"},{"internalType":"uint256","name":"cust_index","type":"uint256"},{"internalType":"uint256","name":"lev_index","type":"uint256"},{"internalType":"uint32","name":"deposit_profile_id","type":"uint32"},{"internalType":"uint256","name":"lev_amount","type":"uint256"},{"internalType":"uint256","name":"lev_date","type":"uint256"},{"internalType":"uint8","name":"ratio","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"},{"internalType":"uint32","name":"dep_id","type":"uint32"}],"name":"viewCustomerLeverageByIndex1","outputs":[{"internalType":"uint32","name":"deposit_profile_id","type":"uint32"},{"internalType":"uint256","name":"deposit_amount","type":"uint256"},{"internalType":"uint256","name":"deposit_date","type":"uint256"},{"internalType":"uint256","name":"acc_reward","type":"uint256"},{"internalType":"uint32","name":"cred_id","type":"uint32"},{"internalType":"uint32","name":"ldep_id","type":"uint32"},{"internalType":"uint8","name":"ratio","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint32","name":"index","type":"uint32"},{"internalType":"uint32","name":"dep_id","type":"uint32"}],"name":"viewCustomerLeverageByIndex2","outputs":[{"internalType":"bool","name":"credit_is_fixed_apy","type":"bool"},{"internalType":"uint256","name":"credit_fixed_apy","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"votes_calc_contract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"}];
 
 window.cyclops_nft_contract_address = '0x6ab7E5B00a6e4A7E56160FAc1BCcAcEad1614554'; //kovan
 
-
-
-
 const apy_scale = 100000;
 const CACHE_TIME = 30000; //ms, i.e 30 sec.
-
 
 const chains = new Array();
 chains['0x1'] = "mainnet";
@@ -5597,8 +190,8 @@ let userObject = {
         let profiles = userObject.deposit_profiles;
 
         for (let i = 0; i < profiles.length; i++) {
-          this.icon_column.push('<td>' + crypto_icons[profiles[i]['p_name']] + '</td>');
-          this.assets_column.push('<th scope="col">' + profiles[i]['p_name'] + '</th>');
+          this.icon_column.push('<td class="table-cell">' + crypto_icons[profiles[i]['p_name']] + '</td>');
+          this.assets_column.push('<th scope="col" class="table-row">' + profiles[i]['p_name'] + '</th>');
         }
       }
       return [this.icon_column, this.assets_column];
@@ -5651,8 +244,7 @@ let userObject = {
           let apy = await getAPY(profiles[i]['p_id']);
           let apy_adj = (apy / apy_scale) * 100;
 
-
-          this.apy_column.push('<th scope="col">' + ((parseFloat(apy_adj)).toFixed(2)).toString() + '</th>');
+          this.apy_column.push('<th scope="col" class="table-row">' + ((parseFloat(apy_adj)).toFixed(2)).toString() + '</th>');
         }
       }
       return this.apy_column;
@@ -5668,7 +260,6 @@ let userObject = {
         this.in_wallet_column.length = 0;
         let profiles = userObject.deposit_profiles;
 
-
         for (let i = 0; i < profiles.length; i++) {
           let txt = '';
           if (parseInt(profiles[i]['p_dep_type']) == ERC721_TOKEN) {
@@ -5677,9 +268,7 @@ let userObject = {
               from: userObject.account
             });
 
-            txt = '<td>' + token_count + '</td>';
-
-
+            txt = '<td class="table-cell">' + token_count + '</td>';
 
           } else if (parseInt(profiles[i]['p_dep_type']) == ERC20_TOKEN || parseInt(profiles[i]['p_dep_type']) == UNISWAP_PAIR) {
             let erc20contract = await new window.web3js_reader.eth.Contract(erc20TokenContractAbi, profiles[i]['p_tok_addr']);
@@ -5691,7 +280,7 @@ let userObject = {
             let token_name = await erc20contract.methods.name().call({
               from: userObject.account
             });
-            txt = '<td>' + adj_count_str + '</td>';
+            txt = '<td class="table-cell">' + adj_count_str + '</td>';
 
             //html += '<span class="small-text-block">'+token_name+': '+adj_count_str+'</span>';  
 
@@ -5699,17 +288,13 @@ let userObject = {
             let wb = await window.web3js_reader.eth.getBalance(userObject.account);
             //let eth_balance = window.web3js_reader.utils.fromWei(wb, 'ether');
             let adj_eth_balance = toTokens(wb, 4); //((parseFloat(eth_balance)).toFixed(4)).toString(); 
-            txt = '<td>' + adj_eth_balance + '</td>';
-
+            txt = '<td class="table-cell">' + adj_eth_balance + '</td>';
           }
-          if (!txt) txt = '<td>-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.in_wallet_column.push(txt);
         }
-
-
       }
       return this.in_wallet_column;
-
     },
 
     dep_column: new Array(),
@@ -5729,25 +314,21 @@ let userObject = {
             if (am_arr[0][i] == profiles[j]['p_id']) {
               //found
               if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) { //amount
-                txt = '<td>' + am_arr[1][i] + '</td>';
+                txt = '<td class="table-cell">' + am_arr[1][i] + '</td>';
               } else {
                 //let am = window.web3js_reader.utils.fromWei(am_arr[1][i], 'ether');
                 let adj_am = toTokens(am_arr[1][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-                txt = '<td>' + adj_am + '</td>';
+                txt = '<td class="table-cell">' + adj_am + '</td>';
               }
               break;
             }
           }
-          if (!txt) txt = '<td>-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.dep_column.push(txt);
         }
-
-
       }
       return this.dep_column;
-
     },
-
 
     usd_val_column: new Array(),
     usd_val_only_col: new Array(),
@@ -5773,13 +354,13 @@ let userObject = {
                 val: am,
                 ori_index: j
               });
-              txt = '<td>' + am + '</td>';
+              txt = '<td class="table-cell">' + am + '</td>';
 
               break;
             }
           }
           if (!txt) {
-            txt = '<td>-</td>';
+            txt = '<td class="table-cell">-</td>';
             this.usd_val_only_col.push({
               val: 0,
               ori_index: j
@@ -5787,12 +368,9 @@ let userObject = {
           }
 
           this.usd_val_column.push(txt);
-
         }
-
       }
       return [this.usd_val_column, this.usd_val_only_col];
-
     },
 
     duration_col: new Array(),
@@ -5811,27 +389,21 @@ let userObject = {
           for (let i = 0; i < am_arr[0].length; i++) {
             if (am_arr[0][i] == profiles[j]['p_id']) {
               if (am_arr[1][i] == 0) {
-                txt = '<td class="withdraw_rew_to_hide">-</td>';
+                txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
               } else {
                 let days = await window.staking_smartcontract.methods.depositDays(userObject.account, i).call({
                   from: userObject.account
                 }); //duration
-                txt = '<td class="withdraw_rew_to_hide">' + days.toString() + '</td>';
+                txt = '<td class="withdraw_rew_to_hide table-cell">' + days.toString() + '</td>';
               }
-
               break;
             }
           }
-          if (!txt) txt = '<td class="withdraw_rew_to_hide">-</td>';
+          if (!txt) txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
           this.duration_col.push(txt);
         }
-
-
-
-
       }
       return this.duration_col;
-
     },
 
     extractable_dep_col: new Array(),
@@ -5851,23 +423,20 @@ let userObject = {
             if (am_arr[0][i] == profiles[j]['p_id']) {
               //found
               if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) { //amount
-                txt = '<td class="withdraw_rew_to_hide">' + am_arr[2][i] + '</td>';
+                txt = '<td class="withdraw_rew_to_hide table-cell">' + am_arr[2][i] + '</td>';
               } else {
                 //let am = window.web3js_reader.utils.fromWei(am_arr[2][i], 'ether');
                 let adj_am = toTokens(am_arr[2][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-                txt = '<td class="withdraw_rew_to_hide">' + adj_am + '</td>';
+                txt = '<td class="withdraw_rew_to_hide table-cell">' + adj_am + '</td>';
               }
               break;
             }
           }
-          if (!txt) txt = '<td class="withdraw_rew_to_hide">-</td>';
+          if (!txt) txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
           this.extractable_dep_col.push(txt);
         }
-
-
       }
       return this.extractable_dep_col;
-
     },
 
     withdraw_dep_col: new Array(),
@@ -5887,21 +456,16 @@ let userObject = {
             if (am_arr[0][i] == profiles[j]['p_id'] && am_arr[2][i] > 0) {
               let lbl = '';
               if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) lbl = '<span class="small-text">&nbspNFTs</span>';
-              txt = '<td class="withdraw_rew_to_hide" onclick="withdraw_deposit(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
+              txt = '<td class="withdraw_rew_to_hide table-cell" onclick="withdraw_deposit(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
               break;
             }
           }
-          if (!txt) txt = '<td class="withdraw_rew_to_hide">-</td>';
+          if (!txt) txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
           this.withdraw_dep_col.push(txt);
         }
-
-
-
       }
       return this.withdraw_dep_col;
-
     },
-
 
     withdraw_dep_inputs_col: new Array(),
     getWithdrawDepInputsCol_last_call: 0,
@@ -5920,7 +484,7 @@ let userObject = {
             if (am_arr[0][i] == profiles[j]['p_id']) {
 
               if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) {
-                txt = '<td class="withdraw_params" style="display:none">';
+                txt = '<td class="withdraw_params table-cell" style="display:none">';
                 txt += '<div style="display:block; margin-top: 1vh;"></div>'
                 txt += '<button id="withraw_dep_confirm' + i.toString() + '" class="transparent_button withdraw_dep_input" style="display:none;width: 10vw" onclick="withdraw_deposit_confirm(' + i.toString() + ')">Confirm</button>';
                 txt += '</td>';
@@ -5929,7 +493,7 @@ let userObject = {
                 let adj_am = toTokens(am_arr[2][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
                 //let rew_am = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');	            
                 //let adj_rew_am =  ((parseFloat(rew_am)).toFixed(4)).toString(); 
-                txt = '<td class="withdraw_params" style="display:none">';
+                txt = '<td class="withdraw_params table-cell" style="display:none">';
                 txt += '<button id="withraw_dep_all' + i.toString() + '" class="transparent_button transparent_button_pressed withdraw_dep_input" style="display:none;width: 5vw" onclick="withdraw_deposit_all_btn(' + i.toString() + ')">All</button>';
                 txt += '<button id="withraw_dep_part' + i.toString() + '" class="transparent_button withdraw_dep_input" style="display:none;width: 5vw" onclick="withdraw_deposit_part_btn(' + i.toString() + ')">Part</button>';
                 txt += '<input class="withdraw_dep_input" id="withraw_dep_input' + i.toString() + '" type="number" min="0.1" step="0.1" max="' + adj_am + '" class="form-control" aria-label="" ';
@@ -5942,20 +506,14 @@ let userObject = {
                 txt += '</td>';
 
               }
-
-
               break;
             }
           }
-          if (!txt) txt = '<td class="withdraw_params" style="display:none">-</td>';
+          if (!txt) txt = '<td class="withdraw_params table-cell" style="display:none">-</td>';
           this.withdraw_dep_inputs_col.push(txt);
         }
-
-
-
       }
       return this.withdraw_dep_inputs_col;
-
     },
 
     reward_col: new Array(),
@@ -5976,19 +534,15 @@ let userObject = {
               //found
               //let adj = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');	            
               let adj_str = toTokens(rew_arr[1][i], 4); //((parseFloat(adj)).toFixed(4)).toString(); 
-              txt = '<td class="withdraw_params_to_hide">' + adj_str + '</td>';
+              txt = '<td class="withdraw_params_to_hide table-cell">' + adj_str + '</td>';
               break;
             }
-
           }
-          if (!txt) txt = '<td class="withdraw_params_to_hide">-</td>';
+          if (!txt) txt = '<td class="withdraw_params_to_hide table-cell">-</td>';
           this.reward_col.push(txt);
         }
-
-
       }
       return this.reward_col;
-
     },
 
     extractable_reward_col: new Array(),
@@ -6009,19 +563,16 @@ let userObject = {
               //found
               //let adj = window.web3js_reader.utils.fromWei(rew_arr[2][i], 'ether');	            
               let adj_str = toTokens(rew_arr[2][i], 4); //((parseFloat(adj)).toFixed(4)).toString(); 
-              txt = '<td class="withdraw_params_to_hide">' + adj_str + '</td>';
+              txt = '<td class="withdraw_params_to_hide table-cell">' + adj_str + '</td>';
               break;
             }
 
           }
-          if (!txt) txt = '<td class="withdraw_params_to_hide">-</td>';
+          if (!txt) txt = '<td class="withdraw_params_to_hide table-cell">-</td>';
           this.extractable_reward_col.push(txt);
         }
-
-
       }
       return this.extractable_reward_col;
-
     },
 
     withdraw_rew_col: new Array(),
@@ -6041,18 +592,15 @@ let userObject = {
             if (rew_arr[0][i] == profiles[j]['p_id'] && rew_arr[2][i] > 0) {
               let lbl = '';
               if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) lbl = '<span class="small-text">&nbsp;CYTR</span>';
-              txt = '<td class="withdraw_params_to_hide" onclick="withdraw_reward(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
+              txt = '<td class="withdraw_params_to_hide table-cell" onclick="withdraw_reward(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
               break;
             }
           }
-          if (!txt) txt = '<td class="withdraw_params_to_hide">-</td>';
+          if (!txt) txt = '<td class="withdraw_params_to_hide table-cell">-</td>';
           this.withdraw_rew_col.push(txt);
         }
-
-
       }
       return this.withdraw_rew_col;
-
     },
 
     withdraw_rew_inputs_col: new Array(),
@@ -6072,7 +620,7 @@ let userObject = {
             if (am_arr[0][i] == profiles[j]['p_id']) {
 
 
-              txt = '<td class="withdraw_reward_params" style="display:none">';
+              txt = '<td class="withdraw_reward_params table-cell" style="display:none">';
               txt += '<div style="display:block; margin-top: 1vh;"></div>'
               txt += '<button id="withdraw_rew_confirm' + i.toString() + '" class="transparent_button withdraw_rew_input" style="display:none;width: 10vw" onclick="withdraw_reward_confirm(' + i.toString() + ')">Confirm</button>';
               txt += '</td>';
@@ -6082,7 +630,7 @@ let userObject = {
               break;
             }
           }
-          if (!txt) txt = '<td class="withdraw_reward_params" style="display:none">-</td>';
+          if (!txt) txt = '<td class="withdraw_reward_params table-cell" style="display:none">-</td>';
           this.withdraw_rew_inputs_col.push(txt);
         }
 
@@ -6152,8 +700,8 @@ let userObject = {
         this.icon_column.length = 0;
         this.assets_column.length = 0;
         for (let i = 0; i < this.cred_arr[0].length; i++) {
-          this.icon_column.push('<td>' + crypto_icons[profileNameByProfileId(this.cred_arr[0][i])] + '</td>');
-          this.assets_column.push('<th scope="col">' + profileNameByProfileId(this.cred_arr[0][i]) + '</th>');
+          this.icon_column.push('<td class="table-cell">' + crypto_icons[profileNameByProfileId(this.cred_arr[0][i])] + '</td>');
+          this.assets_column.push('<th scope="col" class="table-row">' + profileNameByProfileId(this.cred_arr[0][i]) + '</th>');
         }
       }
       return [this.icon_column, this.assets_column];
@@ -6193,17 +741,11 @@ let userObject = {
             prefix = 'F: ';
           }
           let apr_adj = (apr / apy_scale) * 100;
-
-
-          this.apr_column.push('<th scope="col">' + prefix + ((parseFloat(apr_adj)).toFixed(2)).toString() + '%</th>');
+          this.apr_column.push('<th scope="col" class="table-row">' + prefix + ((parseFloat(apr_adj)).toFixed(2)).toString() + '%</th>');
         }
-
-
-
       }
       return this.apr_column;
     },
-
 
     in_wallet_column: new Array(),
     getInWalletCol_last_call: 0,
@@ -6222,7 +764,7 @@ let userObject = {
               from: userObject.account
             });
 
-            txt = '<td class="hide_for_credit_return_panel tab-vert-line-left">' + token_count + '</td>';
+            txt = '<td class="hide_for_credit_return_panel tab-vert-line-left table-cell">' + token_count + '</td>';
 
 
 
@@ -6239,7 +781,7 @@ let userObject = {
             let token_name = await erc20contract.methods.name().call({
               from: userObject.account
             });
-            txt = '<td class="hide_for_credit_return_panel tab-vert-line-left">' + adj_count_str + '</td>';
+            txt = '<td class="hide_for_credit_return_panel tab-vert-line-left table-cell">' + adj_count_str + '</td>';
 
             //html += '<span class="small-text-block">'+token_name+': '+adj_count_str+'</span>';  
 
@@ -6247,10 +789,10 @@ let userObject = {
             let wb = await window.web3js_reader.eth.getBalance(userObject.account);
             //let eth_balance = window.web3js_reader.utils.fromWei(wb, 'ether');
             let adj_eth_balance = toTokens(wb, 4); //((parseFloat(eth_balance)).toFixed(4)).toString(); 
-            txt = '<td class="hide_for_credit_return_panel tab-vert-line-left">' + adj_eth_balance + '</td>';
+            txt = '<td class="hide_for_credit_return_panel tab-vert-line-left table-cell">' + adj_eth_balance + '</td>';
 
           }
-          if (!txt) txt = '<td class="hide_for_credit_return_panel tab-vert-line-left">-</td>';
+          if (!txt) txt = '<td class="hide_for_credit_return_panel tab-vert-line-left table-cell">-</td>';
           this.in_wallet_column.push(txt);
         }
 
@@ -6276,16 +818,16 @@ let userObject = {
             if (am_arr[0][i] == cred_arr[0][j]) {
               //found
               if (depTypeByProfileId(cred_arr[0][j]) == ERC721_TOKEN) { //amount
-                txt = '<td class="hide_for_credit_return_panel">' + am_arr[1][i] + '</td>';
+                txt = '<td class="hide_for_credit_return_panel table-cell">' + am_arr[1][i] + '</td>';
               } else {
                 //let am = window.web3js_reader.utils.fromWei(am_arr[1][i], 'ether');
                 let adj_am = toTokens(am_arr[1][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-                txt = '<td class="hide_for_credit_return_panel">' + adj_am + '</td>';
+                txt = '<td class="hide_for_credit_return_panel table-cell">' + adj_am + '</td>';
               }
               break;
             }
           }
-          if (!txt) txt = '<td class="hide_for_credit_return_panel">-</td>';
+          if (!txt) txt = '<td class="hide_for_credit_return_panel table-cell">-</td>';
           this.dep_column.push(txt);
         }
 
@@ -6308,16 +850,16 @@ let userObject = {
           if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
             //found
             if (depTypeByProfileId(cred_arr[0][i]) == ERC721_TOKEN) { //amount
-              txt = '<td>' + cred_arr[1][i] + '</td>';
+              txt = '<td class="table-cell">' + cred_arr[1][i] + '</td>';
             } else {
               //let am = window.web3js_reader.utils.fromWei(cred_arr[1][i], 'ether');
               let adj_am = toTokens(cred_arr[1][i], 4) //((parseFloat(am)).toFixed(4)).toString(); 
-              txt = '<td>' + adj_am + '</td>';
+              txt = '<td class="table-cell">' + adj_am + '</td>';
             }
 
           }
 
-          if (!txt) txt = '<td>-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.cred_column.push(txt);
         }
 
@@ -6347,7 +889,7 @@ let userObject = {
           if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
             //found
             if (depTypeByProfileId(cred_arr[0][i]) == ERC721_TOKEN) { //amount
-              txt = '<td class="hide_for_set_leverage_panel">' + cred_arr[4][i] + '</td>';
+              txt = '<td class="hide_for_set_leverage_panel table-cell">' + cred_arr[4][i] + '</td>';
             } else {
               let clt_id = cred_arr[4][i];
               let clt_profile_id = clt_arr[0][parseInt(clt_id)];
@@ -6355,12 +897,12 @@ let userObject = {
               //let am = window.web3js_reader.utils.fromWei(clt_amount, 'ether');
               let adj_am = toTokens(clt_amount, 4); //((parseFloat(am)).toFixed(4)).toString(); 
               let tdtxt = profileNameByProfileId(clt_profile_id) + ': ' + adj_am;
-              txt = '<td class="hide_for_set_leverage_panel">' + tdtxt + '</td>';
+              txt = '<td class="hide_for_set_leverage_panel table-cell">' + tdtxt + '</td>';
             }
 
           }
 
-          if (!txt) txt = '<td class="hide_for_set_leverage_panel">-</td>';
+          if (!txt) txt = '<td class="hide_for_set_leverage_panel table-cell">-</td>';
           this.clt_column.push(txt);
         }
 
@@ -6390,12 +932,12 @@ let userObject = {
             //found
             let am = await calcUSDValueByProfileNonNFT(cred_arr[1][i], cred_arr[0][i]);
 
-            txt = '<td class="hide_for_set_leverage_panel">' + am + '</td>';
+            txt = '<td class="hide_for_set_leverage_panel table-cell">' + am + '</td>';
 
 
           }
 
-          if (!txt) txt = '<td class="hide_for_set_leverage_panel">-</td>';
+          if (!txt) txt = '<td class="hide_for_set_leverage_panel table-cell">-</td>';
           this.usd_val_column.push(txt);
         }
 
@@ -6420,15 +962,15 @@ let userObject = {
 
           if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
             if (cred_arr[3][i] == 0) {
-              txt = '<td class="hide_for_credit_return_panel">-</td>';
+              txt = '<td class="hide_for_credit_return_panel table-cell">-</td>';
             } else {
 
-              txt = '<td class="hide_for_credit_return_panel">' + cred_arr[3][i].toString() + '</td>';
+              txt = '<td class="hide_for_credit_return_panel table-cell">' + cred_arr[3][i].toString() + '</td>';
             }
 
           }
 
-          if (!txt) txt = '<td class="hide_for_credit_return_panel">-</td>';
+          if (!txt) txt = '<td class="hide_for_credit_return_panel table-cell">-</td>';
           this.duration_col.push(txt);
         }
 
@@ -6453,15 +995,15 @@ let userObject = {
 
 
           if (cred_arr[2][i] == 0) {
-            txt = '<td>-</td>';
+            txt = '<td class="table-cell">-</td>';
           } else {
             //let am = window.web3js_reader.utils.fromWei(cred_arr[2][i], 'ether');
             let adj_am = toTokens(cred_arr[2][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-            txt = '<td>' + adj_am + '</td>';
+            txt = '<td class="table-cell">' + adj_am + '</td>';
           }
 
 
-          if (!txt) txt = '<td>-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.fee_col.push(txt);
         }
 
@@ -6495,12 +1037,12 @@ let userObject = {
             //let am = window.web3js_reader.utils.fromWei(lev_arr[i], 'ether');
 
             let adj_am = toTokens(lev_arr[i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-            txt = '<td>' + adj_am + '<br>' + lev_ratio_arr[i] + '%</td>';
+            txt = '<td class="table-cell">' + adj_am + '<br>' + lev_ratio_arr[i] + '%</td>';
           }
 
           //	}
 
-          if (!txt) txt = '<td>-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.leverage_column.push(txt);
         }
 
@@ -6531,11 +1073,10 @@ let userObject = {
 
             let lbl = '';
 
-            txt = '<td onclick="compensate_with_leverage(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
-
+            txt = '<td class="table-cell" onclick="compensate_with_leverage(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
           }
 
-          if (!txt) txt = '<td>-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.set_leverage_column.push(txt);
         }
 
@@ -6556,7 +1097,6 @@ let userObject = {
         let cred_arr = this.cred_arr;
         let clt_arr = this.clt_arr;
         let lev_arr = this.lev_arr;
-
 
         for (let i = 0; i < cred_arr[0].length; i++) { //i == deposit id
           let txt = '';
@@ -6583,11 +1123,9 @@ let userObject = {
               from: userObject.account
             });
 
-
           //console.log('lns=',lns);
 
-
-          txt = '<td class="set_leverage_panel" id="set_leverage_panel' + i.toString() + '" style="display:none">';
+          txt = '<td class="set_leverage_panel table-cell" id="set_leverage_panel' + i.toString() + '" style="display:none">';
           if (cred_arr[1][i] > 0 && lev_arr[i] == 0) {
             txt += '<div class="set_leverage_input" style="font-size: 1em;">Set Leverage:</div>';
             txt += '<div style="margin-top: 1vh;"></div>';
@@ -6599,27 +1137,18 @@ let userObject = {
             txt += '<span class="set_leverage_input set_leverage_input' + i.toString() + '" style="position: absolute;margin-top:-0.5em;margin-left:0.5em;background:black; color:white; font-size: 0.5em">CYTR Lev.</span>';
             txt += '<input id="lev_size_' + i.toString() + '"+ readonly class="form-control set_leverage_input set_leverage_input' + i.toString() + '" aria-label="" ';
             txt += 'style="color: white; background-color: black !important; border-color: white !important;  width: 16vw;" >';
-
             txt += '</div>';
-
-
             txt += '<button class="transparent_button set_leverage_input set_leverage_input' + i.toString() + '" style="width: 10vw" onclick="set_leverage_confirm(' + i.toString() + ')">Confirm</button>';
           } else if (lev_arr[i] > 0) {
             txt += '<button id="unfreeze_leverage_' + i.toString() + '"+ class="transparent_button set_leverage_input set_leverage_input' + i.toString() + '" style="width: 6vw; margin:0!important" onclick="unfreeze_leverage(' + i.toString() + ')">Unfreeze</button>';
-
           }
           txt += '</td>';
 
-
-
-          if (!txt) txt = '<td class="set_leverage_panel" id="set_leverage_panel' + i.toString() + '">-</td>';
+          if (!txt) txt = '<td class="set_leverage_panel table-cell" id="set_leverage_panel' + i.toString() + '">-</td>';
           this.set_leverage_inputs_col.push(txt);
         }
-
-
       }
       return this.set_leverage_inputs_col;
-
     },
 
     return_credit_col: new Array(),
@@ -6628,8 +1157,6 @@ let userObject = {
       let current_timestamp = Date.now();
       if (current_timestamp > this.getReturnCreditCol_last_call + CACHE_TIME || flag) {
         this.getReturnCreditCol_last_call = current_timestamp;
-
-
         this.return_credit_col.length = 0;
         let cred_arr = this.cred_arr;
         let lev_arr = this.lev_arr;
@@ -6640,15 +1167,11 @@ let userObject = {
 
           if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
             let lbl = '';
-
-            txt = '<td class="hide_for_set_leverage_panel" onclick="return_credit(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
-
+            txt = '<td class="hide_for_set_leverage_panel table-cell" onclick="return_credit(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
           }
-
-          if (!txt) txt = '<td class="hide_for_set_leverage_panel">-</td>';
+          if (!txt) txt = '<td class="hide_for_set_leverage_panel table-cell">-</td>';
           this.return_credit_col.push(txt);
         }
-
 
       }
       return this.return_credit_col;
@@ -6674,8 +1197,7 @@ let userObject = {
             //let fee_am = window.web3js_reader.utils.fromWei(cred_arr[2][i], 'ether');	            
             //let adj_fee_am =  ((parseFloat(fee_am)).toFixed(4)).toString(); 
 
-
-            txt = '<td class="credit_return_panel" id="credit_return_panel' + i.toString() + '" style="display:none">';
+            txt = '<td class="credit_return_panel table-cell" id="credit_return_panel' + i.toString() + '" style="display:none">';
             if (cred_arr[1][i] > 0) {
               txt += '<div style="font-size: 1em;">Return credit body:</div>';
               txt += '<div style="margin-top: 1vh;"></div>';
@@ -6702,23 +1224,14 @@ let userObject = {
             }
             txt += '</td>';
 
-
           }
 
-          if (!txt) txt = '<td class="credit_return_panel"  id="credit_return_panel' + i.toString() + '" style="display:none">-</td>';
+          if (!txt) txt = '<td class="credit_return_panel table-cell" id="credit_return_panel' + i.toString() + '" style="display:none">-</td>';
           this.return_credit_inputs_col.push(txt);
         }
-
-
-
       }
       return this.return_credit_inputs_col;
-
     },
-
-
-
-
   },
   liq_earn: {
     icon_column: new Array(),
@@ -6730,28 +1243,24 @@ let userObject = {
       if (current_timestamp > this.getIconAssetLockupCols_last_call + CACHE_TIME || flag) {
         this.getIconAssetLockupCols_last_call = current_timestamp;
 
-
         this.icon_column.length = 0;
         this.asset_column.length = 0;
         this.lockup_period.length = 0;
         let am_arr = userObject.deposits.am_arr;
         let rew_arr = userObject.deposits.rew_arr;
 
-
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
           if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
             //console.log('u_p_id', am_arr[0][i]);
-            this.icon_column.push('<td>' + crypto_icons[await unswProfileNameByProfileId(am_arr[0][i])] + '</td>');
+            this.icon_column.push('<td class="table-cell">' + crypto_icons[await unswProfileNameByProfileId(am_arr[0][i])] + '</td>');
             let aname = (await unswProfileNameByProfileId(am_arr[0][i])).slice(0, -3);
-            this.asset_column.push('<th scope="col">' + aname + '</th>');
+            this.asset_column.push('<th scope="col" class="table-row">' + aname + '</th>');
             let period_code = (await unswProfileNameByProfileId(am_arr[0][i])).slice(-2);
 
-            this.lockup_period.push('<th scope="col">' + period_name_from_code[period_code] + '</th>');
+            this.lockup_period.push('<th scope="col" class="table-row">' + period_name_from_code[period_code] + '</th>');
           }
         }
-
-
       }
       return [this.icon_column, this.asset_column, this.lockup_period];
 
@@ -6779,7 +1288,7 @@ let userObject = {
             //let apy = await window.usage_calc_smartcontract_reader.methods.calcDepApy(am_arr[0][i]).call({ from: userObject.account});
             let apy = await getAPY(am_arr[0][i]);
             let apy_adj = (apy / apy_scale) * 100;
-            this.apy_column.push('<th scope="col">' + ((parseFloat(apy_adj)).toFixed(2)).toString() + '</th>');
+            this.apy_column.push('<th scope="col" class="table-row">' + ((parseFloat(apy_adj)).toFixed(2)).toString() + '</th>');
           }
         }
 
@@ -6796,13 +1305,10 @@ let userObject = {
       if (current_timestamp > this.getDepCol_last_call + CACHE_TIME || flag) {
         this.getDepCol_last_call = current_timestamp;
 
-
         this.dep_column.length = 0;
 
         let am_arr = userObject.deposits.am_arr;
         let rew_arr = userObject.deposits.rew_arr;
-
-
 
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
@@ -6811,19 +1317,15 @@ let userObject = {
             if (am_arr[1][i] > 0) {
               //let am = window.web3js_reader.utils.fromWei(am_arr[1][i], 'ether');
               let adj_am = toTokens(am_arr[1][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-              txt = '<td>' + adj_am + '</td>';
+              txt = '<td class="table-cell table-cell">' + adj_am + '</td>';
             } else {
-              txt = '<td>-</td>';
+              txt = '<td class="table-cell table-cell">-</td>';
             }
-
             this.dep_column.push(txt);
           }
         }
-
-
       }
       return this.dep_column;
-
     },
 
 
@@ -6858,9 +1360,9 @@ let userObject = {
                 val: am,
                 ori_index: index
               });
-              txt = '<td>' + am + '</td>';
+              txt = '<td class="table-cell table-cell">' + am + '</td>';
             } else {
-              txt = '<td>-</td>';
+              txt = '<td class="table-cell table-cell">-</td>';
               this.usd_val_only_col.push({
                 val: 0,
                 ori_index: index
@@ -6907,7 +1409,7 @@ let userObject = {
               let days = await stakingContractInstance.methods.depositDays(userObject.account, i).call({
                 from: userObject.account
               }); //duration
-              txt = '<td class="withdraw_rew_to_hide">' + days.toString() + '</td>';
+              txt = '<td class="withdraw_rew_to_hide table-cell">' + days.toString() + '</td>';
 
               let period_code = (await unswProfileNameByProfileId(am_arr[0][i])).slice(-2);
 
@@ -6919,10 +1421,10 @@ let userObject = {
                 unl_period_txt = '-';
               }
 
-              txt_unl = '<td class="withdraw_rew_to_hide">' + unl_period_txt + '</td>';
+              txt_unl = '<td class="withdraw_rew_to_hide table-cell">' + unl_period_txt + '</td>';
             } else {
-              txt = '<td class="withdraw_rew_to_hide">-</td>';
-              txt_unl = '<td class="withdraw_rew_to_hide">-</td>';
+              txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
+              txt_unl = '<td class="withdraw_rew_to_hide table-cell">-</td>';
             }
 
 
@@ -6959,9 +1461,9 @@ let userObject = {
             if (am_arr[2][i] > 0) {
               //let am = window.web3js_reader.utils.fromWei(am_arr[2][i], 'ether');
               let adj_am = toTokens(am_arr[2][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-              txt = '<td class="withdraw_rew_to_hide">' + adj_am + '</td>';
+              txt = '<td class="withdraw_rew_to_hide table-cell">' + adj_am + '</td>';
             } else {
-              txt = '<td class="withdraw_rew_to_hide">-</td>';
+              txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
             }
 
             this.extractable_dep_col.push(txt);
@@ -6994,9 +1496,9 @@ let userObject = {
 
             if (am_arr[2][i] > 0) {
               let lbl = '';
-              txt = '<td class="withdraw_rew_to_hide" onclick="withdraw_deposit(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
+              txt = '<td class="withdraw_rew_to_hide table-cell" onclick="withdraw_deposit(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
             } else {
-              txt = '<td class="withdraw_rew_to_hide">-</td>';
+              txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
             }
 
 
@@ -7035,7 +1537,7 @@ let userObject = {
 
               //let rew_am = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');	            
               //let adj_rew_am =  ((parseFloat(rew_am)).toFixed(4)).toString(); 
-              txt = '<td class="withdraw_params" style="display:none">';
+              txt = '<td class="withdraw_params table-cell" style="display:none">';
               txt += '<button id="withraw_dep_all' + i.toString() + '" class="transparent_button transparent_button_pressed withdraw_dep_input" style="display:none;width: 5vw" onclick="withdraw_deposit_all_btn(' + i.toString() + ')">All</button>';
               txt += '<button id="withraw_dep_part' + i.toString() + '" class="transparent_button withdraw_dep_input" style="display:none;width: 5vw" onclick="withdraw_deposit_part_btn(' + i.toString() + ')">Part</button>';
               txt += '<input class="withdraw_dep_input" id="withraw_dep_input' + i.toString() + '" type="number" min="0.1" step="0.1" max="' + adj_am + '" class="form-control" aria-label="" ';
@@ -7047,7 +1549,7 @@ let userObject = {
               txt += '<button id="withraw_dep_confirm' + i.toString() + '" class="transparent_button withdraw_dep_input" style="display:none;width: 10vw" onclick="withdraw_deposit_confirm(' + i.toString() + ')">Confirm</button>';
               txt += '</td>';
             } else {
-              txt = '<td class="withdraw_params" style="display:none">-</td>';
+              txt = '<td class="withdraw_params table-cell" style="display:none">-</td>';
             }
 
 
@@ -7081,9 +1583,9 @@ let userObject = {
             if (rew_arr[1][i] > 0) {
               //let adj = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');	            
               let adj_str = toTokens(rew_arr[1][i], 4); //((parseFloat(adj)).toFixed(4)).toString(); 
-              txt = '<td class="withdraw_params_to_hide">' + adj_str + '</td>';
+              txt = '<td class="withdraw_params_to_hide table-cell">' + adj_str + '</td>';
             } else {
-              txt = '<td class="withdraw_params_to_hide">-</td>';
+              txt = '<td class="withdraw_params_to_hide table-cell">-</td>';
             }
 
             this.reward_col.push(txt);
@@ -7117,9 +1619,9 @@ let userObject = {
             if (rew_arr[2][i] > 0) {
               //let adj = window.web3js_reader.utils.fromWei(rew_arr[2][i], 'ether');	            
               let adj_str = toTokens(rew_arr[2][i], 4); //((parseFloat(adj)).toFixed(4)).toString(); 
-              txt = '<td class="withdraw_params_to_hide">' + adj_str + '</td>';
+              txt = '<td class="withdraw_params_to_hide table-cell">' + adj_str + '</td>';
             } else {
-              txt = '<td class="withdraw_params_to_hide">-</td>';
+              txt = '<td class="withdraw_params_to_hide table-cell">-</td>';
             }
 
             this.extractable_reward_col.push(txt);
@@ -7152,9 +1654,9 @@ let userObject = {
 
             if (rew_arr[2][i] > 0) {
               let lbl = '';
-              txt = '<td class="withdraw_params_to_hide" onclick="withdraw_reward(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
+              txt = '<td class="withdraw_params_to_hide table-cell" onclick="withdraw_reward(' + i.toString() + ')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>' + lbl + '</td>';
             } else {
-              txt = '<td class="withdraw_params_to_hide">-</td>';
+              txt = '<td class="withdraw_params_to_hide table-cell">-</td>';
             }
 
             this.withdraw_rew_col.push(txt);
@@ -7186,12 +1688,12 @@ let userObject = {
             let txt = '';
 
             if (rew_arr[2][i] > 0) {
-              txt = '<td class="withdraw_reward_params" style="display:none">';
+              txt = '<td class="withdraw_reward_params table-cell" style="display:none">';
               txt += '<div style="display:block; margin-top: 1vh;"></div>'
               txt += '<button id="withdraw_rew_confirm' + i.toString() + '" class="transparent_button withdraw_rew_input" style="display:none;width: 10vw" onclick="withdraw_reward_confirm(' + i.toString() + ')">Confirm</button>';
               txt += '</td>';
             } else {
-              txt = '<td class="withdraw_reward_params" style="display:none">-</td>';
+              txt = '<td class="withdraw_reward_params table-cell" style="display:none">-</td>';
             }
 
 
@@ -7476,14 +1978,9 @@ async function getAccount() {
 
     window.gp = await window.web3js.eth.getGasPrice();
     window.gp = window.gp * 2;
-
-
-
-
   } catch (error) {
     errorMsg('cannot access wallet');
   }
-
 }
 
 async function getAccountWalletConnect() {
@@ -7788,7 +2285,6 @@ async function deposit() {
       token_ids.push(parseInt(userObject.state.selectedNFTAssets[i].t_id));
     }
 
-
   } else {
 
     amount = (safeFloatToWei(document.getElementById('tokens_amount').value)).toString(); //wei
@@ -7811,18 +2307,14 @@ async function deposit() {
         from: userObject.account
       }));
 
-
       let tokenAmountToApprove = new BN(amount);
-
       //amount is already adjusted *10**18
       let calculatedApproveValue = tokenAmountToApprove; //tokenAmountToApprove.mul(new BN(ADJ_CONSTANT.toString()));
-
 
       if (allow < calculatedApproveValue) {
         errorMsg('please approve tokens move / wait for approval transaction to finish');
         return;
       }
-
 
       let erc20_count = await token_contract.methods.balanceOf(userObject.account).call({
         from: userObject.account
@@ -7834,26 +2326,13 @@ async function deposit() {
         errorMsg('you do not have enough tokens in your wallet');
         return;
       }
-
     }
-
   }
-
-
 
   resetMsg();
   temporaryDisableCurrentButton('deposit_button');
 
-
-
-
-
-
-
   initStakingContract(async (stakingContractInstance) => {
-
-
-
     stakingContractInstance.methods.deposit(amount, token_ids, dep_profile_id, window.famer).send({
         from: userObject.account,
         value: wei_val,
@@ -7861,22 +2340,15 @@ async function deposit() {
       }, function (error, txnHash) {
         if (error) throw error;
         output_transaction(txnHash)
-
       })
       .on('confirmation', function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) updateData('make_deposit');
         resetMsg();
-
       })
       .catch(error => {
         errorMsg('smartcontract communication error');
-
       });
-
-
   });
-
-
 }
 
 async function approve_stake_liq() {
@@ -7890,10 +2362,7 @@ async function approve_stake_liq() {
   approveTokenMove(userObject.state.liq_pair_address, amount_wei, window.staking_contract_address);
 }
 
-
 async function stake_liq() {
-
-
 
   if (!userObject.state.liq_pair_name) {
     errorMsg('you need to select liquidity pair');
@@ -7924,12 +2393,10 @@ async function stake_liq() {
   //amount is already adjusted *10**18
   let calculatedApproveValue = tokenAmountToApprove; //tokenAmountToApprove.mul(new BN(ADJ_CONSTANT.toString()));
 
-
   if (allow < calculatedApproveValue) {
     errorMsg('please approve tokens move / wait for approval transaction to finish');
     return;
-  }
-
+  };
 
   let erc20_count = await token_contract.methods.balanceOf(userObject.account).call({
     from: userObject.account
@@ -7942,14 +2409,10 @@ async function stake_liq() {
     return;
   }
 
-
   resetMsg();
   temporaryDisableCurrentButton('stake_liq_confirm');
 
-
   initStakingContract(async (stakingContractInstance) => {
-
-
 
     stakingContractInstance.methods.deposit(amount, token_ids, dep_profile_id, NONE_FAMER_ID).send({
         from: userObject.account,
@@ -7969,11 +2432,7 @@ async function stake_liq() {
         errorMsg('smartcontract communication error');
 
       });
-
-
   });
-
-
 }
 
 async function approve_deposit() {
@@ -7982,8 +2441,6 @@ async function approve_deposit() {
     errorMsg('you need to select asset');
     return;
   }
-
-
   let dep_profile_id = userObject.state.selected_depprofile;
 
   if (userObject.state.selected_depprofile_name == 'nft') {
@@ -8023,23 +2480,16 @@ async function approve_deposit() {
     let amount_wei = (safeFloatToWei(document.getElementById('tokens_amount').value)).toString(); //wei
     approveTokenMove(userObject.state.selected_depprofile_token_address, amount_wei, window.staking_contract_address);
   }
-
-
 }
 
 async function approveTokenMove(token_address, amount_wei, toAddress) {
 
-
-
   let BN = window.web3js_reader.utils.BN;
-
 
   // Calculate contract compatible value for approve with proper decimal points using BigNumber 
   let tokenAmountToApprove = new BN(amount_wei);
   let calculatedApproveValue = window.web3js_reader.utils.toHex(tokenAmountToApprove);
-
   let token_contract = await new window.web3js.eth.Contract(erc20TokenContractAbi, token_address);
-
 
   await token_contract.methods.approve(toAddress, calculatedApproveValue).send({
       from: userObject.account,
@@ -8054,15 +2504,8 @@ async function approveTokenMove(token_address, amount_wei, toAddress) {
     })
     .catch(error => {
       errorMsg('smartcontract communication error');
-
     });
-
-
-
 }
-
-
-
 
 function output_transaction(txnHash, color = 'white', element_id = 'info_pane', elem_to_hide = null) {
   var el = document.getElementById(element_id);
@@ -8076,7 +2519,6 @@ function output_transaction(txnHash, color = 'white', element_id = 'info_pane', 
   }
   if (elem_to_hide) document.getElementById(elem_to_hide).style.display = "none";
 }
-
 
 function safeSetValueById(id, value, disp = 'block') {
   var el = document.getElementById(id);
@@ -8178,7 +2620,6 @@ function safeFloatToWei(num) { //as string
     num_s = (parseInt(num)).toString() + num_s;
   }
 
-
   //divide adj constant on 10**[num digits after dot]
   let bn_adj = new window.BN(ADJ_CONSTANT.toString());
 
@@ -8211,8 +2652,6 @@ function resetMsg() {
   document.getElementById('info_pane').classList.remove('info_pane_error');
   safeSetInnerHTMLById('info_pane', '');
 }
-
-
 
 function eventFire(el, etype) {
   if (el.fireEvent) {
@@ -8253,7 +2692,6 @@ async function onUniversalConnect() {
 
 }
 
-
 /*
 
 https://data-seed-prebsc-1-s1.binance.org:8545/
@@ -8282,7 +2720,6 @@ let web3jsReadersList = {
       await_array.push(new Web3(new Web3.providers.HttpProvider(this.rpc_list[i])));
     }
     this.web3js_list = await Promise.all(await_array);
-
   },
 
   get: function () {
@@ -8291,9 +2728,7 @@ let web3jsReadersList = {
     if (this.index > 3) this.index = 0;
     return ret_val;
   }
-
 }
-
 
 async function initWeb3jsReader(callback = null) {
   if (!window.web3js_reader) {
@@ -8301,9 +2736,7 @@ async function initWeb3jsReader(callback = null) {
   }
   //and in any case
   if (callback) callback(window.web3js_reader);
-
 }
-
 
 function isWeb3Connected() {
 
@@ -8312,16 +2745,13 @@ function isWeb3Connected() {
   } else {
     return !!window.provider;
   }
-
 }
-
 
 async function connectWeb3() {
   if (isMetaMaskInstalled()) {
     //console.log('metamask installed');
     window.ethereum.autoRefreshOnNetworkChange = false;
     getAccount();
-
 
     window.ethereum.on('accountsChanged', function (accounts) {
       getAccount();
@@ -8332,8 +2762,6 @@ async function connectWeb3() {
       if (chainId == '0x2a') window.location.replace('https://debank.cyclops.game');
       window.location.reload();
     });
-
-
 
   } else {
 
@@ -8351,20 +2779,16 @@ async function connectWeb3() {
     }
 
     initWeb3Modal();
-
     //await web3Modal.updateTheme("dark");
-
 
     await onUniversalConnect();
     //errorMsg("You need to install MetaMask");
 
   }
-
 }
 
 
 async function onUniversalDisconnect() {
-
 
   // TODO: Which providers have close method?
   if (window.provider.close) {
@@ -8387,8 +2811,6 @@ async function onUniversalDisconnect() {
 async function toggleWeb3Connect() {
   if (isMetaMaskInstalled()) return; //do nothing, we just use metamask
 
-
-
   if (!isWeb3Connected()) { //connect to mobile wallet
     await connectWeb3();
     if (isWeb3Connected()) {
@@ -8408,14 +2830,11 @@ async function toggleWeb3Connect() {
   }
 }
 
-
 function copyToClipboard(elem) { //elem should be input  
   elem.select();
   elem.setSelectionRange(0, 99999)
   document.execCommand("copy");
 }
-
-
 
 async function updateData(action = null) {
 
@@ -8440,8 +2859,6 @@ async function updateData(action = null) {
       document.getElementById('debank_load_bar').ldBar.set(45);
     });
 
-
-
     //getFamersDashboard();
   } else if (action == 'make_deposit') {
     getDepositsDashboard();
@@ -8465,10 +2882,6 @@ async function updateData(action = null) {
 
 }
 
-
-
-
-
 function loginAdmin() {
 
   const msgParams = [{
@@ -8487,7 +2900,6 @@ function loginAdmin() {
       value: Math.floor(Math.random() * 100000000)
     }
   ];
-
 
   window.ethereum
     .request({
@@ -8552,7 +2964,6 @@ function updTotalsTable() {
         //console.error(error);
       }
     })
-
 }
 
 function checkAdminButton(token) {
@@ -8638,8 +3049,6 @@ function setWalletPref(pref) {
       var type = respJson.type;
       if (type == "success") {
         //
-
-
       } else {
         errorMsg("setting wallet preferences error");
       }
@@ -8688,11 +3097,9 @@ async function getWalletPref() {
         } else {
           userObject.state.current_page_id = respJson.value.page_id;
         }
-
         //console.log('current pref', respJson.value)
 
       } else {
-
         userObject.state.current_page_id = 'dashboard-tab';
         //console.log("getting wallet preferences error");
       }
@@ -8714,7 +3121,6 @@ function checkAdminAuthentification(msg_params, encr_message, php_script, extra_
     msg_params: msg_params,
     encrypted_message: encr_message
   });
-
 
   var requestOptions = {
     method: 'POST',
@@ -8760,7 +3166,6 @@ function checkAdminAuthentification(msg_params, encr_message, php_script, extra_
     });
 }
 
-
 function postAndRedirect(url, postData) {
 
   var postFormStr = "<form method='POST' action='" + url + "'>\n";
@@ -8779,9 +3184,6 @@ function postAndRedirect(url, postData) {
   $(formElement).submit();
 }
 
-
-
-
 function assetNFTUrlByName(asset_name) {
   return NFT_ROOT_URL + '/' + asset_name + '.json';
 }
@@ -8789,11 +3191,8 @@ function assetNFTUrlByName(asset_name) {
 
 async function getBackendParameter(var_name, callback = null) {
 
-
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-
-
 
   var requestOptions = {
     method: 'GET',
@@ -8817,19 +3216,13 @@ async function getBackendParameter(var_name, callback = null) {
         resetMsg();
         if (callback) callback(respJson.var);
 
-
       } else {
         errorMsg('API error');
-
-
       }
-
-
 
     })
     .catch(error => {
       //console.log(error);
-
     });
 }
 
@@ -8969,7 +3362,6 @@ async function getDepositProfilesList() { //for dropdown
   for (let i = 0; i < userObject.deposit_profiles.length; i++) {
     let option = {};
 
-
     option.text = userObject.deposit_profiles[i].p_name; //name
     option.p_id = userObject.deposit_profiles[i].p_id; //profile id
     option.d_type = userObject.deposit_profiles[i].p_dep_type; //dep type
@@ -8997,14 +3389,10 @@ async function getDepositProfilesList() { //for dropdown
 
 async function getCreditProfilesList() { //for dropdown
 
-
   let plist = new Array();
-
-
 
   for (let i = 0; i < userObject.credit_profiles.length; i++) {
     let option = {};
-
 
     option.text = userObject.credit_profiles[i].name;
     option.p_id = userObject.credit_profiles[i].id;
@@ -9028,8 +3416,6 @@ async function getCreditProfilesList() { //for dropdown
   }
   return plist;
 
-
-
 }
 
 async function getCreditProfilesListCredit() { //for dropdown
@@ -9050,12 +3436,10 @@ async function getCreditProfilesListCredit() { //for dropdown
   }
   return plist;
 
-
 }
 
 async function initDepositProfilesDropdown() {
   var ddData = await getDepositProfilesList();
-
 
   $('#depprofiles-dropdown').ddslick({
     data: ddData,
@@ -9197,8 +3581,6 @@ async function initGetCreditDropdown() {
         document.getElementById('set_var_credit').style.display = "inline";
         document.getElementById('set_fixed_credit').style.display = "inline";
 
-
-
         let apy = await window.usage_calc_smartcontract_reader.methods.calcVarApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({
           from: userObject.account
         });
@@ -9226,7 +3608,6 @@ function offset(el) {
 async function initFamersDropdowns() {
   var ddData = await getFamersList();
 
-
   $('#famer-dropdown1').ddslick({
     data: ddData,
     width: '16vw',
@@ -9241,18 +3622,15 @@ async function initFamersDropdowns() {
 
   document.getElementById('famer-dropdown1').setAttribute('style', 'position:absolute !important; right: 7vw! important');
 
-
 }
 
 async function getNFTAssets() {
 
   let flist = new Array();
 
-
   let len = await window.cyclops_nft_smartcontract_reader.methods.balanceOf(userObject.account).call({
     from: userObject.account
   });
-
 
   for (let i = 0; i < len; i++) {
     let t_id = await window.cyclops_nft_smartcontract_reader.methods.tokenOfOwnerByIndex(userObject.account, i).call({
@@ -9264,7 +3642,6 @@ async function getNFTAssets() {
 
     let response = await fetch(token_uri);
     let json_content = await response.json();
-
 
     let option = {};
     option.text = json_content.name;
@@ -9300,7 +3677,6 @@ async function initAssetsDropdown() {
       assetAdd(asset);
 
       //callback function: do something with selectedData;
-
 
     }
   });
@@ -9359,7 +3735,6 @@ async function getLiqPairs() {
 
   for (let i = 0; i < pairs.length; i++) {
 
-
     let option = {};
     option.text = pairs[i].text;
     option.addr = pairs[i].addr;
@@ -9376,7 +3751,6 @@ async function getLiqPairs() {
 }
 
 async function initLiqTermsDropdown() {
-
 
   /*if (!userObject.deposit_profiles_liqpairs){
     	userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
@@ -9396,8 +3770,6 @@ async function initLiqTermsDropdown() {
       liqterm.text = selectedData.selectedData.text;
       liqterm.code = selectedData.selectedData.code;
 
-
-
       userObject.state.liq_pair_fullcode = userObject.state.liq_pair_name + '-' + liqterm.code;
       let apy_str = await unswAPYStrByProfileName(userObject.state.liq_pair_fullcode);
       if (!apy_str) {
@@ -9407,7 +3779,6 @@ async function initLiqTermsDropdown() {
       safeSetInnerHTMLById('liq_pair_apy', apy_str + ' APY', 'inline');
 
       //callback function: do something with selectedData;
-
 
     }
   });
@@ -9451,7 +3822,6 @@ async function initLiqPairsDropdown() {
       $('#liqterms-dropdown').ddslick('destroy');
       initLiqTermsDropdown();
 
-
     }
   });
   document.getElementById('liqpairs-dropdown').setAttribute('style', 'font-size: 0.5em !important; margin:0 !important; padding: 0 !important;');
@@ -9492,7 +3862,6 @@ function assetRemove(t_id) {
     }
   }
 
-
   let html = '';
   for (let i = 0; i < userObject.state.selectedNFTAssets.length; i++) {
     html += '<span class="box-span" onclick="assetRemove(' + userObject.state.selectedNFTAssets[i].t_id + ')">' + userObject.state.selectedNFTAssets[i].text + '[' + userObject.state.selectedNFTAssets[i].t_id + ']</span>';
@@ -9513,7 +3882,6 @@ function assetRemove(t_id) {
   }
 
 }
-
 
 async function getTotalDashboard(callback = null) {
 
@@ -9541,24 +3909,22 @@ async function buildTotalDashboard() {
   });
 
   let html =
-    '<table class="table" style="font-size: 0.75em">' +
+    '<table class="min-w-full">' +
     '<thead>' +
-    '<tr style="text-align:left">' +
-    '<th></th>' + //icon
-    '<th>Assets</th>' +
-    '<th>Total Deposits</th>' +
-    '<th>Total Borrowed</th>' +
-    '<th>Deposit APY<sup>*</sup></th>' +
-    '<th>Variable<br>Borrow APR<sup>*</sup></th>' +
-    '<th>Fixed<br>Borrow APR<sup>*</sup></th>' +
+    '<tr>' +
+    '<th class="table-title"></th>' + //icon
+    '<th class="table-title">Assets</th>' +
+    '<th class="table-title">Total Deposits</th>' +
+    '<th class="table-title">Total Borrowed</th>' +
+    '<th class="table-title">Deposit APY<sup>*</sup></th>' +
+    '<th class="table-title">Variable<br>Borrow APR<sup>*</sup></th>' +
+    '<th class="table-title">Fixed<br>Borrow APR<sup>*</sup></th>' +
     '</tr>' +
     '</thead>' +
     '<tbody>';
 
   let profiles = userObject.deposit_profiles;
   let cred_profiles = userObject.credit_profiles;
-
-
 
   let icon_column = new Array();
   let asset_column = new Array();
@@ -9570,8 +3936,8 @@ async function buildTotalDashboard() {
   //let fee_column = new Array();
 
   for (let i = 0; i < profiles.length; i++) {
-    icon_column.push('<td>' + crypto_icons[profiles[i]['p_name']] + '</td>');
-    asset_column.push('<td>' + profiles[i]['p_name'] + '</td>');
+    icon_column.push('<td class="table-cell">' + crypto_icons[profiles[i]['p_name']] + '</td>');
+    asset_column.push('<td class="table-cell">' + profiles[i]['p_name'] + '</td>');
     let dep_stat = await stakingContractInstance.methods.depositsStat(parseInt(profiles[i]['p_id'])).call({
       from: userObject.account
     });
@@ -9580,22 +3946,22 @@ async function buildTotalDashboard() {
       dep_total = window.web3js_reader.utils.fromWei(dep_total, 'ether');
     let dep_total_str = ((parseFloat(dep_total)).toFixed(3)).toString();
 
-    dep_column.push('<td>' + dep_total_str + '</td>');
+    dep_column.push('<td class="table-cell">' + dep_total_str + '</td>');
     /*
     let extr_dep_total = dep_stat[1];
     if (parseInt(profiles[i]['p_dep_type']) != ERC721_TOKEN)
      	extr_dep_total = window.web3js_reader.utils.fromWei(extr_dep_total, 'ether');
 
     let extr_dep_total_str = ((parseFloat(extr_dep_total)).toFixed(3)).toString();  
-    extractable_dep_col.push('<td>'+extr_dep_total_str+'</td>');
+    extractable_dep_col.push('<td class="table-cell">'+extr_dep_total_str+'</td>');
 
     let rew_total = window.web3js_reader.utils.fromWei(dep_stat[2], 'ether');
     let rew_total_str = ((parseFloat(rew_total)).toFixed(3)).toString();  
-    reward_col.push('<td>'+rew_total_str+'</td>');
+    reward_col.push('<td class="table-cell">'+rew_total_str+'</td>');
 
     let extr_rew_total = window.web3js_reader.utils.fromWei(dep_stat[3], 'ether');
     let extr_rew_total_str = ((parseFloat(extr_rew_total)).toFixed(3)).toString();  
-    extractable_reward_col.push('<td>'+extr_rew_total_str+'</td>');
+    extractable_reward_col.push('<td class="table-cell">'+extr_rew_total_str+'</td>');
     */
     let cred_stat = await creditContractInstance.methods.creditsStat(parseInt(profiles[i]['p_id'])).call({
       from: userObject.account
@@ -9605,16 +3971,12 @@ async function buildTotalDashboard() {
     if (parseInt(profiles[i]['p_dep_type']) != ERC721_TOKEN)
       cred_total = window.web3js_reader.utils.fromWei(cred_total, 'ether');
     let cred_total_str = ((parseFloat(cred_total)).toFixed(3)).toString();
-    cred_column.push('<td>' + cred_total_str + '</td>');
+    cred_column.push('<td class="table-cell">' + cred_total_str + '</td>');
 
     /*fee_total = window.web3js_reader.utils.fromWei(fee_total, 'ether'); 
     let fee_total_str = ((parseFloat(fee_total)).toFixed(3)).toString(); 
-    fee_column.push('<td>'+fee_total_str+'</td>');*/
+    fee_column.push('<td class="table-cell">'+fee_total_str+'</td>');*/
   }
-
-
-
-
 
   let usage_contract;
   await initUsageCalcContractReader((contract) => {
@@ -9638,7 +4000,7 @@ async function buildTotalDashboard() {
 
     apy_str = ((apy_real * 100).toFixed(3)).toString() + '%';
 
-    apy_column.push('<td>' + apy_str + '</td>');
+    apy_column.push('<td class="table-cell">' + apy_str + '</td>');
   }
 
 
@@ -9656,7 +4018,7 @@ async function buildTotalDashboard() {
       if (min_apr > apr_adj) min_apr = apr_adj;
     }
     //from: '+((parseFloat(min_apr)).toFixed(2)).toString()+'<br>'
-    apr_column.push('<th scope="col">' + ((parseFloat(max_apr)).toFixed(2)).toString() + '</th>');
+    apr_column.push('<th scope="col" class="table-row">' + ((parseFloat(max_apr)).toFixed(2)).toString() + '</th>');
   }
 
   let apr_fix_column = new Array();
@@ -9674,7 +4036,7 @@ async function buildTotalDashboard() {
     }
 
     //from: '+((parseFloat(min_apr)).toFixed(2)).toString()+'<br>'
-    apr_fix_column.push('<th scope="col">' + ((parseFloat(max_apr)).toFixed(2)).toString() + '</th>');
+    apr_fix_column.push('<th scope="col" class="table-row">' + ((parseFloat(max_apr)).toFixed(2)).toString() + '</th>');
   }
 
   /*
@@ -9691,19 +4053,16 @@ async function buildTotalDashboard() {
 								v =v.add(new BN(item.returnValues.reward));
 								flag = true;
 							
-							}
-														
+							}								
 						});
 						
-
 						if (flag){
 							let vf = window.web3js_reader.utils.fromWei(v, 'ether');
 							let f = (parseFloat(vf)).toFixed(3);
-							earned_column.push('<td>'+f.toString()+'</td>');
+							earned_column.push('<td class="table-cell">'+f.toString()+'</td>');
 						} else {
-							earned_column.push('<td>-</td>');
+							earned_column.push('<td class="table-cell">-</td>');
 						}
-						
 						
 					}
 				})
@@ -9711,10 +4070,6 @@ async function buildTotalDashboard() {
 		  			errorMsg('cannot get events from smartcontract');
 		});       
 	      */
-
-
-
-
 
   for (let i = 0; i < profiles.length; i++) {
     //0 means max amount for ERC20 compatible and ignored for ERC721
@@ -9748,9 +4103,6 @@ async function buildTotalDashboard() {
     html += '</tr>';
   }
 
-
-
-
   html += '</tbody>' +
     '</table>';
 
@@ -9781,7 +4133,7 @@ async function getFamersDashboard() {
 
     for (let i = 0; i < window.famers.length; i++) {
       famers_table[i] = {};
-      famers_table[i]["name"] = '<td>' + window.famers[i].text + '</td>';
+      famers_table[i]["name"] = '<td class="table-cell">' + window.famers[i].text + '</td>';
     }
 
 
@@ -9790,7 +4142,7 @@ async function getFamersDashboard() {
         from: userObject.account
       });
       famers_table[i]["dig_v"] = v;
-      famers_table[i]["vote"] = '<td>' + v.toString() + '</td>';
+      famers_table[i]["vote"] = '<td class="table-cell">' + v.toString() + '</td>';
     }
 
     famers_table.reverse((a, b) => {
@@ -9999,28 +4351,29 @@ async function unswDepTypeByProfileId(profile_id) {
   return BAD_DEPOSIT_PROFILE_ID;
 }
 
+// getCreditsDashboard
+
 async function getCreditsDashboard(callback = null) {
 
-
   let html =
-    '<table class="table" style="font-size: 0.75em">' +
+    '<table class="min-w-full">' +
     '<thead>' +
-    '<tr style="text-align:left">' +
-    '<th></th>' +
-    '<th>Asset</th>' +
-    '<th>Borrowed<br>amount</th>' +
-    '<th class="hide_for_set_leverage_panel">USD value</th>' +
-    '<th class="hide_for_set_leverage_panel">Collateral</th>' +
-    '<th class="hide_for_credit_return_panel">Duration<br>days</th>' +
-    '<th>Curent<br>APR<sup>*</sup></th>' +
-    '<th>Fee</th>' +
-    '<th>Leverage<br>Level</th>' +
-    '<th>Cover Fees<br>with CYTR<br>Leverage</th>' +
-    '<th class="set_leverage_panel set_leverage_panel_header" style="display:none"><button class="transparent_button"  onclick="hide_set_leverage()">Hide</button></th>' +
-    '<th class="hide_for_set_leverage_panel">Repay<br>borrow</th>' +
-    '<th class="credit_return_panel credit_return_panel_header" style="display:none"><button class="transparent_button"  onclick="hide_return_credit()">Hide</button></th>' +
-    '<th class="hide_for_credit_return_panel tab-vert-line-left">In wallet</th>' +
-    '<th class="hide_for_credit_return_panel">Deposit</th>' +
+    '<tr>' +
+    '<th class="table-title"></th>' +
+    '<th class="table-title">Asset</th>' +
+    '<th class="table-title">Borrowed<br>amount</th>' +
+    '<th class="hide_for_set_leverage_paneltable-title">USD value</th>' +
+    '<th class="hide_for_set_leverage_panel table-title">Collateral</th>' +
+    '<th class="hide_for_credit_return_panel table-title">Duration<br>days</th>' +
+    '<th class="table-title">Curent<br>APR<sup>*</sup></th>' +
+    '<th class="table-title">Fee</th>' +
+    '<th class="table-title">Leverage<br>Level</th>' +
+    '<th class="table-title">Cover Fees<br>with CYTR<br>Leverage</th>' +
+    '<th class="set_leverage_panel set_leverage_panel_header table-title" style="display:none"><button class="transparent_button"  onclick="hide_set_leverage()">Hide</button></th>' +
+    '<th class="hide_for_set_leverage_panel table-title">Repay<br>borrow</th>' +
+    '<th class="credit_return_panel credit_return_panel_header table-title" style="display:none"><button class="transparent_button"  onclick="hide_return_credit()">Hide</button></th>' +
+    '<th class="hide_for_credit_return_panel tab-vert-line-left table-title">In wallet</th>' +
+    '<th class="hide_for_credit_return_panel table-title">Deposit</th>' +
     '</tr>' +
     '</thead>' +
     '<tbody>';
@@ -10138,24 +4491,23 @@ async function getLiquidityDashboard(callback = null) {
   let html =
     '<table class="table" style="font-size: 0.75em">' +
     '<thead>' +
-    '<tr style="text-align:left">' +
-    '<th></th>' +
-    '<th>liquidity-Pair</th>' +
-
+    '<tr>' +
+    '<th class="table-title"></th>' +
+    '<th class="table-title">liquidity-Pair</th>' +
     //'<th>In wallet</th>'+
-    '<th>Quantity</th>' +
-    '<th>Lockup</th>' +
-    '<th>Days till<br>Withdraw</th>' +
-    '<th>USD value</th>' +
-    '<th>APY</th>' +
-    '<th class="withdraw_rew_to_hide">Duration<br>days</th>' +
-    '<th class="withdraw_rew_to_hide">Extractable</th>' +
-    '<th class="withdraw_rew_to_hide">Withdraw<br>deposit</th>' +
-    '<th class="withdraw_params" style="display:none"><button class="transparent_button"  onclick="hide_withdraw_deposit()">Hide</button></th>' +
-    '<th class="withdraw_params_to_hide" >Current<br>Yield<br>CYTR</th>' +
-    '<th class="withdraw_params_to_hide" >Extractable<br>Yield<br>CYTR</th>' +
-    '<th class="withdraw_params_to_hide" >Withdraw<br>Yield</th>' +
-    '<th class="withdraw_reward_params" style="display:none"><button class="transparent_button"  onclick="hide_withdraw_reward()">Hide</button></th>' +
+    '<th class="table-title">Quantity</th>' +
+    '<th class="table-title">Lockup</th>' +
+    '<th class="table-title">Days till<br>Withdraw</th>' +
+    '<th class="table-title">USD value</th>' +
+    '<th class="table-title">APY</th>' +
+    '<th class="withdraw_rew_to_hide table-title">Duration<br>days</th>' +
+    '<th class="withdraw_rew_to_hide table-title">Extractable</th>' +
+    '<th class="withdraw_rew_to_hide table-title">Withdraw<br>deposit</th>' +
+    '<th class="withdraw_params table-title" style="display:none"><button class="transparent_button"  onclick="hide_withdraw_deposit()">Hide</button></th>' +
+    '<th class="withdraw_params_to_hide table-title" >Current<br>Yield<br>CYTR</th>' +
+    '<th class="withdraw_params_to_hide table-title" >Extractable<br>Yield<br>CYTR</th>' +
+    '<th class="withdraw_params_to_hide table-title" >Withdraw<br>Yield</th>' +
+    '<th class="withdraw_reward_params table-title" style="display:none"><button class="transparent_button"  onclick="hide_withdraw_reward()">Hide</button></th>' +
     '</tr>' +
     '</thead>' +
     '<tbody>';
@@ -10165,8 +4517,6 @@ async function getLiquidityDashboard(callback = null) {
   let [am_arr, rew_arr] = await Promise.all([userObject.deposits.getAmArr(),
     userObject.deposits.getRewArr()
   ]);
-
-
 
   let [
     [icon_column, asset_column, lockup_period],
@@ -10195,9 +4545,6 @@ async function getLiquidityDashboard(callback = null) {
     userObject.liq_earn.getWithdrawRewInputsCol()
   ]);
 
-
-
-
   /*
   		let withdraw_rew_col = new Array();
   		for (let i = 0; i < am_arr[0].length; i++){
@@ -10207,9 +4554,9 @@ async function getLiquidityDashboard(callback = null) {
   				
   				if (rew_arr[2][i] > 0){
   	    			let lbl='';
-  	    			txt =  '<td class="withdraw_params_to_hide" onclick="withdraw_reward('+i.toString()+')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>'+lbl+'</td>';
+  	    			txt =  '<td class="withdraw_params_to_hide table-cell" onclick="withdraw_reward('+i.toString()+')"><span class="iconify" data-icon="emojione-v1:money-bag" data-inline="false"></span>'+lbl+'</td>';
   	    		} else {
-  	    			txt =  '<td class="withdraw_params_to_hide">-</td>'; 
+  	    			txt =  '<td class="withdraw_params_to_hide table-cell">-</td>'; 
   	    		}
   		      
   		        withdraw_rew_col.push(txt);
@@ -10225,12 +4572,12 @@ async function getLiquidityDashboard(callback = null) {
   				let txt = '';
   				
   		        if (rew_arr[2][i] > 0){    	
-  	    			txt = '<td class="withdraw_reward_params" style="display:none">';
+  	    			txt = '<td class="withdraw_reward_params table-cell" style="display:none">';
   	    			txt += '<div style="display:block; margin-top: 1vh;"></div>'
   	    			txt += '<button id="withdraw_rew_confirm'+i.toString()+'" class="transparent_button withdraw_rew_input" style="display:none;width: 10vw" onclick="withdraw_reward_confirm('+i.toString()+')">Confirm</button>';
   	    			txt += '</td>'; 
   	    		} else {
-  	    			txt =  '<td class="withdraw_reward_params" style="display:none">-</td>'; 
+  	    			txt =  '<td class="withdraw_reward_params table-cell" style="display:none">-</td>'; 
   	    		}
   	    		
 
@@ -10284,12 +4631,11 @@ async function getLiquidityDashboard(callback = null) {
 
   for (let i = 0; i < icon_column.length; i++) {
     //0 means max amount for ERC20 compatible and ignored for ERC721
-    html += '<tr style="text-align: left; font-size: 0.75em">';
+    html += '<tr class="table-row">';
 
     html += icon_column_s[i];
 
     html += asset_column_s[i];
-
 
     //html += in_wallet_column_s[i];
 
@@ -10322,9 +4668,6 @@ async function getLiquidityDashboard(callback = null) {
     html += '</tr>';
   }
 
-
-
-
   html += '</tbody>' +
     '</table>';
 
@@ -10345,16 +4688,16 @@ async function getDepositsDashboard(callback = null) {
     '<th class="table-title">Asset</th>' +
     '<th class="table-title">In wallet</th>' +
     '<th class="table-title">Deposit</th>' +
-    '<th>USD value</th>' +
-    '<th>APY</th>' +
-    '<th class="withdraw_rew_to_hide">Duration<br>days</th>' +
-    '<th class="withdraw_rew_to_hide">Extractable</th>' +
-    '<th class="withdraw_rew_to_hide">Withdraw<br>deposit</th>' +
-    '<th class="withdraw_params" style="display:none"><button class="transparent_button"  onclick="hide_withdraw_deposit()">Hide</button></th>' +
-    '<th class="withdraw_params_to_hide" >Current<br>Yield</th>' +
-    '<th class="withdraw_params_to_hide" >Extractable<br>Yield</th>' +
-    '<th class="withdraw_params_to_hide" >Withdraw<br>Yield</th>' +
-    '<th class="withdraw_reward_params" style="display:none"><button class="transparent_button"  onclick="hide_withdraw_reward()">Hide</button></th>' +
+    '<th class="table-title">USD value</th>' +
+    '<th class="table-title">APY</th>' +
+    '<th class="withdraw_rew_to_hide table-title">Duration<br>days</th>' +
+    '<th class="withdraw_rew_to_hide table-title">Extractable</th>' +
+    '<th class="withdraw_rew_to_hide table-title">Withdraw<br>deposit</th>' +
+    '<th class="withdraw_params table-title" style="display:none"><button class="transparent_button"  onclick="hide_withdraw_deposit()">Hide</button></th>' +
+    '<th class="withdraw_params_to_hide table-title" >Current<br>Yield</th>' +
+    '<th class="withdraw_params_to_hide table-title" >Extractable<br>Yield</th>' +
+    '<th class="withdraw_params_to_hide table-title" >Withdraw<br>Yield</th>' +
+    '<th class="withdraw_reward_params table-title" style="display:none"><button class="transparent_button"  onclick="hide_withdraw_reward()">Hide</button></th>' +
     '</tr>' +
     '</thead>' +
     '<tbody>';
@@ -10442,7 +4785,7 @@ async function getDepositsDashboard(callback = null) {
 
   for (let i = 0; i < profiles.length; i++) {
     //0 means max amount for ERC20 compatible and ignored for ERC721
-    html += '<tr style="text-align: left; font-size: 0.75em">';
+    html += '<tr class="table-row">';
 
     html += icon_column_s[i];
 

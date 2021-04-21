@@ -2174,6 +2174,16 @@ input:checked + label {
   }
 }
 
+.table-row td:first-child {
+  border-bottom-left-radius: 8px;
+  border-top-left-radius: 8px;
+}
+
+.table-row td:last-child {
+  border-bottom-right-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
 @media (min-width: 640px) {
 }
 
