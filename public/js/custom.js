@@ -5100,29 +5100,29 @@ function withdraw_reward(dep_id) {
 
 function withdraw_deposit(dep_id) {
   hide_withdraw_deposit(dep_id);
-  $('.withdraw_params').show();
-  $('#withraw_dep_input' + dep_id.toString()).show();
-  $('#withraw_dep_all' + dep_id.toString()).show();
-  $('#withraw_dep_part' + dep_id.toString()).show();
-  $('#withraw_dep_confirm' + dep_id.toString()).show();
+  // $('.withdraw_params').show();
+  // $('#withraw_dep_input' + dep_id.toString()).show();
+  // $('#withraw_dep_all' + dep_id.toString()).show();
+  // $('#withraw_dep_part' + dep_id.toString()).show();
+  // $('#withraw_dep_confirm' + dep_id.toString()).show();
   //$('#withraw_dep_rew'+dep_id.toString()).show();
 
-  $('.withdraw_params_to_hide').hide();
+  // $('.withdraw_params_to_hide').hide();
 
   if (document.getElementById('withraw_dep_input' + dep_id.toString()))
     document.getElementById('withraw_dep_input' + dep_id.toString()).readOnly = true;
 }
 
 function hide_withdraw_deposit(dep_id) {
-  $('.withdraw_params').hide();
-  $('.withdraw_dep_input').hide();
-  $('.withdraw_params_to_hide').show();
+  // $('.withdraw_params').hide();
+  // $('.withdraw_dep_input').hide();
+  // $('.withdraw_params_to_hide').show();
 }
 
 function hide_withdraw_reward(dep_id) {
-  $('.withdraw_reward_params').hide();
-  $('.withdraw_rew_input').hide();
-  $('.withdraw_rew_to_hide').show();
+  // $('.withdraw_reward_params').hide();
+  // $('.withdraw_rew_input').hide();
+  // $('.withdraw_rew_to_hide').show();
 }
 
 function depAmountByProfileId(profile_id) {
