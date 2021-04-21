@@ -1908,14 +1908,9 @@ async function getAccount() {
     else if( userObject.account == '0xc358a60bccec7d0efe5c5e0d9f3862bba6cb5cd8'){}
     else {window.location.replace('https://fame.cyclops.game/upgrade.html')}*/
 
-
     window.chainId = window.ethereum.chainId;
 
     //document.getElementById('debank_load_bar').ldBar.set(10);
-
-
-
-
 
     //safeSetValueBySelector( '.current-wallet', (userObject.account));
     //safeSetInnerHTMLBySelector( '.current-wallet', (userObject.account),'inline');
@@ -1926,7 +1921,6 @@ async function getAccount() {
     window.BN = web3js.utils.BN;
 
     await Promise.all([initStakingContract(), initCreditContract(), initLiqLevContract(), initCyclopsNFTContract()])
-
 
     //document.getElementById('debank_load_bar').ldBar.set(15);
 
@@ -2007,7 +2001,6 @@ async function getAccountWalletConnect() {
     let accounts = await web3js.eth.getAccounts();
 
     userObject.account = accounts[0];
-
 
     safeSetValueBySelector('.current-wallet', userObject.account);
     safeSetInnerHTMLBySelector('.current-wallet', userObject.account, 'inline');
@@ -2843,21 +2836,15 @@ async function updateData(action = null) {
   await userObject.load(); //only once, userObject controls it
 
   if (!action) { //only when loaded
-    getTotalDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(35);
-    });
+    // getTotalDashboard(() => {
+    //   document.getElementById('debank_load_bar').ldBar.set(35);
+    // });
 
-    getDepositsDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(100);
-    });
+    getDepositsDashboard();
 
-    getCreditsDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(75);
-    });
+    getCreditsDashboard();
 
-    getLiquidityDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(45);
-    });
+    getLiquidityDashboard();
 
     //getFamersDashboard();
   } else if (action == 'make_deposit') {
@@ -4380,16 +4367,12 @@ async function getCreditsDashboard(callback = null) {
 
   //let profiles = userObject.deposit_profiles;
 
-
   let [am_arr, cred_arr, clt_arr] = await Promise.all([userObject.deposits.getAmArr(),
     userObject.credits.getCredArr(),
     userObject.credits.getCltArr()
   ]);
 
-
   let [lev_arr, lev_ratio_arr] = await userObject.credits.getLevArr();
-
-
 
   let [
     [icon_column, asset_column],
@@ -4422,11 +4405,7 @@ async function getCreditsDashboard(callback = null) {
     userObject.credits.getReturnCreditInputsCol()
   ]);
 
-
-
-
   for (let i = 0; i < cred_arr[0].length; i++) { //i == credit id
-
 
     if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0 || lev_arr[i] > 0) {
 
@@ -4464,13 +4443,8 @@ async function getCreditsDashboard(callback = null) {
 
     }
 
-
-
     html += '</tr>';
   }
-
-
-
 
   html += '</tbody>' +
     '</table>';
@@ -4558,12 +4532,9 @@ async function getLiquidityDashboard(callback = null) {
   	    		} else {
   	    			txt =  '<td class="withdraw_params_to_hide table-cell">-</td>'; 
   	    		}
-  		      
   		        withdraw_rew_col.push(txt);
   		    }
   		}
-
-
 
   		let withdraw_rew_inputs_col = new Array();
   		for (let i = 0; i < am_arr[0].length; i++){
@@ -4579,13 +4550,10 @@ async function getLiquidityDashboard(callback = null) {
   	    		} else {
   	    			txt =  '<td class="withdraw_reward_params table-cell" style="display:none">-</td>'; 
   	    		}
-  	    		
-
   		        withdraw_rew_inputs_col.push(txt);
   		    }
   		}
   */
-
 
   let icon_column_s = new Array(icon_column.length);
   let asset_column_s = new Array(icon_column.length);
@@ -4702,9 +4670,7 @@ async function getDepositsDashboard(callback = null) {
     '</thead>' +
     '<tbody>';
 
-
   let profiles = userObject.deposit_profiles;
-
 
   let [am_arr, rew_arr] = await Promise.all([userObject.deposits.getAmArr(),
     userObject.deposits.getRewArr()
@@ -4740,11 +4706,6 @@ async function getDepositsDashboard(callback = null) {
     userObject.deposits.getWithdrawRewCol(),
     userObject.deposits.getWithdrawRewInputsCol()
   ]);
-
-
-
-
-
 
   let icon_column_s = new Array(profiles.length);
   let asset_column_s = new Array(profiles.length);
@@ -4791,7 +4752,6 @@ async function getDepositsDashboard(callback = null) {
 
     html += asset_column_s[i];
 
-
     html += in_wallet_column_s[i];
 
     html += dep_column_s[i];
@@ -4819,18 +4779,13 @@ async function getDepositsDashboard(callback = null) {
     html += '</tr>';
   }
 
-
-
-
   html += '</tbody>' +
     '</table>';
 
   safeSetInnerHTMLById('tokens_balance', html)
 
   if (callback) callback();
-
 }
-
 
 function openTab(event, tabid) {
   safeHideBySelector('.tabcontent');
@@ -4839,7 +4794,6 @@ function openTab(event, tabid) {
   document.getElementById(tabid).style.display = "block";
   userObject.state.current_page_id = tabid;
 }
-
 
 async function updUSDValue(tokens_amount_elem, usd_val_elem) {
 
