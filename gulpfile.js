@@ -76,7 +76,7 @@ function jsTask(cb) {
         //     })
         // )
         // .pipe(uglify())
-        .pipe(concat("common.min.js"))
+        // .pipe(concat("common.min.js"))
         .pipe(gulp.dest('./public/js/'))
         .pipe(browserSync.stream());
     cb();

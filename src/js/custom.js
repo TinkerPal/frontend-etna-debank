@@ -1983,46 +1983,46 @@ async function getAccount(){
 
 		document.getElementById('debank_load_bar').ldBar.set(25);
 
-		if (window.location.pathname == '/'){
+		// if (window.location.pathname == '/'){
 			
-			window.barCheck = setInterval(barChecker, 1000);
-				async function barChecker() {
-				  if (document.getElementById('load_bar_cover')){
-				  	if (	document.getElementById('total_tokens_balance').innerHTML && 
-				  			document.getElementById('tokens_balance').innerHTML &&
-							document.getElementById('my_credits').innerHTML) {
-				  				await new Promise(r => setTimeout(r, 1000));
-				  				document.getElementById('load_bar_cover').style.display="none";
-				  				clearInterval(window.barCheck);
+		// 	window.barCheck = setInterval(barChecker, 1000);
+		// 		async function barChecker() {
+		// 		  if (document.getElementById('load_bar_cover')){
+		// 		  	if (	document.getElementById('total_tokens_balance').innerHTML && 
+		// 		  			document.getElementById('tokens_balance').innerHTML &&
+		// 					document.getElementById('my_credits').innerHTML) {
+		// 		  				await new Promise(r => setTimeout(r, 1000));
+		// 		  				document.getElementById('load_bar_cover').style.display="none";
+		// 		  				clearInterval(window.barCheck);
 
-					}
-				  }
+		// 			}
+		// 		  }
 				  
-			}
+		// 	}
 
-			if (window.chainId == undefined){
-				document.getElementById('net_name').innerHTML="unknown net";
-				document.getElementById('net_info').style.display ="block";
-				document.getElementById('net_info').style.color ="red";
-				document.getElementById('net_txt').innerHTML=" wrong network, connect to BSC-Test";
-			} else if (window.chainId != '0x61') {
-				document.getElementById('net_name').innerHTML=chains[window.chainId];
-				document.getElementById('net_info').style.display ="block";
-				document.getElementById('net_icon').style.color ="red";
-				document.getElementById('net_txt').innerHTML=" wrong network, connect to BSC-Test";
-			} else {
-				document.getElementById('net_icon').style.color ="green";
-				document.getElementById('net_info').style.display ="block";
-				document.getElementById('net_txt').innerHTML=" BSC-Test";
-			}
+		// 	if (window.chainId == undefined){
+		// 		document.getElementById('net_name').innerHTML="unknown net";
+		// 		document.getElementById('net_info').style.display ="block";
+		// 		document.getElementById('net_info').style.color ="red";
+		// 		document.getElementById('net_txt').innerHTML=" wrong network, connect to BSC-Test";
+		// 	} else if (window.chainId != '0x61') {
+		// 		document.getElementById('net_name').innerHTML=chains[window.chainId];
+		// 		document.getElementById('net_info').style.display ="block";
+		// 		document.getElementById('net_icon').style.color ="red";
+		// 		document.getElementById('net_txt').innerHTML=" wrong network, connect to BSC-Test";
+		// 	} else {
+		// 		document.getElementById('net_icon').style.color ="green";
+		// 		document.getElementById('net_info').style.display ="block";
+		// 		document.getElementById('net_txt').innerHTML=" BSC-Test";
+		// 	}
 
-			// await updateData();
+		// 	// await updateData();
 			
-			initAssetsDropdown();
-			//initFamersDropdowns();
-			initLiqTermsDropdown();
-			initLiqPairsDropdown();
-		}
+		// 	initAssetsDropdown();
+		// 	//initFamersDropdowns();
+		// 	initLiqTermsDropdown();
+		// 	initLiqPairsDropdown();
+		// }
 
 		
 		window.gp = await window.web3js.eth.getGasPrice();
@@ -2088,21 +2088,21 @@ async function getAccountWalletConnect(){
 		if (window.location.pathname == '/'){
 			
 
-			if (window.chainId == undefined){
-				document.getElementById('net_name').innerHTML="unknown net";
-				document.getElementById('net_info').style.display ="block";
-				document.getElementById('net_info').style.color ="red";
-				document.getElementById('net_txt').innerHTML=" wrong network, connect to BSC-Test";
-			} else if (window.chainId != '0x61') {
-				document.getElementById('net_name').innerHTML=chains[window.chainId];
-				document.getElementById('net_info').style.display ="block";
-				document.getElementById('net_icon').style.color ="red";
-				document.getElementById('net_txt').innerHTML=" wrong network, connect to BSC-Test";
-			} else {
-				document.getElementById('net_icon').style.color ="green";
-				document.getElementById('net_info').style.display ="block";
-				document.getElementById('net_txt').innerHTML=" BSC-Test";
-			}
+			// if (window.chainId == undefined){
+			// 	document.getElementById('net_name').innerHTML="unknown net";
+			// 	document.getElementById('net_info').style.display ="block";
+			// 	document.getElementById('net_info').style.color ="red";
+			// 	document.getElementById('net_txt').innerHTML=" wrong network, connect to BSC-Test";
+			// } else if (window.chainId != '0x61') {
+			// 	document.getElementById('net_name').innerHTML=chains[window.chainId];
+			// 	document.getElementById('net_info').style.display ="block";
+			// 	document.getElementById('net_icon').style.color ="red";
+			// 	document.getElementById('net_txt').innerHTML=" wrong network, connect to BSC-Test";
+			// } else {
+			// 	document.getElementById('net_icon').style.color ="green";
+			// 	document.getElementById('net_info').style.display ="block";
+			// 	document.getElementById('net_txt').innerHTML=" BSC-Test";
+			// }
 
 			// await updateData();
 			
