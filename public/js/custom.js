@@ -1921,9 +1921,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 	if (window.location.pathname == '/'){
 		//setWalletPref({page_id: 'dashboard-tab'}); 
-		await getWalletPref();
+		//await getWalletPref();
 		
-		openTab({srcElement: document.getElementById(userObject.state.current_page_id+'-menu')}, userObject.state.current_page_id);
+		//openTab({srcElement: document.getElementById(userObject.state.current_page_id+'-menu')}, userObject.state.current_page_id);
 		
 		initDepositProfilesDropdown();
 		initCreditProfilesDropdown();
