@@ -1960,16 +1960,16 @@ async function getAccount(){
 
 		window.chainId = window.ethereum.chainId;
 		
-		document.getElementById('debank_load_bar').ldBar.set(10);
+		//document.getElementById('debank_load_bar').ldBar.set(10);
 	  
 	  
 	
 	
 		
-		safeSetValueBySelector( '.current-wallet', (userObject.account));
-		safeSetInnerHTMLBySelector( '.current-wallet', (userObject.account),'inline');
+		//safeSetValueBySelector( '.current-wallet', (userObject.account));
+		//safeSetInnerHTMLBySelector( '.current-wallet', (userObject.account),'inline');
 
-		checkAdminButton();
+		//checkAdminButton();
         window.web3js =  await new Web3(window.ethereum);
 		window.web3 = window.web3js;
 		window.BN = web3js.utils.BN;
@@ -1977,11 +1977,11 @@ async function getAccount(){
 		await Promise.all( [ initStakingContract(), initCreditContract(), initLiqLevContract(), initCyclopsNFTContract() ]  )
 		
 
-		document.getElementById('debank_load_bar').ldBar.set(15);
+		//document.getElementById('debank_load_bar').ldBar.set(15);
 
 		await userObject.load();
 
-		document.getElementById('debank_load_bar').ldBar.set(25);
+		//document.getElementById('debank_load_bar').ldBar.set(25);
 
 		// if (window.location.pathname == '/'){
 			
