@@ -1991,7 +1991,7 @@
 </div>
 
   </div>
-  <div id="info_pane" onclick="safeSetInnerHTMLById('info_pane','')" style="/* display: none; */"></div>
+
   <div class="if-depos w-full mt-auto">
     <div class="flex flex-col mx-6">
   <div class="notif-row success bg-green-success">
@@ -2007,7 +2007,7 @@
   </div>
   <div class="notif-row warning bg-warning">
     <div class="flex items-center text-sm leading-5 font-medium text-yellow">
-      <span class="flex items-center justify-center mr-2 w-4 h-3">
+      <span class="flex items-center justify-center mr-2 w-4 h-4">
         <img src="../images/warning-icon.svg" class="w-full h-full" alt="#">
       </span>
       You need to select collateral asset!
@@ -2016,9 +2016,9 @@
       <img src="../images/close-yellow.svg" class="w-3 h-3" alt="#">
     </div>
   </div>
-  <div class="notif-row error bg-error">
+  <div class="notif-row error bg-error" id="info_pane" onclick="safeSetInnerHTMLById('info_pane','')">
     <div class="flex items-center text-sm leading-5 font-medium text-red">
-      <span class="flex items-center justify-center mr-2 w-4 h-3">
+      <span class="flex items-center justify-center mr-2 w-4 h-4">
         <img src="../images/error-icon.svg" class="w-full h-full" alt="#">
       </span>
       Error message
@@ -2117,7 +2117,7 @@
   </div>
   <div class="notif-row warning bg-warning">
     <div class="flex items-center text-sm leading-5 font-medium text-yellow">
-      <span class="flex items-center justify-center mr-2 w-4 h-3">
+      <span class="flex items-center justify-center mr-2 w-4 h-4">
         <img src="../images/warning-icon.svg" class="w-full h-full" alt="#">
       </span>
       You need to select collateral asset!
@@ -2126,9 +2126,9 @@
       <img src="../images/close-yellow.svg" class="w-3 h-3" alt="#">
     </div>
   </div>
-  <div class="notif-row error bg-error">
+  <div class="notif-row error bg-error" id="info_pane" onclick="safeSetInnerHTMLById('info_pane','')">
     <div class="flex items-center text-sm leading-5 font-medium text-red">
-      <span class="flex items-center justify-center mr-2 w-4 h-3">
+      <span class="flex items-center justify-center mr-2 w-4 h-4">
         <img src="../images/error-icon.svg" class="w-full h-full" alt="#">
       </span>
       Error message
@@ -2547,10 +2547,10 @@
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
-  <script type="text/javascript" src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
-	<script type="text/javascript" src="https://unpkg.com/web3modal@1.9.2/dist/index.js"></script>
-  <script type="text/javascript" src="https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js"></script>
-  <script type="text/javascript" src="https://unpkg.com/@walletconnect/web3-provider@1.3.1/dist/umd/index.min.js"></script>	
+  <script src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
+	<script src="https://unpkg.com/web3modal@1.9.2/dist/index.js"></script>
+  <script src="https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js"></script>
+  <script src="https://unpkg.com/@walletconnect/web3-provider@1.3.1/dist/umd/index.min.js"></script>	
   <script src="/js/common.js"></script>
   <script src="/js/custom.js"></script>
 
