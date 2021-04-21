@@ -9,6 +9,9 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      inset: {
+        '5/6': '85%',
+      },
       maxWidth: {
         '460': '460px'
       },
