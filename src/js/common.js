@@ -197,6 +197,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
     pointerEvents: true
   });
 
+  // notification popup
+
   var notifBlock = document.querySelector('.notif-block');
   var notifIcon = document.querySelector('.notif');
 
@@ -217,5 +219,3 @@ document.addEventListener("DOMContentLoaded", function (event) {
   });
 
 });
-
-

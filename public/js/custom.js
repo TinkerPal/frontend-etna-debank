@@ -1,8 +1,13 @@
 function Modal(modalId) {
   this.modal = document.getElementById(modalId);
+  this.data = {};
 
   this.show = () => {
     this.modal.classList.add("open");
+  }
+
+  this.setData = (data) => {
+    this.data = {...data};
   }
 
   this.hide = () => this.modal.classList.remove("open");
@@ -21,7 +26,7 @@ const withdraw_modal = new Modal('modal-withdraw-deposit');
 const withdraw_rew_modal = new Modal('modal-withdraw-reward');
 const new_deposit_modal = new Modal('modal-new-deposit');
 const open_new_credit_modal = new Modal('modal-open-new-credit');
-const repay_borrow_modal = new Modal('modal-repay-borrow');
+const return_credit_modal = new Modal('modal-return-credit');
 const set_leverage_modal = new Modal('modal-set-leverage');
 const add_liquidity_modal = new Modal('modal-add-liquidity');
 
@@ -1115,10 +1120,9 @@ let userObject = {
           let txt = '';
 
           if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
-            let lbl = '';
-            txt = '<td class="hide_for_set_leverage_panel table-cell" onclick="return_credit(' + i.toString() + ')"><span class="icon-cell"><img src="../images/bag.svg"></span>' + lbl + '</td>';
+            txt = `<td class="table-cell">${createTableBtnWithIcon('money', 'Repay borrow', `return_credit(${i.toString()})`)}</td>`;
           }
-          if (!txt) txt = '<td class="hide_for_set_leverage_panel table-cell">-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.return_credit_col.push(txt);
         }
 
@@ -1146,32 +1150,31 @@ let userObject = {
             //let fee_am = window.web3js_reader.utils.fromWei(cred_arr[2][i], 'ether');	            
             //let adj_fee_am =  ((parseFloat(fee_am)).toFixed(4)).toString(); 
 
-            txt = '<td class="credit_return_panel table-cell" id="credit_return_panel' + i.toString() + '" style="display:none">';
-            if (cred_arr[1][i] > 0) {
-              txt += '<div style="font-size: 1em;">Return credit body:</div>';
-              txt += '<div style="margin-top: 1vh;"></div>';
-              txt += '<button id="return_credit_all' + i.toString() + '" class="transparent_button transparent_button_pressed credit_return_input" style="width: 5vw" onclick="return_credit_all_btn(' + i.toString() + ')">All</button>';
-              txt += '<button id="return_credit_part' + i.toString() + '" class="transparent_button credit_return_input" style="width: 5vw" onclick="return_credit_part_btn(' + i.toString() + ')">Part</button>';
-              txt += '<input class="credit_return_input" id="credit_return_input' + i.toString() + '" type="number" min="0.1" step="0.1" max="' + adj_am + '" class="form-control" aria-label="" ';
-              txt += ' value="' + adj_am + '"';
-              txt += ' style=" color: white; background-color: black !important; border-color: white !important; width: 8vw;" readonly>';
-              txt += '<div style="margin-top: 1vh;"></div>';
-              //txt += '<span id="withraw_dep_rew'+i.toString()+'" class="withdraw_dep_input">reward to be extracted: '+adj_rew_am+'</span>';
-              txt += '<div style="margin-top: 1vh;"></div>';
-              if (depTypeByProfileId(cred_arr[0][i]) != NATIVE_ETHEREUM) {
-                txt += '<button id="return_credit_mvtokens' + i.toString() + '" class="transparent_button credit_return_input" style="width: 10vw" onclick="return_credit_mvtokens(' + i.toString() + ')">Approve</button>&nbsp;';
-              }
-              txt += '<button id="return_credit_confirm' + i.toString() + '" class="transparent_button credit_return_input" style="width: 10vw" onclick="return_credit_confirm(' + i.toString() + ')">Return</button>';
-            } else {
+            // if (cred_arr[1][i] > 0) {
+            //   txt += '<div style="font-size: 1em;">Return credit body:</div>';
+            //   txt += '<div style="margin-top: 1vh;"></div>';
+            //   txt += '<button id="return_credit_all' + i.toString() + '" class="transparent_button transparent_button_pressed credit_return_input" style="width: 5vw" onclick="return_credit_all_btn(' + i.toString() + ')">All</button>';
+            //   txt += '<button id="return_credit_part' + i.toString() + '" class="transparent_button credit_return_input" style="width: 5vw" onclick="return_credit_part_btn(' + i.toString() + ')">Part</button>';
+            //   txt += '<input class="credit_return_input" id="credit_return_input' + i.toString() + '" type="number" min="0.1" step="0.1" max="' + adj_am + '" class="form-control" aria-label="" ';
+            //   txt += ' value="' + adj_am + '"';
+            //   txt += ' style=" color: white; background-color: black !important; border-color: white !important; width: 8vw;" readonly>';
+            //   txt += '<div style="margin-top: 1vh;"></div>';
+            //   //txt += '<span id="withraw_dep_rew'+i.toString()+'" class="withdraw_dep_input">reward to be extracted: '+adj_rew_am+'</span>';
+            //   txt += '<div style="margin-top: 1vh;"></div>';
+            //   if (depTypeByProfileId(cred_arr[0][i]) != NATIVE_ETHEREUM) {
+            //     txt += '<button id="return_credit_mvtokens' + i.toString() + '" class="transparent_button credit_return_input" style="width: 10vw" onclick="return_credit_mvtokens(' + i.toString() + ')">Approve</button>&nbsp;';
+            //   }
+            //   txt += '<button id="return_credit_confirm' + i.toString() + '" class="transparent_button credit_return_input" style="width: 10vw" onclick="return_credit_confirm(' + i.toString() + ')">Return</button>';
+            // } else {
 
-              txt += '<div style="font-size: 1em;">Return fee (total):</div>';
-              txt += '<div style="margin-top: 1vh;"></div>';
-              if (depTypeByProfileId(cred_arr[0][i]) != NATIVE_ETHEREUM) {
-                txt += '<button id="return_fee_mvtokens' + i.toString() + '" class="transparent_button credit_return_input" style="width: 10vw" onclick="return_fee_mvtokens(' + i.toString() + ')">Approve</button>&nbsp;';
-              }
-              txt += '<button id="return_fee_confirm' + i.toString() + '" class="transparent_button credit_return_input" style="width: 10vw" onclick="return_fee_confirm(' + i.toString() + ')">Return</button>';
-            }
-            txt += '</td>';
+            //   txt += '<div style="font-size: 1em;">Return fee (total):</div>';
+            //   txt += '<div style="margin-top: 1vh;"></div>';
+            //   if (depTypeByProfileId(cred_arr[0][i]) != NATIVE_ETHEREUM) {
+            //     txt += '<button id="return_fee_mvtokens' + i.toString() + '" class="transparent_button credit_return_input" style="width: 10vw" onclick="return_fee_mvtokens(' + i.toString() + ')">Approve</button>&nbsp;';
+            //   }
+            //   txt += '<button id="return_fee_confirm' + i.toString() + '" class="transparent_button credit_return_input" style="width: 10vw" onclick="return_fee_confirm(' + i.toString() + ')">Return</button>';
+            // }
+            // txt += '</td>';
 
           }
 
@@ -3658,13 +3661,6 @@ async function initLiqTermsDropdown() {
 
     }
   });
-  document.getElementById('liqterms-dropdown').setAttribute('style', 'font-size: 0.5em !important; margin:0 !important; padding: 0 !important;');
-  (document.querySelectorAll("#liqterms-dropdown > .dd-select"))[0].style.height = '4vh';
-  (document.querySelectorAll("#liqterms-dropdown > .dd-select"))[0].style.width = '8vw';
-  (document.querySelectorAll("#liqterms-dropdown > .dd-select"))[0].style.margin = '0';
-  (document.querySelectorAll("#liqterms-dropdown.dd-container"))[0].style.height = '4vh';
-  (document.querySelectorAll("#liqterms-dropdown.dd-container"))[0].style.width = '8vw';
-  (document.querySelectorAll("#liqterms-dropdown.dd-container"))[0].style.margin = '0';
 
 }
 
@@ -3688,7 +3684,7 @@ async function initLiqPairsDropdown() {
       userObject.state.liq_pair_name = liqpair.text;
       userObject.state.liq_pair_address = liqpair.addr;
       let bal = await getWalletBalanceStr(userObject.state.liq_pair_address);
-      safeSetInnerHTMLById('liq_pair_in_wallet', bal + ' in wallet', 'inline');
+      safeSetInnerHTMLById('liq_pair_in_wallet', bal, 'inline');
 
 
       userObject.state.liq_pair_fullcode = null;
@@ -3700,13 +3696,6 @@ async function initLiqPairsDropdown() {
 
     }
   });
-  document.getElementById('liqpairs-dropdown').setAttribute('style', 'font-size: 0.5em !important; margin:0 !important; padding: 0 !important;');
-  (document.querySelectorAll("#liqpairs-dropdown > .dd-select"))[0].style.height = '4vh';
-  (document.querySelectorAll("#liqpairs-dropdown > .dd-select"))[0].style.width = '8vw';
-  (document.querySelectorAll("#liqpairs-dropdown > .dd-select"))[0].style.margin = '0';
-  (document.querySelectorAll("#liqpairs-dropdown.dd-container"))[0].style.height = '4vh';
-  (document.querySelectorAll("#liqpairs-dropdown.dd-container"))[0].style.width = '8vw';
-  (document.querySelectorAll("#liqpairs-dropdown.dd-container"))[0].style.margin = '0';
 
 }
 
@@ -3879,7 +3868,6 @@ async function buildTotalDashboard() {
     apy_column.push('<td class="table-cell">' + apy_str + '</td>');
   }
 
-
   let apr_column = new Array();
   for (let i = 0; i < profiles.length; i++) {
     let max_apr = 0.0;
@@ -3937,8 +3925,6 @@ async function buildTotalDashboard() {
 
     html += apr_fix_column[i];
     //html += earned_column[i];
-
-
 
     //html += fee_column[i];
 
@@ -4005,9 +3991,6 @@ async function getFamersDashboard() {
 
       html += '</tr>';
     }
-
-
-
 
     html += '</tbody>' +
       '</table>';
@@ -4751,21 +4734,21 @@ function compensate_with_leverage(cred_id) {
 }
 
 function hide_set_leverage() {
-  $('.set_leverage_panel').hide();
-  $('.hide_for_credit_return_panel').show();
+  // $('.set_leverage_panel').hide();
+  // $('.hide_for_credit_return_panel').show();
 
-  $('.hide_for_credit_return_panel').show();
-  $('.hide_for_set_leverage_panel').show();
+  // $('.hide_for_credit_return_panel').show();
+  // $('.hide_for_set_leverage_panel').show();
   window.lev_size_wei = 0;
 }
 
 function show_set_leverage(cred_id) {
 
-  $('.hide_for_credit_return_panel').hide();
-  $('.hide_for_set_leverage_panel').hide();
-  $('.set_leverage_panel').hide();
-  $('#set_leverage_panel' + cred_id.toString()).show();
-  $('.set_leverage_panel_header').show();
+  // $('.hide_for_credit_return_panel').hide();
+  // $('.hide_for_set_leverage_panel').hide();
+  // $('.set_leverage_panel').hide();
+  // $('#set_leverage_panel' + cred_id.toString()).show();
+  // $('.set_leverage_panel_header').show();
   window.lev_size_wei = 0;
 
 }
@@ -4871,30 +4854,25 @@ async function unfreeze_leverage(cred_id) {
 
       });
 
-
   });
 }
 
-function return_credit(dep_id) {
-  //alert(dep_id);
-  show_return_credit(dep_id);
-}
+function return_credit(cred_id) {
 
-function hide_return_credit() {
-  $('.credit_return_panel').hide();
+  const modalElement = return_credit_modal.modal;
+  const allCreditReturnBtn = modalElement.querySelector('#return_credit_all');
+  const partCreditReturnBtn = modalElement.querySelector('#return_credit_part');
+  const submitTokensBtn = modalElement.querySelector('#return_credit_mvtokens');
+  const submitBtn = modalElement.querySelector('#return_credit_confirm');
+  const creditReturnInput = modalElement.querySelector('#credit_return_input');
 
-  $('.hide_for_credit_return_panel').show();
-}
+  creditReturnInput.value = adj_am;
+  allCreditReturnBtn.onchange = () => return_credit_all_btn(cred_id);
+  partCreditReturnBtn.onchange = () => return_credit_part_btn(cred_id);
+  submitTokensBtn.onclick = () => return_credit_mvtokens(cred_id);
+  submitBtn.onclick = () => return_credit_confirm(cred_id);
 
-function show_return_credit(cred_id) {
-  $('.hide_for_credit_return_panel').hide();
-  $('.credit_return_panel').hide();
-  $('#credit_return_panel' + cred_id.toString()).show();
-  $('.credit_return_panel_header').show();
-
-  //$('#credit_return_input'+dep_id.toString()).show();
-  //$('#credit_return_input'+dep_id.toString()).show();
-  //$('.withdraw_params_to_hide').show();
+  return_credit_modal.show();
 
 }
 
@@ -5327,8 +5305,6 @@ async function set_var_credit() {
 
 async function set_leverage(ratio, cred_id) { //100 - 100%
   if (!(ratio == 25 || ratio == 50 || ratio == 75 || ratio == 100)) return;
-
-
 
   if (document.getElementById('set_leverage_credit' + '_' + ratio.toString() + '_' + cred_id.toString()).classList.contains('transparent_button_pressed')) {
     document.getElementById('set_leverage_credit' + '_' + ratio.toString() + '_' + cred_id.toString()).classList.remove('transparent_button_pressed');
