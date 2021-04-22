@@ -34,6 +34,7 @@ function cssTask(cb) {
         .pipe(sass().on('error', sass.logError))
         .pipe(replace('hover: ', 'hover:'))
         .pipe(replace('focus: ', 'focus:'))
+        .pipe(replace('disabled: ', 'disabled:'))
         .pipe(postcss([
             tailwindcss('./tailwind.config.js'),
             require('autoprefixer'),

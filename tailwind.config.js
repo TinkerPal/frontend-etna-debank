@@ -146,7 +146,7 @@ module.exports = {
       ringOffsetWidth: ['focus'],
       ringOffsetColor: ['focus'],
       textDecoration: ['focus-visible'],
-      textOpacity: ['active'],
+      textOpacity: ['active', 'disabled'],
       backgroundOpacity: ['active'],
     },
     animation: ['responsive', 'motion-safe', 'motion-reduce']

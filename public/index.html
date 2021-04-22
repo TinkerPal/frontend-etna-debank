@@ -1076,7 +1076,7 @@
       </div>
       <div class="text-3xl leading-9 font-bold mr-4" onclick="reorder_divs('list_deposits','add_deposits')">My Deposits</div>
     </div>
-    <div class="btn ml-auto" data-modal="modal-new-deposit">
+    <div class="btn ml-auto" onclick="new_deposit_modal.show()">
       Open New Deposit
     </div>
   </div>
@@ -1886,22 +1886,8 @@
         <input type="number" name="usd_value" id="usd_value" class="input-type" value="0" placeholder="0">
       </div>
       <div class="flex flex-col">
-        <button type="submit" class="btn w-full mb-4" id="approve_button">Approve tokens move</button>
-        <button type="submit" class="btn w-full mb-4 btn-load">
-          <span>
-            <svg class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-              viewBox="0 0 24 24">
-              <path xmlns="http://www.w3.org/2000/svg"
-                d="M8.67504 1.40795C6.84527 1.98325 5.1958 3.02288 3.88745 4.42547C2.57911 5.82806 1.65654 7.54574 1.2097 9.41105C0.762863 11.2764 0.807007 13.2256 1.33783 15.0688C1.86865 16.912 2.86803 18.5861 4.23853 19.928C5.60903 21.27 7.30387 22.2339 9.15781 22.7257C11.0118 23.2176 12.9615 23.2207 14.817 22.7346C16.6725 22.2486 18.3703 21.2901 19.7451 19.9525C21.1198 18.6148 22.1244 16.9438 22.661 15.1024C22.7208 14.9119 22.742 14.7114 22.7233 14.5126C22.7046 14.3138 22.6464 14.1208 22.5521 13.9448C22.4579 13.7688 22.3294 13.6134 22.1743 13.4877C22.0192 13.362 21.8405 13.2685 21.6488 13.2128C21.4571 13.157 21.2562 13.1401 21.0578 13.163C20.8595 13.1859 20.6677 13.2482 20.4938 13.3461C20.3198 13.4441 20.1672 13.5758 20.0448 13.7336C19.9224 13.8913 19.8327 14.0719 19.781 14.2648C19.3891 15.6083 18.6558 16.8273 17.6526 17.8031C16.6493 18.7788 15.4103 19.478 14.0565 19.8324C12.7026 20.1868 11.28 20.1844 9.9273 19.8254C8.57463 19.4664 7.33804 18.7631 6.3381 17.7839C5.33815 16.8048 4.60895 15.5833 4.22159 14.2384C3.83422 12.8936 3.80191 11.4714 4.12779 10.1103C4.45367 8.74929 5.12663 7.49592 6.08107 6.47237C7.03552 5.44882 8.23887 4.69003 9.57384 4.26995C9.76177 4.21086 9.93621 4.11533 10.0872 3.98882C10.2382 3.86231 10.3628 3.70729 10.4539 3.53263C10.545 3.35796 10.6008 3.16706 10.6181 2.97083C10.6354 2.7746 10.6139 2.57688 10.5548 2.38895C10.4957 2.20103 10.4002 2.02659 10.2737 1.87559C10.1472 1.72459 9.99218 1.59998 9.81752 1.50889C9.64285 1.41779 9.45195 1.36199 9.25572 1.34468C9.05949 1.32736 8.86177 1.34886 8.67384 1.40795H8.67504Z"
-                fill="white" />
-            </svg>
-          </span>
-        </button>
-        <button type="submit" class="btn w-full mb-4 btn-done">
-          <img src="../images/check-btn.svg" class="" alt="w-4 h-3">
-        </button>
-        <button disabled="disabled" class="btn w-full mb-4" id="deposit_button">Deposit tokens</button>
-        <button type="submit" class="btn w-full" id="deposit_button">Deposit tokens</button>
+        <button type="submit" class="btn w-full mb-4" data-id="approve" id="approve_button">Approve tokens move</button>
+        <button type="submit" disabled class="btn w-full" data-id="confirm" id="deposit_button">Deposit tokens</button>
       </div>
     </div>
   </div>
@@ -1920,13 +1906,13 @@
     </div>
     <div class="top-divider">
       <div class="flex mb-4 w-full btns-array">
-        <div class="w-1/2 flex">
+        <div class="flex-1 flex">
           <input type="radio" name="deposit" value="all-deposit" id="withraw_dep_all" checked class="hidden">
           <label for="withraw_dep_all" class="btn-checked">
             All deposit
           </label>
         </div>
-        <div class="w-1/2 flex">
+        <div class="flex-1 flex">
           <input type="radio" name="deposit" value="part-deposit" id="withraw_dep_part" class="hidden">
           <label for="withraw_dep_part" class="btn-checked">
             Part
@@ -1939,7 +1925,7 @@
           placeholder="18.5000">
       </div>
       <div class="flex flex-col">
-        <button type="submit" id="withraw_dep_confirm" class="btn w-full">Confirm</button>
+        <button type="submit" id="withraw_dep_confirm" data-id="confirm" class="btn w-full">Confirm</button>
       </div>
     </div>
   </div>
@@ -1961,7 +1947,7 @@
         <div class="name-field">Do you confirm to withdraw all yield?</div>
       </div>
       <div class="flex flex-col">
-        <button type="submit" id="withraw_rew_confirm" class="btn w-full">Confirm</button>
+        <button type="submit" id="withraw_rew_confirm" data-id="confirm" class="btn w-full">Confirm</button>
       </div>
     </div>
   </div>

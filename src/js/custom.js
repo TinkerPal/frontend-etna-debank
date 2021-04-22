@@ -1,16 +1,73 @@
 function Modal(modalId) {
   this.modal = document.getElementById(modalId);
   this.data = {};
+  this.approve = this.modal.querySelector('[data-id="approve"]');
+  this.confirm = this.modal.querySelector('[data-id="confirm"]');
+
+  this.closeModalTimer = 5000;
+
+  this.isLoadingAfterApprove = () => {
+    this.approve.disabled = true;
+    this.approve.classList.add('btn-load');
+  }
+
+  this.isLoadedAfterApprove = (success = true) => {
+    if (success) {
+      this.approve.classList.remove('btn-load');
+      this.approve.classList.add('btn-done');
+      setTimeout(() => this.hide(), this.closeModalTimer);
+      return;
+    }
+
+    this.hide();
+  }
+
+  this.isLoadingAfterConfirm = () => {
+    this.confirm.disabled = true;
+    this.confirm.classList.add('btn-load');
+  }
+
+  this.isLoadedAfterConfirm = (success = true) => {
+    if (success) {
+      this.confirm.classList.remove('btn-load');
+      this.confirm.classList.add('btn-done');
+      setTimeout(() => this.hide(), this.closeModalTimer);
+      return;
+    }
+    
+    this.hide();
+  }
 
   this.show = () => {
     this.modal.classList.add("open");
   }
 
   this.setData = (data) => {
-    this.data = {...data};
+    this.data = {
+      ...data
+    };
   }
 
-  this.hide = () => this.modal.classList.remove("open");
+  this.updateData = (newData) => {
+    this.data = {
+      ...data,
+      ...newData
+    };
+  }
+
+  this.hide = () => {
+    this.modal.classList.remove("open");
+
+    if (this.approve) {
+      this.approve.disabled = false;
+      this.approve.classList.remove('btn-load', 'btn-done');
+    }
+    
+    if (this.confirm) {
+      this.confirm.disabled = false;
+      this.confirm.classList.remove('btn-load','btn-done');
+    }
+  }
 
   init = () => {
     const exits = this.modal.querySelectorAll(".modal-exit");
@@ -148,6 +205,15 @@ const createTableBtnWithIcon = (icon, text, callback) => {
   </i> 
   ${text}
 </span>`
+}
+
+const isNFT = (dep_id) => {
+  const assetPID = userObject.deposits.am_arr[0][dep_id];
+  const asset = userObject.deposit_profiles.find(profile => profile.p_id === assetPID);
+
+  if (!asset) return;
+
+  return asset.p_name === 'nft';
 }
 
 const createCellWithIcon = (iconSrc) => {
@@ -454,6 +520,7 @@ let userObject = {
         this.withdraw_dep_col.length = 0;
         let profiles = userObject.deposit_profiles;
         let am_arr = this.am_arr;
+        console.log(am_arr[0], profiles, userObject)
 
         for (let j = 0; j < profiles.length; j++) {
           let txt = '';
@@ -488,8 +555,7 @@ let userObject = {
           for (let i = 0; i < am_arr[0].length; i++) { //i == deposit id
             if (am_arr[0][i] == profiles[j]['p_id']) {
 
-              if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) {
-              } else {
+              if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) {} else {
                 //let am = window.web3js_reader.utils.fromWei(am_arr[2][i], 'ether');
                 let adj_am = toTokens(am_arr[2][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
                 //let rew_am = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');	            
@@ -843,7 +909,7 @@ let userObject = {
           if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
             //found
             if (depTypeByProfileId(cred_arr[0][i]) == ERC721_TOKEN) { //amount
-              txt = '<td class="hide_for_set_leverage_panel table-cell">' + cred_arr[4][i] + '</td>';
+              txt = '<td class="table-cell">' + cred_arr[4][i] + '</td>';
             } else {
               let clt_id = cred_arr[4][i];
               let clt_profile_id = clt_arr[0][parseInt(clt_id)];
@@ -851,12 +917,12 @@ let userObject = {
               //let am = window.web3js_reader.utils.fromWei(clt_amount, 'ether');
               let adj_am = toTokens(clt_amount, 4); //((parseFloat(am)).toFixed(4)).toString(); 
               let tdtxt = profileNameByProfileId(clt_profile_id) + ': ' + adj_am;
-              txt = '<td class="hide_for_set_leverage_panel table-cell">' + tdtxt + '</td>';
+              txt = '<td class="table-cell">' + tdtxt + '</td>';
             }
 
           }
 
-          if (!txt) txt = '<td class="hide_for_set_leverage_panel table-cell">-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.clt_column.push(txt);
         }
 
@@ -886,12 +952,12 @@ let userObject = {
             //found
             let am = await calcUSDValueByProfileNonNFT(cred_arr[1][i], cred_arr[0][i]);
 
-            txt = '<td class="hide_for_set_leverage_panel table-cell">' + am + '</td>';
+            txt = '<td class="table-cell">' + am + '</td>';
 
 
           }
 
-          if (!txt) txt = '<td class="hide_for_set_leverage_panel table-cell">-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.usd_val_column.push(txt);
         }
 
@@ -1040,71 +1106,6 @@ let userObject = {
 
     },
 
-    set_leverage_inputs_col: new Array(),
-    getSetLevInputsCol_last_call: 0,
-    getSetLevInputsCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getSetLevInputsCol_last_call + CACHE_TIME || flag) {
-        this.getSetLevInputsCol_last_call = current_timestamp;
-
-        this.set_leverage_inputs_col.length = 0;
-        let cred_arr = this.cred_arr;
-        let clt_arr = this.clt_arr;
-        let lev_arr = this.lev_arr;
-
-        for (let i = 0; i < cred_arr[0].length; i++) { //i == deposit id
-          let txt = '';
-
-          //let lev_data = await window.liqlev_smartcontract.methods.viewCustomerLeverageByCredId(userObject.account,i).call({from: userObject.account});
-
-          let cytr_profile_id = await getCYTRProfileId();
-
-          let cc = await window.credit_smartcontract.methods.viewCustomerCredit(userObject.account, 0).call({
-            from: userObject.account
-          });
-          let cc_index = parseInt(cc['index']);
-          let x = await window.credit_smartcontract.methods.viewCustomerCreditExtraDataByIndex(cc_index, i).call({
-            from: userObject.account
-          });
-          let is_fixed_apy = x.is_fixed_apy;
-
-          let clt_id = cred_arr[4][i];
-          let clt_profile_id = clt_arr[0][parseInt(clt_id)];
-
-          //console.log ('i=',i, 'calc needed lev params=',cred_arr[0][i], clt_profile_id, cytr_profile_id, cred_arr[1][i], is_fixed_apy);
-          let lns = await window.usage_calc_smartcontract_reader.methods
-            .calcNeededLeverageByCreditSize(cred_arr[0][i], clt_profile_id, cytr_profile_id, cred_arr[1][i], is_fixed_apy).call({
-              from: userObject.account
-            });
-
-          //console.log('lns=',lns);
-
-          txt = '<td class="set_leverage_panel table-cell" id="set_leverage_panel' + i.toString() + '" style="display:none">';
-          if (cred_arr[1][i] > 0 && lev_arr[i] == 0) {
-            txt += '<div class="set_leverage_input" style="font-size: 1em;">Set Leverage:</div>';
-            txt += '<div style="margin-top: 1vh;"></div>';
-            txt += '<button id="set_leverage_credit_25_' + i.toString() + '"+ class="transparent_button set_leverage_input  set_leverage_input' + i.toString() + '" style="width: 3.5vw; margin:0!important" onclick="set_leverage(25,' + i.toString() + ')">25%</button>';
-            txt += '<button id="set_leverage_credit_50_' + i.toString() + '"+ class="transparent_button set_leverage_input  set_leverage_input' + i.toString() + '" style="width: 3.5vw; margin:0!important" onclick="set_leverage(50,' + i.toString() + ')">50%</button>';
-            txt += '<button id="set_leverage_credit_75_' + i.toString() + '"+ class="transparent_button set_leverage_input  set_leverage_input' + i.toString() + '" style="width: 3.5vw; margin:0!important" onclick="set_leverage(75,' + i.toString() + ')">75%</button>';
-            txt += '<button id="set_leverage_credit_100_' + i.toString() + '"+ class="transparent_button set_leverage_input  set_leverage_input' + i.toString() + '" style="width: 3.5vw; margin:0!important" onclick="set_leverage(100,' + i.toString() + ')">100%</button>';
-            txt += '<div class="set_leverage_input  set_leverage_input' + i.toString() + '" style="margin-top: 1vh;">';
-            txt += '<span class="set_leverage_input set_leverage_input' + i.toString() + '" style="position: absolute;margin-top:-0.5em;margin-left:0.5em;background:black; color:white; font-size: 0.5em">CYTR Lev.</span>';
-            txt += '<input id="lev_size_' + i.toString() + '"+ readonly class="form-control set_leverage_input set_leverage_input' + i.toString() + '" aria-label="" ';
-            txt += 'style="color: white; background-color: black !important; border-color: white !important;  width: 16vw;" >';
-            txt += '</div>';
-            txt += '<button class="transparent_button set_leverage_input set_leverage_input' + i.toString() + '" style="width: 10vw" onclick="set_leverage_confirm(' + i.toString() + ')">Confirm</button>';
-          } else if (lev_arr[i] > 0) {
-            txt += '<button id="unfreeze_leverage_' + i.toString() + '"+ class="transparent_button set_leverage_input set_leverage_input' + i.toString() + '" style="width: 6vw; margin:0!important" onclick="unfreeze_leverage(' + i.toString() + ')">Unfreeze</button>';
-          }
-          txt += '</td>';
-
-          if (!txt) txt = '<td class="set_leverage_panel table-cell" id="set_leverage_panel' + i.toString() + '">-</td>';
-          this.set_leverage_inputs_col.push(txt);
-        }
-      }
-      return this.set_leverage_inputs_col;
-    },
-
     return_credit_col: new Array(),
     getReturnCreditCol_last_call: 0,
     getReturnCreditCol: async function (flag = false) {
@@ -1129,60 +1130,6 @@ let userObject = {
       }
       return this.return_credit_col;
 
-    },
-
-    return_credit_inputs_col: new Array(),
-    getReturnCreditInputsCol_last_call: 0,
-    getReturnCreditInputsCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getReturnCreditInputsCol_last_call + CACHE_TIME || flag) {
-        this.getReturnCreditInputsCol_last_call = current_timestamp;
-        this.return_credit_inputs_col.length = 0;
-        let cred_arr = this.cred_arr;
-
-        for (let i = 0; i < cred_arr[0].length; i++) { //i == deposit id
-          let txt = '';
-
-          if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) {
-
-            //let am = window.web3js_reader.utils.fromWei(cred_arr[1][i], 'ether');
-            let adj_am = toTokens(cred_arr[1][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-            //let fee_am = window.web3js_reader.utils.fromWei(cred_arr[2][i], 'ether');	            
-            //let adj_fee_am =  ((parseFloat(fee_am)).toFixed(4)).toString(); 
-
-            // if (cred_arr[1][i] > 0) {
-            //   txt += '<div style="font-size: 1em;">Return credit body:</div>';
-            //   txt += '<div style="margin-top: 1vh;"></div>';
-            //   txt += '<button id="return_credit_all' + i.toString() + '" class="transparent_button transparent_button_pressed credit_return_input" style="width: 5vw" onclick="return_credit_all_btn(' + i.toString() + ')">All</button>';
-            //   txt += '<button id="return_credit_part' + i.toString() + '" class="transparent_button credit_return_input" style="width: 5vw" onclick="return_credit_part_btn(' + i.toString() + ')">Part</button>';
-            //   txt += '<input class="credit_return_input" id="credit_return_input' + i.toString() + '" type="number" min="0.1" step="0.1" max="' + adj_am + '" class="form-control" aria-label="" ';
-            //   txt += ' value="' + adj_am + '"';
-            //   txt += ' style=" color: white; background-color: black !important; border-color: white !important; width: 8vw;" readonly>';
-            //   txt += '<div style="margin-top: 1vh;"></div>';
-            //   //txt += '<span id="withraw_dep_rew'+i.toString()+'" class="withdraw_dep_input">reward to be extracted: '+adj_rew_am+'</span>';
-            //   txt += '<div style="margin-top: 1vh;"></div>';
-            //   if (depTypeByProfileId(cred_arr[0][i]) != NATIVE_ETHEREUM) {
-            //     txt += '<button id="return_credit_mvtokens' + i.toString() + '" class="transparent_button credit_return_input" style="width: 10vw" onclick="return_credit_mvtokens(' + i.toString() + ')">Approve</button>&nbsp;';
-            //   }
-            //   txt += '<button id="return_credit_confirm' + i.toString() + '" class="transparent_button credit_return_input" style="width: 10vw" onclick="return_credit_confirm(' + i.toString() + ')">Return</button>';
-            // } else {
-
-            //   txt += '<div style="font-size: 1em;">Return fee (total):</div>';
-            //   txt += '<div style="margin-top: 1vh;"></div>';
-            //   if (depTypeByProfileId(cred_arr[0][i]) != NATIVE_ETHEREUM) {
-            //     txt += '<button id="return_fee_mvtokens' + i.toString() + '" class="transparent_button credit_return_input" style="width: 10vw" onclick="return_fee_mvtokens(' + i.toString() + ')">Approve</button>&nbsp;';
-            //   }
-            //   txt += '<button id="return_fee_confirm' + i.toString() + '" class="transparent_button credit_return_input" style="width: 10vw" onclick="return_fee_confirm(' + i.toString() + ')">Return</button>';
-            // }
-            // txt += '</td>';
-
-          }
-
-          if (!txt) txt = '<td class="credit_return_panel table-cell" id="credit_return_panel' + i.toString() + '" style="display:none">-</td>';
-          this.return_credit_inputs_col.push(txt);
-        }
-      }
-      return this.return_credit_inputs_col;
     },
   },
   liq_earn: {
@@ -1595,7 +1542,7 @@ let userObject = {
 
             if (rew_arr[2][i] > 0) {
               txt = `<td class="table-cell">${createTableBtnWithIcon('withdraw', 'Withdraw yield', `withdraw_reward(${i.toString()})`)}</td>`
-              
+
             } else {
               txt = '<td class="table-cell">-</td>';
             }
@@ -4222,9 +4169,7 @@ async function getCreditsDashboard(callback = null) {
     fee_col,
     leverage_column,
     set_leverage_column,
-    set_leverage_inputs_col,
-    return_credit_col,
-    return_credit_inputs_col
+    return_credit_col
   ] = await Promise.all([userObject.credits.getIconAssetsCols(),
     userObject.credits.getAPRCol(),
     userObject.credits.getInWalletCol(),
@@ -4236,9 +4181,7 @@ async function getCreditsDashboard(callback = null) {
     userObject.credits.getFeeCol(),
     userObject.credits.getLevCol(),
     userObject.credits.getSetLevCol(),
-    userObject.credits.getSetLevInputsCol(),
-    userObject.credits.getReturnCreditCol(),
-    userObject.credits.getReturnCreditInputsCol()
+    userObject.credits.getReturnCreditCol()
   ]);
 
   for (let i = 0; i < cred_arr[0].length; i++) { //i == credit id
@@ -4267,11 +4210,7 @@ async function getCreditsDashboard(callback = null) {
 
       html += set_leverage_column[i];
 
-      html += set_leverage_inputs_col[i];
-
       html += return_credit_col[i];
-
-      html += return_credit_inputs_col[i];
 
       html += in_wallet_column[i];
 
@@ -4877,7 +4816,7 @@ function return_credit(cred_id) {
 }
 
 function withdraw_reward(dep_id) {
-  
+
   const modalElement = withdraw_rew_modal.modal;
   const submitBtn = modalElement.querySelector('#withraw_rew_confirm');
 
@@ -4887,17 +4826,21 @@ function withdraw_reward(dep_id) {
 }
 
 function withdraw_deposit(dep_id) {
+  const deposit = userObject.deposits.am_arr[2][dep_id];
   const modalElement = withdraw_modal.modal;
   const allDepositsBtn = modalElement.querySelector('#withraw_dep_all');
   const partDepositsBtn = modalElement.querySelector('#withraw_dep_part');
-  const submitBtn = modalElement.querySelector('#withraw_dep_confirm');
   const withdrawInput = modalElement.querySelector('#withraw_dep_input');
-  const adj_am = toTokens(userObject.deposits.am_arr[2][dep_id], 4);
+
+  const adj_am = isNFT(dep_id) ? deposit : toTokens(deposit, 4);
+
+  isNFT(dep_id) ? partDepositsBtn.parentElement.classList.add('hidden') : partDepositsBtn.parentElement.classList.remove('hidden');
 
   withdrawInput.value = adj_am;
+  allDepositsBtn.checked = true;
   allDepositsBtn.onchange = () => withdraw_deposit_all_btn(dep_id);
   partDepositsBtn.onchange = () => withdraw_deposit_part_btn(dep_id);
-  submitBtn.onclick = () => withdraw_deposit_confirm(dep_id);
+  withdraw_modal.confirm.onclick = () => withdraw_deposit_confirm(dep_id);
 
   withdraw_modal.show();
 }
@@ -4942,39 +4885,35 @@ function withdraw_deposit_confirm(dep_id) {
     return;
   }
 
-  let whole = true;
-  if (document.getElementById('withraw_dep_all' + dep_id.toString())) {
-    whole = document.getElementById('withraw_dep_all' + dep_id.toString()).classList.contains('transparent_button_pressed');
-  }
+  const isWithdrawAllDeposit = document.getElementById('withraw_dep_all').checked;
+  const depositValue = document.getElementById('withraw_dep_input').value;
 
-  let withdraw_amount = 0;
-  if (whole) {
-    withdraw_amount = 0; //doesn't matter, smartcontract will extract whole deposit amount;
-  } else {
-    withdraw_amount = safeFloatToWei(document.getElementById('withraw_dep_input' + dep_id.toString()).value);
-  }
+  const withdraw_amount = isWithdrawAllDeposit ? 0 : safeFloatToWei(depositValue);
+
+  withdraw_modal.isLoadingAfterConfirm();
 
   initStakingContract(async (stakingContractInstance) => {
 
-
-    stakingContractInstance.methods.withdrawDepositById(userObject.account, dep_id, withdraw_amount, whole).send({
+    stakingContractInstance.methods.withdrawDepositById(userObject.account, dep_id, withdraw_amount, isWithdrawAllDeposit).send({
         from: userObject.account,
         gasPrice: window.gp
       }, function (error, txnHash) {
-        if (error) throw error;
+        if (error) {
+          withdraw_modal.isLoadedAfterConfirm(false);
+          throw error;
+        }
         output_transaction(txnHash)
 
       })
-      .on('confirmation', function (confirmationNumber, receipt) {
-        if (confirmationNumber == 5) updateData('withdraw_deposit');
+      .on('confirmation', async function (confirmationNumber, receipt) {
+        if (confirmationNumber == 5) await updateData('withdraw_deposit');
+        withdraw_modal.isLoadedAfterConfirm();
         resetMsg();
-
       })
       .catch(error => {
+        withdraw_modal.isLoadedAfterConfirm(false);
         errorMsg('smartcontract communication error');
-
       });
-
 
   });
 
@@ -5189,29 +5128,34 @@ function withdraw_reward_confirm(dep_id) {
     return;
   }
 
+  withdraw_rew_modal.isLoadingAfterConfirm();
+ 
   initStakingContract(async (stakingContractInstance) => {
-
 
     stakingContractInstance.methods.withdrawDepositRewardById(userObject.account, dep_id).send({
         from: userObject.account,
         gasPrice: window.gp
       }, function (error, txnHash) {
-        if (error) throw error;
+        if (error) {
+          withdraw_rew_modal.isLoadedAfterConfirm(false);
+          throw error;
+        }
         output_transaction(txnHash)
 
       })
-      .on('confirmation', function (confirmationNumber, receipt) {
-        if (confirmationNumber == 5) updateData('withdraw_deposit_reward');
+      .on('confirmation', async function (confirmationNumber, receipt) {
+        if (confirmationNumber == 5) await updateData('withdraw_deposit_reward');
+        withdraw_rew_modal.isLoadedAfterConfirm();
         resetMsg();
-
       })
       .catch(error => {
+        withdraw_rew_modal.isLoadedAfterConfirm(false);
         errorMsg('smartcontract communication error');
-
       });
 
 
   });
+  
 }
 
 
