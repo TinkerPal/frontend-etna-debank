@@ -18,6 +18,7 @@ function Modal(modalId) {
 }
 
 const withdraw_modal = new Modal('modal-withdraw-deposit');
+const withdraw_rew_modal = new Modal('modal-withdraw-reward');
 const new_deposit_modal = new Modal('modal-new-deposit');
 const open_new_credit_modal = new Modal('modal-open-new-credit');
 const repay_borrow_modal = new Modal('modal-repay-borrow');
@@ -59,7 +60,7 @@ rev_dep_types[2] = "ERC721";
 rev_dep_types[3] = "Uniswap pair";
 rev_dep_types[4] = "Ether";
 
-const CRYPTO_ICONS = ['bnb', 'st1', 'cytr', 'etna'];
+const CRYPTO_ICONS = ['bnb', 'st1', 'cytr', 'etna', 'pancake'];
 
 const period_name_from_code = new Array();
 period_name_from_code['1W'] = "1 week";
@@ -388,17 +389,17 @@ let userObject = {
           for (let i = 0; i < am_arr[0].length; i++) {
             if (am_arr[0][i] == profiles[j]['p_id']) {
               if (am_arr[1][i] == 0) {
-                txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
+                txt = '<td class="table-cell">-</td>';
               } else {
                 let days = await window.staking_smartcontract.methods.depositDays(userObject.account, i).call({
                   from: userObject.account
                 }); //duration
-                txt = '<td class="withdraw_rew_to_hide table-cell">' + days.toString() + '</td>';
+                txt = '<td class="table-cell">' + days.toString() + '</td>';
               }
               break;
             }
           }
-          if (!txt) txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.duration_col.push(txt);
         }
       }
@@ -422,16 +423,16 @@ let userObject = {
             if (am_arr[0][i] == profiles[j]['p_id']) {
               //found
               if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) { //amount
-                txt = '<td class="withdraw_rew_to_hide table-cell">' + am_arr[2][i] + '</td>';
+                txt = '<td class="table-cell">' + am_arr[2][i] + '</td>';
               } else {
                 //let am = window.web3js_reader.utils.fromWei(am_arr[2][i], 'ether');
                 let adj_am = toTokens(am_arr[2][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-                txt = '<td class="withdraw_rew_to_hide table-cell">' + adj_am + '</td>';
+                txt = '<td class="table-cell">' + adj_am + '</td>';
               }
               break;
             }
           }
-          if (!txt) txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.extractable_dep_col.push(txt);
         }
       }
@@ -459,7 +460,7 @@ let userObject = {
               break;
             }
           }
-          if (!txt) txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.withdraw_dep_col.push(txt);
         }
       }
@@ -519,11 +520,11 @@ let userObject = {
               //found
               //let adj = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');	            
               let adj_str = toTokens(rew_arr[1][i], 4); //((parseFloat(adj)).toFixed(4)).toString(); 
-              txt = '<td class="withdraw_params_to_hide table-cell">' + adj_str + '</td>';
+              txt = '<td class="table-cell">' + adj_str + '</td>';
               break;
             }
           }
-          if (!txt) txt = '<td class="withdraw_params_to_hide table-cell">-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.reward_col.push(txt);
         }
       }
@@ -548,12 +549,12 @@ let userObject = {
               //found
               //let adj = window.web3js_reader.utils.fromWei(rew_arr[2][i], 'ether');	            
               let adj_str = toTokens(rew_arr[2][i], 4); //((parseFloat(adj)).toFixed(4)).toString(); 
-              txt = '<td class="withdraw_params_to_hide table-cell">' + adj_str + '</td>';
+              txt = '<td class="table-cell">' + adj_str + '</td>';
               break;
             }
 
           }
-          if (!txt) txt = '<td class="withdraw_params_to_hide table-cell">-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.extractable_reward_col.push(txt);
         }
       }
@@ -577,11 +578,11 @@ let userObject = {
             if (rew_arr[0][i] == profiles[j]['p_id'] && rew_arr[2][i] > 0) {
               let lbl = '';
               if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) lbl = '&nbsp;CYTR</span>';
-              txt = '<td class="withdraw_params_to_hide table-cell" onclick="withdraw_reward(' + i.toString() + ')">' + createTableBtnWithIcon('withdraw', 'Withdraw yield', '') + '</td>';
+              txt = `<td class="table-cell">${createTableBtnWithIcon('withdraw', 'Withdraw yield', `withdraw_reward(${i.toString()})`)}</td>`
               break;
             }
           }
-          if (!txt) txt = '<td class="withdraw_params_to_hide table-cell">-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.withdraw_rew_col.push(txt);
         }
       }
@@ -689,7 +690,7 @@ let userObject = {
             prefix = 'F: ';
           }
           let apr_adj = (apr / apy_scale) * 100;
-          this.apr_column.push('<th scope="col" class="table-row">' + prefix + ((parseFloat(apr_adj)).toFixed(2)).toString() + '%</th>');
+          this.apr_column.push('<td class="table-cell">' + prefix + ((parseFloat(apr_adj)).toFixed(2)).toString() + '%</td>');
         }
       }
       return this.apr_column;
@@ -766,16 +767,16 @@ let userObject = {
             if (am_arr[0][i] == cred_arr[0][j]) {
               //found
               if (depTypeByProfileId(cred_arr[0][j]) == ERC721_TOKEN) { //amount
-                txt = '<td class="hide_for_credit_return_panel table-cell">' + am_arr[1][i] + '</td>';
+                txt = '<td class="table-cell">' + am_arr[1][i] + '</td>';
               } else {
                 //let am = window.web3js_reader.utils.fromWei(am_arr[1][i], 'ether');
                 let adj_am = toTokens(am_arr[1][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-                txt = '<td class="hide_for_credit_return_panel table-cell">' + adj_am + '</td>';
+                txt = '<td class="table-cell">' + adj_am + '</td>';
               }
               break;
             }
           }
-          if (!txt) txt = '<td class="hide_for_credit_return_panel table-cell">-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.dep_column.push(txt);
         }
 
@@ -910,15 +911,15 @@ let userObject = {
 
           if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
             if (cred_arr[3][i] == 0) {
-              txt = '<td class="hide_for_credit_return_panel table-cell">-</td>';
+              txt = '<td class="table-cell">-</td>';
             } else {
 
-              txt = '<td class="hide_for_credit_return_panel table-cell">' + cred_arr[3][i].toString() + '</td>';
+              txt = '<td class="table-cell">' + cred_arr[3][i].toString() + '</td>';
             }
 
           }
 
-          if (!txt) txt = '<td class="hide_for_credit_return_panel table-cell">-</td>';
+          if (!txt) txt = '<td class="table-cell">-</td>';
           this.duration_col.push(txt);
         }
 
@@ -1203,10 +1204,10 @@ let userObject = {
             //console.log('u_p_id', am_arr[0][i]);
             this.icon_column.push('<td class="table-cell">' + createCellWithIcon(await unswProfileNameByProfileId(am_arr[0][i])) + '</td>');
             let aname = (await unswProfileNameByProfileId(am_arr[0][i])).slice(0, -3);
-            this.asset_column.push('<th scope="col" class="table-row">' + aname + '</th>');
+            this.asset_column.push('<td class="table-cell">' + aname + '</td>');
             let period_code = (await unswProfileNameByProfileId(am_arr[0][i])).slice(-2);
 
-            this.lockup_period.push('<th scope="col" class="table-row">' + period_name_from_code[period_code] + '</th>');
+            this.lockup_period.push('<td class="table-cell">' + period_name_from_code[period_code] + '</td>');
           }
         }
       }
@@ -1236,7 +1237,7 @@ let userObject = {
             //let apy = await window.usage_calc_smartcontract_reader.methods.calcDepApy(am_arr[0][i]).call({ from: userObject.account});
             let apy = await getAPY(am_arr[0][i]);
             let apy_adj = (apy / apy_scale) * 100;
-            this.apy_column.push('<th scope="col" class="table-row">' + ((parseFloat(apy_adj)).toFixed(2)).toString() + '</th>');
+            this.apy_column.push('<td class="table-cell">' + ((parseFloat(apy_adj)).toFixed(2)).toString() + '</td>');
           }
         }
 
@@ -1353,7 +1354,7 @@ let userObject = {
               let days = await stakingContractInstance.methods.depositDays(userObject.account, i).call({
                 from: userObject.account
               }); //duration
-              txt = '<td class="withdraw_rew_to_hide table-cell">' + days.toString() + '</td>';
+              txt = '<td class="table-cell">' + days.toString() + '</td>';
 
               let period_code = (await unswProfileNameByProfileId(am_arr[0][i])).slice(-2);
 
@@ -1365,10 +1366,10 @@ let userObject = {
                 unl_period_txt = '-';
               }
 
-              txt_unl = '<td class="withdraw_rew_to_hide table-cell">' + unl_period_txt + '</td>';
+              txt_unl = '<td class="table-cell">' + unl_period_txt + '</td>';
             } else {
-              txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
-              txt_unl = '<td class="withdraw_rew_to_hide table-cell">-</td>';
+              txt = '<td class="table-cell">-</td>';
+              txt_unl = '<td class="table-cell">-</td>';
             }
 
 
@@ -1405,9 +1406,9 @@ let userObject = {
             if (am_arr[2][i] > 0) {
               //let am = window.web3js_reader.utils.fromWei(am_arr[2][i], 'ether');
               let adj_am = toTokens(am_arr[2][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-              txt = '<td class="withdraw_rew_to_hide table-cell">' + adj_am + '</td>';
+              txt = '<td class="table-cell">' + adj_am + '</td>';
             } else {
-              txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
+              txt = '<td class="table-cell">-</td>';
             }
 
             this.extractable_dep_col.push(txt);
@@ -1437,10 +1438,9 @@ let userObject = {
             let txt = '';
 
             if (am_arr[2][i] > 0) {
-              let lbl = '';
-              txt = '<td class="withdraw_rew_to_hide table-cell" data-modal="modal-withdraw-deposit" onclick="withdraw_deposit(' + i.toString() + ')"><span class="icon-cell"><img src="../images/bag.svg"></span>' + lbl + '</td>';
+              txt = `<td class="table-cell">${createTableBtnWithIcon('withdraw', 'Withdraw deposit', `withdraw_deposit(${i.toString()})`)}</td>`
             } else {
-              txt = '<td class="withdraw_rew_to_hide table-cell">-</td>';
+              txt = '<td class="table-cell">-</td>';
             }
 
 
@@ -1524,9 +1524,9 @@ let userObject = {
             if (rew_arr[1][i] > 0) {
               //let adj = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');	            
               let adj_str = toTokens(rew_arr[1][i], 4); //((parseFloat(adj)).toFixed(4)).toString(); 
-              txt = '<td class="withdraw_params_to_hide table-cell">' + adj_str + '</td>';
+              txt = '<td class="table-cell">' + adj_str + '</td>';
             } else {
-              txt = '<td class="withdraw_params_to_hide table-cell">-</td>';
+              txt = '<td class="table-cell">-</td>';
             }
 
             this.reward_col.push(txt);
@@ -1557,9 +1557,9 @@ let userObject = {
             if (rew_arr[2][i] > 0) {
               //let adj = window.web3js_reader.utils.fromWei(rew_arr[2][i], 'ether');	            
               let adj_str = toTokens(rew_arr[2][i], 4); //((parseFloat(adj)).toFixed(4)).toString(); 
-              txt = '<td class="withdraw_params_to_hide table-cell">' + adj_str + '</td>';
+              txt = '<td class="table-cell">' + adj_str + '</td>';
             } else {
-              txt = '<td class="withdraw_params_to_hide table-cell">-</td>';
+              txt = '<td class="table-cell">-</td>';
             }
 
             this.extractable_reward_col.push(txt);
@@ -1591,10 +1591,10 @@ let userObject = {
             let txt = '';
 
             if (rew_arr[2][i] > 0) {
-              let lbl = '';
-              txt = '<td class="withdraw_params_to_hide table-cell" onclick="withdraw_reward(' + i.toString() + ')"><span class="icon-cell"><img src="../images/bag.svg"></span>' + lbl + '</td>';
+              txt = `<td class="table-cell">${createTableBtnWithIcon('withdraw', 'Withdraw yield', `withdraw_reward(${i.toString()})`)}</td>`
+              
             } else {
-              txt = '<td class="withdraw_params_to_hide table-cell">-</td>';
+              txt = '<td class="table-cell">-</td>';
             }
 
             this.withdraw_rew_col.push(txt);
@@ -1620,7 +1620,6 @@ let userObject = {
     ] = await Promise.all([getAllProfiles(),
       getAllProfilesUniswap(),
       getAllCreditProfiles(),
-      getLiqPairs(),
       getLiqPairs(),
       getLiqTerms()
     ]);
@@ -3894,7 +3893,7 @@ async function buildTotalDashboard() {
       if (max_apr < apr_adj) max_apr = apr_adj;
       if (min_apr > apr_adj) min_apr = apr_adj;
     }
-    apr_column.push('<th scope="col" class="table-row">' + ((parseFloat(max_apr)).toFixed(2)).toString() + '</th>');
+    apr_column.push('<td class="table-cell">' + ((parseFloat(max_apr)).toFixed(2)).toString() + '</td>');
   }
 
   let apr_fix_column = new Array();
@@ -3911,12 +3910,12 @@ async function buildTotalDashboard() {
       if (min_apr > apr_adj) min_apr = apr_adj;
     }
 
-    apr_fix_column.push('<th scope="col" class="table-row">' + ((parseFloat(max_apr)).toFixed(2)).toString() + '</th>');
+    apr_fix_column.push('<td class="table-cell"">' + ((parseFloat(max_apr)).toFixed(2)).toString() + '</td>');
   }
 
   for (let i = 0; i < profiles.length; i++) {
     //0 means max amount for ERC20 compatible and ignored for ERC721
-    html += '<tr style="text-align: left; font-size: 0.75em">';
+    html += '<tr class="table-row">';
 
     html += icon_column[i];
 
@@ -4205,18 +4204,16 @@ async function getCreditsDashboard(callback = null) {
     '<th class="table-title"></th>' +
     '<th class="table-title">Asset</th>' +
     '<th class="table-title">Borrowed mount</th>' +
-    '<th class="hide_for_set_leverage_paneltable-title">USD value</th>' +
-    '<th class="hide_for_set_leverage_panel table-title">Collateral</th>' +
-    '<th class="hide_for_credit_return_panel table-title">Duration days</th>' +
+    '<th class="table-title">USD value</th>' +
+    '<th class="table-title">Collateral</th>' +
+    '<th class="table-title">Duration days</th>' +
     '<th class="table-title">Curent APR<sup>*</sup></th>' +
     '<th class="table-title">Fee</th>' +
     '<th class="table-title">Leverage Level</th>' +
     '<th class="table-title">Cover Fees with CYTR Leverage</th>' +
-    '<th class="set_leverage_panel set_leverage_panel_header table-title" style="display:none"><button class="transparent_button"  onclick="hide_set_leverage()">Hide</button></th>' +
-    '<th class="hide_for_set_leverage_panel table-title">Repay borrow</th>' +
-    '<th class="credit_return_panel credit_return_panel_header table-title" style="display:none"><button class="transparent_button"  onclick="hide_return_credit()">Hide</button></th>' +
-    '<th class="hide_for_credit_return_panel tab-vert-line-left table-title">In wallet</th>' +
-    '<th class="hide_for_credit_return_panel table-title">Deposit</th>' +
+    '<th class="table-title">Repay borrow</th>' +
+    '<th class="table-title">In wallet</th>' +
+    '<th class="table-title">Deposit</th>' +
     '</tr>' +
     '</thead>' +
     '<tbody>';
@@ -4265,7 +4262,7 @@ async function getCreditsDashboard(callback = null) {
 
     if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0 || lev_arr[i] > 0) {
 
-      html += '<tr style="text-align: left; font-size: 0.75em">';
+      html += '<tr class="table-row">';
 
       html += icon_column[i];
 
@@ -4319,11 +4316,11 @@ async function getLiquidityDashboard(callback = null) {
   stakingContractInstance = window.staking_smartcontract;
 
   let html =
-    '<table class="table" style="font-size: 0.75em">' +
+    '<table class="min-w-full">' +
     '<thead>' +
     '<tr>' +
     '<th class="table-title"></th>' +
-    '<th class="table-title">liquidity-Pair</th>' +
+    '<th class="table-title">Liquidity-Pair</th>' +
     //'<th>In wallet</th>'+
     '<th class="table-title">Quantity</th>' +
     '<th class="table-title">Lockup</th>' +
@@ -4335,7 +4332,7 @@ async function getLiquidityDashboard(callback = null) {
     '<th class="table-title">Withdraw deposit</th>' +
     '<th class="table-title">Current Yield CYTR</th>' +
     '<th class="table-title">Extractable Yield CYTR</th>' +
-    '<th class="ttable-title">Withdraw Yield</th>' +
+    '<th class="table-title">Withdraw yield</th>' +
     '</tr>' +
     '</thead>' +
     '<tbody>';
@@ -4470,14 +4467,12 @@ async function getDepositsDashboard(callback = null) {
     '<th class="table-title">Deposit</th>' +
     '<th class="table-title">USD value</th>' +
     '<th class="table-title">APY</th>' +
-    '<th class="withdraw_rew_to_hide table-title">Duration days</th>' +
-    '<th class="withdraw_rew_to_hide table-title">Extractable</th>' +
-    '<th class="withdraw_rew_to_hide table-title">Withdraw deposit</th>' +
-    '<th class="withdraw_params table-title" style="display:none"><button class="transparent_button"  onclick="hide_withdraw_deposit()">Hide</button></th>' +
-    '<th class="withdraw_params_to_hide table-title" >Current Yield</th>' +
-    '<th class="withdraw_params_to_hide table-title" >Extractable Yield</th>' +
-    '<th class="withdraw_params_to_hide table-title" >Withdraw Yield</th>' +
-    '<th class="withdraw_reward_params table-title" style="display:none"><button class="transparent_button"  onclick="hide_withdraw_reward()">Hide</button></th>' +
+    '<th class="table-title">Duration days</th>' +
+    '<th class="table-title">Extractable</th>' +
+    '<th class="table-title">Withdraw deposit</th>' +
+    '<th class="table-title" >Current Yield</th>' +
+    '<th class="table-title" >Extractable Yield</th>' +
+    '<th class="table-title" >Withdraw yield</th>' +
     '</tr>' +
     '</thead>' +
     '<tbody>';
@@ -4904,11 +4899,13 @@ function show_return_credit(cred_id) {
 }
 
 function withdraw_reward(dep_id) {
-  hide_withdraw_reward(dep_id);
-  $('.withdraw_reward_params').show();
+  
+  const modalElement = withdraw_rew_modal.modal;
+  const submitBtn = modalElement.querySelector('#withraw_rew_confirm');
 
-  $('#withdraw_rew_confirm' + dep_id.toString()).show();
-  $('.withdraw_rew_to_hide').hide();
+  submitBtn.onclick = () => withdraw_reward_confirm(dep_id);
+
+  withdraw_rew_modal.show();
 }
 
 function withdraw_deposit(dep_id) {
@@ -4925,18 +4922,6 @@ function withdraw_deposit(dep_id) {
   submitBtn.onclick = () => withdraw_deposit_confirm(dep_id);
 
   withdraw_modal.show();
-}
-
-function hide_withdraw_deposit(dep_id) {
-  // $('.withdraw_params').hide();
-  // $('.withdraw_dep_input').hide();
-  // $('.withdraw_params_to_hide').show();
-}
-
-function hide_withdraw_reward(dep_id) {
-  // $('.withdraw_reward_params').hide();
-  // $('.withdraw_rew_input').hide();
-  // $('.withdraw_rew_to_hide').show();
 }
 
 function depAmountByProfileId(profile_id) {

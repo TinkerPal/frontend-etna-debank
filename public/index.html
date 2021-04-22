@@ -28,11 +28,11 @@
           My Deposits
         </div>
 
-        <div class="nav-link" id="t3">
+        <div class="nav-link active" id="t3">
           Borrow
         </div>
 
-        <div class="nav-link active" id="t4">
+        <div class="nav-link" id="t4">
           Liquidity-Earn
         </div>
       </nav>
@@ -49,7 +49,7 @@
       </div>
       <div class="notif-popup relative">
         <div class="notif">
-          <img src="../images/notif.svg" alt="#" class="w-4 h-5">
+          <img src="../images/notif.svg" alt="#" class="w-auto h-5">
           <span class="notif-amount">
             5
           </span>
@@ -58,7 +58,7 @@
           <div class="flex w-full">
             <div class="w-1/12 flex justify-start h-full">
               <div class="nofif-icon w-4 h-5">
-                <img src="../images/notif.svg" alt="#" class="w-full h-full">
+                <img src="../images/notif.svg" alt="#">
               </div>
             </div>
             <div class="w-10/12 h-full ml-2 flex flex-col">
@@ -81,14 +81,14 @@
             </div>
             <div class="w-1/12 flex justify-end h-full">
               <button class="modal-close modal-exit w-3 h-3">
-                <img src="../images/close.svg" class="w-full h-full" alt="#">
+                <img src="../images/close.svg" alt="#">
               </button>
             </div>
           </div>
           <div class="flex w-full">
             <div class="w-1/12 flex justify-start h-full">
               <div class="nofif-icon w-4 h-5">
-                <img src="../images/notif.svg" alt="#" class="w-full h-full">
+                <img src="../images/notif.svg" alt="#">
               </div>
             </div>
             <div class="w-10/12 h-full ml-2 flex flex-col">
@@ -1109,7 +1109,7 @@
 </div>
 
   </div>
-  <div id="p3" class="page">
+  <div id="p3" class="page active">
     <div class="main mx-6 mt-11 text-white">
   <div class="wrapper">
     <div class="flex items-center">
@@ -1142,6 +1142,9 @@
         <div class="overflow-x-auto">
           <div class="align-middle inline-block min-w-full">
             <div class="overflow-hidden">
+
+              <div id="my_credits"></div>
+
               <table class="min-w-full">
                 <thead class="">
                   <tr>
@@ -1343,7 +1346,7 @@
 </div>
 
   </div>
-  <div id="p4" class="page active">
+  <div id="p4" class="page">
     <div class="main mx-6 mt-11 text-white">
   <div class="wrapper">
     <div class="flex items-center">
@@ -1389,11 +1392,7 @@
       <div class="align-middle inline-block min-w-full">
         <div class="overflow-hidden">
 
-          <h1>Test Table</h1>
-
           <div id="deposits_uniswap"></div>
-
-          <h1>Test Table</h1>
 
           <table class="min-w-full">
             <thead class="">
@@ -1481,7 +1480,7 @@
                       0.0002
                     </span>
 
-                    <span class="table-btn ml-auto">
+                    <span class="table-btn ml-auto" data-modal="modal-withdraw-reward">
                       <i class="icon-cell">
                         <img src="../images/withdraw.svg" class="w-full h-full" alt="#">
                       </i>
@@ -1490,8 +1489,6 @@
                   </div>
                 </td>
               </tr>
-
-              
 
               <tr class="table-row">
                 <td class="table-cell rounded-l-lg">
@@ -1540,7 +1537,7 @@
                       0.0002
                     </span>
 
-                    <span class="table-btn ml-auto">
+                    <span class="table-btn ml-auto" data-modal="modal-withdraw-reward">
                       <i class="icon-cell">
                         <img src="../images/withdraw.svg" class="w-full h-full" alt="#">
                       </i>
@@ -2112,6 +2109,28 @@
       </div>
       <div class="flex flex-col">
         <button type="submit" id="withraw_dep_confirm" class="btn w-full">Confirm</button>
+      </div>
+    </div> 
+  </div>
+</div>
+
+<!-- withdraw yield -->
+
+<div class="modal" id="modal-withdraw-reward">
+  <div class="modal-exit modal-exit__bg"></div>
+  <div class="pop-up">
+    <div class="modal-top">
+      <div class="text-lg font-normal">Withdraw yied</div>
+      <button class="modal-close modal-exit">
+        <img src="../images/close.svg" class="w-3 h-3" alt="#">
+      </button>
+    </div>
+    <div class="top-divider">
+      <div class="flex flex-col mb-11">
+        <div class="name-field">Do you confirm to withdraw all yield?</div>
+      </div>
+      <div class="flex flex-col">
+        <button type="submit" id="withraw_rew_confirm" class="btn w-full">Confirm</button>
       </div>
     </div> 
   </div>

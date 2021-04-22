@@ -644,10 +644,9 @@ video {
   font-weight: 500;
   font-size: 0.75rem;
   line-height: 1rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
   padding-left: 1.25rem;
   padding-right: 1.25rem;
+  padding-top: 0.25rem;
   text-align: left;
   --tw-text-opacity: 1;
   color: rgba(109, 113, 117, var(--tw-text-opacity));
@@ -1694,6 +1693,10 @@ input:checked + label {
 
 .w-96 {
   width: 24rem;
+}
+
+.w-auto {
+  width: auto;
 }
 
 .w-1\/2 {
