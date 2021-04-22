@@ -35,7 +35,7 @@
 
 @layer components {
   .nav-link {
-    @apply py-3.5 px-3 mr-4 border-b-2 flex items-center text-gray-300 text-sm border-transparent hover: text-white whitespace-nowrap font-medium cursor-pointer;
+    @apply py-3.5 px-3 mr-4 border-b-2 flex items-center text-gray-300 text-sm border-transparent hover:text-white whitespace-nowrap font-medium cursor-pointer;
   }
 
   .nav-link.active {
@@ -51,7 +51,7 @@
   }
 
   .btn {
-    @apply py-2 px-3 text-sm cursor-pointer flex items-center justify-center shadow-sm rounded-md bg-gradient-to-r from-light-blue to-dark-blue hover: from-navy transition-all hover:to-navy focus:from-light-blue focus:to-dark-blue disabled:from-primrose disabled:to-primrose disabled:text-light-violet focus:ring-2 focus:ring-violet focus:outline-none focus:ring-offset-2 focus:ring-offset-black w-max h-9;
+    @apply py-2 px-3 text-sm cursor-pointer flex items-center justify-center shadow-sm rounded-md bg-gradient-to-r from-light-blue to-dark-blue hover:from-navy transition-all hover:to-navy focus:from-light-blue focus:to-dark-blue disabled:from-primrose disabled:to-primrose disabled:text-light-violet focus:ring-2 focus:ring-violet focus:outline-none focus:ring-offset-2 focus:ring-offset-black w-max h-9;
   }
 
   .btn.btn-done {
@@ -59,11 +59,11 @@
   }
 
   .table-title {
-    @apply py-1 px-5 tracking-wider text-primary-gray text-left text-xs font-medium hover: text-white transition-all cursor-default;
+    @apply py-1 px-5 tracking-wider text-primary-gray text-left text-xs font-medium hover:text-white transition-all cursor-default;
   }
 
   .table-cell {
-    @apply p-4 px-5 py-2 text-sm font-normal text-white flex items-center justify-start truncate h-14;
+    @apply px-5 py-2 text-sm font-normal text-white flex items-center justify-start truncate h-14;
   }
 
   .table-title,
@@ -71,10 +71,25 @@
     &:nth-child(2) {
       @apply pl-2;
     }
+
     &:nth-child(1) {
       @apply w-5 h-5 pr-0;
-    }   
-   }
+    }
+  }
+
+  .table-two-columns {
+
+    .table-title,
+    .table-cell {
+      &:nth-child(2) {
+        @apply px-5;
+      }
+
+      &:nth-child(1) {
+        @apply w-auto h-auto px-5;
+      }
+    }
+  }
 
   .table-row {
     @apply bg-blueish-black mb-3 rounded-lg;
@@ -197,7 +212,7 @@
   }
 
   .social-icon {
-    @apply mr-4 w-6 h-6 rounded-full bg-violet transition-all hover: bg-white flex items-center justify-center;
+    @apply mr-4 w-6 h-6 rounded-full bg-violet transition-all hover:bg-white flex items-center justify-center;
   }
 
   .notif-row {
@@ -220,8 +235,6 @@
     @apply absolute bottom-8 left-5/6 text-gray-700 text-sm py-3 px-4 bg-white rounded-md shadow w-44 h-auto transition-all;
   }
 }
-
-
 
 .info-block__popup {
   display: none;
@@ -482,8 +495,12 @@ table {
   border-spacing: 0px 12px;
 }
 
-input{
+input {
   &::-webkit-inner-spin-button {
     display: none;
+  }
+
+  &[readonly] {
+    color: #C5C5CC;
   }
 }
