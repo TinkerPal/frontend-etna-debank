@@ -26,6 +26,11 @@ module.exports = {
     fontFamily: {
       'body': ['Inter'],
     },
+    fill: theme => ({
+      'red': '#EB5757',
+      'green': '#27AE60',
+      'yellow': '#F2C94C',
+    }),
     backgroundColor: theme => ({
       ...theme('colors'),
       'blueish-black': '#191932',
@@ -148,6 +153,7 @@ module.exports = {
       textDecoration: ['focus-visible'],
       textOpacity: ['active', 'disabled'],
       backgroundOpacity: ['active'],
+      fill: ['hover', 'focus', 'active'],
     },
     animation: ['responsive', 'motion-safe', 'motion-reduce']
   },

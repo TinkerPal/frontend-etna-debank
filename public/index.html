@@ -4,7 +4,14 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="theme-color" content="#212121" />
+  <meta name="msapplication-navbutton-color" content="#212121" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="#212121" />
+  <!-- Include base CSS (optional) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/base.min.css" />
+  <!-- Include Choices CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
   <link href="/css/styles.css" rel="stylesheet" />
   <link rel="icon" href="/images/logo-m.png">
   <title>
@@ -13,7 +20,8 @@
 </head>
 
 <body class="font-body bg-black text-white h-full min-h-screen relative w-screen flex flex-col relative">
-  <header class="w-full z-20">
+
+  <header class="w-full z-30">
       <div class="lg:px-8 px-6 border-b border-gray-700 flex lg:flex-row flex-col lg:items-center justify-between">
     <div class="flex items-center">
       <div class="mr-6">
@@ -24,11 +32,11 @@
           <span class="py-2 px-3 bg-gray-900 rounded-md">Dashboard</span>
         </div>
 
-        <div class="nav-link" id="t2">
+        <div class="nav-link active" id="t2">
           My Deposits
         </div>
 
-        <div class="nav-link active" id="t3">
+        <div class="nav-link" id="t3">
           Borrow
         </div>
 
@@ -121,6 +129,19 @@
   </div>
 
   </header>
+
+  <!-- <div class="orientation-cover fixed top-0 left-0 w-full h-full z-20 bg-black">
+    <div class="h-full flex items-center w-full justify-center text-center">
+      <div class="text-3xl leading-9 font-bold mr-4">Please rotate device</div>
+    </div>
+  </div>
+
+  <div id="load_bar_cover" class="load-bar-cover fixed top-0 left-0 w-full h-full z-10 bg-black">
+    <div class="h-full flex items-center justify-center">
+      <div id="debank_load_bar" class="ldBar label-center" data-value="5" data-preset="circle" data-stroke="#98EF10" data-stroke-lincap="round" style="width: 150px; height: 150px;" data-stroke-trail="#C4C4C4"></div>
+    </div>
+  </div> -->
+
   <div id="p1" class="page">
     <div class="main mx-6 mt-11 text-white xl:flex-row flex flex-col">
       <div class="dashboard-col xl:w-96 w-full">
@@ -1067,7 +1088,7 @@
       </div>
     </div>
   </div>
-  <div id="p2" class="page">
+  <div id="p2" class="page active">
     <div class="main mx-6 mt-11 text-white">
   <div class="wrapper">
     <div class="flex items-center">
@@ -1109,7 +1130,7 @@
 </div>
 
   </div>
-  <div id="p3" class="page active">
+  <div id="p3" class="page">
     <div class="main mx-6 mt-11 text-white">
   <div class="wrapper">
     <div class="flex items-center">
@@ -1404,38 +1425,37 @@
   </div>
 
   <div class="if-depos w-full mt-auto">
-    <div class="flex flex-col mx-6">
-  <div class="notif-row success bg-green-success">
-    <div class="flex items-center text-sm leading-5 font-medium text-green-3">
+    <div class="flex flex-col">
+  <div class="notif-row mx-6" id="info_pane" onclick="safeSetInnerHTMLById('info_pane','')">
+    <div class="flex items-center text-sm leading-5 font-medium text-color">
       <span class="flex items-center justify-center mr-2 w-4 h-4">
-        <img src="../images/success-circle.svg" class="w-full h-full" alt="#">
+        <svg width="20" height="20" class="icon-success w-full h-full" viewBox="0 0 20 20" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18ZM13.7071 8.70711C14.0976 8.31658 14.0976 7.68342 13.7071 7.29289C13.3166 6.90237 12.6834 6.90237 12.2929 7.29289L9 10.5858L7.70711 9.29289C7.31658 8.90237 6.68342 8.90237 6.29289 9.29289C5.90237 9.68342 5.90237 10.3166 6.29289 10.7071L8.29289 12.7071C8.68342 13.0976 9.31658 13.0976 9.70711 12.7071L13.7071 8.70711Z"
+            fill="#6FCF97" />
+        </svg>
+        <svg width="20" height="20" class="icon-warning w-full h-full" viewBox="0 0 20 20" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M8.25694 3.09882C9.02154 1.73952 10.9786 1.73952 11.7432 3.09882L17.3235 13.0194C18.0735 14.3526 17.11 15.9999 15.5804 15.9999H4.41978C2.89013 15.9999 1.9267 14.3526 2.67663 13.0194L8.25694 3.09882ZM11 13C11 13.5523 10.5523 14 10 14C9.44772 14 9 13.5523 9 13C9 12.4477 9.44772 12 10 12C10.5523 12 11 12.4477 11 13ZM10 5C9.44772 5 9 5.44772 9 6V9C9 9.55228 9.44772 10 10 10C10.5523 10 11 9.55228 11 9V6C11 5.44772 10.5523 5 10 5Z"
+            fill="#FBBF24" />
+        </svg>
+        <svg width="20" height="20" class="icon-error w-full h-full" viewBox="0 0 20 20" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M8.25694 3.09882C9.02154 1.73952 10.9786 1.73952 11.7432 3.09882L17.3235 13.0194C18.0735 14.3526 17.11 15.9999 15.5804 15.9999H4.41978C2.89013 15.9999 1.9267 14.3526 2.67663 13.0194L8.25694 3.09882ZM11 13C11 13.5523 10.5523 14 10 14C9.44772 14 9 13.5523 9 13C9 12.4477 9.44772 12 10 12C10.5523 12 11 12.4477 11 13ZM10 5C9.44772 5 9 5.44772 9 6V9C9 9.55228 9.44772 10 10 10C10.5523 10 11 9.55228 11 9V6C11 5.44772 10.5523 5 10 5Z"
+            fill="#EB5757" />
+        </svg>
       </span>
-      Success message
+      <span class="flex items-center info-msg">
+        Error message
+      </span>
     </div>
     <div class="close-icon">
-      <img src="../images/close-green.svg" class="w-3 h-3" alt="#">
-    </div>
-  </div>
-  <div class="notif-row warning bg-warning">
-    <div class="flex items-center text-sm leading-5 font-medium text-yellow">
-      <span class="flex items-center justify-center mr-2 w-4 h-4">
-        <img src="../images/warning-icon.svg" class="w-full h-full" alt="#">
-      </span>
-      You need to select collateral asset!
-    </div>
-    <div class="close-icon">
-      <img src="../images/close-yellow.svg" class="w-3 h-3" alt="#">
-    </div>
-  </div>
-  <div class="notif-row error bg-error" id="info_pane" onclick="safeSetInnerHTMLById('info_pane','')">
-    <div class="flex items-center text-sm leading-5 font-medium text-red">
-      <span class="flex items-center justify-center mr-2 w-4 h-4">
-        <img src="../images/error-icon.svg" class="w-full h-full" alt="#">
-      </span>
-      Error message
-    </div>
-    <div class="close-icon">
-      <img src="../images/close-red.svg" class="w-3 h-3" alt="#">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M0.292893 0.292893C0.683417 -0.0976311 1.31658 -0.0976311 1.70711 0.292893L6 4.58579L10.2929 0.292893C10.6834 -0.0976311 11.3166 -0.0976311 11.7071 0.292893C12.0976 0.683417 12.0976 1.31658 11.7071 1.70711L7.41421 6L11.7071 10.2929C12.0976 10.6834 12.0976 11.3166 11.7071 11.7071C11.3166 12.0976 10.6834 12.0976 10.2929 11.7071L6 7.41421L1.70711 11.7071C1.31658 12.0976 0.683417 12.0976 0.292893 11.7071C-0.0976311 11.3166 -0.0976311 10.6834 0.292893 10.2929L4.58579 6L0.292893 1.70711C-0.0976311 1.31658 -0.0976311 0.683417 0.292893 0.292893Z" fill=""/>
+        </svg>
     </div>
   </div>
 </div>
@@ -1514,38 +1534,37 @@
 
   </div>
   <div class="if-credit w-full mt-auto">
-    <div class="flex flex-col mx-6">
-  <div class="notif-row success bg-green-success">
-    <div class="flex items-center text-sm leading-5 font-medium text-green-3">
+    <div class="flex flex-col">
+  <div class="notif-row mx-6" id="info_pane" onclick="safeSetInnerHTMLById('info_pane','')">
+    <div class="flex items-center text-sm leading-5 font-medium text-color">
       <span class="flex items-center justify-center mr-2 w-4 h-4">
-        <img src="../images/success-circle.svg" class="w-full h-full" alt="#">
+        <svg width="20" height="20" class="icon-success w-full h-full" viewBox="0 0 20 20" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18ZM13.7071 8.70711C14.0976 8.31658 14.0976 7.68342 13.7071 7.29289C13.3166 6.90237 12.6834 6.90237 12.2929 7.29289L9 10.5858L7.70711 9.29289C7.31658 8.90237 6.68342 8.90237 6.29289 9.29289C5.90237 9.68342 5.90237 10.3166 6.29289 10.7071L8.29289 12.7071C8.68342 13.0976 9.31658 13.0976 9.70711 12.7071L13.7071 8.70711Z"
+            fill="#6FCF97" />
+        </svg>
+        <svg width="20" height="20" class="icon-warning w-full h-full" viewBox="0 0 20 20" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M8.25694 3.09882C9.02154 1.73952 10.9786 1.73952 11.7432 3.09882L17.3235 13.0194C18.0735 14.3526 17.11 15.9999 15.5804 15.9999H4.41978C2.89013 15.9999 1.9267 14.3526 2.67663 13.0194L8.25694 3.09882ZM11 13C11 13.5523 10.5523 14 10 14C9.44772 14 9 13.5523 9 13C9 12.4477 9.44772 12 10 12C10.5523 12 11 12.4477 11 13ZM10 5C9.44772 5 9 5.44772 9 6V9C9 9.55228 9.44772 10 10 10C10.5523 10 11 9.55228 11 9V6C11 5.44772 10.5523 5 10 5Z"
+            fill="#FBBF24" />
+        </svg>
+        <svg width="20" height="20" class="icon-error w-full h-full" viewBox="0 0 20 20" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M8.25694 3.09882C9.02154 1.73952 10.9786 1.73952 11.7432 3.09882L17.3235 13.0194C18.0735 14.3526 17.11 15.9999 15.5804 15.9999H4.41978C2.89013 15.9999 1.9267 14.3526 2.67663 13.0194L8.25694 3.09882ZM11 13C11 13.5523 10.5523 14 10 14C9.44772 14 9 13.5523 9 13C9 12.4477 9.44772 12 10 12C10.5523 12 11 12.4477 11 13ZM10 5C9.44772 5 9 5.44772 9 6V9C9 9.55228 9.44772 10 10 10C10.5523 10 11 9.55228 11 9V6C11 5.44772 10.5523 5 10 5Z"
+            fill="#EB5757" />
+        </svg>
       </span>
-      Success message
+      <span class="flex items-center info-msg">
+        Error message
+      </span>
     </div>
     <div class="close-icon">
-      <img src="../images/close-green.svg" class="w-3 h-3" alt="#">
-    </div>
-  </div>
-  <div class="notif-row warning bg-warning">
-    <div class="flex items-center text-sm leading-5 font-medium text-yellow">
-      <span class="flex items-center justify-center mr-2 w-4 h-4">
-        <img src="../images/warning-icon.svg" class="w-full h-full" alt="#">
-      </span>
-      You need to select collateral asset!
-    </div>
-    <div class="close-icon">
-      <img src="../images/close-yellow.svg" class="w-3 h-3" alt="#">
-    </div>
-  </div>
-  <div class="notif-row error bg-error" id="info_pane" onclick="safeSetInnerHTMLById('info_pane','')">
-    <div class="flex items-center text-sm leading-5 font-medium text-red">
-      <span class="flex items-center justify-center mr-2 w-4 h-4">
-        <img src="../images/error-icon.svg" class="w-full h-full" alt="#">
-      </span>
-      Error message
-    </div>
-    <div class="close-icon">
-      <img src="../images/close-red.svg" class="w-3 h-3" alt="#">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M0.292893 0.292893C0.683417 -0.0976311 1.31658 -0.0976311 1.70711 0.292893L6 4.58579L10.2929 0.292893C10.6834 -0.0976311 11.3166 -0.0976311 11.7071 0.292893C12.0976 0.683417 12.0976 1.31658 11.7071 1.70711L7.41421 6L11.7071 10.2929C12.0976 10.6834 12.0976 11.3166 11.7071 11.7071C11.3166 12.0976 10.6834 12.0976 10.2929 11.7071L6 7.41421L1.70711 11.7071C1.31658 12.0976 0.683417 12.0976 0.292893 11.7071C-0.0976311 11.3166 -0.0976311 10.6834 0.292893 10.2929L4.58579 6L0.292893 1.70711C-0.0976311 1.31658 -0.0976311 0.683417 0.292893 0.292893Z" fill=""/>
+        </svg>
     </div>
   </div>
 </div>
@@ -1877,6 +1896,41 @@
           <option value="cytr">CYTR</option>
         </select>
       </div>
+
+      <!-- nft heroes
+      appolo: apollo.png
+      nyx: nyx.png
+      arthemis: arthemis.png
+      cyclops: cyclops.png
+      hercules: hercules.png
+      mercury: mercury.png
+      wukong: wukong.png
+      pantara: pantara.png
+      osiris: osiris.png
+      eagle: eagle.png
+      psymurgh: psymurgh.png
+      kanaloha: kanaloha.png
+      vapmahati: vapmahati.png
+      bolt: bolt.png
+      clobuck: clobuck.png
+      aresSholderPad: aresSholderPad.png
+      mirrorOfNarcissus: mirrorOfNarcissus.png
+      nectarOfTheGods: nectarOfTheGods.png
+      sunrisePomegranate: sunrisePomegranate.png
+      tearOfVulcan: tearOfVulcan.png
+      wandOfOsiris: wandOfOsiris.png
+      vistas: vistas.png
+      theSacredAxeOfBast: theSacredAxeOfBast.png
+      hammerAxeOfHades: hammerAxeOfHades.png
+      eaglesKris: eaglesKris.png
+      spellHecate: spellHecate.png
+      songOfPan: songOfPan.png
+      ragnarok: ragnarok.png
+      torchHecate: torchHecate.png
+      hornSatyr: hornSatyr.png
+      keysRagnarok: keysRagnarok.png
+      -->
+
       <div class="flex flex-col mb-4">
         <label for="tokens_amount" class="name-field ">Assets amount</label>
         <input type="number" name="tokens_amount" id="tokens_amount" class="input-type" value="0" placeholder="0">
@@ -1962,6 +2016,7 @@
   <!-- tokens -->
   <script src="/js/token.js"></script>
   <!-- end tokens -->
+  <script src="/js/loading-bar.min.js"></script>
   <script src="/js/common.js"></script>
   <script src="/js/custom.js"></script>
 

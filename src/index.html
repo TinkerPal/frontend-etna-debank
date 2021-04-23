@@ -4,7 +4,14 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="theme-color" content="#212121" />
+  <meta name="msapplication-navbutton-color" content="#212121" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="#212121" />
+  <!-- Include base CSS (optional) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/base.min.css" />
+  <!-- Include Choices CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
   <link href="/css/styles.css" rel="stylesheet" />
   <link rel="icon" href="/images/logo-m.png">
   <title>
@@ -13,9 +20,23 @@
 </head>
 
 <body class="font-body bg-black text-white h-full min-h-screen relative w-screen flex flex-col relative">
-  <header class="w-full z-20">
+
+  <header class="w-full z-30">
     @@include('./templates/header.html')
   </header>
+
+  <!-- <div class="orientation-cover fixed top-0 left-0 w-full h-full z-20 bg-black">
+    <div class="h-full flex items-center w-full justify-center text-center">
+      <div class="text-3xl leading-9 font-bold mr-4">Please rotate device</div>
+    </div>
+  </div>
+
+  <div id="load_bar_cover" class="load-bar-cover fixed top-0 left-0 w-full h-full z-10 bg-black">
+    <div class="h-full flex items-center justify-center">
+      <div id="debank_load_bar" class="ldBar label-center" data-value="5" data-preset="circle" data-stroke="#98EF10" data-stroke-lincap="round" style="width: 150px; height: 150px;" data-stroke-trail="#C4C4C4"></div>
+    </div>
+  </div> -->
+
   <div id="p1" class="page">
     <div class="main mx-6 mt-11 text-white xl:flex-row flex flex-col">
       <div class="dashboard-col xl:w-96 w-full">
@@ -26,10 +47,10 @@
       </div>
     </div>
   </div>
-  <div id="p2" class="page">
+  <div id="p2" class="page active">
     @@include('./templates/deposits.html')
   </div>
-  <div id="p3" class="page active">
+  <div id="p3" class="page">
     @@include('./templates/borrow.html')
   </div>
   <div id="p4" class="page">
@@ -57,6 +78,7 @@
   <!-- tokens -->
   <script src="/js/token.js"></script>
   <!-- end tokens -->
+  <script src="/js/loading-bar.min.js"></script>
   <script src="/js/common.js"></script>
   <script src="/js/custom.js"></script>
 

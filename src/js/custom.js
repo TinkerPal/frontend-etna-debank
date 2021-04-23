@@ -2339,14 +2339,14 @@ async function approveTokenMove(token_address, amount_wei, toAddress) {
     });
 }
 
-function output_transaction(txnHash, color = 'white', element_id = 'info_pane', elem_to_hide = null) {
+function output_transaction(txnHash, element_id = 'info_pane', elem_to_hide = null) {
   var el = document.getElementById(element_id);
   if (el) {
     var ch = 'testnet.';
     //if (window.chainId != '0x1' && window.chainId != '1') ch = chains[window.ethereum.chainId]+'.';
 
     el.innerHTML =
-      '<span style="color: ' + color + '";"><a style="color: ' + color + ';" target="_blank" href="https://' + ch + 'bscscan.com/tx/' + txnHash + '">last transaction: ' + txnHash + '</a></span>';
+      '<a target="_blank" href="https://' + ch + 'bscscan.com/tx/' + txnHash + '">last transaction: ' + txnHash + '</a>';
     el.style.display = "block";
   }
   if (elem_to_hide) document.getElementById(elem_to_hide).style.display = "none";

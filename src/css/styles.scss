@@ -229,15 +229,63 @@
   }
 
   .notif-row {
-    @apply mb-6 flex items-center justify-between py-4 px-5 border-l-4 rounded-md border-green-3;
-  }
+    @apply mb-6 flex items-center justify-between py-4 px-5 border-l-4 rounded-md border-red bg-error;
 
-  .notif-row.warning {
-    @apply border-yellow-400;
-  }
+    .text-color {
+      @apply text-red;
+    }
 
-  .notif-row.error {
-    @apply border-red;
+    .close-icon svg {
+      @apply fill-red w-3 h-3;
+    }
+
+    .icon-success,
+    .icon-warning {
+      @apply hidden;
+    }
+
+    .icon-error {
+      @apply flex;
+    }
+
+    &.info_pane_success {
+      @apply border-green-3;
+
+      .text-color {
+        @apply text-green-3;
+      }
+
+      .icon-success {
+        @apply block;
+      }
+
+      .close-icon svg {
+        @apply fill-green;
+      }
+
+      .icon-warning,
+      .icon-error {
+        @apply hidden;
+      }
+    }
+
+    &.info_pane_info {
+      @apply border-yellow-400 bg-warning;
+
+      .icon-success,
+      .icon-error {
+        @apply hidden;
+      }
+
+      .icon-warning {
+        @apply flex;
+      }
+
+      .close-icon svg {
+        @apply fill-yellow;
+      }
+    }
+
   }
 
   .close-icon {
@@ -904,3 +952,54 @@ input {
 button:disabled {
   cursor: not-allowed;
 }
+
+// start Loading Bar
+
+.ldBar-label {
+  font-family: 'Inter';
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 600;
+  color: rgb(152, 239, 15);
+}
+
+.ldBar {
+  position: relative;
+}
+
+.ldBar.label-center>.ldBar-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.ldBar-label:after {
+  content: "%";
+  display: inline;
+}
+
+.ldBar.no-percent .ldBar-label:after {
+  content: "";
+}
+
+.ldBar path.mainline {
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.ldBar path.baseline {
+  stroke-linecap: round;
+  stroke-width: 1;
+  stroke: rgb(17, 24, 39);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+@media screen and (orientation:landscape) {
+  .orientation-cover {
+    display: none;
+  }
+}
+
+// end Loading Bar
