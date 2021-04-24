@@ -1590,7 +1590,7 @@ async function getAccount() {
         document.getElementById('net_icon').style.color = "red";
         document.getElementById('net_txt').innerHTML = " wrong network, connect to BSC-Test";
       } else {
-        document.getElementById('net_icon').style.color = "green";
+        document.getElementById('net_icon').style.color = "#48A68E";
         document.getElementById('net_txt').innerHTML = " BSC-Test";
       }
 

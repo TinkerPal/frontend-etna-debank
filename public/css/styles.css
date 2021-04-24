@@ -2873,6 +2873,10 @@ button:disabled {
   border-left: 0px;
 }
 
+#net_icon {
+  fill: currentColor;
+}
+
 @media (min-width: 640px) {
 }
 
