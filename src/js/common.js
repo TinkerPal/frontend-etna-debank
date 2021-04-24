@@ -218,4 +218,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
     });
   });
 
+  var multipleCancelButton = new Choices('#choices-multiple', {
+    removeItemButton: true,
+  });
+
 });
