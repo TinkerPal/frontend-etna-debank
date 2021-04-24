@@ -1,202 +1,12 @@
-function Modal(modalId) {
-  this.modal = document.getElementById(modalId);
-  this.data = {};
-  this.approve = this.modal.querySelector('[data-id="approve"]');
-  this.confirm = this.modal.querySelector('[data-id="confirm"]');
-
-  this.closeModalTimer = 5000;
-
-  this.isLoadingAfterApprove = () => {
-    this.approve.disabled = true;
-    this.approve.classList.add('btn-load');
-  }
-
-  this.isLoadedAfterApprove = (success = true) => {
-    if (success) {
-      this.approve.classList.remove('btn-load');
-      this.approve.classList.add('btn-done');
-      setTimeout(() => this.hide(), this.closeModalTimer);
-      return;
-    }
-
-    this.hide();
-  }
-
-  this.isLoadingAfterConfirm = () => {
-    this.confirm.disabled = true;
-    this.confirm.classList.add('btn-load');
-  }
-
-  this.isLoadedAfterConfirm = (success = true) => {
-    if (success) {
-      this.confirm.classList.remove('btn-load');
-      this.confirm.classList.add('btn-done');
-      setTimeout(() => this.hide(), this.closeModalTimer);
-      return;
-    }
-    
-    this.hide();
-  }
-
-  this.show = () => {
-    this.modal.classList.add("open");
-  }
-
-  this.setData = (data) => {
-    this.data = {
-      ...data
-    };
-  }
-
-  this.updateData = (newData) => {
-    this.data = {
-      ...data,
-      ...newData
-    };
-  }
-
-  this.hide = () => {
-    this.modal.classList.remove("open");
-
-    if (this.approve) {
-      this.approve.disabled = false;
-      this.approve.classList.remove('btn-load', 'btn-done');
-    }
-    
-    if (this.confirm) {
-      this.confirm.disabled = false;
-      this.confirm.classList.remove('btn-load','btn-done');
-    }
-  }
-
-  init = () => {
-    const exits = this.modal.querySelectorAll(".modal-exit");
-    exits.forEach(exit => {
-      exit.addEventListener("click", this.hide);
-    });
-  }
-
-  init();
-}
-
 const withdraw_modal = new Modal('modal-withdraw-deposit');
 const withdraw_rew_modal = new Modal('modal-withdraw-reward');
-const new_deposit_modal = new Modal('modal-new-deposit');
 const open_new_credit_modal = new Modal('modal-open-new-credit');
 const return_credit_modal = new Modal('modal-return-credit');
 const set_leverage_modal = new Modal('modal-set-leverage');
 const add_liquidity_modal = new Modal('modal-add-liquidity');
-
-const WALLETS_API_URL = "https://bsc-debank-wallet-api.etna.network";
-//const NFT_PUB_API_URL = "https://bsc-debank-pub-api.etna.network";
-//const NFT_ROOT_URL = "https://debank.etna.network/nft";
-
-// import token.js in index.html file
-
-window.cyclops_nft_contract_address = '0x6ab7E5B00a6e4A7E56160FAc1BCcAcEad1614554'; //kovan
-
-window.cyclops_nft_contract_address = '0x6ab7E5B00a6e4A7E56160FAc1BCcAcEad1614554'; //kovan
-
-const apy_scale = 100000;
-const CACHE_TIME = 30000; //ms, i.e 30 sec.
-
-const chains = new Array();
-chains['0x1'] = "mainnet";
-chains['1'] = "mainnet"; //for opera
-chains['0x3'] = "ropsten";
-chains['0x4'] = "rinkeby";
-chains['0x5'] = "goerli";
-chains["0x2a"] = "kovan";
-chains["0x61"] = 'bsctestnet'
-chains["0x38"] = 'bsc';
-
-const dep_types = new Array();
-dep_types["ERC20"] = 1;
-dep_types["ERC721"] = 2;
-dep_types["Uniswap pair"] = 3;
-dep_types["Ether"] = 4;
-
-const rev_dep_types = new Array();
-rev_dep_types[1] = "ERC20";
-rev_dep_types[2] = "ERC721";
-rev_dep_types[3] = "Uniswap pair";
-rev_dep_types[4] = "Ether";
-
-const CRYPTO_ICONS = ['bnb', 'st1', 'cytr', 'etna', 'pancake'];
-
-const period_name_from_code = new Array();
-period_name_from_code['1W'] = "1 week";
-period_name_from_code['2W'] = "2 weeks";
-period_name_from_code['1M'] = "1 month";
-
-const period_len_from_code = new Array();
-period_len_from_code['1W'] = 7;
-period_len_from_code['2W'] = 14;
-period_len_from_code['1M'] = 30;
-
-const to_bool = new Array();
-to_bool["Yes"] = true;
-to_bool["No"] = false;
-
-const rev_to_bool = new Array();
-rev_to_bool[true] = "Yes";
-rev_to_bool[false] = "No";
-
-const infura_endpoint = new Array();
-infura_endpoint['0x1'] = "https://mainnet.infura.io/v3/e399e7df7f9149d08b2e91939e056007";
-infura_endpoint['1'] = "https://mainnet.infura.io/v3/e399e7df7f9149d08b2e91939e056007"; //for opera
-infura_endpoint["0x2a"] = "https://kovan.infura.io/v3/e399e7df7f9149d08b2e91939e056007";
-infura_endpoint["0x61"] = "https://data-seed-prebsc-1-s1.binance.org:8545";
-
-
-const zero_address = '0x0000000000000000000000000000000000000000';
-const ADJ_CONSTANT = 1000000000000000000; //10^18
-//window.chainId = "0x1"; //prod
-window.chainId = "0x61"; //testnet bsc
-
-const MAX_ETH_AMOUNT = 20;
-const MAX_TOKENS_AMOUNT = 200;
-
-// *** for price chart
-const MAX_PRICE_DATA_LEN = 90;
-const INIT_SELL_PRICE = 0.1; //ether
-const INIT_BUYOUT_PRICE = 0.08; //ether
-const INIT_PRICE_DATE = Date.parse('2021-01-01');
-const FORECAST_TOKENS_PER_DAY = 5;
-const PRICE_CHANGE = 1.0015;
-
-const ERC20_TOKEN = 1;
-const ERC721_TOKEN = 2;
-const UNISWAP_PAIR = 3;
-const NATIVE_ETHEREUM = 4;
-const BAD_TOKEN = 99;
-
-const BAD_DEPOSIT_PROFILE_ID = 9999999;
-const BAD_DEPOSIT_ID = 9999999;
-const NONE_FAMER_ID = 9999999;
-window.famer = NONE_FAMER_ID;
-
-// *** wallet connect variables
-
-const Web3Modal = window.Web3Modal.default;
-const WalletConnectProvider = window.WalletConnectProvider.default;
-const evmChains = window.evmChains;
-
-
-const providerOptions = {
-  walletconnect: {
-    package: WalletConnectProvider,
-    options: {
-      rpc: {
-        97: "https://data-seed-prebsc-1-s1.binance.org:8545/",
-      }
-    }
-  }
-};
-
+const new_deposit_modal = new Modal('modal-new-deposit', initDepositProfilesDropdown, depositModalRebuild);
 
 const walletButton = document.getElementById("enableEthereumButton");
-const forwardedOrigin = "https://debank.etna.network";
 
 const createTableBtnWithIcon = (icon, text, callback) => {
   return `<span class="table-btn" onclick="${callback}">
@@ -207,26 +17,18 @@ const createTableBtnWithIcon = (icon, text, callback) => {
 </span>`
 }
 
-const isNFT = (dep_id) => {
-  const assetPID = userObject.deposits.am_arr[0][dep_id];
-  const asset = userObject.deposit_profiles.find(profile => profile.p_id === assetPID);
-
-  if (!asset) return;
-
-  return asset.p_name === 'nft';
-}
-
 const createCellWithIcon = (iconSrc) => {
-  iconSrc = iconSrc.toLowerCase();
-  iconSrc = CRYPTO_ICONS.indexOf(iconSrc) === -1 ? 'b' : iconSrc;
+  const iconName = iconSrc.toLowerCase();
+
+  const iconObj = CRYPTO_ICONS.find(icon => iconName === icon.name);
+
+  if (iconObj) {
+    iconSrc = iconObj.icon ? iconObj.icon : iconObj.name;
+  } else {
+    iconSrc = 'b'
+  }
 
   return `<span class="crypto-icon-no-spaces"><img src="/images/crypto-icons/icon-${iconSrc}.svg"></span>`
-}
-
-const isMetaMaskInstalled = () => {
-  if (typeof window.ethereum != undefined) {
-    return Boolean(window.ethereum && window.ethereum.isMetaMask);
-  }
 }
 
 let contractsObject = {
@@ -276,8 +78,7 @@ let userObject = {
       let current_timestamp = Date.now();
       if (current_timestamp > (this.getAmArr_last_call + CACHE_TIME)) {
         this.getAmArr_last_call = current_timestamp;
-        console.log('getAmArr call: ', current_timestamp);
-        //console.log('current_timestamp', current_timestamp, 'this.getAmArr_last_call+CACHE_TIME', this.getAmArr_last_call+CACHE_TIME);
+
         this.am_arr = await window.staking_smartcontract.methods.amountsPerDeposits(userObject.account).call({
           from: userObject.account
         });
@@ -520,7 +321,7 @@ let userObject = {
         this.withdraw_dep_col.length = 0;
         let profiles = userObject.deposit_profiles;
         let am_arr = this.am_arr;
-        console.log(am_arr[0], profiles, userObject)
+
 
         for (let j = 0; j < profiles.length; j++) {
           let txt = '';
@@ -1151,7 +952,6 @@ let userObject = {
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
           if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
-            //console.log('u_p_id', am_arr[0][i]);
             this.icon_column.push('<td class="table-cell">' + createCellWithIcon(await unswProfileNameByProfileId(am_arr[0][i])) + '</td>');
             let aname = (await unswProfileNameByProfileId(am_arr[0][i])).slice(0, -3);
             this.asset_column.push('<td class="table-cell">' + aname + '</td>');
@@ -1252,7 +1052,6 @@ let userObject = {
           if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
             let txt = '';
             if (am_arr[1][i] > 0) {
-              //console.log('uw pair amount=', am_arr[1][i], 'dep_id=', i);
 
               let am = await calcUSDValueOfDeposit(am_arr[1][i], i);
               this.usd_val_only_col.push({
@@ -1626,10 +1425,7 @@ document.addEventListener('visibilitychange', function () {
   }
 });
 
-window.addEventListener('DOMContentLoaded', async () => {
-
-
-
+window.addEventListener('DOMContentLoaded', async function () {
 
   const r1 = getBackendParameter('STAKING_CONTRACT', (contract_address) => {
     window.staking_contract_address = contract_address;
@@ -1692,7 +1488,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
 
     window.ethereum.on('chainChanged', async (chainId) => {
-      //console.log('chainId=', chainId);
       if (chainId == '0x2a') window.location.replace('https://debank.cyclops.game');
       window.location.reload();
     });
@@ -1717,12 +1512,13 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     //openTab({srcElement: document.getElementById(userObject.state.current_page_id+'-menu')}, userObject.state.current_page_id);
 
-    //initDepositProfilesDropdown();
+    //initDepositProfilesDropdown()
     //initCreditProfilesDropdown();
     //initGetCreditDropdown();
 
   }
 
+  new_deposit_modal.initModalElementCallback();
 });
 
 async function initWeb3Modal() {
@@ -1734,8 +1530,6 @@ async function initWeb3Modal() {
 
   });
 }
-
-
 
 async function getAccount() {
 
@@ -1753,56 +1547,52 @@ async function getAccount() {
 
     window.chainId = window.ethereum.chainId;
 
-    //document.getElementById('debank_load_bar').ldBar.set(10);
+    document.getElementById('debank_load_bar').ldBar.set(10);
 
-    //safeSetValueBySelector( '.current-wallet', (userObject.account));
-    //safeSetInnerHTMLBySelector( '.current-wallet', (userObject.account),'inline');
+    safeSetValueBySelector('.current-wallet', userObject.account);
+    safeSetInnerHTMLBySelector('.current-wallet', userObject.account, ' inline');
 
-    //checkAdminButton();
+    checkAdminButton();
     window.web3js = await new Web3(window.ethereum);
     window.web3 = window.web3js;
     window.BN = web3js.utils.BN;
 
     await Promise.all([initStakingContract(), initCreditContract(), initLiqLevContract(), initCyclopsNFTContract()])
 
-    //document.getElementById('debank_load_bar').ldBar.set(15);
+    document.getElementById('debank_load_bar').ldBar.set(15);
 
     await userObject.load();
 
-    //document.getElementById('debank_load_bar').ldBar.set(25);
-
+    document.getElementById('debank_load_bar').ldBar.set(25);
+    console.log(1)
     if (window.location.pathname == '/') {
 
-      // 	window.barCheck = setInterval(barChecker, 1000);
-      // 		async function barChecker() {
-      // 		  if (document.getElementById('load_bar_cover')){
-      // 		  	if (	document.getElementById('total_tokens_balance').innerHTML && 
-      // 		  			document.getElementById('tokens_balance').innerHTML &&
-      // 					document.getElementById('my_credits').innerHTML) {
-      // 		  				await new Promise(r => setTimeout(r, 1000));
-      // 		  				document.getElementById('load_bar_cover').style.display="none";
-      // 		  				clearInterval(window.barCheck);
+      window.barCheck = setInterval(barChecker, 1000);
+      async function barChecker() {
+        if (document.getElementById('load_bar_cover')) {
+          if (
+            document.getElementById('tokens_balance').innerHTML &&
+            document.getElementById('my_credits').innerHTML
+          ) {
+            await new Promise(r => setTimeout(r, 1000));
+            document.getElementById('load_bar_cover').style.display = "none";
+            clearInterval(window.barCheck);
+          }
+        }
+      }
 
-      // 			}
-      // 		  }
-
-      // 	}
-
-      // 	if (window.chainId == undefined){
-      // 		document.getElementById('net_name').innerHTML="unknown net";
-      // 		document.getElementById('net_info').style.display ="block";
-      // 		document.getElementById('net_info').style.color ="red";
-      // 		document.getElementById('net_txt').innerHTML=" wrong network, connect to BSC-Test";
-      // 	} else if (window.chainId != '0x61') {
-      // 		document.getElementById('net_name').innerHTML=chains[window.chainId];
-      // 		document.getElementById('net_info').style.display ="block";
-      // 		document.getElementById('net_icon').style.color ="red";
-      // 		document.getElementById('net_txt').innerHTML=" wrong network, connect to BSC-Test";
-      // 	} else {
-      // 		document.getElementById('net_icon').style.color ="green";
-      // 		document.getElementById('net_info').style.display ="block";
-      // 		document.getElementById('net_txt').innerHTML=" BSC-Test";
-      // 	}
+      if (window.chainId == undefined) {
+        document.getElementById('net_name').innerHTML = "unknown net";
+        document.getElementById('net_info').style.color = "red";
+        document.getElementById('net_txt').innerHTML = " wrong network, connect to BSC-Test";
+      } else if (window.chainId != '0x61') {
+        document.getElementById('net_name').innerHTML = chains[window.chainId];
+        document.getElementById('net_icon').style.color = "red";
+        document.getElementById('net_txt').innerHTML = " wrong network, connect to BSC-Test";
+      } else {
+        document.getElementById('net_icon').style.color = "green";
+        document.getElementById('net_txt').innerHTML = " BSC-Test";
+      }
 
       await updateData();
 
@@ -1903,8 +1693,6 @@ async function getAccountWalletConnect() {
 
 }
 
-
-
 function temporaryDisableCurrentButton(element_id = null) {
   let elem;
   if (element_id) elem = document.getElementById(element_id);
@@ -1914,12 +1702,6 @@ function temporaryDisableCurrentButton(element_id = null) {
     elem.disabled = false;
   }, 10000);
 }
-
-
-
-
-
-
 
 async function initStakingContract(callback = null) {
 
@@ -1962,7 +1744,6 @@ async function initLiqLevContract(callback = null) {
     if (callback) callback(window.liqlev_smartcontract);
   }
 }
-
 
 async function initVotesCalcContractReader(callback = null) {
 
@@ -2054,9 +1835,6 @@ async function getCredit() {
   }
 
   initCreditContract(async (contract) => {
-    //console.log(userObject.account+';'+collateral_dep_id+';'+cred_amount+';'+ userObject.state.getcredit_profile+';'+whole+';'+is_fixed_credit);
-
-    //return;
     contract.methods.getCredit(userObject.account, collateral_dep_id, cred_amount, userObject.state.getcredit_profile, whole, is_fixed_credit).send({
         from: userObject.account,
         gasPrice: window.gp
@@ -2332,24 +2110,16 @@ async function approveTokenMove(token_address, amount_wei, toAddress) {
 
     })
     .on('confirmation', function (confirmationNumber, receipt) {
-      if (confirmationNumber == 5) infoMsg('Tokens move approved');
+      if (confirmationNumber == 5) successMsg('Tokens move approved');
     })
     .catch(error => {
       errorMsg('smartcontract communication error');
     });
 }
 
-function output_transaction(txnHash, element_id = 'info_pane', elem_to_hide = null) {
-  var el = document.getElementById(element_id);
-  if (el) {
-    var ch = 'testnet.';
-    //if (window.chainId != '0x1' && window.chainId != '1') ch = chains[window.ethereum.chainId]+'.';
-
-    el.innerHTML =
-      '<a target="_blank" href="https://' + ch + 'bscscan.com/tx/' + txnHash + '">last transaction: ' + txnHash + '</a>';
-    el.style.display = "block";
-  }
-  if (elem_to_hide) document.getElementById(elem_to_hide).style.display = "none";
+function output_transaction(txnHash) {
+  const ch = 'testnet.';
+  infoMsg(`<a target="_blank" href="https://${ch}bscscan.com/tx/${txnHash}">last transaction:${txnHash}</a>`);
 }
 
 function safeSetValueById(id, value, disp = 'block') {
@@ -2363,7 +2133,7 @@ function safeSetValueById(id, value, disp = 'block') {
 
 
 function safeSetInnerHTMLById(id, value, disp = 'block') {
-  var el = document.getElementById(id);
+  const el = document.getElementById(id);
   if (el) {
     el.innerHTML = value;
     if (value == '') el.style.display = "none"
@@ -2468,21 +2238,27 @@ function safeFloatToWei(num) { //as string
   return bn_num;
 }
 
+function successMsg(msg) {
+  safeSetInnerHTMLById('info_pane_message', msg);
+  document.getElementById('info_pane').classList.remove('info_pane_error', 'info_pane_info', 'info_pane_success');
+  document.getElementById('info_pane').classList.add('info_pane_success');
+}
+
 function infoMsg(msg) {
-  safeSetInnerHTMLById('info_pane', msg);
-  document.getElementById('info_pane').classList.remove('info_pane_error');
+  safeSetInnerHTMLById('info_pane_message', msg);
+  document.getElementById('info_pane').classList.remove('info_pane_error', 'info_pane_info', 'info_pane_success');
   document.getElementById('info_pane').classList.add('info_pane_info');
 }
 
 function errorMsg(msg) {
-  safeSetInnerHTMLById('info_pane', msg);
+  safeSetInnerHTMLById('info_pane_message', msg);
+  document.getElementById('info_pane').classList.remove('info_pane_error', 'info_pane_info', 'info_pane_success');
   document.getElementById('info_pane').classList.add('info_pane_error');
-  document.getElementById('info_pane').classList.remove('info_pane_info');
 }
 
 function resetMsg() {
-  document.getElementById('info_pane').classList.remove('info_pane_error');
-  safeSetInnerHTMLById('info_pane', '');
+  document.getElementById('info_pane').classList.remove('info_pane_error', 'info_pane_info', 'info_pane_success');
+  safeSetInnerHTMLById('info_pane_message', '');
 }
 
 function eventFire(el, etype) {
@@ -2502,7 +2278,6 @@ async function onUniversalConnect() {
     window.provider = await web3Modal.connect();
     getAccountWalletConnect();
   } catch (e) {
-    //console.log("Could not get a wallet connection", e);
     return;
   }
 
@@ -2512,7 +2287,6 @@ async function onUniversalConnect() {
 
   // Subscribe to chainId change
   window.provider.on("chainChanged", (chainId) => {
-    //console.log('chainId=', chainId);
     if (chainId == '0x2a') window.location.replace('https://debank.cyclops.game');
     window.location.reload();
   });
@@ -2581,7 +2355,6 @@ function isWeb3Connected() {
 
 async function connectWeb3() {
   if (isMetaMaskInstalled()) {
-    //console.log('metamask installed');
     window.ethereum.autoRefreshOnNetworkChange = false;
     getAccount();
 
@@ -2590,7 +2363,6 @@ async function connectWeb3() {
     });
 
     window.ethereum.on('chainChanged', (chainId) => {
-      //console.log('chainId=', chainId);
       if (chainId == '0x2a') window.location.replace('https://debank.cyclops.game');
       window.location.reload();
     });
@@ -2675,15 +2447,18 @@ async function updateData(action = null) {
   await userObject.load(); //only once, userObject controls it
 
   if (!action) { //only when loaded
-    // getTotalDashboard(() => {
-    //   document.getElementById('debank_load_bar').ldBar.set(35);
-    // });
 
-    getDepositsDashboard();
+    getDepositsDashboard(() => {
+      document.getElementById('debank_load_bar').ldBar.set(100);
+    });
 
-    getCreditsDashboard();
+    getCreditsDashboard(() => {
+      document.getElementById('debank_load_bar').ldBar.set(75);
+    });
 
-    getLiquidityDashboard();
+    getLiquidityDashboard(() => {
+      document.getElementById('debank_load_bar').ldBar.set(45);
+    });
 
     //getFamersDashboard();
   } else if (action == 'make_deposit') {
@@ -2842,9 +2617,6 @@ function checkAdminButton(token) {
 }
 
 function setWalletPref(pref) {
-
-  //console.log('pref_window_account=',userObject.account);
-
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
@@ -2888,8 +2660,6 @@ function setWalletPref(pref) {
 
 async function getWalletPref() {
 
-  //console.log('pref_window_account=',userObject.account);
-
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
@@ -2923,16 +2693,13 @@ async function getWalletPref() {
         } else {
           userObject.state.current_page_id = respJson.value.page_id;
         }
-        //console.log('current pref', respJson.value)
 
       } else {
         userObject.state.current_page_id = 'dashboard-tab';
-        //console.log("getting wallet preferences error");
       }
 
     })
     .catch(error => {
-      //console.log("get wallet preferences error");
       userObject.state.current_page_id = 'dashboard-tab';
     });
 }
@@ -2987,7 +2754,6 @@ function checkAdminAuthentification(msg_params, encr_message, php_script, extra_
 
     })
     .catch(error => {
-      //console.log("admin authentification failure:"+error);
       errorMsg('This wallet does not have admin access');
     });
 }
@@ -3047,9 +2813,7 @@ async function getBackendParameter(var_name, callback = null) {
       }
 
     })
-    .catch(error => {
-      //console.log(error);
-    });
+    .catch(error => {});
 }
 
 async function initFamersRegisterContract(callback = null) {
@@ -3263,58 +3027,112 @@ async function getCreditProfilesListCredit() { //for dropdown
   return plist;
 
 }
+const setState = (state) => {
+  userObject.state = {
+    ...userObject.state,
+    ...state
+  };
+}
+
+async function depositModalRebuild() {
+  var ddData = await getDepositProfilesList();
+
+  const depprofilesDropdown = new_deposit_modal.modal.querySelector('#depprofiles-dropdown');
+  const depositSelectedAsset = depprofilesDropdown.value;
+  const currentDepProfile = ddData.find(item => item.text === depositSelectedAsset);
+
+  setState({
+    selected_depprofile: currentDepProfile.p_id,
+    selected_depprofile_name: currentDepProfile.text,
+    selected_depprofile_type: currentDepProfile.d_type,
+    selected_depprofile_token_address: currentDepProfile.d_tok_addr,
+  })
+
+  if (currentDepProfile.d_type == NATIVE_ETHEREUM) {
+    new_deposit_modal.approve.classList.add('btn-done');
+    new_deposit_modal.approve.disabled = true;
+    new_deposit_modal.confirm.disabled = false;
+  } else {
+    new_deposit_modal.approve.classList.remove('btn-done');
+    new_deposit_modal.approve.disabled = false;
+    new_deposit_modal.confirm.disabled = true;
+  }
+
+  if (currentDepProfile.text == 'nft') {
+    updUSDValue('-', 'usd_value');
+  } else {
+    updUSDValue('tokens_amount', 'usd_value');
+  }
+}
 
 async function initDepositProfilesDropdown() {
   var ddData = await getDepositProfilesList();
 
-  $('#depprofiles-dropdown').ddslick({
-    data: ddData,
-    width: '16vw',
-    selectText: "Select Asset",
-    imagePosition: "left",
+  const depprofilesDropdown = new_deposit_modal.modal.querySelector('#depprofiles-dropdown');
 
-    onSelected: function (selectedData) {
-      //callback function: do something with selectedData;
-      userObject.state.selected_depprofile = selectedData.selectedData.p_id;
-      userObject.state.selected_depprofile_name = selectedData.selectedData.text;
-      userObject.state.selected_depprofile_type = selectedData.selectedData.d_type;
-      userObject.state.selected_depprofile_token_address = selectedData.selectedData.d_tok_addr;
-      if (selectedData.selectedData.text == 'nft') {
-        //errorMsg("NFTs are not curently supported"); return;
-        document.getElementById('assets-dropdown').style.display = "inline";
-        document.getElementById('tokens_amount').style.display = "none";
-        document.getElementById('approve_button').style.display = "block";
-        if (userObject.state.selectedNFTAssets.length > 0) {
-          document.getElementById('usd_value').style.display = "inline";
-          document.getElementById('usd_value_label').style.display = "inline";
-          updUSDValue('-', 'usd_value');
-        } else {
-          document.getElementById('usd_value').style.display = "none";
-          document.getElementById('usd_value_label').style.display = "none";
-        }
-        //document.getElementById('usd_value').style.display="inline";
-        //document.getElementById('usd_value_label').style.display="inline";
-        document.getElementById('nft_assets_list_div').style.display = "block";
-        //updUSDValue('-','usd_value');
-      } else {
-        if (selectedData.selectedData.d_type == NATIVE_ETHEREUM) {
-          document.getElementById('approve_button').style.display = "none";
-        } else {
-          document.getElementById('approve_button').style.display = "block";
-        }
+  ddData.forEach(asset => {
+    const option = document.createElement('option');
+    option.value = asset.text;
+    option.innerHTML = asset.text;
+    depprofilesDropdown.appendChild(option);
+  })
 
-        document.getElementById('assets-dropdown').style.display = "none";
-        //console.log('h=', document.querySelectorAll("#depprofiles-dropdown > .dd-select")[0].offsetHeight);
-        document.getElementById('tokens_amount').style.height = (document.querySelectorAll("#depprofiles-dropdown > .dd-select")[0].offsetHeight).toString() + 'px';
-        document.getElementById('tokens_amount').style.display = "inline";
-        document.getElementById('usd_value').style.height = (document.querySelectorAll("#depprofiles-dropdown > .dd-select")[0].offsetHeight).toString() + 'px';
-        document.getElementById('usd_value').style.display = "inline";
-        document.getElementById('usd_value_label').style.display = "inline";
-        document.getElementById('nft_assets_list_div').style.display = "none";
-        updUSDValue('tokens_amount', 'usd_value');
-      }
-    }
+  new CustomSelect({
+    elem: depprofilesDropdown,
   });
+
+  depprofilesDropdown.onchange = (e) => depositModalRebuild();
+
+
+
+  // $('#depprofiles-dropdown').ddslick({
+  //   data: ddData,
+  //   width: '16vw',
+  //   selectText: "Select Asset",
+  //   imagePosition: "left",
+
+  //   onSelected: function (selectedData) {
+  //     //callback function: do something with selectedData;
+  //     userObject.state.selected_depprofile = selectedData.selectedData.p_id;
+  //     userObject.state.selected_depprofile_name = selectedData.selectedData.text;
+  //     userObject.state.selected_depprofile_type = selectedData.selectedData.d_type;
+  //     userObject.state.selected_depprofile_token_address = selectedData.selectedData.d_tok_addr;
+  //     if (selectedData.selectedData.text == 'nft') {
+  //       //errorMsg("NFTs are not curently supported"); return;
+  //       document.getElementById('assets-dropdown').style.display = "inline";
+  //       document.getElementById('tokens_amount').style.display = "none";
+  //       document.getElementById('approve_button').style.display = "block";
+  //       if (userObject.state.selectedNFTAssets.length > 0) {
+  //         document.getElementById('usd_value').style.display = "inline";
+  //         document.getElementById('usd_value_label').style.display = "inline";
+  //         updUSDValue('-', 'usd_value');
+  //       } else {
+  //         document.getElementById('usd_value').style.display = "none";
+  //         document.getElementById('usd_value_label').style.display = "none";
+  //       }
+  //       //document.getElementById('usd_value').style.display="inline";
+  //       //document.getElementById('usd_value_label').style.display="inline";
+  //       document.getElementById('nft_assets_list_div').style.display = "block";
+  //       //updUSDValue('-','usd_value');
+  //     } else {
+  //       if (selectedData.selectedData.d_type == NATIVE_ETHEREUM) {
+  //         document.getElementById('approve_button').style.display = "none";
+  //       } else {
+  //         document.getElementById('approve_button').style.display = "block";
+  //       }
+
+  //       document.getElementById('assets-dropdown').style.display = "none";
+  //       //console.log('h=', document.querySelectorAll("#depprofiles-dropdown > .dd-select")[0].offsetHeight);
+  //       document.getElementById('tokens_amount').style.height = (document.querySelectorAll("#depprofiles-dropdown > .dd-select")[0].offsetHeight).toString() + 'px';
+  //       document.getElementById('tokens_amount').style.display = "inline";
+  //       document.getElementById('usd_value').style.height = (document.querySelectorAll("#depprofiles-dropdown > .dd-select")[0].offsetHeight).toString() + 'px';
+  //       document.getElementById('usd_value').style.display = "inline";
+  //       document.getElementById('usd_value_label').style.display = "inline";
+  //       document.getElementById('nft_assets_list_div').style.display = "none";
+  //       updUSDValue('tokens_amount', 'usd_value');
+  //     }
+  //   }
+  // });
 
 }
 
@@ -3468,7 +3286,7 @@ async function getNFTAssets() {
 
     let response = await fetch(token_uri);
     let json_content = await response.json();
-
+    console.log(json_content)
     let option = {};
     option.text = json_content.name;
     option.t_id = t_id;
@@ -3948,7 +3766,6 @@ async function getFamersDashboard() {
 }
 
 async function getAllProfiles() {
-
   let profiles;
   await getBackendParameter('DEPPROFILES_UI_LIST', (profiles_s) => {
     profiles = JSON.parse(profiles_s);
@@ -5129,7 +4946,7 @@ function withdraw_reward_confirm(dep_id) {
   }
 
   withdraw_rew_modal.isLoadingAfterConfirm();
- 
+
   initStakingContract(async (stakingContractInstance) => {
 
     stakingContractInstance.methods.withdrawDepositRewardById(userObject.account, dep_id).send({
@@ -5155,7 +4972,7 @@ function withdraw_reward_confirm(dep_id) {
 
 
   });
-  
+
 }
 
 
@@ -5209,7 +5026,7 @@ function withdraw_deposit_all_btn(dep_id) {
 
   //let am = window.web3js_reader.utils.fromWei(userObject.deposits.am_arr[2][dep_id], 'ether');
   const adj_am = toTokens(userObject.deposits.am_arr[2][dep_id], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-  console.log(adj_am)
+
   withdrawInput.value = adj_am;
   withdrawInput.readOnly = true;
 }

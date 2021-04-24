@@ -48,8 +48,8 @@
         </div>
       </div>
       <div class="flex flex-col">
-        <button type="submit" class="btn w-full mb-4" id="approve_liq_confirm">Approve tokens move</button>
-        <button disabled="disabled" class="btn w-full" id="stake_liq_confirm">Confirm</button>
+        <button type="submit" class="btn w-full mb-4" onclick="approve_deposit()" id="approve_liq_confirm">Approve tokens move</button>
+        <button disabled="disabled" class="btn w-full" onclick="deposit()" id="stake_liq_confirm">Confirm</button>
       </div>
     </div>
   </div>
@@ -243,13 +243,7 @@
     <div class="top-divider">
       <div class="name-field ">Select Asset</div>
       <div class="without-link special-select flex border-medium-grey border rounded-lg w-full mb-4">
-        <select id="depprofiles-dropdown" name="depprofiles-dropdown" class="color-select">
-          <option value="-" selected>Either</option>
-          <option value="st1">ST1</option>
-          <option value="st2">ST2</option>
-          <option value="st3">ST3</option>
-          <option value="st4">ST4</option>
-          <option value="cytr">CYTR</option>
+        <select id="depprofiles-dropdown" name="depprofiles-dropdown">
         </select>
       </div>
 
@@ -286,28 +280,28 @@
       hornSatyr: hornSatyr.png
       keysRagnarok: keysRagnarok.png
       -->
-      <div class="flex flex-col mb-4">
-        <div class="name-field ">Select Asset</div>
+      <div id="assets-dropdown" class="flex flex-col mb-4 hidden">
+        <div class="name-field ">Select NFT</div>
         <select class="form-control" name="choices-multiple" id="choices-multiple"
           placeholder="Select nft items" multiple>
-          <option value="appolo[4]" selected data-name="appolo">Appolo[4]</option>
-          <option value="nyx[1]" data-name="nyx">Nyx[1]</option>
-          <option value="arthemis[6]" data-name="arthemis">Arthemis[6]</option>
-          <option value="cyclops[10]" data-name="cyclops">Cyclops[10]</option>
+          <option value="appolo[4]" selected data-custom-properties="appolo">Appolo[4]</option>
+          <option value="nyx[1]" data-custom-properties="nyx">Nyx[1]</option>
+          <option value="arthemis[6]" data-custom-properties="arthemis">Arthemis[6]</option>
+          <option value="cyclops[10]" data-custom-properties="cyclops">Cyclops[10]</option>
+          <option value="hercules[1]" data-custom-properties="hercules">Hercules[1]</option>
         </select>
       </div>
-
       <div class="flex flex-col mb-4">
         <label for="tokens_amount" class="name-field ">Assets amount</label>
-        <input type="number" name="tokens_amount" id="tokens_amount" class="input-type" value="0" placeholder="0">
+        <input type="number" name="tokens_amount" id="tokens_amount" class="input-type" value="1">
       </div>
       <div class="flex flex-col mb-11">
         <label for="usd_value" class="name-field ">USD value</label>
-        <input type="number" name="usd_value" id="usd_value" class="input-type" value="0" placeholder="0">
+        <input type="number" name="usd_value" id="usd_value" class="input-type" value="0" readonly>
       </div>
       <div class="flex flex-col">
-        <button type="submit" class="btn w-full mb-4" data-id="approve" id="approve_button">Approve tokens move</button>
-        <button type="submit" disabled class="btn w-full" data-id="confirm" id="deposit_button">Deposit tokens</button>
+        <button type="submit" class="btn w-full mb-4" data-id="approve" onclick="approve_deposit()" id="approve_button">Approve tokens move</button>
+        <button type="submit" disabled class="btn w-full" data-id="confirm" onclick="deposit()" id="deposit_button">Deposit tokens</button>
       </div>
     </div>
   </div>

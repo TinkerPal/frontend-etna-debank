@@ -6,7 +6,7 @@
       </div>
       <div class="text-3xl leading-9 font-bold mr-4">Borrow</div>
     </div>
-    <div class="btn ml-auto" data-modal="modal-open-new-credit">
+    <div class="btn ml-auto" onclick="open_new_credit_modal.show()">
       Open New Credit
     </div>
   </div>
@@ -17,7 +17,6 @@
     <div class="address-info">
       Connected address:
       <span class="current-wallet">
-        0x6cea79e4d4dea3461b4d8452c911db1aa90f9b58
       </span>
     </div>
   </div>
@@ -105,7 +104,7 @@
                           </i>
                           Unfreeze
                         </span>
-                        <span class="table-btn" data-modal="modal-return-credit">
+                        <span class="table-btn" onclick="return_credit_modal.show()">
                           <i class="icon-cell">
                             <img src="../images/money.svg" class="w-full h-full" alt="#">
                           </i>
@@ -148,13 +147,13 @@
                     </td>
                     <td class="table-cell py-2 rounded-r-lg">
                       <div class="flex items-center">
-                        <span class="table-btn mr-3" data-modal="modal-set-leverage">
+                        <span class="table-btn mr-3" onclick="set_leverage_modal.show()">
                           <i class="icon-cell">
                             <img src="../images/price-tag.svg" class="w-full h-full" alt="#">
                           </i>
                           Leverage
                         </span>
-                        <span class="table-btn" data-modal="modal-return-credit">
+                        <span class="table-btn" onclick="return_credit_modal.show()">
                           <i class="icon-cell">
                             <img src="../images/money.svg" class="w-full h-full" alt="#">
                           </i>

@@ -1,1 +1,0 @@
-import { erc20TokenContractAbi, staking_contract_abi, famers_register_abi, nftpub_contracts_abi, profiles_register_abi, data_provider_abi, votes_calc_abi, usage_calc_abi, credit_profiles_register_abi, credit_contract_abi, liqlev_contract_abi } from '/js/token.js';

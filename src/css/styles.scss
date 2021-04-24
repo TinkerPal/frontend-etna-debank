@@ -229,27 +229,35 @@
   }
 
   .notif-row {
-    @apply mb-6 flex items-center justify-between py-4 px-5 border-l-4 rounded-md border-red bg-error;
-
-    .text-color {
-      @apply text-red;
-    }
+    @apply mb-6 flex items-center justify-between py-4 px-5 border-l-4 rounded-md hidden;
 
     .close-icon svg {
-      @apply fill-red w-3 h-3;
+      @apply w-3 h-3;
     }
 
-    .icon-success,
-    .icon-warning {
-      @apply hidden;
-    }
+    &.info_pane_error {
+      @apply border-red bg-error flex;
 
-    .icon-error {
-      @apply flex;
+      .text-color {
+        @apply text-red;
+      }
+  
+      .close-icon svg {
+        @apply fill-red w-3 h-3;
+      }
+  
+      .icon-success,
+      .icon-warning {
+        @apply hidden;
+      }
+  
+      .icon-error {
+        @apply flex;
+      }
     }
 
     &.info_pane_success {
-      @apply border-green-3;
+      @apply bg-green-success border-green-3 flex;
 
       .text-color {
         @apply text-green-3;
@@ -270,7 +278,11 @@
     }
 
     &.info_pane_info {
-      @apply border-yellow-400 bg-warning;
+      @apply border-yellow-400 bg-warning flex;
+
+      .text-color {
+        @apply text-yellow;
+      }
 
       .icon-success,
       .icon-error {
@@ -1007,10 +1019,7 @@ button:disabled {
 // start multiSelect
 
 .choices__inner {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding: 0.5rem 0.75rem;
   width: 100%;
   background-color: #191932;
   border-color: rgb(53, 53, 78);
@@ -1019,6 +1028,8 @@ button:disabled {
   font-size: 0.875rem;
   line-height: 1.25rem;
   min-height: 50px;
+  display: flex;
+  align-items: center;
 }
 
 .choices__input {
@@ -1027,10 +1038,7 @@ button:disabled {
 }
 
 .choices__list--dropdown {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  margin-top: 4px;
   width: 100%;
   background-color: #191932;
   border-color: rgb(53, 53, 78);
@@ -1039,6 +1047,46 @@ button:disabled {
   font-size: 0.875rem;
   line-height: 1.25rem;
   box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.05), 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 4px 0px;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted {
+  background-color: rgb(53, 53, 78);
+}
+
+.choices__list--multiple {
+  display: flex;
+  flex-wrap: wrap;
+  .choices__item {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.choices__item {
+
+  &-img {
+    width: 26px;
+    height: 26px;
+    margin-right: 2px;
+
+    img {
+      object-fit: contain;
+    }
+  }
+
+  &--choice {
+    min-height: 48px;
+    padding: 0.25rem 1.25rem;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.choices__list--multiple .choices__item.is-highlighted {
+  border-color: rgb(53, 53, 78);
+  background-color: rgb(53, 53, 78);
 }
 
 .is-open {
@@ -1047,6 +1095,7 @@ button:disabled {
     border-color: rgb(53, 53, 78);
     border-width: 1px;
   }
+
   .choices__list--dropdown {
     border-color: rgb(53, 53, 78);
     border-width: 1px;
@@ -1059,10 +1108,11 @@ button:disabled {
   border-width: 1px;
   border-radius: 0.5rem;
   background-color: #191932;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem;
 }
 
-.choices[data-type*=select-multiple] .choices__button, .choices[data-type*=text] .choices__button {
+.choices[data-type*=select-multiple] .choices__button,
+.choices[data-type*=text] .choices__button {
   border-left: 0px;
 }
 

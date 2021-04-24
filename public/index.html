@@ -48,7 +48,7 @@
     <div class="flex ml-auto items-center h-full lg:pb-0 pb-2">
       <div class="flex items-center mr-7 cursor-pointer" id="net_info">
         <div class="user flex items-center rounded-full w-5 h-5">
-          <img src="../images/user.svg" alt="#" class="w-full h-full rounded-full">
+          <img src="../images/user.svg" alt="#" id="net_icon" class="w-full h-full rounded-full">
         </div>
         <div id="net_name"></div>
         <div class="user-name ml-2 text-sm leading-5 font-medium" id="net_txt">
@@ -132,21 +132,21 @@
 
   <!-- start ORIENTATION -->
 
-  <!-- <div class="orientation-cover fixed top-0 left-0 w-full h-full z-20 bg-black">
+  <div class="orientation-cover fixed top-0 left-0 w-full h-full z-20 bg-black">
     <div class="h-full flex items-center w-full justify-center text-center">
       <div class="text-3xl leading-9 font-bold mr-4">Please rotate device</div>
     </div>
-  </div> -->
+  </div>
 
   <!-- end ORIENTATION -->
 
   <!-- start LoadBar -->
 
-  <!-- <div id="load_bar_cover" class="load-bar-cover fixed top-0 left-0 w-full h-full z-10 bg-black">
+  <div id="load_bar_cover" class="load-bar-cover fixed top-0 left-0 w-full h-full z-10 bg-black">
     <div class="h-full flex items-center justify-center">
       <div id="debank_load_bar" class="ldBar label-center" data-value="5" data-preset="circle" data-stroke="#98EF10" data-stroke-lincap="round" style="width: 150px; height: 150px;" data-stroke-trail="#C4C4C4"></div>
     </div>
-  </div> -->
+  </div>
 
   <!-- end LoadBar -->
 
@@ -1116,7 +1116,6 @@
     <div class="address-info">
       Connected address:
       <span class="current-wallet">
-        0x6cea79e4d4dea3461b4d8452c911db1aa90f9b58
       </span>
     </div>
   </div>
@@ -1147,7 +1146,7 @@
       </div>
       <div class="text-3xl leading-9 font-bold mr-4">Borrow</div>
     </div>
-    <div class="btn ml-auto" data-modal="modal-open-new-credit">
+    <div class="btn ml-auto" onclick="open_new_credit_modal.show()">
       Open New Credit
     </div>
   </div>
@@ -1158,7 +1157,6 @@
     <div class="address-info">
       Connected address:
       <span class="current-wallet">
-        0x6cea79e4d4dea3461b4d8452c911db1aa90f9b58
       </span>
     </div>
   </div>
@@ -1246,7 +1244,7 @@
                           </i>
                           Unfreeze
                         </span>
-                        <span class="table-btn" data-modal="modal-return-credit">
+                        <span class="table-btn" onclick="return_credit_modal.show()">
                           <i class="icon-cell">
                             <img src="../images/money.svg" class="w-full h-full" alt="#">
                           </i>
@@ -1289,13 +1287,13 @@
                     </td>
                     <td class="table-cell py-2 rounded-r-lg">
                       <div class="flex items-center">
-                        <span class="table-btn mr-3" data-modal="modal-set-leverage">
+                        <span class="table-btn mr-3" onclick="set_leverage_modal.show()">
                           <i class="icon-cell">
                             <img src="../images/price-tag.svg" class="w-full h-full" alt="#">
                           </i>
                           Leverage
                         </span>
-                        <span class="table-btn" data-modal="modal-return-credit">
+                        <span class="table-btn" onclick="return_credit_modal.show()">
                           <i class="icon-cell">
                             <img src="../images/money.svg" class="w-full h-full" alt="#">
                           </i>
@@ -1397,7 +1395,7 @@
           <option value="cytr" data-href="#2">BNB-CYTR</option>
         </select>
       </div>
-      <div class="btn ml-4" data-modal="modal-add-liquidity">
+      <div class="btn ml-4" onclick="add_liquidity_modal.show()">
         Add liquidity
       </div>
     </div>
@@ -1409,7 +1407,6 @@
     <div class="address-info">
       Connected address:
       <span class="current-wallet">
-        0x6cea79e4d4dea3461b4d8452c911db1aa90f9b58
       </span>
     </div>
   </div>
@@ -1434,7 +1431,7 @@
 
   <div class="if-depos w-full mt-auto">
     <div class="flex flex-col">
-  <div class="notif-row mx-6" id="info_pane" onclick="safeSetInnerHTMLById('info_pane','')">
+  <div class="notif-row mx-6" id="info_pane">
     <div class="flex items-center text-sm leading-5 font-medium text-color">
       <span class="flex items-center justify-center mr-2 w-4 h-4">
         <svg width="20" height="20" class="icon-success w-full h-full" viewBox="0 0 20 20" fill="none"
@@ -1456,11 +1453,11 @@
             fill="#EB5757" />
         </svg>
       </span>
-      <span class="flex items-center info-msg">
+      <span class="flex items-center info-msg" id="info_pane_message">
         Error message
       </span>
     </div>
-    <div class="close-icon">
+    <div class="close-icon" onclick="safeSetInnerHTMLById('info_pane','')">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M0.292893 0.292893C0.683417 -0.0976311 1.31658 -0.0976311 1.70711 0.292893L6 4.58579L10.2929 0.292893C10.6834 -0.0976311 11.3166 -0.0976311 11.7071 0.292893C12.0976 0.683417 12.0976 1.31658 11.7071 1.70711L7.41421 6L11.7071 10.2929C12.0976 10.6834 12.0976 11.3166 11.7071 11.7071C11.3166 12.0976 10.6834 12.0976 10.2929 11.7071L6 7.41421L1.70711 11.7071C1.31658 12.0976 0.683417 12.0976 0.292893 11.7071C-0.0976311 11.3166 -0.0976311 10.6834 0.292893 10.2929L4.58579 6L0.292893 1.70711C-0.0976311 1.31658 -0.0976311 0.683417 0.292893 0.292893Z" fill=""/>
         </svg>
@@ -1543,7 +1540,7 @@
   </div>
   <div class="if-credit w-full mt-auto">
     <div class="flex flex-col">
-  <div class="notif-row mx-6" id="info_pane" onclick="safeSetInnerHTMLById('info_pane','')">
+  <div class="notif-row mx-6" id="info_pane">
     <div class="flex items-center text-sm leading-5 font-medium text-color">
       <span class="flex items-center justify-center mr-2 w-4 h-4">
         <svg width="20" height="20" class="icon-success w-full h-full" viewBox="0 0 20 20" fill="none"
@@ -1565,11 +1562,11 @@
             fill="#EB5757" />
         </svg>
       </span>
-      <span class="flex items-center info-msg">
+      <span class="flex items-center info-msg" id="info_pane_message">
         Error message
       </span>
     </div>
-    <div class="close-icon">
+    <div class="close-icon" onclick="safeSetInnerHTMLById('info_pane','')">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M0.292893 0.292893C0.683417 -0.0976311 1.31658 -0.0976311 1.70711 0.292893L6 4.58579L10.2929 0.292893C10.6834 -0.0976311 11.3166 -0.0976311 11.7071 0.292893C12.0976 0.683417 12.0976 1.31658 11.7071 1.70711L7.41421 6L11.7071 10.2929C12.0976 10.6834 12.0976 11.3166 11.7071 11.7071C11.3166 12.0976 10.6834 12.0976 10.2929 11.7071L6 7.41421L1.70711 11.7071C1.31658 12.0976 0.683417 12.0976 0.292893 11.7071C-0.0976311 11.3166 -0.0976311 10.6834 0.292893 10.2929L4.58579 6L0.292893 1.70711C-0.0976311 1.31658 -0.0976311 0.683417 0.292893 0.292893Z" fill=""/>
         </svg>
@@ -1700,8 +1697,8 @@
         </div>
       </div>
       <div class="flex flex-col">
-        <button type="submit" class="btn w-full mb-4" id="approve_liq_confirm">Approve tokens move</button>
-        <button disabled="disabled" class="btn w-full" id="stake_liq_confirm">Confirm</button>
+        <button type="submit" class="btn w-full mb-4" onclick="approve_deposit()" id="approve_liq_confirm">Approve tokens move</button>
+        <button disabled="disabled" class="btn w-full" onclick="deposit()" id="stake_liq_confirm">Confirm</button>
       </div>
     </div>
   </div>
@@ -1895,13 +1892,7 @@
     <div class="top-divider">
       <div class="name-field ">Select Asset</div>
       <div class="without-link special-select flex border-medium-grey border rounded-lg w-full mb-4">
-        <select id="depprofiles-dropdown" name="depprofiles-dropdown" class="color-select">
-          <option value="-" selected>Either</option>
-          <option value="st1">ST1</option>
-          <option value="st2">ST2</option>
-          <option value="st3">ST3</option>
-          <option value="st4">ST4</option>
-          <option value="cytr">CYTR</option>
+        <select id="depprofiles-dropdown" name="depprofiles-dropdown">
         </select>
       </div>
 
@@ -1938,28 +1929,28 @@
       hornSatyr: hornSatyr.png
       keysRagnarok: keysRagnarok.png
       -->
-      <div class="flex flex-col mb-4">
-        <div class="name-field ">Select Asset</div>
+      <div id="assets-dropdown" class="flex flex-col mb-4 hidden">
+        <div class="name-field ">Select NFT</div>
         <select class="form-control" name="choices-multiple" id="choices-multiple"
           placeholder="Select nft items" multiple>
-          <option value="appolo[4]" selected data-name="appolo">Appolo[4]</option>
-          <option value="nyx[1]" data-name="nyx">Nyx[1]</option>
-          <option value="arthemis[6]" data-name="arthemis">Arthemis[6]</option>
-          <option value="cyclops[10]" data-name="cyclops">Cyclops[10]</option>
+          <option value="appolo[4]" selected data-custom-properties="appolo">Appolo[4]</option>
+          <option value="nyx[1]" data-custom-properties="nyx">Nyx[1]</option>
+          <option value="arthemis[6]" data-custom-properties="arthemis">Arthemis[6]</option>
+          <option value="cyclops[10]" data-custom-properties="cyclops">Cyclops[10]</option>
+          <option value="hercules[1]" data-custom-properties="hercules">Hercules[1]</option>
         </select>
       </div>
-
       <div class="flex flex-col mb-4">
         <label for="tokens_amount" class="name-field ">Assets amount</label>
-        <input type="number" name="tokens_amount" id="tokens_amount" class="input-type" value="0" placeholder="0">
+        <input type="number" name="tokens_amount" id="tokens_amount" class="input-type" value="1">
       </div>
       <div class="flex flex-col mb-11">
         <label for="usd_value" class="name-field ">USD value</label>
-        <input type="number" name="usd_value" id="usd_value" class="input-type" value="0" placeholder="0">
+        <input type="number" name="usd_value" id="usd_value" class="input-type" value="0" readonly>
       </div>
       <div class="flex flex-col">
-        <button type="submit" class="btn w-full mb-4" data-id="approve" id="approve_button">Approve tokens move</button>
-        <button type="submit" disabled class="btn w-full" data-id="confirm" id="deposit_button">Deposit tokens</button>
+        <button type="submit" class="btn w-full mb-4" data-id="approve" onclick="approve_deposit()" id="approve_button">Approve tokens move</button>
+        <button type="submit" disabled class="btn w-full" data-id="confirm" onclick="deposit()" id="deposit_button">Deposit tokens</button>
       </div>
     </div>
   </div>
@@ -2032,10 +2023,21 @@
   <script src="https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js"></script>
   <script src="https://unpkg.com/@walletconnect/web3-provider@1.3.1/dist/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-  <!-- tokens -->
-  <script src="/js/token.js"></script>
-  <!-- end tokens -->
-  <script src="/js/loading-bar.min.js"></script>
+  <!-- utils -->
+  <script src="/js/utils.js"></script>
+  <!-- end utils -->
+
+  <!-- constant -->
+  <script src="/js/constants/constant.js"></script>
+  <script src="/js/constants/token.js"></script>
+  <!-- end constant -->
+
+  <!-- components -->
+  <script src="/js/components/loading-bar.min.js"></script>
+  <script src="/js/components/customSelect.js"></script>
+  <script src="/js/components/modal.js"></script>
+  <!-- end components -->
+  
   <script src="/js/common.js"></script>
   <script src="/js/custom.js"></script>
 

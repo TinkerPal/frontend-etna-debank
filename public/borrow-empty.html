@@ -39,7 +39,7 @@
     <div class="flex ml-auto items-center h-full lg:pb-0 pb-2">
       <div class="flex items-center mr-7 cursor-pointer" id="net_info">
         <div class="user flex items-center rounded-full w-5 h-5">
-          <img src="../images/user.svg" alt="#" class="w-full h-full rounded-full">
+          <img src="../images/user.svg" alt="#" id="net_icon" class="w-full h-full rounded-full">
         </div>
         <div id="net_name"></div>
         <div class="user-name ml-2 text-sm leading-5 font-medium" id="net_txt">
@@ -1086,7 +1086,6 @@
     <div class="address-info">
       Connected address:
       <span class="current-wallet">
-        0x6cea79e4d4dea3461b4d8452c911db1aa90f9b58
       </span>
     </div>
   </div>
@@ -1117,7 +1116,7 @@
       </div>
       <div class="text-3xl leading-9 font-bold mr-4">Borrow</div>
     </div>
-    <div class="btn ml-auto" data-modal="modal-open-new-credit">
+    <div class="btn ml-auto" onclick="open_new_credit_modal.show()">
       Open New Credit
     </div>
   </div>
@@ -1128,7 +1127,6 @@
     <div class="address-info">
       Connected address:
       <span class="current-wallet">
-        0x6cea79e4d4dea3461b4d8452c911db1aa90f9b58
       </span>
     </div>
   </div>
@@ -1216,7 +1214,7 @@
                           </i>
                           Unfreeze
                         </span>
-                        <span class="table-btn" data-modal="modal-return-credit">
+                        <span class="table-btn" onclick="return_credit_modal.show()">
                           <i class="icon-cell">
                             <img src="../images/money.svg" class="w-full h-full" alt="#">
                           </i>
@@ -1259,13 +1257,13 @@
                     </td>
                     <td class="table-cell py-2 rounded-r-lg">
                       <div class="flex items-center">
-                        <span class="table-btn mr-3" data-modal="modal-set-leverage">
+                        <span class="table-btn mr-3" onclick="set_leverage_modal.show()">
                           <i class="icon-cell">
                             <img src="../images/price-tag.svg" class="w-full h-full" alt="#">
                           </i>
                           Leverage
                         </span>
-                        <span class="table-btn" data-modal="modal-return-credit">
+                        <span class="table-btn" onclick="return_credit_modal.show()">
                           <i class="icon-cell">
                             <img src="../images/money.svg" class="w-full h-full" alt="#">
                           </i>
@@ -1367,7 +1365,7 @@
           <option value="cytr" data-href="#2">BNB-CYTR</option>
         </select>
       </div>
-      <div class="btn ml-4" data-modal="modal-add-liquidity">
+      <div class="btn ml-4" onclick="add_liquidity_modal.show()">
         Add liquidity
       </div>
     </div>
@@ -1379,7 +1377,6 @@
     <div class="address-info">
       Connected address:
       <span class="current-wallet">
-        0x6cea79e4d4dea3461b4d8452c911db1aa90f9b58
       </span>
     </div>
   </div>
