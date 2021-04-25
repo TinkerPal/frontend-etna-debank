@@ -5,6 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     name: deploy
     steps:
+      - name: install dependencies and build
+        run: |
+          npm install
+          npm install gulp-cli
+          gulp build
       - name: Checkout
         uses: actions/checkout@v2
       - name: SFTP Deploy
