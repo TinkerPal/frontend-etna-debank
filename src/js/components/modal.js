@@ -16,7 +16,19 @@ function Modal(modalId, initModalElementCallback, showModalCallback) {
     if (success) {
       this.approve.classList.remove('btn-load');
       this.approve.classList.add('btn-done');
-      setTimeout(() => this.hide(), this.closeModalTimer);
+
+      if(this.confirm) {
+        this.confirm.disabled = false;
+      } else {
+        setTimeout(() => this.hide(), this.closeModalTimer); 
+      }
+
+      return;
+    }
+
+    if(this.confirm) {
+      this.approve.disabled = false;
+      this.approve.classList.remove('btn-load');
       return;
     }
 
@@ -28,11 +40,21 @@ function Modal(modalId, initModalElementCallback, showModalCallback) {
     this.confirm.classList.add('btn-load');
   }
 
-  this.isLoadedAfterConfirm = (success = true) => {
+  this.isLoadedAfterConfirm = (success = true, isApproved = true) => {
     if (success) {
       this.confirm.classList.remove('btn-load');
       this.confirm.classList.add('btn-done');
-      setTimeout(() => this.hide(), this.closeModalTimer);
+      setTimeout(() => this.hide(), this.closeModalTimer); 
+
+      return;
+    }
+
+    if(!isApproved) {
+      this.approve.disabled = false;
+      this.approve.classList.remove('btn-done');
+      this.confirm.disabled = true;
+      this.confirm.classList.remove('btn-load');
+
       return;
     }
 

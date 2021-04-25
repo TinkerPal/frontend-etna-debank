@@ -1866,17 +1866,19 @@ async function deposit() {
     return;
   }
 
-
   let dep_profile_id = userObject.state.selected_depprofile;
   let amount;
   let wei_val = 0;
   let token_ids = new Array();
+
+  new_deposit_modal.isLoadingAfterConfirm();
 
   if (userObject.state.selected_depprofile_name == 'nft') {
     //errorMsg('currently not supported');
     //return;
 
     if (userObject.state.selectedNFTAssets.length == 0) {
+      new_deposit_modal.isLoadedAfterConfirm(false);
       errorMsg('you need to select tokens');
       return;
     }
@@ -1886,6 +1888,7 @@ async function deposit() {
     });
 
     if (!isApproved) {
+      new_deposit_modal.isLoadedAfterConfirm(false, false);
       errorMsg('you need to approve tokens move first');
       return;
     }
@@ -1906,6 +1909,7 @@ async function deposit() {
       let amount_bn = new BN(amount);
 
       if (wb_bn.cmp(amount_bn) == -1) {
+        new_deposit_modal.isLoadedAfterConfirm(false);
         errorMsg('you do not have enough BNB in your wallet');
         return;
       }
@@ -1922,6 +1926,7 @@ async function deposit() {
       let calculatedApproveValue = tokenAmountToApprove; //tokenAmountToApprove.mul(new BN(ADJ_CONSTANT.toString()));
 
       if (allow < calculatedApproveValue) {
+        new_deposit_modal.isLoadedAfterConfirm(false);
         errorMsg('please approve tokens move / wait for approval transaction to finish');
         return;
       }
@@ -1933,6 +1938,7 @@ async function deposit() {
       let amount_bn = new BN(amount);
 
       if (erc20_count_bn.cmp(amount_bn) == -1) {
+        new_deposit_modal.isLoadedAfterConfirm(false);
         errorMsg('you do not have enough tokens in your wallet');
         return;
       }
@@ -1940,7 +1946,6 @@ async function deposit() {
   }
 
   resetMsg();
-  temporaryDisableCurrentButton('deposit_button');
 
   initStakingContract(async (stakingContractInstance) => {
     stakingContractInstance.methods.deposit(amount, token_ids, dep_profile_id, window.famer).send({
@@ -1948,14 +1953,19 @@ async function deposit() {
         value: wei_val,
         gasPrice: window.gp
       }, function (error, txnHash) {
-        if (error) throw error;
+        if (error) { 
+          new_deposit_modal.isLoadedAfterConfirm(false);
+          throw error;
+        }
         output_transaction(txnHash)
       })
       .on('confirmation', function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) updateData('make_deposit');
+        new_deposit_modal.isLoadedAfterConfirm();
         resetMsg();
       })
       .catch(error => {
+        new_deposit_modal.isLoadedAfterConfirm(false);
         errorMsg('smartcontract communication error');
       });
   });
@@ -2059,7 +2069,7 @@ async function approve_deposit() {
     });
 
     if (isApproved) {
-      infoMsg('already approved');
+      successMsg('already approved');
       return;
     } else {
       //solidity: function setApprovalForAll(address _operator,bool _approved) external{}
@@ -2072,8 +2082,7 @@ async function approve_deposit() {
 
         })
         .on('confirmation', function (confirmationNumber, receipt) {
-
-          if (confirmationNumber == 5) infoMsg('NFT move approved');
+          if (confirmationNumber == 5) successMsg('NFT move approved');
         })
         .catch(error => {
           errorMsg('smartcontract communication error');
@@ -2088,11 +2097,11 @@ async function approve_deposit() {
     }
 
     let amount_wei = (safeFloatToWei(document.getElementById('tokens_amount').value)).toString(); //wei
-    approveTokenMove(userObject.state.selected_depprofile_token_address, amount_wei, window.staking_contract_address);
+    approveTokenMove(userObject.state.selected_depprofile_token_address, amount_wei, window.staking_contract_address, new_deposit_modal);
   }
 }
 
-async function approveTokenMove(token_address, amount_wei, toAddress) {
+async function approveTokenMove(token_address, amount_wei, toAddress, modal) {
 
   let BN = window.web3js_reader.utils.BN;
 
@@ -2101,18 +2110,25 @@ async function approveTokenMove(token_address, amount_wei, toAddress) {
   let calculatedApproveValue = window.web3js_reader.utils.toHex(tokenAmountToApprove);
   let token_contract = await new window.web3js.eth.Contract(erc20TokenContractAbi, token_address);
 
+  modal.isLoadingAfterApprove();
+
   await token_contract.methods.approve(toAddress, calculatedApproveValue).send({
       from: userObject.account,
       gasPrice: window.gp
     }, function (error, txnHash) {
-      if (error) throw error;
+      if (error) { 
+        modal.isLoadedAfterApprove(false);
+        throw error;
+      }
       output_transaction(txnHash)
 
     })
     .on('confirmation', function (confirmationNumber, receipt) {
       if (confirmationNumber == 5) successMsg('Tokens move approved');
+      modal.isLoadedAfterApprove();
     })
     .catch(error => {
+      modal.isLoadedAfterApprove(false);
       errorMsg('smartcontract communication error');
     });
 }
@@ -3069,7 +3085,7 @@ async function initDepositProfilesDropdown() {
   var ddData = await getDepositProfilesList();
 
   const depprofilesDropdown = new_deposit_modal.modal.querySelector('#depprofiles-dropdown');
-
+const assetsAmmountValue =  new_deposit_modal.modal.querySelector('#tokens_amount');
   ddData.forEach(asset => {
     const option = document.createElement('option');
     option.value = asset.text;
@@ -3081,7 +3097,8 @@ async function initDepositProfilesDropdown() {
     elem: depprofilesDropdown,
   });
 
-  depprofilesDropdown.onchange = (e) => depositModalRebuild();
+  assetsAmmountValue.oninput = () => depositModalRebuild();
+  depprofilesDropdown.onchange = () => depositModalRebuild();
 
 
 
