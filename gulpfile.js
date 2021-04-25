@@ -122,3 +122,4 @@ function watchTask() {
 
 // Default Gulp Task
 exports.default = series(fileIncludeTask, cssTask, jsTask, imageminTask, fontsTask, phpTask, phpInCommonTask, nftTask, browsersyncServe, watchTask);
+exports.build = series(fileIncludeTask, cssTask, jsTask, imageminTask, fontsTask, phpTask, phpInCommonTask, nftTask);
