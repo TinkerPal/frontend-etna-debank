@@ -8,7 +8,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install and build
-        uses: actions/setup-node
+        uses: actions/setup-node@v1
       - run: npm ci
       - run: npm install gulp
       - run: npm run build
