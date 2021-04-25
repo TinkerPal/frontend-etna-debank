@@ -317,7 +317,9 @@
     @apply border-medium-grey border text-sm rounded-lg w-full h-11 bg-blueish-black focus: outline-none py-3 px-4;
   }
 }
-
+.notif-row {
+  z-index: 60;
+}
 .btn {
   &-load {
     &:after {
