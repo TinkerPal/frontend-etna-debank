@@ -8,7 +8,7 @@ jobs:
       - name: install dependencies and build
         run: |
           npm install
-          npm install gulp-cli
+          npm install gulp
           gulp build
       - name: Checkout
         uses: actions/checkout@v2
