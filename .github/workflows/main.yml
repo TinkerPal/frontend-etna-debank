@@ -9,6 +9,7 @@ jobs:
         run: |
           npm install
           npm install gulp
+          ls - list
           gulp build
       - name: Checkout
         uses: actions/checkout@v2
