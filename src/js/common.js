@@ -69,45 +69,5 @@ document.addEventListener("DOMContentLoaded", function (event) {
       item.closest('.notif-row').remove();
     });
   });
-
-  var multipleCancelButton = new Choices('#choices-multiple', {
-    removeItemButton: true,
-    callbackOnCreateTemplates: function(template) {
-      return {
-        item: (classNames, data) => {
-          return template(`
-            <div class="${classNames.item} ${
-            data.highlighted
-              ? classNames.highlightedState
-              : classNames.itemSelectable
-          } ${
-            data.placeholder ? classNames.placeholder : ''
-          }" data-item data-id="${data.id}" data-value="${data.value}" ${
-            data.active ? 'aria-selected="true"' : ''
-          } ${data.disabled ? 'aria-disabled="true"' : ''} data-deletable>
-              <span class="choices__item-img"><img src="../images/nft-heroes/apollo.png"></span> ${data.label}
-              <button type="button" class="choices__button" aria-label="Remove item: '${data.value}'" data-button="">Remove item</button>
-            </div>
-          `);
-        },
-        choice: (classNames, data) => {
-          return template(`
-            <div class="${classNames.item} ${classNames.itemChoice} ${
-            data.disabled ? classNames.itemDisabled : classNames.itemSelectable
-          }" data-select-text="${this.config.itemSelectText}" data-choice ${
-            data.disabled
-              ? 'data-choice-disabled aria-disabled="true"'
-              : 'data-choice-selectable'
-          } data-id="${data.id}" data-value="${data.value}" ${
-            data.groupId > 0 ? 'role="treeitem"' : 'role="option"'
-          }>
-              <span class="choices__item-img"><img src="../images/nft-heroes/apollo.png"></span> ${data.label}
-
-            </div>
-          `);
-        },
-      };
-    },
-  });
   
 });

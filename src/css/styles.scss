@@ -121,6 +121,11 @@
 
   .modal {
     @apply flex items-center justify-center w-full h-screen opacity-0 top-0 left-0 fixed z-50;
+    &-loading {
+      .top-divider {
+        @apply pointer-events-none;
+      }
+    }
   }
 
   .modal-exit__bg {
