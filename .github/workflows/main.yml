@@ -9,8 +9,7 @@ jobs:
         run: |
           npm install
           npm install gulp
-          cd /home/runner/work/frontend-etna-debank/frontend-etna-debank/
-          gulp build
+          npm run build
       - name: Checkout
         uses: actions/checkout@v2
       - name: SFTP Deploy
