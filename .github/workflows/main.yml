@@ -5,13 +5,13 @@ jobs:
     runs-on: ubuntu-latest
     name: deploy
     steps:
-      - name: install dependencies and build
-        run: |
-          npm install
-          npm install gulp
-          npm run build
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node
+      - run: npm ci
+      - run: npm install gulp
+      - run: npm run build
       - name: SFTP Deploy
         uses: wlixcc/SFTP-Deploy-Action@v1.2.1       
         with:
