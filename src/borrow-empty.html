@@ -35,14 +35,33 @@
     @@include('./templates/liquidity.html')
   </div>
 
-  <div class="if-depos w-full mt-auto">
-    @@include('./templates/footer-expected.html')
-  </div>
   <div class="if-credit w-full mt-auto">
     @@include('./templates/footer-credit.html')
   </div>
 
-  <script src="/js/common.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script>
+  <script src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
+  <script src="https://unpkg.com/web3modal@1.9.2/dist/index.js"></script>
+  <script src="https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js"></script>
+  <script src="https://unpkg.com/@walletconnect/web3-provider@1.3.1/dist/umd/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <!-- utils -->
+  <script src="/js/utils.js"></script>
+  <!-- end utils -->
+
+  <!-- constant -->
+  <script src="/js/constants/constant.js"></script>
+  <script src="/js/constants/token.js"></script>
+  <!-- end constant -->
+
+  <!-- components -->
+  <script src="/js/components/loading-bar.min.js"></script>
+  <script src="/js/components/customSelect.js"></script>
+  <script src="/js/components/modal.js"></script>
+  <!-- end components -->
+  
+  <script src="/js/common.js"></script>
+  <script src="/js/custom.js"></script>
 
 </body>
 

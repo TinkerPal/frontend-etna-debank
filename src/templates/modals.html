@@ -14,42 +14,34 @@
         <div class="name-field">Select asset</div>
         <div class="flex border-medium-grey border rounded-lg w-full">
           <div class="w-7/12 without-link">
-            <select id="liqpairs-dropdown" name="liqpairs-dropdown" class="color-select">
-              <option value="1" selected data-href="#3">BNB-ST1</option>
-              <option value="2" data-href="#2">BNB-ST2</option>
-              <option value="3" data-href="#2">BNB-ST3</option>
-              <option value="4" data-href="#2">BNB-ST4</option>
-              <option value="5" data-href="#2">BNB-CYTR</option>
+            <select id="liqpairs-dropdown" name="liqpairs-dropdown">
             </select>
           </div>
           <div class="w-5/12">
             <div class="field-info">In wallet: <span class="in-wallet flex items-center ml-1"
-                id="liq_pair_in_wallet">9988.0000</span></div>
+                id="liq_pair_in_wallet"></span></div>
           </div>
         </div>
       </div>
       <div class="flex flex-col mb-4">
         <label for="stake-qnt" class="name-field ">Stake qnt</label>
-        <input type="text" name="stake-qnt" id="stake-qnt" placeholder="-" class="stake-input">
+        <input type="text" name="stake-qnt" id="liq_pair_stake_am" placeholder="-" class="stake-input">
       </div>
       <div class="flex flex-col mb-11">
         <div class="name-field ">Period and Annual rate</div>
         <div class="flex border-medium-grey border rounded-lg w-full">
           <div class="w-7/12 without-link">
-            <select id="liqterms-dropdown" name="liqterms-dropdown" class="color-select">
-              <option value="1">1 week</option>
-              <option value="2" selected>2 weeks</option>
-              <option value="3">1 month</option>
+            <select id="liqterms-dropdown" name="liqterms-dropdown">
             </select>
           </div>
           <div class="w-5/12">
-            <div class="field-info justify-center percent-data" id="liq_pair_apy">12%</div>
+            <div class="field-info justify-center percent-data" id="liq_pair_apy"></div>
           </div>
         </div>
       </div>
       <div class="flex flex-col">
-        <button type="submit" class="btn w-full mb-4" onclick="approve_deposit()" id="approve_liq_confirm">Approve tokens move</button>
-        <button disabled="disabled" class="btn w-full" onclick="deposit()" id="stake_liq_confirm">Confirm</button>
+        <button type="submit" class="btn w-full mb-4" onclick="approve_stake_liq()" data-id="approve" id="approve_liq_confirm">Approve tokens move</button>
+        <button disabled="disabled" class="btn w-full" data-id="confirm" onclick="stake_liq()" id="stake_liq_confirm">Confirm</button>
       </div>
     </div>
   </div>
@@ -71,19 +63,19 @@
         <div class="name-field">Leverage %</div>
         <div class="flex border-medium-grey border rounded-lg w-full without-link">
           <select id="select-leverage" name="select-leverage" class="color-select">
-            <option value="set_leverage_credit_25" selected>25%</option>
-            <option value="set_leverage_credit_50">50%</option>
-            <option value="set_leverage_credit_75">75%</option>
-            <option value="set_leverage_credit_100">100%</option>
+            <option value="25" selected>25%</option>
+            <option value="50">50%</option>
+            <option value="75">75%</option>
+            <option value="100">100%</option>
           </select>
         </div>
       </div>
       <div class="flex flex-col mb-11">
-        <label for="lev_size_" class="name-field">CYTR Leverage</label>
-        <input type="number" readonly value="72.71" placeholder="72.71" id="lev_size_" class="input-type">
+        <label for="lev_size" class="name-field">CYTR Leverage</label>
+        <input type="number" readonly value="0" placeholder="0" id="lev_size" class="input-type">
       </div>
       <div class="flex flex-col">
-        <button type="submit" class="btn w-full">Confirm Leverage</button>
+        <button type="submit" data-id="confirm" class="btn w-full">Confirm Leverage</button>
       </div>
     </div>
   </div>
@@ -143,12 +135,8 @@
       <div class="flex flex-col mb-4">
         <div class="name-field">Select Collateral</div>
         <div class="flex border-medium-grey border rounded-lg w-full without-link">
-          <select id="credprofiles-dropdown" name="credprofiles-dropdown" class="color-select">
-            <option value="st1" selected>ST1</option>
-            <option value="st2">ST2</option>
-            <option value="st3">ST3</option>
-            <option value="st4">ST4</option>
-            <option value="cytr">CYTR</option>
+          <select id="credprofiles-dropdown" name="credprofiles-dropdown">
+            
           </select>
         </div>
       </div>
@@ -171,29 +159,24 @@
       </div>
       <div class="flex flex-col mb-4">
         <label for="tokens_amount_collateral" class="name-field">Assets amount</label>
-        <input type="text" name="tokens_amount_collateral" id="tokens_amount_collateral" class="input-type" value="1"
+        <input type="text" name="tokens_amount_collateral" id="tokens_amount_collateral" class="input-type" value=""
           placeholder="1">
       </div>
       <div class="flex flex-col mb-4">
         <label for="usd_value_collateral" class="name-field ">Coll. USD value</label>
-        <input type="text" name="usd_value_collateral" id="usd_value_collateral" class="input-type" value="400.00"
+        <input type="text" name="usd_value_collateral" id="usd_value_collateral" class="input-type" value=""
           placeholder="400.00">
       </div>
       <div class="flex flex-col mb-4">
         <div class="name-field">Get credit in:</div>
         <div class="flex border-medium-grey border rounded-lg w-full">
           <div class="w-8/12 without-link">
-            <select id="getcredit-dropdown" name="getcredit-dropdown" class="color-select">
-              <option value="st1" selected>ST1</option>
-              <option value="st2">ST2</option>
-              <option value="st3">ST3</option>
-              <option value="st4">ST4</option>
-              <option value="cytr">CYTR</option>
+            <select id="getcredit-dropdown" name="getcredit-dropdown">
+              <option value="" disabled selected>Select assets</option>
             </select>
           </div>
           <div class="w-4/12">
-            <input type="number" class="field-info" name="tokens_amount_getcredit" id="tokens_amount_getcredit"
-              readonly>19.0000</div>
+            <div class="field-info"><span class="in-wallet flex items-center ml-1" id="tokens_amount_getcredit" style="display: flex;"></span></div>
         </div>
       </div>
     </div>
@@ -322,6 +305,28 @@
       </div>
       <div class="flex flex-col">
         <button type="submit" id="withraw_rew_confirm" data-id="confirm" class="btn w-full">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- unfreeze -->
+
+<div class="modal" id="modal-unfreeze">
+  <div class="modal-exit modal-exit__bg"></div>
+  <div class="pop-up">
+    <div class="modal-top">
+      <div class="text-lg font-normal">Unfreeze</div>
+      <button class="modal-close modal-exit">
+        <img src="../images/close.svg" class="w-3 h-3" alt="#">
+      </button>
+    </div>
+    <div class="top-divider">
+      <div class="flex flex-col mb-11">
+        <div class="name-field">Do you confirm to unfreeze?</div>
+      </div>
+      <div class="flex flex-col">
+        <button type="submit" id="modal-unfreeze-confirm" data-id="confirm" class="btn w-full">Confirm</button>
       </div>
     </div>
   </div>

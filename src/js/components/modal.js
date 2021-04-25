@@ -120,7 +120,11 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
       }
 
       if (this.confirm) {
-        this.confirm.disabled = false;
+        if(this.approve && !this.onShowCallback) {
+          this.confirm.disabled = true;
+        } else {
+          this.confirm.disabled = false;
+        }
         this.confirm.classList.remove('btn-load', 'btn-done');
       }
     }, 300);

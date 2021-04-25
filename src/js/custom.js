@@ -1,10 +1,20 @@
 const withdraw_modal = new Modal('modal-withdraw-deposit');
 const withdraw_rew_modal = new Modal('modal-withdraw-reward');
-const open_new_credit_modal = new Modal('modal-open-new-credit');
+const open_new_credit_modal = new Modal('modal-open-new-credit', () => {
+  initCreditProfilesDropdown();
+  initGetCreditDropdown()
+});
 const return_credit_modal = new Modal('modal-return-credit');
 const set_leverage_modal = new Modal('modal-set-leverage');
-const add_liquidity_modal = new Modal('modal-add-liquidity');
-const new_deposit_modal = new Modal('modal-new-deposit', initDepositProfilesDropdown, () => { depositModalRebuild(); depositModalUpdateNftDropdown();}, null, depositModalUpdateNftDropdown);
+const modal_unfreeze = new Modal('modal-unfreeze');
+const add_liquidity_modal = new Modal('modal-add-liquidity', () => {
+  initLiqPairsDropdown(), initLiqTermsDropdown()
+});
+const new_deposit_modal = new Modal('modal-new-deposit', initDepositProfilesDropdown, () => {
+  depositModalRebuild();
+  depositModalUpdateNftDropdown();
+}, null, depositModalUpdateNftDropdown);
+
 const nftAssetsSelect = new Choices('#nftAssetsSelect', {
   removeItemButton: true,
   callbackOnCreateTemplates: function (template) {
@@ -61,7 +71,6 @@ const createTableBtnWithIcon = (icon, text, callback) => {
 
 const createCellWithIcon = (iconSrc) => {
   const iconName = iconSrc.toLowerCase();
-
   const iconObj = CRYPTO_ICONS.find(icon => iconName === icon.name);
 
   if (iconObj) {
@@ -82,1382 +91,6 @@ let contractsObject = {
     }
   }
 }
-
-let userObject = {
-  loaded: false,
-  self: this,
-  account: '',
-
-  deposit_profiles: {},
-  deposit_profiles_liqpairs: {},
-  credit_profiles: {},
-  liq_pairs: {},
-  liq_terms: {},
-
-  deposits: {
-    icon_column: new Array(),
-    assets_column: new Array(),
-    getIconAssetsCols_last_call: 0,
-    getIconAssetsCols: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getIconAssetsCols_last_call + CACHE_TIME || flag) {
-        this.getIconAssetsCols_last_call = current_timestamp;
-        this.icon_column.length = 0;
-        this.assets_column.length = 0;
-        let profiles = userObject.deposit_profiles;
-
-        for (let i = 0; i < profiles.length; i++) {
-          this.icon_column.push('<td class="table-cell">' + createCellWithIcon(profiles[i]['p_name']) + '</td>');
-          this.assets_column.push('<td class="table-cell">' + profiles[i]['p_name'] + '</td>');
-        }
-      }
-      return [this.icon_column, this.assets_column];
-    },
-
-    am_arr: new Array(),
-    getAmArr_last_call: 0,
-    getAmArr: async function () {
-      let current_timestamp = Date.now();
-      if (current_timestamp > (this.getAmArr_last_call + CACHE_TIME)) {
-        this.getAmArr_last_call = current_timestamp;
-
-        this.am_arr = await window.staking_smartcontract.methods.amountsPerDeposits(userObject.account).call({
-          from: userObject.account
-        });
-
-
-      }
-      return this.am_arr;
-    },
-    rew_arr: new Array(),
-    getRewArr_last_call: 0,
-    getRewArr: async function () {
-      let current_timestamp = Date.now();
-      if (current_timestamp > (this.getRewArr_last_call + CACHE_TIME)) {
-        this.getRewArr_last_call = current_timestamp;
-        this.rew_arr = await window.staking_smartcontract.methods.rewardsPerDeposits(userObject.account).call({
-          from: userObject.account
-        });
-
-      }
-      return this.rew_arr;
-    },
-
-    apy_column: new Array(),
-    getApyCol_last_call: 0,
-    getApyCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > (this.getApyCol_last_call + CACHE_TIME) || flag) {
-        this.getApyCol_last_call = current_timestamp;
-
-        this.apy_column.length = 0;
-        let profiles = userObject.deposit_profiles;
-
-        for (let i = 0; i < profiles.length; i++) {
-
-          let apy = await getAPY(profiles[i]['p_id']);
-          let apy_adj = (apy / apy_scale) * 100;
-
-          this.apy_column.push('<td class="table-cell">' + ((parseFloat(apy_adj)).toFixed(2)).toString() + '</td>');
-        }
-      }
-      return this.apy_column;
-    },
-
-    in_wallet_column: new Array(),
-    getInWalletCol_last_call: 0,
-    getInWalletCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getInWalletCol_last_call + CACHE_TIME || flag) {
-        this.getInWalletCol_last_call = current_timestamp;
-
-        this.in_wallet_column.length = 0;
-        let profiles = userObject.deposit_profiles;
-
-        for (let i = 0; i < profiles.length; i++) {
-          let txt = '';
-          if (parseInt(profiles[i]['p_dep_type']) == ERC721_TOKEN) {
-
-            let token_count = await window.cyclops_nft_smartcontract_reader.methods.balanceOf(userObject.account).call({
-              from: userObject.account
-            });
-
-            txt = '<td class="table-cell">' + token_count + '</td>';
-
-          } else if (parseInt(profiles[i]['p_dep_type']) == ERC20_TOKEN || parseInt(profiles[i]['p_dep_type']) == UNISWAP_PAIR) {
-            let erc20contract = await new window.web3js_reader.eth.Contract(erc20TokenContractAbi, profiles[i]['p_tok_addr']);
-            let erc20_count = await erc20contract.methods.balanceOf(userObject.account).call({
-              from: userObject.account
-            });
-            //let adj_count = floorDecimals( window.web3js_reader.utils.fromWei(erc20_count, 'ether'), 4);	            
-            let adj_count_str = toTokens(erc20_count, 4); //((parseFloat(adj_count)).toFixed(4)).toString(); 
-            let token_name = await erc20contract.methods.name().call({
-              from: userObject.account
-            });
-            txt = '<td class="table-cell">' + adj_count_str + '</td>';
-
-            //html += '<span class="small-text-block">'+token_name+': '+adj_count_str+'</span>';  
-
-          } else if (parseInt(profiles[i]['p_dep_type']) == NATIVE_ETHEREUM) {
-            let wb = await window.web3js_reader.eth.getBalance(userObject.account);
-            //let eth_balance = window.web3js_reader.utils.fromWei(wb, 'ether');
-            let adj_eth_balance = toTokens(wb, 4); //((parseFloat(eth_balance)).toFixed(4)).toString(); 
-            txt = '<td class="table-cell">' + adj_eth_balance + '</td>';
-          }
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.in_wallet_column.push(txt);
-        }
-      }
-      return this.in_wallet_column;
-    },
-
-    dep_column: new Array(),
-    getDepCol_last_call: 0,
-    getDepCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getDepCol_last_call + CACHE_TIME || flag) {
-        this.getDepCol_last_call = current_timestamp;
-
-        this.dep_column.length = 0;
-        let profiles = userObject.deposit_profiles;
-        let am_arr = this.am_arr;
-
-        for (let j = 0; j < profiles.length; j++) {
-          let txt = '';
-          for (let i = 0; i < am_arr[0].length; i++) {
-            if (am_arr[0][i] == profiles[j]['p_id']) {
-              //found
-              if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) { //amount
-                txt = '<td class="table-cell">' + am_arr[1][i] + '</td>';
-              } else {
-                //let am = window.web3js_reader.utils.fromWei(am_arr[1][i], 'ether');
-                let adj_am = toTokens(am_arr[1][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-                txt = '<td class="table-cell">' + adj_am + '</td>';
-              }
-              break;
-            }
-          }
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.dep_column.push(txt);
-        }
-      }
-      return this.dep_column;
-    },
-
-    usd_val_column: new Array(),
-    usd_val_only_col: new Array(),
-    getUsdValCol_last_call: 0,
-    getUsdValCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getUsdValCol_last_call + CACHE_TIME || flag) {
-        this.getUsdValCol_last_call = current_timestamp;
-
-        this.usd_val_column.length = 0;
-        this.usd_val_only_col.length = 0;
-
-        let profiles = userObject.deposit_profiles;
-        let am_arr = this.am_arr;
-
-        for (let j = 0; j < profiles.length; j++) {
-          let txt = '';
-          for (let i = 0; i < am_arr[0].length; i++) {
-            if (am_arr[0][i] == profiles[j]['p_id']) {
-              //found
-              let am = await calcUSDValueOfDeposit(am_arr[1][i], i);
-              this.usd_val_only_col.push({
-                val: am,
-                ori_index: j
-              });
-              txt = '<td class="table-cell">' + am + '</td>';
-
-              break;
-            }
-          }
-          if (!txt) {
-            txt = '<td class="table-cell">-</td>';
-            this.usd_val_only_col.push({
-              val: 0,
-              ori_index: j
-            });
-          }
-
-          this.usd_val_column.push(txt);
-        }
-      }
-      return [this.usd_val_column, this.usd_val_only_col];
-    },
-
-    duration_col: new Array(),
-    getDurationCol_last_call: 0,
-    getDurationCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getDurationCol_last_call + CACHE_TIME || flag) {
-        this.getDurationCol_last_call = current_timestamp;
-
-        this.duration_col.length = 0;
-        let profiles = userObject.deposit_profiles;
-        let am_arr = this.am_arr;
-
-        for (let j = 0; j < profiles.length; j++) {
-          let txt = '';
-          for (let i = 0; i < am_arr[0].length; i++) {
-            if (am_arr[0][i] == profiles[j]['p_id']) {
-              if (am_arr[1][i] == 0) {
-                txt = '<td class="table-cell">-</td>';
-              } else {
-                let days = await window.staking_smartcontract.methods.depositDays(userObject.account, i).call({
-                  from: userObject.account
-                }); //duration
-                txt = '<td class="table-cell">' + days.toString() + '</td>';
-              }
-              break;
-            }
-          }
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.duration_col.push(txt);
-        }
-      }
-      return this.duration_col;
-    },
-
-    extractable_dep_col: new Array(),
-    getExtractableDepCol_last_call: 0,
-    getExtractableDepCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getExtractableDepCol_last_call + CACHE_TIME || flag) {
-        this.getExtractableDepCol_last_call = current_timestamp;
-
-        this.extractable_dep_col.length = 0;
-        let profiles = userObject.deposit_profiles;
-        let am_arr = this.am_arr;
-
-        for (let j = 0; j < profiles.length; j++) {
-          let txt = '';
-          for (let i = 0; i < am_arr[0].length; i++) {
-            if (am_arr[0][i] == profiles[j]['p_id']) {
-              //found
-              if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) { //amount
-                txt = '<td class="table-cell">' + am_arr[2][i] + '</td>';
-              } else {
-                //let am = window.web3js_reader.utils.fromWei(am_arr[2][i], 'ether');
-                let adj_am = toTokens(am_arr[2][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-                txt = '<td class="table-cell">' + adj_am + '</td>';
-              }
-              break;
-            }
-          }
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.extractable_dep_col.push(txt);
-        }
-      }
-      return this.extractable_dep_col;
-    },
-
-    withdraw_dep_col: new Array(),
-    getWithdrawDepCol_last_call: 0,
-    getWithdrawDepCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getWithdrawDepCol_last_call + CACHE_TIME || flag) {
-        this.getWithdrawDepCol_last_call = current_timestamp;
-
-        this.withdraw_dep_col.length = 0;
-        let profiles = userObject.deposit_profiles;
-        let am_arr = this.am_arr;
-
-
-        for (let j = 0; j < profiles.length; j++) {
-          let txt = '';
-          for (let i = 0; i < am_arr[0].length; i++) { //i == deposit id
-            if (am_arr[0][i] == profiles[j]['p_id'] && am_arr[2][i] > 0) {
-              let lbl = '';
-              if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) lbl = '<span>&nbspNFTs</span>';
-              txt = `<td class="table-cell">${createTableBtnWithIcon('withdraw', 'Withdraw deposit', `withdraw_deposit(${i.toString()})`)}</td>`;
-              break;
-            }
-          }
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.withdraw_dep_col.push(txt);
-        }
-      }
-      return this.withdraw_dep_col;
-    },
-
-    withdraw_dep_inputs_col: new Array(),
-    getWithdrawDepInputsCol_last_call: 0,
-    getWithdrawDepInputsCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getWithdrawDepInputsCol_last_call + CACHE_TIME || flag) {
-        this.getWithdrawDepInputsCol_last_call = current_timestamp;
-
-        this.withdraw_dep_inputs_col.length = 0;
-        let profiles = userObject.deposit_profiles;
-        let am_arr = this.am_arr;
-
-        for (let j = 0; j < profiles.length; j++) {
-          let txt = '';
-          for (let i = 0; i < am_arr[0].length; i++) { //i == deposit id
-            if (am_arr[0][i] == profiles[j]['p_id']) {
-
-              if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) {} else {
-                //let am = window.web3js_reader.utils.fromWei(am_arr[2][i], 'ether');
-                let adj_am = toTokens(am_arr[2][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-                //let rew_am = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');	            
-                //let adj_rew_am =  ((parseFloat(rew_am)).toFixed(4)).toString(); 
-                //txt += '<span id="withraw_dep_rew'+i.toString()+'" class="withdraw_dep_input">reward to be extracted: '+adj_rew_am+'</span>';
-
-              }
-              break;
-            }
-          }
-          if (!txt) txt = '<td class="withdraw_params table-cell" style="display:none">-</td>';
-          this.withdraw_dep_inputs_col.push(txt);
-        }
-      }
-      return this.withdraw_dep_inputs_col;
-    },
-
-    reward_col: new Array(),
-    getRewardCol_last_call: 0,
-    getRewardCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getRewardCol_last_call + CACHE_TIME || flag) {
-        this.getRewardCol_last_call = current_timestamp;
-
-        this.reward_col.length = 0;
-        let profiles = userObject.deposit_profiles;
-        let rew_arr = this.rew_arr;
-
-        for (let j = 0; j < profiles.length; j++) {
-          let txt = '';
-          for (let i = 0; i < rew_arr[0].length; i++) {
-            if (rew_arr[0][i] == profiles[j]['p_id']) {
-              //found
-              //let adj = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');	            
-              let adj_str = toTokens(rew_arr[1][i], 4); //((parseFloat(adj)).toFixed(4)).toString(); 
-              txt = '<td class="table-cell">' + adj_str + '</td>';
-              break;
-            }
-          }
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.reward_col.push(txt);
-        }
-      }
-      return this.reward_col;
-    },
-
-    extractable_reward_col: new Array(),
-    getExtractableRewardCol_last_call: 0,
-    getExtractableRewardCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getExtractableRewardCol_last_call + CACHE_TIME || flag) {
-        this.getExtractableRewardCol_last_call = current_timestamp;
-
-        this.extractable_reward_col.length = 0;
-        let profiles = userObject.deposit_profiles;
-        let rew_arr = this.rew_arr;
-
-        for (let j = 0; j < profiles.length; j++) {
-          let txt = '';
-          for (let i = 0; i < rew_arr[0].length; i++) {
-            if (rew_arr[0][i] == profiles[j]['p_id']) {
-              //found
-              //let adj = window.web3js_reader.utils.fromWei(rew_arr[2][i], 'ether');	            
-              let adj_str = toTokens(rew_arr[2][i], 4); //((parseFloat(adj)).toFixed(4)).toString(); 
-              txt = '<td class="table-cell">' + adj_str + '</td>';
-              break;
-            }
-
-          }
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.extractable_reward_col.push(txt);
-        }
-      }
-      return this.extractable_reward_col;
-    },
-
-    withdraw_rew_col: new Array(),
-    getWithdrawRewCol_last_call: 0,
-    getWithdrawRewCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getWithdrawRewCol_last_call + CACHE_TIME || flag) {
-        this.getWithdrawRewCol_last_call = current_timestamp;
-
-        this.withdraw_rew_col.length = 0;
-        let profiles = userObject.deposit_profiles;
-        let rew_arr = this.rew_arr;
-
-        for (let j = 0; j < profiles.length; j++) {
-          let txt = '';
-          for (let i = 0; i < rew_arr[0].length; i++) {
-            if (rew_arr[0][i] == profiles[j]['p_id'] && rew_arr[2][i] > 0) {
-              let lbl = '';
-              if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) lbl = '&nbsp;CYTR</span>';
-              txt = `<td class="table-cell">${createTableBtnWithIcon('withdraw', 'Withdraw yield', `withdraw_reward(${i.toString()})`)}</td>`
-              break;
-            }
-          }
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.withdraw_rew_col.push(txt);
-        }
-      }
-      return this.withdraw_rew_col;
-    },
-
-
-
-  },
-  credits: {
-    cred_arr: new Array(),
-    getCredArr_last_call: 0,
-    getCredArr: async function () {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getCredArr_last_call + CACHE_TIME) {
-        this.getCredArr_last_call = current_timestamp;
-        this.cred_arr = await window.credit_smartcontract.methods.dataPerCredits(userObject.account).call({
-          from: userObject.account
-        });
-      }
-      return this.cred_arr;
-    },
-
-    clt_arr: null,
-    getCltArr_last_call: 0,
-    getCltArr: async function () {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getCltArr_last_call + CACHE_TIME) {
-        this.getCltArr_last_call = current_timestamp;
-        this.clt_arr = await window.credit_smartcontract.methods.amountsPerCollaterals(userObject.account).call({
-          from: userObject.account
-        });
-      }
-      return this.clt_arr;
-    },
-    lev_arr: new Array(),
-    lev_ratio_arr: new Array(),
-    getLevArr_last_call: 0,
-    getLevArr: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getLevArr_last_call + CACHE_TIME || flag) {
-        this.getLevArr_last_call = current_timestamp;
-        this.lev_arr.length = 0;
-        this.lev_ratio_arr.length = 0;
-        for (let i = 0; i < this.cred_arr[0].length; i++) {
-          let res = await window.liqlev_smartcontract.methods.viewCustomerLeverageByCredId(userObject.account, i).call({
-            from: userObject.account
-          });
-          this.lev_arr.push(res.lev_amount);
-          this.lev_ratio_arr.push(res.ratio);
-        }
-
-      }
-      return [this.lev_arr, this.lev_ratio_arr];
-    },
-
-    icon_column: new Array(),
-    assets_column: new Array(),
-    getIconAssetsCols_last_call: 0,
-    getIconAssetsCols: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getIconAssetsCols_last_call + CACHE_TIME || flag) {
-        this.getIconAssetsCols_last_call = current_timestamp;
-        this.icon_column.length = 0;
-        this.assets_column.length = 0;
-        for (let i = 0; i < this.cred_arr[0].length; i++) {
-          this.icon_column.push('<td class="table-cell">' + createCellWithIcon(profileNameByProfileId(this.cred_arr[0][i])) + '</td>');
-          this.assets_column.push('<td class="table-cell">' + profileNameByProfileId(this.cred_arr[0][i]) + '</td>');
-        }
-      }
-      return [this.icon_column, this.assets_column];
-    },
-
-    apr_column: new Array(),
-    getAPRCol_last_call: 0,
-    getAPRCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getAPRCol_last_call + CACHE_TIME || flag) {
-        this.getAPRCol_last_call = current_timestamp;
-        this.apr_column.length = 0;
-        let cred_arr = this.cred_arr;
-        let clt_arr = this.clt_arr;
-        for (let i = 0; i < cred_arr[0].length; i++) {
-          let clt_id = cred_arr[4][i];
-          let clt_profile_id = clt_arr[0][parseInt(clt_id)];
-
-          let cc = await window.credit_smartcontract.methods.viewCustomerCredit(userObject.account, 0).call({
-            from: userObject.account
-          });
-          let cc_index = parseInt(cc['index']);
-          let x = await window.credit_smartcontract.methods.viewCustomerCreditExtraDataByIndex(cc_index, i).call({
-            from: userObject.account
-          });
-          let is_fixed_apy = x.is_fixed_apy;
-
-          let apr;
-          let prefix;
-          if (!is_fixed_apy) {
-            apr = await window.usage_calc_smartcontract_reader.methods.calcVarApy(cred_arr[0][i], clt_profile_id).call({
-              from: userObject.account
-            });
-            prefix = 'V: ';
-          } else {
-            apr = x.fixed_apy;
-            prefix = 'F: ';
-          }
-          let apr_adj = (apr / apy_scale) * 100;
-          this.apr_column.push('<td class="table-cell">' + prefix + ((parseFloat(apr_adj)).toFixed(2)).toString() + '%</td>');
-        }
-      }
-      return this.apr_column;
-    },
-
-    in_wallet_column: new Array(),
-    getInWalletCol_last_call: 0,
-    getInWalletCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getInWalletCol_last_call + CACHE_TIME || flag) {
-        this.getInWalletCol_last_call = current_timestamp;
-        this.in_wallet_column.length = 0;
-        let cred_arr = this.cred_arr;
-
-        for (let i = 0; i < cred_arr[0].length; i++) {
-          let txt = '';
-          if (depTypeByProfileId(cred_arr[0][i]) == ERC721_TOKEN) {
-
-            let token_count = await window.cyclops_nft_smartcontract_reader.methods.balanceOf(userObject.account).call({
-              from: userObject.account
-            });
-
-            txt = '<td class="hide_for_credit_return_panel tab-vert-line-left table-cell">' + token_count + '</td>';
-
-
-
-          } else if (depTypeByProfileId(cred_arr[0][i]) == ERC20_TOKEN || depTypeByProfileId(cred_arr[0][i]) == UNISWAP_PAIR) {
-
-
-
-            let erc20contract = await new window.web3js_reader.eth.Contract(erc20TokenContractAbi, tokenAddressByProfileId(cred_arr[0][i]));
-            let erc20_count = await erc20contract.methods.balanceOf(userObject.account).call({
-              from: userObject.account
-            });
-            //let adj_count = floorDecimals(window.web3js_reader.utils.fromWei(erc20_count, 'ether'),4);	            
-            let adj_count_str = toTokens(erc20_count, 4); //((parseFloat(adj_count)).toFixed(4)).toString(); 
-            let token_name = await erc20contract.methods.name().call({
-              from: userObject.account
-            });
-            txt = '<td class="hide_for_credit_return_panel tab-vert-line-left table-cell">' + adj_count_str + '</td>';
-
-            //html += '<span class="small-text-block">'+token_name+': '+adj_count_str+'</span>';  
-
-          } else if (depTypeByProfileId(cred_arr[0][i]) == NATIVE_ETHEREUM) {
-            let wb = await window.web3js_reader.eth.getBalance(userObject.account);
-            //let eth_balance = window.web3js_reader.utils.fromWei(wb, 'ether');
-            let adj_eth_balance = toTokens(wb, 4); //((parseFloat(eth_balance)).toFixed(4)).toString(); 
-            txt = '<td class="hide_for_credit_return_panel tab-vert-line-left table-cell">' + adj_eth_balance + '</td>';
-
-          }
-          if (!txt) txt = '<td class="hide_for_credit_return_panel tab-vert-line-left table-cell">-</td>';
-          this.in_wallet_column.push(txt);
-        }
-
-
-      }
-      return this.in_wallet_column;
-    },
-
-
-    dep_column: new Array(),
-    getDepCol_last_call: 0,
-    getDepCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getDepCol_last_call + CACHE_TIME || flag) {
-        this.getDepCol_last_call = current_timestamp;
-        this.dep_column.length = 0;
-        let cred_arr = this.cred_arr;
-        let am_arr = userObject.deposits.am_arr;
-
-        for (let j = 0; j < cred_arr[0].length; j++) {
-          let txt = '';
-          for (let i = 0; i < am_arr[0].length; i++) {
-            if (am_arr[0][i] == cred_arr[0][j]) {
-              //found
-              if (depTypeByProfileId(cred_arr[0][j]) == ERC721_TOKEN) { //amount
-                txt = '<td class="table-cell">' + am_arr[1][i] + '</td>';
-              } else {
-                //let am = window.web3js_reader.utils.fromWei(am_arr[1][i], 'ether');
-                let adj_am = toTokens(am_arr[1][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-                txt = '<td class="table-cell">' + adj_am + '</td>';
-              }
-              break;
-            }
-          }
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.dep_column.push(txt);
-        }
-
-      }
-      return this.dep_column;
-
-    },
-
-    cred_column: new Array(),
-    getCredCol_last_call: 0,
-    getCredCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getCredCol_last_call + CACHE_TIME || flag) {
-        this.getCredCol_last_call = current_timestamp;
-        this.cred_column.length = 0;
-        let cred_arr = this.cred_arr;
-        for (let i = 0; i < cred_arr[0].length; i++) {
-          let txt = '';
-
-          if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
-            //found
-            if (depTypeByProfileId(cred_arr[0][i]) == ERC721_TOKEN) { //amount
-              txt = '<td class="table-cell">' + cred_arr[1][i] + '</td>';
-            } else {
-              //let am = window.web3js_reader.utils.fromWei(cred_arr[1][i], 'ether');
-              let adj_am = toTokens(cred_arr[1][i], 4) //((parseFloat(am)).toFixed(4)).toString(); 
-              txt = '<td class="table-cell">' + adj_am + '</td>';
-            }
-
-          }
-
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.cred_column.push(txt);
-        }
-
-
-
-
-      }
-      return this.cred_column;
-
-    },
-
-
-    clt_column: new Array(),
-    getCltCol_last_call: 0,
-    getCltCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getCltCol_last_call + CACHE_TIME || flag) {
-        this.getCltCol_last_call = current_timestamp;
-
-        this.clt_column.length = 0;
-        let cred_arr = this.cred_arr;
-        let clt_arr = this.clt_arr;
-
-        for (let i = 0; i < cred_arr[0].length; i++) {
-          let txt = '';
-
-          if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
-            //found
-            if (depTypeByProfileId(cred_arr[0][i]) == ERC721_TOKEN) { //amount
-              txt = '<td class="table-cell">' + cred_arr[4][i] + '</td>';
-            } else {
-              let clt_id = cred_arr[4][i];
-              let clt_profile_id = clt_arr[0][parseInt(clt_id)];
-              let clt_amount = clt_arr[1][parseInt(clt_id)];
-              //let am = window.web3js_reader.utils.fromWei(clt_amount, 'ether');
-              let adj_am = toTokens(clt_amount, 4); //((parseFloat(am)).toFixed(4)).toString(); 
-              let tdtxt = profileNameByProfileId(clt_profile_id) + ': ' + adj_am;
-              txt = '<td class="table-cell">' + tdtxt + '</td>';
-            }
-
-          }
-
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.clt_column.push(txt);
-        }
-
-
-
-
-      }
-      return this.clt_column;
-
-    },
-
-
-    usd_val_column: new Array(),
-    getUsdValCol_last_call: 0,
-    getUsdValCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getUsdValCol_last_call + CACHE_TIME || flag) {
-        this.getUsdValCol_last_call = current_timestamp;
-        this.usd_val_column.length = 0;
-        let cred_arr = this.cred_arr;
-
-
-        for (let i = 0; i < cred_arr[0].length; i++) {
-          let txt = '';
-
-          if (cred_arr[1][i] > 0) { //credit unpaid
-            //found
-            let am = await calcUSDValueByProfileNonNFT(cred_arr[1][i], cred_arr[0][i]);
-
-            txt = '<td class="table-cell">' + am + '</td>';
-
-
-          }
-
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.usd_val_column.push(txt);
-        }
-
-      }
-      return this.usd_val_column;
-
-    },
-
-    duration_col: new Array(),
-    getDurationCol_last_call: 0,
-    getDurationCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getDurationCol_last_call + CACHE_TIME || flag) {
-        this.getDurationCol_last_call = current_timestamp;
-
-        this.duration_col.length = 0;
-        let cred_arr = this.cred_arr;
-
-
-        for (let i = 0; i < cred_arr[0].length; i++) {
-          let txt = '';
-
-          if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
-            if (cred_arr[3][i] == 0) {
-              txt = '<td class="table-cell">-</td>';
-            } else {
-
-              txt = '<td class="table-cell">' + cred_arr[3][i].toString() + '</td>';
-            }
-
-          }
-
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.duration_col.push(txt);
-        }
-
-
-      }
-      return this.duration_col;
-
-    },
-
-    fee_col: new Array(),
-    getFeeCol_last_call: 0,
-    getFeeCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getFeeCol_last_call + CACHE_TIME || flag) {
-        this.getFeeCol_last_call = current_timestamp;
-
-        this.fee_col.length = 0;
-        let cred_arr = this.cred_arr;
-
-        for (let i = 0; i < cred_arr[0].length; i++) {
-          let txt = '';
-
-
-          if (cred_arr[2][i] == 0) {
-            txt = '<td class="table-cell">-</td>';
-          } else {
-            //let am = window.web3js_reader.utils.fromWei(cred_arr[2][i], 'ether');
-            let adj_am = toTokens(cred_arr[2][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-            txt = '<td class="table-cell">' + adj_am + '</td>';
-          }
-
-
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.fee_col.push(txt);
-        }
-
-
-
-
-      }
-      return this.fee_col;
-
-    },
-
-
-    leverage_column: new Array(),
-    getLevCol_last_call: 0,
-    getLevCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getLevCol_last_call + CACHE_TIME || flag) {
-        this.getLevCol_last_call = current_timestamp;
-
-        this.leverage_column.length = 0;
-        let cred_arr = this.cred_arr;
-        let lev_arr = this.lev_arr;
-        let lev_ratio_arr = this.lev_ratio_arr;
-
-        for (let i = 0; i < cred_arr[0].length; i++) { //i == credit id
-          let txt = '';
-
-          let lbl = '';
-          //let res = await window.liqlev_smartcontract.methods.viewCustomerLeverageByCredId(userObject.account,i).call({from: userObject.account});
-          if (lev_arr[i] > 0) {
-            //let am = window.web3js_reader.utils.fromWei(lev_arr[i], 'ether');
-
-            let adj_am = toTokens(lev_arr[i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-            txt = '<td class="table-cell">' + adj_am + ' ' + lev_ratio_arr[i] + '%</td>';
-          }
-
-          //	}
-
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.leverage_column.push(txt);
-        }
-
-
-      }
-      return this.leverage_column;
-
-    },
-
-
-    set_leverage_column: new Array(),
-    getSetLevCol_last_call: 0,
-    getSetLevCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getSetLevCol_last_call + CACHE_TIME || flag) {
-        this.getSetLevCol_last_call = current_timestamp;
-
-        this.set_leverage_column.length = 0;
-        let cred_arr = this.cred_arr;
-        let lev_arr = this.lev_arr;
-
-
-        for (let i = 0; i < cred_arr[0].length; i++) { //i == credit id
-          let txt = '';
-
-          //let res = await window.liqlev_smartcontract.methods.viewCustomerLeverageByCredId(userObject.account,i).call({from: userObject.account});
-          if (lev_arr[i] > 0 || cred_arr[1][i] > 0) {
-
-            let lbl = '';
-
-            txt = '<td class="table-cell" onclick="compensate_with_leverage(' + i.toString() + ')"><span class="icon-cell"><img src="../images/bag.svg"></span>' + lbl + '</td>';
-          }
-
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.set_leverage_column.push(txt);
-        }
-
-
-      }
-      return this.set_leverage_column;
-
-    },
-
-    return_credit_col: new Array(),
-    getReturnCreditCol_last_call: 0,
-    getReturnCreditCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getReturnCreditCol_last_call + CACHE_TIME || flag) {
-        this.getReturnCreditCol_last_call = current_timestamp;
-        this.return_credit_col.length = 0;
-        let cred_arr = this.cred_arr;
-        let lev_arr = this.lev_arr;
-        let lev_ratio_arr = this.lev_ratio_arr;
-
-        for (let i = 0; i < cred_arr[0].length; i++) { //i == deposit id
-          let txt = '';
-
-          if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
-            txt = `<td class="table-cell">${createTableBtnWithIcon('money', 'Repay borrow', `return_credit(${i.toString()})`)}</td>`;
-          }
-          if (!txt) txt = '<td class="table-cell">-</td>';
-          this.return_credit_col.push(txt);
-        }
-
-      }
-      return this.return_credit_col;
-
-    },
-  },
-  liq_earn: {
-    icon_column: new Array(),
-    asset_column: new Array(),
-    lockup_period: new Array(),
-    getIconAssetLockupCols_last_call: 0,
-    getIconAssetLockupCols: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getIconAssetLockupCols_last_call + CACHE_TIME || flag) {
-        this.getIconAssetLockupCols_last_call = current_timestamp;
-
-        this.icon_column.length = 0;
-        this.asset_column.length = 0;
-        this.lockup_period.length = 0;
-        let am_arr = userObject.deposits.am_arr;
-        let rew_arr = userObject.deposits.rew_arr;
-
-        for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
-            this.icon_column.push('<td class="table-cell">' + createCellWithIcon(await unswProfileNameByProfileId(am_arr[0][i])) + '</td>');
-            let aname = (await unswProfileNameByProfileId(am_arr[0][i])).slice(0, -3);
-            this.asset_column.push('<td class="table-cell">' + aname + '</td>');
-            let period_code = (await unswProfileNameByProfileId(am_arr[0][i])).slice(-2);
-
-            this.lockup_period.push('<td class="table-cell">' + period_name_from_code[period_code] + '</td>');
-          }
-        }
-      }
-      return [this.icon_column, this.asset_column, this.lockup_period];
-
-    },
-
-
-    apy_column: new Array(),
-    getApyCol_last_call: 0,
-    getApyCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getApyCol_last_call + CACHE_TIME || flag) {
-        this.getApyCol_last_call = current_timestamp;
-
-
-        this.apy_column.length = 0;
-
-        let am_arr = userObject.deposits.am_arr;
-        let rew_arr = userObject.deposits.rew_arr;
-
-
-
-        for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
-            //let apy = await window.usage_calc_smartcontract_reader.methods.calcDepApy(am_arr[0][i]).call({ from: userObject.account});
-            let apy = await getAPY(am_arr[0][i]);
-            let apy_adj = (apy / apy_scale) * 100;
-            this.apy_column.push('<td class="table-cell">' + ((parseFloat(apy_adj)).toFixed(2)).toString() + '</td>');
-          }
-        }
-
-
-      }
-      return this.apy_column;
-
-    },
-
-    dep_column: new Array(),
-    getDepCol_last_call: 0,
-    getDepCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getDepCol_last_call + CACHE_TIME || flag) {
-        this.getDepCol_last_call = current_timestamp;
-
-        this.dep_column.length = 0;
-
-        let am_arr = userObject.deposits.am_arr;
-        let rew_arr = userObject.deposits.rew_arr;
-
-        for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
-            let txt = '';
-            if (am_arr[1][i] > 0) {
-              //let am = window.web3js_reader.utils.fromWei(am_arr[1][i], 'ether');
-              let adj_am = toTokens(am_arr[1][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-              txt = '<td class="table-cell table-cell">' + adj_am + '</td>';
-            } else {
-              txt = '<td class="table-cell table-cell">-</td>';
-            }
-            this.dep_column.push(txt);
-          }
-        }
-      }
-      return this.dep_column;
-    },
-
-
-    usd_val_column: new Array(),
-    usd_val_only_col: new Array(),
-    getUsdValCol_last_call: 0,
-    getUsdValCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getUsdValCol_last_call + CACHE_TIME || flag) {
-        this.getUsdValCol_last_call = current_timestamp;
-
-
-        this.usd_val_column.length = 0;
-        this.usd_val_only_col.length = 0;
-
-        let am_arr = userObject.deposits.am_arr;
-        let rew_arr = userObject.deposits.rew_arr;
-
-
-
-
-        let index = 0;
-        for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
-            let txt = '';
-            if (am_arr[1][i] > 0) {
-
-              let am = await calcUSDValueOfDeposit(am_arr[1][i], i);
-              this.usd_val_only_col.push({
-                val: am,
-                ori_index: index
-              });
-              txt = '<td class="table-cell table-cell">' + am + '</td>';
-            } else {
-              txt = '<td class="table-cell table-cell">-</td>';
-              this.usd_val_only_col.push({
-                val: 0,
-                ori_index: index
-              });
-
-            }
-            this.usd_val_column.push(txt);
-            index++;
-          }
-        }
-
-
-      }
-      return [this.usd_val_column, this.usd_val_only_col];
-
-    },
-
-    duration_col: new Array(),
-    unlock_col: new Array(),
-    getDurationUnlockCol_last_call: 0,
-    getDurationUnlockCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getDurationUnlockCol_last_call + CACHE_TIME || flag) {
-        this.getDurationUnlockCol_last_call = current_timestamp;
-
-
-        this.duration_col.length = 0;
-        this.unlock_col.length = 0;
-
-        let am_arr = userObject.deposits.am_arr;
-        let rew_arr = userObject.deposits.rew_arr;
-
-        for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
-            let txt = '';
-            let txt_unl = '';
-
-            if (am_arr[1][i] > 0 && am_arr[2][i] == 0) {
-              let days = await stakingContractInstance.methods.depositDays(userObject.account, i).call({
-                from: userObject.account
-              }); //duration
-              txt = '<td class="table-cell">' + days.toString() + '</td>';
-
-              let period_code = (await unswProfileNameByProfileId(am_arr[0][i])).slice(-2);
-
-              let unl_period = period_len_from_code[period_code] - days.toString();
-              let unl_period_txt;
-              if (unl_period > 0) {
-                unl_period_txt = unl_period.toString();
-              } else {
-                unl_period_txt = '-';
-              }
-
-              txt_unl = '<td class="table-cell">' + unl_period_txt + '</td>';
-            } else {
-              txt = '<td class="table-cell">-</td>';
-              txt_unl = '<td class="table-cell">-</td>';
-            }
-
-
-            this.duration_col.push(txt);
-            this.unlock_col.push(txt_unl);
-          }
-        }
-
-
-      }
-      return [this.duration_col, this.unlock_col];
-
-    },
-
-    extractable_dep_col: new Array(),
-    getExtrDepCol_last_call: 0,
-    getExtrDepCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getExtrDepCol_last_call + CACHE_TIME || flag) {
-        this.getExtrDepCol_last_call = current_timestamp;
-
-
-        this.extractable_dep_col.length = 0;
-
-        let am_arr = userObject.deposits.am_arr;
-        let rew_arr = userObject.deposits.rew_arr;
-
-
-        for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
-            let txt = '';
-
-            if (am_arr[2][i] > 0) {
-              //let am = window.web3js_reader.utils.fromWei(am_arr[2][i], 'ether');
-              let adj_am = toTokens(am_arr[2][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-              txt = '<td class="table-cell">' + adj_am + '</td>';
-            } else {
-              txt = '<td class="table-cell">-</td>';
-            }
-
-            this.extractable_dep_col.push(txt);
-          }
-        }
-
-      }
-      return this.extractable_dep_col;
-
-    },
-
-    withdraw_dep_col: new Array(),
-    getWithdrawDepCol_last_call: 0,
-    getWithdrawDepCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getWithdrawDepCol_last_call + CACHE_TIME || flag) {
-        this.getWithdrawDepCol_last_call = current_timestamp;
-
-        this.withdraw_dep_col.length = 0;
-
-        let am_arr = userObject.deposits.am_arr;
-        let rew_arr = userObject.deposits.rew_arr;
-
-        for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
-            let txt = '';
-
-            if (am_arr[2][i] > 0) {
-              txt = `<td class="table-cell">${createTableBtnWithIcon('withdraw', 'Withdraw deposit', `withdraw_deposit(${i.toString()})`)}</td>`
-            } else {
-              txt = '<td class="table-cell">-</td>';
-            }
-
-
-            this.withdraw_dep_col.push(txt);
-          }
-        }
-
-      }
-      return this.withdraw_dep_col;
-
-    },
-
-    withdraw_dep_inputs_col: new Array(),
-    getWithdrawDepInputsCol_last_call: 0,
-    getWithdrawDepInputsCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getWithdrawDepInputsCol_last_call + CACHE_TIME || flag) {
-        this.getWithdrawDepInputsCol_last_call = current_timestamp;
-
-
-        this.withdraw_dep_inputs_col.length = 0;
-
-        let am_arr = userObject.deposits.am_arr;
-        let rew_arr = userObject.deposits.rew_arr;
-
-
-        for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
-            let txt = '';
-
-            if (am_arr[2][i] > 0) {
-              //let am = window.web3js_reader.utils.fromWei(am_arr[2][i], 'ether');
-              let adj_am = toTokens(am_arr[2][i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-
-              //let rew_am = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');	            
-              //let adj_rew_am =  ((parseFloat(rew_am)).toFixed(4)).toString(); 
-              txt = '<td class="withdraw_params table-cell" style="display:none">';
-              txt += '<button id="withraw_dep_all' + i.toString() + '" class="transparent_button transparent_button_pressed withdraw_dep_input" style="display:none;width: 5vw" onclick="withdraw_deposit_all_btn(' + i.toString() + ')">All</button>';
-              txt += '<button id="withraw_dep_part' + i.toString() + '" class="transparent_button withdraw_dep_input" style="display:none;width: 5vw" onclick="withdraw_deposit_part_btn(' + i.toString() + ')">Part</button>';
-              txt += '<input class="withdraw_dep_input" id="withraw_dep_input' + i.toString() + '" type="number" min="0.1" step="0.1" max="' + adj_am + '" class="form-control" aria-label="" ';
-              txt += ' value="' + adj_am + '"';
-              txt += ' style="display:none; color: white; background-color: black !important; border-color: white !important; width: 8vw;" >';
-              txt += '<div style="display:block; margin-top: 1vh;"></div>';
-              //txt += '<span id="withraw_dep_rew'+i.toString()+'" class="withdraw_dep_input">reward to be extracted: '+adj_rew_am+'</span>';
-              txt += '<div style="display:block; margin-top: 1vh;"></div>';
-              txt += '<button id="withraw_dep_confirm' + i.toString() + '" class="transparent_button withdraw_dep_input" style="display:none;width: 10vw" onclick="withdraw_deposit_confirm(' + i.toString() + ')">Confirm</button>';
-              txt += '</td>';
-            } else {
-              txt = '<td class="withdraw_params table-cell" style="display:none">-</td>';
-            }
-
-
-            this.withdraw_dep_inputs_col.push(txt);
-          }
-        }
-
-      }
-      return this.withdraw_dep_inputs_col;
-
-    },
-
-    reward_col: new Array(),
-    getRewardCol_last_call: 0,
-    getRewardCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getRewardCol_last_call + CACHE_TIME || flag) {
-        this.getRewardCol_last_call = current_timestamp;
-
-
-        this.reward_col.length = 0;
-
-        let am_arr = userObject.deposits.am_arr;
-        let rew_arr = userObject.deposits.rew_arr;
-
-        for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
-            let txt = '';
-
-            if (rew_arr[1][i] > 0) {
-              //let adj = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');	            
-              let adj_str = toTokens(rew_arr[1][i], 4); //((parseFloat(adj)).toFixed(4)).toString(); 
-              txt = '<td class="table-cell">' + adj_str + '</td>';
-            } else {
-              txt = '<td class="table-cell">-</td>';
-            }
-
-            this.reward_col.push(txt);
-          }
-        }
-
-      }
-      return this.reward_col;
-
-    },
-
-    extractable_reward_col: new Array(),
-    getExtractableRewardCol_last_call: 0,
-    getExtractableRewardCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getExtractableRewardCol_last_call + CACHE_TIME || flag) {
-        this.getExtractableRewardCol_last_call = current_timestamp;
-        this.extractable_reward_col.length = 0;
-
-        let am_arr = userObject.deposits.am_arr;
-        let rew_arr = userObject.deposits.rew_arr;
-
-        for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
-            let txt = '';
-
-            if (rew_arr[2][i] > 0) {
-              //let adj = window.web3js_reader.utils.fromWei(rew_arr[2][i], 'ether');	            
-              let adj_str = toTokens(rew_arr[2][i], 4); //((parseFloat(adj)).toFixed(4)).toString(); 
-              txt = '<td class="table-cell">' + adj_str + '</td>';
-            } else {
-              txt = '<td class="table-cell">-</td>';
-            }
-
-            this.extractable_reward_col.push(txt);
-          }
-        }
-
-      }
-      return this.extractable_reward_col;
-
-    },
-
-    withdraw_rew_col: new Array(),
-    getWithdrawRewCol_last_call: 0,
-    getWithdrawRewCol: async function (flag = false) {
-      let current_timestamp = Date.now();
-      if (current_timestamp > this.getWithdrawRewCol_last_call + CACHE_TIME || flag) {
-        this.getWithdrawRewCol_last_call = current_timestamp;
-
-
-        this.withdraw_rew_col.length = 0;
-
-        let am_arr = userObject.deposits.am_arr;
-        let rew_arr = userObject.deposits.rew_arr;
-
-
-        for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] == 0 && rew_arr[1][i] == 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) == UNISWAP_PAIR) {
-            let txt = '';
-
-            if (rew_arr[2][i] > 0) {
-              txt = `<td class="table-cell">${createTableBtnWithIcon('withdraw', 'Withdraw yield', `withdraw_reward(${i.toString()})`)}</td>`
-
-            } else {
-              txt = '<td class="table-cell">-</td>';
-            }
-
-            this.withdraw_rew_col.push(txt);
-          }
-        }
-
-      }
-      return this.withdraw_rew_col;
-
-    },
-
-  },
-
-
-  load: async function () {
-    if (this.loaded) return;
-
-    [this.deposit_profiles,
-      this.deposit_profiles_liqpairs,
-      this.credit_profiles,
-      this.liq_pairs,
-      this.liq_terms
-    ] = await Promise.all([getAllProfiles(),
-      getAllProfilesUniswap(),
-      getAllCreditProfiles(),
-      getLiqPairs(),
-      getLiqTerms()
-    ]);
-
-
-
-
-
-
-    await Promise.all([this.deposits.getIconAssetsCols(),
-      this.deposits.getAmArr(),
-      this.deposits.getRewArr(),
-      this.credits.getCredArr(),
-      this.credits.getCltArr()
-    ]);
-
-
-
-    await this.credits.getLevArr(true); //as depends on cred arr
-
-
-
-
-
-
-    this.loaded = true;
-  },
-
-
-
-  state: {
-    current_page_id: '',
-    selectedNFTAssets: new Array(),
-    selected_credprofile: -1, //collateral asset,  not selected
-    getcredit_profile: -1, //get credit in..
-    selected_depprofile: -1, //deposit
-    selected_depprofile_name: '',
-    selected_depprofile_type: 0,
-    selected_depprofile_token_address: '',
-    liq_pair_name: '',
-    liq_pair_address: '',
-    liq_pair_fullcode: ''
-  }
-
-}
-
-//userObject.state.selectedNFTAssets = new Array();
 
 document.addEventListener('visibilitychange', function () {
   if (document.visibilityState == 'hidden') {
@@ -1557,9 +190,9 @@ window.addEventListener('DOMContentLoaded', async function () {
     //initDepositProfilesDropdown()
     //initCreditProfilesDropdown();
     //initGetCreditDropdown();
-
   }
-
+  open_new_credit_modal.onInitCallback();
+  add_liquidity_modal.onInitCallback();
   new_deposit_modal.onInitCallback();
 });
 
@@ -1613,8 +246,7 @@ async function getAccount() {
       async function barChecker() {
         if (document.getElementById('load_bar_cover')) {
           if (
-            document.getElementById('tokens_balance').innerHTML &&
-            document.getElementById('my_credits').innerHTML
+            document.getElementById('tokens_balance').innerHTML
           ) {
             await new Promise(r => setTimeout(r, 1000));
             document.getElementById('load_bar_cover').style.display = "none";
@@ -1640,7 +272,6 @@ async function getAccount() {
 
       // 	//initFamersDropdowns();
       // 	initLiqTermsDropdown();
-      // 	initLiqPairsDropdown();
     }
 
 
@@ -1719,8 +350,7 @@ async function getAccountWalletConnect() {
       await updateData();
 
       //initFamersDropdowns();
-      initLiqTermsDropdown();
-      initLiqPairsDropdown();
+      // initLiqTermsDropdown();
     }
 
 
@@ -2013,24 +643,29 @@ async function deposit() {
 }
 
 async function approve_stake_liq() {
+  add_liquidity_modal.isLoadingAfterApprove();
 
   if (!userObject.state.liq_pair_name) {
+    add_liquidity_modal.isLoadedAfterApprove(false)
     errorMsg('You need to select liquidity pair');
     return;
   }
 
   let amount_wei = (safeFloatToWei(document.getElementById('liq_pair_stake_am').value)).toString(); //wei
-  approveTokenMove(userObject.state.liq_pair_address, amount_wei, window.staking_contract_address);
+  approveTokenMove(userObject.state.liq_pair_address, amount_wei, window.staking_contract_address, add_liquidity_modal);
 }
 
 async function stake_liq() {
+  add_liquidity_modal.isLoadingAfterConfirm();
 
   if (!userObject.state.liq_pair_name) {
+    add_liquidity_modal.isLoadedAfterConfirm(false, false);
     errorMsg('you need to select liquidity pair');
     return;
   }
 
   if (!userObject.state.liq_pair_fullcode) {
+    add_liquidity_modal.isLoadedAfterConfirm(false, false);
     errorMsg('you need to select term');
     return;
   }
@@ -2055,6 +690,7 @@ async function stake_liq() {
   let calculatedApproveValue = tokenAmountToApprove; //tokenAmountToApprove.mul(new BN(ADJ_CONSTANT.toString()));
 
   if (allow < calculatedApproveValue) {
+    add_liquidity_modal.isLoadedAfterConfirm(false, false);
     errorMsg('please approve tokens move / wait for approval transaction to finish');
     return;
   };
@@ -2066,12 +702,12 @@ async function stake_liq() {
   let amount_bn = new BN(amount);
 
   if (erc20_count_bn.cmp(amount_bn) == -1) {
+    add_liquidity_modal.isLoadedAfterConfirm(false, false);
     errorMsg('you do not have enough tokens in your wallet');
     return;
   }
 
   resetMsg();
-  temporaryDisableCurrentButton('stake_liq_confirm');
 
   initStakingContract(async (stakingContractInstance) => {
 
@@ -2080,16 +716,23 @@ async function stake_liq() {
         value: wei_val,
         gasPrice: window.gp
       }, function (error, txnHash) {
-        if (error) throw error;
+        if (error) {
+          add_liquidity_modal.isLoadedAfterConfirm(false);
+          throw error;
+        }
         output_transaction(txnHash)
 
       })
-      .on('confirmation', function (confirmationNumber, receipt) {
-        if (confirmationNumber == 5) updateData('stake_liq');
+      .on('confirmation', async function (confirmationNumber, receipt) {
+        if (confirmationNumber == 5) {
+          await updateData('stake_liq');
+          add_liquidity_modal.isLoadedAfterConfirm();
+        }
         resetMsg();
 
       })
       .catch(error => {
+        add_liquidity_modal.isLoadedAfterConfirm(false);
         errorMsg('smartcontract communication error');
 
       });
@@ -2199,12 +842,23 @@ function safeSetValueById(id, value, disp = 'block') {
 }
 
 
-function safeSetInnerHTMLById(id, value, disp = 'block') {
+function safeSetInnerHTMLById(id, value, disp = 'block', className = null) {
   const el = document.getElementById(id);
   if (el) {
     el.innerHTML = value;
-    if (value == '') el.style.display = "none"
-    else el.style.display = disp;
+    if (value == '') {
+      if (!className) {
+        el.style.display = "none"
+      } else {
+        el.classList.add(className)
+      }
+    } else {
+      if (!className) {
+        el.style.display = disp;
+      } else {
+        el.classList.remove(className)
+      }
+    }
   }
 }
 
@@ -2531,9 +1185,11 @@ async function updateData(action = null) {
   } else if (action == 'make_deposit') {
     getDepositsDashboard();
   } else if (action == 'withdraw_deposit') {
-    getDepositsDashboard();
+    await getDepositsDashboard();
+    getLiquidityDashboard();
   } else if (action == 'withdraw_deposit_reward') {
-    getDepositsDashboard();
+    await getDepositsDashboard();
+    getLiquidityDashboard();
   } else if (action == 'get_credit') {
     getCreditsDashboard();
   } else if (action == 'set_leverage') {
@@ -3104,7 +1760,7 @@ async function depositModalUpdateNftDropdown() {
   const nftData = await getNFTAssets();
   updateAssetsDropdown(nftData);
 
-  if(userObject.state.selected_depprofile_name === 'nft') {
+  if (userObject.state.selected_depprofile_name === 'nft') {
     updUSDValue('-', 'usd_value');
   }
 }
@@ -3147,6 +1803,15 @@ async function depositModalRebuild() {
   }
 }
 
+const setOptionsToSelect = (data, select) => {
+  data.forEach(asset => {
+    const option = document.createElement('option');
+    option.value = asset.text;
+    option.innerHTML = asset.text;
+    select.appendChild(option);
+  })
+}
+
 async function initDepositProfilesDropdown() {
   const ddData = await getDepositProfilesList();
   const nftData = await getNFTAssets();
@@ -3156,12 +1821,7 @@ async function initDepositProfilesDropdown() {
   const depprofilesDropdown = new_deposit_modal.modal.querySelector('#depprofiles-dropdown');
   const assetsAmmountValue = new_deposit_modal.modal.querySelector('#tokens_amount');
 
-  ddData.forEach(asset => {
-    const option = document.createElement('option');
-    option.value = asset.text;
-    option.innerHTML = asset.text;
-    depprofilesDropdown.appendChild(option);
-  })
+  setOptionsToSelect(ddData, depprofilesDropdown);
 
   new CustomSelect({
     elem: depprofilesDropdown,
@@ -3174,103 +1834,145 @@ async function initDepositProfilesDropdown() {
 async function initCreditProfilesDropdown() {
   var ddData = await getCreditProfilesList();
 
+  const dropdown = open_new_credit_modal.modal.querySelector('#credprofiles-dropdown');
 
-  $('#credprofiles-dropdown').ddslick({
-    data: ddData,
-    width: '16vw',
-    selectText: "Select Collateral",
-    imagePosition: "left",
+  setOptionsToSelect(ddData, dropdown);
 
-    onSelected: async function (selectedData) {
-      //callback function: do something with selectedData;
-      resetMsg();
-      if (selectedData.selectedData.p_id == userObject.state.getcredit_profile) {
-        userObject.state.selected_credprofile = selectedData.selectedData.p_id;
-        errorMsg("assets for collateral and credit should be different");
-        document.getElementById('tokens_amount_getcredit').value = '';
-        document.getElementById('tokens_amount_getcredit').style.display = 'none';
-        return;
-      }
-      userObject.state.selected_credprofile = selectedData.selectedData.p_id;
-      userObject.state.selected_credprofile_name = selectedData.selectedData.text;
-      userObject.state.selected_credprofile_type = selectedData.selectedData.c_type;
-      userObject.state.selected_credprofile_token_address = selectedData.selectedData.c_tok_addr;
-
-      document.getElementById('tokens_amount_collateral').value = depAmountByProfileId(userObject.state.selected_credprofile)[1];
-      document.getElementById('tokens_amount_collateral').style.height = (document.querySelectorAll("#credprofiles-dropdown > .dd-select")[0].offsetHeight).toString() + 'px';
-      document.getElementById('tokens_amount_collateral').style.display = "inline";
-      document.getElementById('collateral_full_part').style.height = document.getElementById('tokens_amount_collateral').style.height;
-      document.getElementById('collateral_full_part').style.display = "inline";
-
-      document.getElementById('usd_value_collateral').style.height = (document.querySelectorAll("#credprofiles-dropdown > .dd-select")[0].offsetHeight).toString() + 'px';
-      document.getElementById('usd_value_collateral').style.display = "inline";
-      document.getElementById('usd_value_label_collateral').style.display = "inline";
-
-      await updUSDValueCollateral('tokens_amount_collateral', 'usd_value_collateral', depAmountByProfileId(userObject.state.selected_credprofile)[0]);
-
-      // if  (document.getElementById('tokens_amount_getcredit').style.display == "inline") {
-      if (userObject.state.getcredit_profile != -1) {
-
-        document.getElementById('tokens_amount_getcredit').value = await calcTokensFromUSD(userObject.state.getcredit_profile, document.getElementById('usd_value_collateral').value);
-        let apy = await window.usage_calc_smartcontract_reader.methods.calcVarApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({
-          from: userObject.account
-        });
-        let apy_adj = (apy / apy_scale) * 100;
-        document.getElementById('credit_perc').value = ((parseFloat(apy_adj)).toFixed(2)).toString();
-      }
-
-    }
+  new CustomSelect({
+    elem: dropdown,
   });
+
+  userObject.state.selected_credprofile = ddData[0].p_id;
+
+  dropdown.onchange = (e) => {
+    const value = e.target.value;
+    const selectedData = ddData.find(item => item.text === value);
+
+    resetMsg();
+    console.log(selectedData.p_id,userObject.state.getcredit_profile)
+    if (selectedData.p_id == userObject.state.getcredit_profile) {
+      userObject.state.selected_credprofile = selectedData.p_id;
+      errorMsg("assets for collateral and credit should be different");
+      return;
+    }
+  }
+
+  // $('#credprofiles-dropdown').ddslick({
+  //   data: ddData,
+  //   width: '16vw',
+  //   selectText: "Select Collateral",
+  //   imagePosition: "left",
+
+  //   onSelected: async function (selectedData) {
+  //     //callback function: do something with selectedData;
+  //     resetMsg();
+  //     if (selectedData.selectedData.p_id == userObject.state.getcredit_profile) {
+  //       userObject.state.selected_credprofile = selectedData.selectedData.p_id;
+  //       errorMsg("assets for collateral and credit should be different");
+  //       document.getElementById('tokens_amount_getcredit').value = '';
+  //       document.getElementById('tokens_amount_getcredit').style.display = 'none';
+  //       return;
+  //     }
+  //     userObject.state.selected_credprofile = selectedData.selectedData.p_id;
+  //     userObject.state.selected_credprofile_name = selectedData.selectedData.text;
+  //     userObject.state.selected_credprofile_type = selectedData.selectedData.c_type;
+  //     userObject.state.selected_credprofile_token_address = selectedData.selectedData.c_tok_addr;
+
+  //     document.getElementById('tokens_amount_collateral').value = depAmountByProfileId(userObject.state.selected_credprofile)[1];
+  //     document.getElementById('tokens_amount_collateral').style.height = (document.querySelectorAll("#credprofiles-dropdown > .dd-select")[0].offsetHeight).toString() + 'px';
+  //     document.getElementById('tokens_amount_collateral').style.display = "inline";
+  //     document.getElementById('collateral_full_part').style.height = document.getElementById('tokens_amount_collateral').style.height;
+  //     document.getElementById('collateral_full_part').style.display = "inline";
+
+  //     document.getElementById('usd_value_collateral').style.height = (document.querySelectorAll("#credprofiles-dropdown > .dd-select")[0].offsetHeight).toString() + 'px';
+  //     document.getElementById('usd_value_collateral').style.display = "inline";
+  //     document.getElementById('usd_value_label_collateral').style.display = "inline";
+
+  //     await updUSDValueCollateral('tokens_amount_collateral', 'usd_value_collateral', depAmountByProfileId(userObject.state.selected_credprofile)[0]);
+
+  //     // if  (document.getElementById('tokens_amount_getcredit').style.display == "inline") {
+  //     if (userObject.state.getcredit_profile != -1) {
+
+  //       document.getElementById('tokens_amount_getcredit').value = await calcTokensFromUSD(userObject.state.getcredit_profile, document.getElementById('usd_value_collateral').value);
+  //       let apy = await window.usage_calc_smartcontract_reader.methods.calcVarApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({
+  //         from: userObject.account
+  //       });
+  //       let apy_adj = (apy / apy_scale) * 100;
+  //       document.getElementById('credit_perc').value = ((parseFloat(apy_adj)).toFixed(2)).toString();
+  //     }
+
+  //   }
+  // });
 
 }
 
 async function initGetCreditDropdown() {
   var ddData = await getCreditProfilesListCredit();
 
+  const dropdown = open_new_credit_modal.modal.querySelector('#getcredit-dropdown');
 
-  $('#getcredit-dropdown').ddslick({
-    data: ddData,
-    width: '16vw',
-    selectText: "Get Credit In",
-    imagePosition: "left",
+  setOptionsToSelect(ddData, dropdown);
 
-    onSelected: async function (selectedData) {
-      //callback function: do something with selectedData;
-      //console.log('selected_credprofile=', userObject.state.selected_credprofile, selectedData.selectedData.p_id);
-      resetMsg();
-      if (selectedData.selectedData.p_id == userObject.state.selected_credprofile) {
-        userObject.state.getcredit_profile = selectedData.selectedData.p_id;
+  new CustomSelect({
+    elem: dropdown,
+  });
+
+  dropdown.onchange = (e) => {
+    const value = e.target.value;
+    const selectedData = ddData.find(item => item.text === value);
+
+    resetMsg();
+    console.log(selectedData.p_id, userObject.state.selected_credprofile)
+    if (selectedData.p_id == userObject.state.selected_credprofile) {
+        userObject.state.getcredit_profile = selectedData.p_id;
         errorMsg("assets for collateral and credit should be different");
-        document.getElementById('tokens_amount_getcredit').value = '';
-        document.getElementById('tokens_amount_getcredit').style.display = 'none';
         return;
       }
-      userObject.state.getcredit_profile = selectedData.selectedData.p_id;
-      /*window.getcredit_name = selectedData.selectedData.text;
-      window.getcredit_type = selectedData.selectedData.c_type;
-      window.getcredit_token_address = selectedData.selectedData.c_tok_addr;*/
+  }
 
-      document.getElementById('tokens_amount_getcredit').value = await calcTokensFromUSD(userObject.state.getcredit_profile, document.getElementById('usd_value_collateral').value);
-      document.getElementById('tokens_amount_getcredit').style.height = (document.querySelectorAll("#getcredit-dropdown > .dd-select")[0].offsetHeight).toString() + 'px';
-      document.getElementById('tokens_amount_getcredit').style.display = "inline";
+  // $('#getcredit-dropdown').ddslick({
+  //   data: ddData,
+  //   width: '16vw',
+  //   selectText: "Get Credit In",
+  //   imagePosition: "left",
 
-      if (userObject.state.selected_credprofile != -1) {
-        document.getElementById('credit_perc_label').style.display = "inline";
-        document.getElementById('credit_perc').style.display = "inline";
-        document.getElementById('set_var_credit').style.display = "inline";
-        document.getElementById('set_fixed_credit').style.display = "inline";
+  //   onSelected: async function (selectedData) {
+  //     //callback function: do something with selectedData;
+  //     //console.log('selected_credprofile=', userObject.state.selected_credprofile, selectedData.selectedData.p_id);
+  //     resetMsg();
+  //     if (selectedData.selectedData.p_id == userObject.state.selected_credprofile) {
+  //       userObject.state.getcredit_profile = selectedData.selectedData.p_id;
+  //       errorMsg("assets for collateral and credit should be different");
+  //       document.getElementById('tokens_amount_getcredit').value = '';
+  //       document.getElementById('tokens_amount_getcredit').style.display = 'none';
+  //       return;
+  //     }
+  //     userObject.state.getcredit_profile = selectedData.selectedData.p_id;
+  //     /*window.getcredit_name = selectedData.selectedData.text;
+  //     window.getcredit_type = selectedData.selectedData.c_type;
+  //     window.getcredit_token_address = selectedData.selectedData.c_tok_addr;*/
 
-        let apy = await window.usage_calc_smartcontract_reader.methods.calcVarApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({
-          from: userObject.account
-        });
-        let apy_adj = (apy / apy_scale) * 100;
-        document.getElementById('credit_perc').value = ((parseFloat(apy_adj)).toFixed(2)).toString();
-      }
+  //     document.getElementById('tokens_amount_getcredit').value = await calcTokensFromUSD(userObject.state.getcredit_profile, document.getElementById('usd_value_collateral').value);
+  //     document.getElementById('tokens_amount_getcredit').style.height = (document.querySelectorAll("#getcredit-dropdown > .dd-select")[0].offsetHeight).toString() + 'px';
+  //     document.getElementById('tokens_amount_getcredit').style.display = "inline";
 
-      //document.getElementById('credit_perc_div').style.height = (document.getElementById('getcredit_button').offsetHeight).toString()+'px';
+  //     if (userObject.state.selected_credprofile != -1) {
+  //       document.getElementById('credit_perc_label').style.display = "inline";
+  //       document.getElementById('credit_perc').style.display = "inline";
+  //       document.getElementById('set_var_credit').style.display = "inline";
+  //       document.getElementById('set_fixed_credit').style.display = "inline";
 
-    }
-  });
+  //       let apy = await window.usage_calc_smartcontract_reader.methods.calcVarApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({
+  //         from: userObject.account
+  //       });
+  //       let apy_adj = (apy / apy_scale) * 100;
+  //       document.getElementById('credit_perc').value = ((parseFloat(apy_adj)).toFixed(2)).toString();
+  //     }
+
+  //     //document.getElementById('credit_perc_div').style.height = (document.getElementById('getcredit_button').offsetHeight).toString()+'px';
+
+  //   }
+  // });
 
 }
 
@@ -3431,75 +2133,69 @@ async function getLiqPairs() {
   return lpairs;
 }
 
+const setApyStr = async (asset) => {
+  setState({
+    liq_pair_fullcode: userObject.state.liq_pair_name + '-' + asset.code
+  })
+
+  const apy_str = await unswAPYStrByProfileName(userObject.state.liq_pair_fullcode);
+
+  if (!apy_str) {
+    errorMsg('cannot find APY for pair');
+    return;
+  }
+  safeSetInnerHTMLById('liq_pair_apy', apy_str + ' APY', 'flex');
+}
+
 async function initLiqTermsDropdown() {
 
-  /*if (!userObject.deposit_profiles_liqpairs){
-    	userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
-    } else {
-    		
-    }*/
+  const liqTermsSelect = add_liquidity_modal.modal.querySelector('#liqterms-dropdown');
+  const liqTermsData = userObject.liq_terms;
+  setOptionsToSelect(liqTermsData, liqTermsSelect);
 
-  $('#liqterms-dropdown').ddslick({
-    data: userObject.liq_terms,
-    width: '16vw',
-
-    selectText: "Select Period",
-    imagePosition: "left",
-
-    onSelected: async function (selectedData) {
-      let liqterm = {};
-      liqterm.text = selectedData.selectedData.text;
-      liqterm.code = selectedData.selectedData.code;
-
-      userObject.state.liq_pair_fullcode = userObject.state.liq_pair_name + '-' + liqterm.code;
-      let apy_str = await unswAPYStrByProfileName(userObject.state.liq_pair_fullcode);
-      if (!apy_str) {
-        errorMsg('cannot find APY for pair');
-        return;
-      }
-      safeSetInnerHTMLById('liq_pair_apy', apy_str + ' APY', 'inline');
-
-      //callback function: do something with selectedData;
-
-    }
+  new CustomSelect({
+    elem: liqTermsSelect
   });
 
+  setApyStr(liqTermsData[0])
+
+  liqTermsSelect.onchange = (e) => {
+    const value = e.target.value
+    const currentOption = liqTermsData.find(item => item.text === value)
+    setApyStr(currentOption)
+  }
 }
 
 async function initLiqPairsDropdown() {
+  const setBal = async (asset) => {
+    setState({
+      liq_pair_name: asset.text,
+      liq_pair_address: asset.addr,
+    })
+    const bal = await getWalletBalanceStr(userObject.state.liq_pair_address);
+    safeSetInnerHTMLById('liq_pair_in_wallet', bal, 'flex');
+  }
 
-  $('#liqpairs-dropdown').ddslick({
-    data: userObject.liq_pairs,
-    width: '16vw',
+  const liqPairsAssets = add_liquidity_modal.modal.querySelector('#liqpairs-dropdown');
+  const liqPairsAssetsOptions = userObject.liq_pairs;
+  setOptionsToSelect(liqPairsAssetsOptions, liqPairsAssets);
 
-    selectText: "Select Pair",
-    imagePosition: "left",
-
-    onSelected: async function (selectedData) {
-      let liqpair = {};
-      liqpair.text = selectedData.selectedData.text;
-      liqpair.addr = selectedData.selectedData.addr;
-
-      //console.log('liqpair=',liqpair);
-
-      userObject.state.liq_pair_name = liqpair.text;
-      userObject.state.liq_pair_address = liqpair.addr;
-      let bal = await getWalletBalanceStr(userObject.state.liq_pair_address);
-      safeSetInnerHTMLById('liq_pair_in_wallet', bal, 'inline');
-
-
-      userObject.state.liq_pair_fullcode = null;
-      safeSetInnerHTMLById('liq_pair_apy', '', 'inline');
-      safeSetValueById('liq_pair_stake_am', '1', 'inline');
-
-      $('#liqterms-dropdown').ddslick('destroy');
-      initLiqTermsDropdown();
-
-    }
+  new CustomSelect({
+    elem: liqPairsAssets
   });
 
-}
+  setBal(liqPairsAssetsOptions[0])
 
+  liqPairsAssets.onchange = (e) => {
+    const value = e.target.value
+    const currentOption = liqPairsAssetsOptions.find(item => item.text === value)
+    setBal(currentOption);
+
+    const liqTermsValue = add_liquidity_modal.modal.querySelector('#liqterms-dropdown').value;
+    const currentLiqTerm = userObject.liq_terms.find(item => item.text === liqTermsValue)
+    setApyStr(currentLiqTerm);
+  }
+}
 
 async function getTotalDashboard(callback = null) {
 
@@ -3947,6 +2643,7 @@ async function getCreditsDashboard(callback = null) {
     '<th class="table-title">Leverage Level</th>' +
     '<th class="table-title">Cover Fees with CYTR Leverage</th>' +
     '<th class="table-title">Repay borrow</th>' +
+    '<th class="table-title table-title-empty"></th>' +
     '<th class="table-title">In wallet</th>' +
     '<th class="table-title">Deposit</th>' +
     '</tr>' +
@@ -3974,7 +2671,8 @@ async function getCreditsDashboard(callback = null) {
     fee_col,
     leverage_column,
     set_leverage_column,
-    return_credit_col
+    return_credit_col,
+    return_empty_col,
   ] = await Promise.all([userObject.credits.getIconAssetsCols(),
     userObject.credits.getAPRCol(),
     userObject.credits.getInWalletCol(),
@@ -3986,7 +2684,8 @@ async function getCreditsDashboard(callback = null) {
     userObject.credits.getFeeCol(),
     userObject.credits.getLevCol(),
     userObject.credits.getSetLevCol(),
-    userObject.credits.getReturnCreditCol()
+    userObject.credits.getReturnCreditCol(),
+    userObject.credits.getReturnEmptyCol(),
   ]);
 
   for (let i = 0; i < cred_arr[0].length; i++) { //i == credit id
@@ -4017,6 +2716,8 @@ async function getCreditsDashboard(callback = null) {
 
       html += return_credit_col[i];
 
+      html += return_empty_col[i];
+
       html += in_wallet_column[i];
 
       html += dep_column[i];
@@ -4031,7 +2732,7 @@ async function getCreditsDashboard(callback = null) {
 
   html += '<span style="inline; font-size: 60%; "><sup>*</sup> Effective current credit APR, based on all conditions, incl. Leverage</span>'
 
-  safeSetInnerHTMLById('my_credits', html)
+  safeSetInnerHTMLById('my_credits', html, false, 'empty')
 
   if (callback) callback();
 }
@@ -4473,51 +3174,36 @@ async function calcUSDValueByProfileNonNFT(wei_amount, profile_id) {
 }
 
 
+function show_modal_leverage(cread_id) {
+  const confirm = set_leverage_modal.confirm;
+  const leveragePercentSelect = set_leverage_modal.modal.querySelector('#select-leverage');
+  set_leverage(leveragePercentSelect.value, cread_id);
+
+  confirm.onclick = () => set_leverage_confirm(leveragePercentSelect.value, cread_id);
+  leveragePercentSelect.onchange = (e) => set_leverage(leveragePercentSelect.value, cread_id);
+
+  set_leverage_modal.show();
+}
+
+function show_modal_unfreeze(cread_id) {
+  const confirm = modal_unfreeze.confirm;
+  confirm.onclick = () => unfreeze_leverage(cread_id);
+
+  modal_unfreeze.show();
+}
+
 function compensate_with_leverage(cred_id) {
   show_set_leverage(cred_id);
 }
 
-function hide_set_leverage() {
-  // $('.set_leverage_panel').hide();
-  // $('.hide_for_credit_return_panel').show();
-
-  // $('.hide_for_credit_return_panel').show();
-  // $('.hide_for_set_leverage_panel').show();
-  window.lev_size_wei = 0;
-}
-
-function show_set_leverage(cred_id) {
-
-  // $('.hide_for_credit_return_panel').hide();
-  // $('.hide_for_set_leverage_panel').hide();
-  // $('.set_leverage_panel').hide();
-  // $('#set_leverage_panel' + cred_id.toString()).show();
-  // $('.set_leverage_panel_header').show();
-  window.lev_size_wei = 0;
-
-}
-
-async function set_leverage_confirm(cred_id) {
+async function set_leverage_confirm(ratio, cred_id) {
   // function freezeLeverageForCredit(address cust_wallet, uint32 dep_id, uint32 cred_id, uint256 lev_amount) nonReentrant public  
-
+  set_leverage_modal.isLoadingAfterConfirm();
   if (userObject.credits.cred_arr[1][cred_id] == 0) {
+    set_leverage_modal.isLoadedAfterConfirm(false);
     infoMsg("no active credit");
     return;
   }
-
-  if (!(document.getElementById('set_leverage_credit_25' + '_' + cred_id.toString()).classList.contains('transparent_button_pressed') ||
-      document.getElementById('set_leverage_credit_50' + '_' + cred_id.toString()).classList.contains('transparent_button_pressed') ||
-      document.getElementById('set_leverage_credit_75' + '_' + cred_id.toString()).classList.contains('transparent_button_pressed') ||
-      document.getElementById('set_leverage_credit_100' + '_' + cred_id.toString()).classList.contains('transparent_button_pressed'))) {
-    infoMsg("leverage not set");
-    return;
-  }
-
-  let ratio = 0;
-  if (document.getElementById('set_leverage_credit_25' + '_' + cred_id.toString()).classList.contains('transparent_button_pressed')) ratio = 25
-  else if (document.getElementById('set_leverage_credit_50' + '_' + cred_id.toString()).classList.contains('transparent_button_pressed')) ratio = 50
-  else if (document.getElementById('set_leverage_credit_75' + '_' + cred_id.toString()).classList.contains('transparent_button_pressed')) ratio = 75
-  else if (document.getElementById('set_leverage_credit_100' + '_' + cred_id.toString()).classList.contains('transparent_button_pressed')) ratio = 100;
 
   initLiqLevContract(async (contractInstance) => {
 
@@ -4526,6 +3212,7 @@ async function set_leverage_confirm(cred_id) {
     });
 
     if (lev.lev_amount > 0) {
+      set_leverage_modal.isLoadedAfterConfirm(false);
       infoMsg("you need to unfreeze current leverage first");
       return;
     }
@@ -4541,28 +3228,34 @@ async function set_leverage_confirm(cred_id) {
     let cytr_am_bn = new BN(cytr_am);
 
     if (window.lev_size_wei.cmp(cytr_am_bn) == 1) {
+      set_leverage_modal.isLoadedAfterConfirm(false);
       infoMsg("not enough CYTR on deposit");
       return;
-
     }
-
 
     contractInstance.methods.freezeLeverageForCredit(userObject.account, dep_id, cred_id, ratio).send({
         from: userObject.account,
         gasPrice: window.gp
       }, function (error, txnHash) {
-        if (error) throw error;
+        console.log(error, txnHash)
+        if (error) {
+          set_leverage_modal.isLoadedAfterConfirm(false);
+          throw error;
+        }
         output_transaction(txnHash)
 
       })
-      .on('confirmation', function (confirmationNumber, receipt) {
-        if (confirmationNumber == 5) updateData('set_leverage');
+      .on('confirmation', async function (confirmationNumber, receipt) {
+        if (confirmationNumber == 5) {
+          await updateData('set_leverage');
+          set_leverage_modal.isLoadedAfterConfirm();
+        }
         resetMsg();
 
       })
       .catch(error => {
         errorMsg('smartcontract communication error');
-
+        set_leverage_modal.isLoadedAfterConfirm(false);
       });
 
 
@@ -4576,26 +3269,31 @@ async function unfreeze_leverage(cred_id) {
   	infoMsg("no active credit");
   	return;
   }*/
-
+  modal_unfreeze.isLoadingAfterApprove();
   initLiqLevContract(async (contractInstance) => {
-
 
     contractInstance.methods.unfreezeLeverageForCredit(userObject.account, cred_id).send({
         from: userObject.account,
         gasPrice: window.gp
       }, function (error, txnHash) {
-        if (error) throw error;
+        if (error) {
+          modal_unfreeze.isLoadedAfterApprove(false);
+          throw error;
+        }
         output_transaction(txnHash)
 
       })
-      .on('confirmation', function (confirmationNumber, receipt) {
-        if (confirmationNumber == 5) updateData('unfreeze_leverage');
+      .on('confirmation', async function (confirmationNumber, receipt) {
+        if (confirmationNumber == 5) {
+          await updateData('unfreeze_leverage');
+          modal_unfreeze.isLoadedAfterApprove();
+        }
         resetMsg();
 
       })
       .catch(error => {
         errorMsg('smartcontract communication error');
-
+        modal_unfreeze.isLoadedAfterApprove(false);
       });
 
   });
@@ -5060,58 +3758,43 @@ async function set_var_credit() {
 async function set_leverage(ratio, cred_id) { //100 - 100%
   if (!(ratio == 25 || ratio == 50 || ratio == 75 || ratio == 100)) return;
 
-  if (document.getElementById('set_leverage_credit' + '_' + ratio.toString() + '_' + cred_id.toString()).classList.contains('transparent_button_pressed')) {
-    document.getElementById('set_leverage_credit' + '_' + ratio.toString() + '_' + cred_id.toString()).classList.remove('transparent_button_pressed');
-    document.getElementById('lev_size_' + cred_id.toString()).value = '';
-    window.lev_size_wei = 0;
+  // function calcNeededLeverageByCreditSize(    uint32 credit_profile_id, uint32 lev_asset_profile_id, 
+  //  uint256 credit_amount, bool is_fixed_apy) public view returns(uint256 needed_leverage)
+  let cytr_profile_id = await getCYTRProfileId();
+  let credit_size = userObject.credits.cred_arr[1][cred_id]; //safeFloatToWei(document.getElementById('tokens_amount_getcredit').value);
 
-  } else {
-    document.getElementById('set_leverage_credit_25' + '_' + cred_id.toString()).classList.remove('transparent_button_pressed');
-    document.getElementById('set_leverage_credit_50' + '_' + cred_id.toString()).classList.remove('transparent_button_pressed');
-    document.getElementById('set_leverage_credit_75' + '_' + cred_id.toString()).classList.remove('transparent_button_pressed');
-    document.getElementById('set_leverage_credit_100' + '_' + cred_id.toString()).classList.remove('transparent_button_pressed');
-    document.getElementById('set_leverage_credit' + '_' + ratio.toString() + '_' + cred_id.toString()).classList.add('transparent_button_pressed');
+  let cc = await window.credit_smartcontract.methods.viewCustomerCredit(userObject.account, 0).call({
+    from: userObject.account
+  });
+  let cc_index = parseInt(cc['index']);
+  let x = await window.credit_smartcontract.methods.viewCustomerCreditExtraDataByIndex(cc_index, cred_id).call({
+    from: userObject.account
+  });
 
-    // function calcNeededLeverageByCreditSize(    uint32 credit_profile_id, uint32 lev_asset_profile_id, 
-    //  uint256 credit_amount, bool is_fixed_apy) public view returns(uint256 needed_leverage)
-    let cytr_profile_id = await getCYTRProfileId();
-    let credit_size = userObject.credits.cred_arr[1][cred_id]; //safeFloatToWei(document.getElementById('tokens_amount_getcredit').value);
 
-    let cc = await window.credit_smartcontract.methods.viewCustomerCredit(userObject.account, 0).call({
+  let is_fixed_apy = x.is_fixed_apy;
+
+
+  let clt_id = userObject.credits.cred_arr[4][cred_id];
+  let clt_profile_id = userObject.credits.clt_arr[0][parseInt(clt_id)];
+
+  let lns = await window.usage_calc_smartcontract_reader.methods
+    .calcNeededLeverageByCreditSize(userObject.credits.cred_arr[0][cred_id], clt_profile_id, cytr_profile_id, credit_size, is_fixed_apy).call({
       from: userObject.account
     });
-    let cc_index = parseInt(cc['index']);
-    let x = await window.credit_smartcontract.methods.viewCustomerCreditExtraDataByIndex(cc_index, cred_id).call({
-      from: userObject.account
-    });
+  let lev_needed_size = new BN(lns);
 
-
-    let is_fixed_apy = x.is_fixed_apy;
-
-
-    let clt_id = userObject.credits.cred_arr[4][cred_id];
-    let clt_profile_id = userObject.credits.clt_arr[0][parseInt(clt_id)];
-
-    let lns = await window.usage_calc_smartcontract_reader.methods
-      .calcNeededLeverageByCreditSize(userObject.credits.cred_arr[0][cred_id], clt_profile_id, cytr_profile_id, credit_size, is_fixed_apy).call({
-        from: userObject.account
-      });
-    let lev_needed_size = new BN(lns);
-
-    if (ratio > 100 || ratio < 0) ratio = 100;
-    if (ratio != 100) {
-      let r = new BN(ratio);
-      lev_needed_size = lev_needed_size.mul(r);
-      lev_needed_size = lev_needed_size.div(new BN(100));
-    }
-    window.lev_size_wei = lev_needed_size;
-
-
-    var size_tokens = window.web3js_reader.utils.fromWei(lev_needed_size, 'ether');
-
-    document.getElementById('lev_size_' + cred_id.toString()).value = ((parseFloat(size_tokens)).toFixed(2)).toString();
-
+  if (ratio > 100 || ratio < 0) ratio = 100;
+  if (ratio != 100) {
+    let r = new BN(ratio);
+    lev_needed_size = lev_needed_size.mul(r);
+    lev_needed_size = lev_needed_size.div(new BN(100));
   }
+  window.lev_size_wei = lev_needed_size;
+
+  var size_tokens = window.web3js_reader.utils.fromWei(lev_needed_size, 'ether');
+
+  document.getElementById('lev_size').value = ((parseFloat(size_tokens)).toFixed(2)).toString();
 
 }
 

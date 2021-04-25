@@ -348,17 +348,19 @@
   display: block;
 }
 
-.if-credit {
-  display: none;
+.copyright-credit {
+display: none;
 }
 
-#p3.active~.if-credit {
-  display: block;
+#p3.active ~ * {
+  .copyright-common {
+    display: none;
+  }
+  .copyright-credit {
+    display: block;
+  }
 }
 
-#p3.active~.if-depos {
-  display: none;
-}
 
 .empty-borrow {
   display: none;
@@ -434,6 +436,10 @@
 
   .dropdown-link {
     order: 2;
+  }
+  
+  li[data-value=""] {
+    display: none;
   }
 }
 

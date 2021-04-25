@@ -10,6 +10,21 @@ const CRYPTO_ICONS = [{
   name: 'bnb-st1-2w',
   icon: 'pancake'
 },{
+  name: 'bnb-st1-1w',
+  icon: 'pancake'
+},{
+  name: 'bnb-st1-1m',
+  icon: 'pancake'
+},{
+  name: 'bnb-st2-1m',
+  icon: 'pancake'
+},{
+  name: 'bnb-st2-2w',
+  icon: 'pancake'
+},{
+  name: 'bnb-st2-1w',
+  icon: 'pancake'
+},{
   name: 'bnb-st2',
   icon: 'pancake'
 }];
