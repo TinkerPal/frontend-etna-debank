@@ -1834,6 +1834,8 @@ async function initCreditProfilesDropdown() {
   const creditPerc = modal_add_credit.modal.querySelector('#credit_perc');
   const fullCollateral = modal_add_credit.modal.querySelector('#full_collateral');
   const partCollateral = modal_add_credit.modal.querySelector('#part_collateral');
+  const getCreditButton = modal_add_credit.modal.querySelector('#getcredit_button');
+
   setOptionsToSelect(ddData, dropdown);
 
   new CustomSelect({
@@ -1861,8 +1863,11 @@ async function initCreditProfilesDropdown() {
 
     if (selectedData.p_id == userObject.state.getcredit_profile) {
       errorMsg("assets for collateral and credit should be different");
-      return;
+      getCreditButton.disabled = true;
+    } else {
+      getCreditButton.disabled = false;
     }
+
     setState({
       selected_credprofile_name: selectedData.text,
       selected_credprofile_type: selectedData.c_type,
@@ -1884,6 +1889,7 @@ async function initCreditProfilesDropdown() {
     }
   }
 }
+
 async function initGetCreditDropdown() {
   var ddData = await getCreditProfilesListCredit();
 
@@ -1891,6 +1897,7 @@ async function initGetCreditDropdown() {
   const tokensAmmountGetCredit = modal_add_credit.modal.querySelector('#tokens_amount_getcredit');
   const usdValueCollateral = modal_add_credit.modal.querySelector('#usd_value_collateral');
   const creditPerc = modal_add_credit.modal.querySelector('#credit_perc');
+  const getCreditButton = modal_add_credit.modal.querySelector('#getcredit_button');
 
   setOptionsToSelect(ddData, dropdown);
 
@@ -1910,7 +1917,9 @@ async function initGetCreditDropdown() {
 
     if (selectedData.p_id == userObject.state.selected_credprofile) {
       errorMsg("assets for collateral and credit should be different");
-      return;
+      getCreditButton.disabled = true;
+    } else {
+      getCreditButton.disabled = false;
     }
 
     tokensAmmountGetCredit.innerText = await calcTokensFromUSD(userObject.state.getcredit_profile, usdValueCollateral.value);
@@ -3251,14 +3260,25 @@ function return_credit(cred_id) {
   const submitBtn = modalElement.querySelector('#return_credit_confirm');
   const creditReturnInput = modalElement.querySelector('#credit_return_input');
 
-  creditReturnInput.value = adj_am;
   allCreditReturnBtn.onchange = () => return_credit_all_btn(cred_id);
   partCreditReturnBtn.onchange = () => return_credit_part_btn(cred_id);
   submitTokensBtn.onclick = () => return_credit_mvtokens(cred_id);
   submitBtn.onclick = () => return_credit_confirm(cred_id);
 
-  modal_return_credit.show();
+  allCreditReturnBtn.checked = true;
+  creditReturnInput.value = toTokens(userObject.credits.cred_arr[1][cred_id], 4);
 
+  if (isToken(cred_id, 'bnb', 'credit_profiles', 'credits', 'cred_arr', 'id', 'name')) {
+    submitTokensBtn.disabled = true;
+    submitTokensBtn.classList.add('btn-done');
+    submitBtn.disabled = false
+  } else {
+    submitTokensBtn.disabled = false;
+    submitTokensBtn.classList.remove('btn-done');
+    submitBtn.disabled = true
+  }
+
+  modal_return_credit.show();
 }
 
 function withdraw_reward(dep_id) {
@@ -3278,9 +3298,9 @@ function withdraw_deposit(dep_id) {
   const partDepositsBtn = modalElement.querySelector('#withraw_dep_part');
   const withdrawInput = modalElement.querySelector('#withraw_dep_input');
 
-  const adj_am = isNFT(dep_id) ? deposit : toTokens(deposit, 4);
+  const adj_am = isToken(dep_id) ? deposit : toTokens(deposit, 4);
 
-  isNFT(dep_id) ? partDepositsBtn.parentElement.classList.add('hidden') : partDepositsBtn.parentElement.classList.remove('hidden');
+  isToken(dep_id) ? partDepositsBtn.parentElement.classList.add('hidden') : partDepositsBtn.parentElement.classList.remove('hidden');
 
   withdrawInput.value = adj_am;
   allDepositsBtn.checked = true;
@@ -3368,26 +3388,20 @@ function withdraw_deposit_confirm(dep_id) {
 }
 
 async function return_credit_mvtokens(cred_id) {
+  modal_return_credit.isLoadingAfterApprove();
   if (userObject.credits.cred_arr[1][cred_id] == 0) {
+    modal_return_credit.isLoadedAfterApprove(false);
     infoMsg("no active credit");
     return;
   }
 
-  let whole = true;
-  if (document.getElementById('return_credit_all' + cred_id.toString())) {
-    whole = document.getElementById('return_credit_all' + cred_id.toString()).classList.contains('transparent_button_pressed');
-  }
+  const isReturnAllCredit = document.getElementById('return_credit_all').checked;
+  const returnCreditValue = document.getElementById('credit_return_input').value;
 
-  let return_amount = 0;
-  if (whole) {
-    return_amount = userObject.credits.cred_arr[1][cred_id]; //doesn't matter, smartcontract will extract whole deposit amount;
-  } else {
-    return_amount = safeFloatToWei(document.getElementById('credit_return_input' + cred_id.toString()).value);
-
-  }
+  const return_amount = isReturnAllCredit ? userObject.credits.cred_arr[1][cred_id] : safeFloatToWei(returnCreditValue);
 
   let returned_asset_token_address = tokenAddressByProfileId(userObject.credits.cred_arr[0][cred_id]);
-  approveTokenMove(returned_asset_token_address, return_amount, window.credit_contract_address);
+  approveTokenMove(returned_asset_token_address, return_amount, window.credit_contract_address, modal_return_credit);
 }
 
 async function return_fee_mvtokens(cred_id) {
@@ -3404,23 +3418,17 @@ async function return_fee_mvtokens(cred_id) {
 }
 
 async function return_credit_confirm(cred_id) {
+  modal_return_credit.isLoadingAfterConfirm();
   if (userObject.credits.cred_arr[1][cred_id] == 0) {
+    modal_return_credit.isLoadedAfterConfirm(false);
     infoMsg("no active credit");
     return;
   }
 
-  let whole = true;
-  if (document.getElementById('return_credit_all' + cred_id.toString())) {
-    whole = document.getElementById('return_credit_all' + cred_id.toString()).classList.contains('transparent_button_pressed');
-  }
+  const isReturnAllCredit = document.getElementById('return_credit_all').checked;
+  const returnCreditValue = document.getElementById('credit_return_input').value;
 
-  let return_amount = 0;
-  if (whole) {
-    return_amount = userObject.credits.cred_arr[1][cred_id]; //doesn't matter, smartcontract will extract whole deposit amount;
-  } else {
-    return_amount = safeFloatToWei(document.getElementById('credit_return_input' + cred_id.toString()).value);
-
-  }
+  const return_amount = isReturnAllCredit ? userObject.credits.cred_arr[1][cred_id] : safeFloatToWei(returnCreditValue);
 
   //alert(return_amount); return;
   let returned_asset_type = depTypeByProfileId(userObject.credits.cred_arr[0][cred_id]);
@@ -3429,6 +3437,7 @@ async function return_credit_confirm(cred_id) {
   if (returned_asset_type == NATIVE_ETHEREUM) {
     //do nothing
   } else if (returned_asset_type == ERC721_TOKEN) {
+    modal_return_credit.isLoadedAfterConfirm(false);
     errorMsg('error: ERC721 is not possible type for credit');
     return;
   } else { //ERC20 - check approval
@@ -3446,6 +3455,7 @@ async function return_credit_confirm(cred_id) {
 
 
     if (allow < calculatedApproveValue) {
+      modal_return_credit.isLoadedAfterConfirm(false, false);
       errorMsg('please approve tokens move / wait for approval transaction to finish');
       return;
     }
@@ -3457,6 +3467,7 @@ async function return_credit_confirm(cred_id) {
     let return_amount_bn = new BN(return_amount);
 
     if (erc20_count_bn.cmp(return_amount_bn) == -1) {
+      modal_return_credit.isLoadedAfterConfirm(false);
       errorMsg('you do not have enough tokens in your wallet');
       return;
     }
@@ -3471,21 +3482,25 @@ async function return_credit_confirm(cred_id) {
         from: userObject.account,
         gasPrice: window.gp
       }, function (error, txnHash) {
-        if (error) throw error;
+        if (error) {
+          modal_return_credit.isLoadedAfterConfirm(false);
+          throw error;
+        }
         output_transaction(txnHash)
 
       })
-      .on('confirmation', function (confirmationNumber, receipt) {
-        if (confirmationNumber == 5) updateData('return_credit');
+      .on('confirmation', async function (confirmationNumber, receipt) {
+        if (confirmationNumber == 5) {
+          await updateData('return_credit');
+          modal_return_credit.isLoadedAfterConfirm();
+        }
         resetMsg();
 
       })
       .catch(error => {
+        modal_return_credit.isLoadedAfterConfirm(false);
         errorMsg('smartcontract communication error');
-
       });
-
-
   });
 
 }
@@ -3634,12 +3649,8 @@ function return_credit_all_btn(dep_id) {
 }
 
 function return_credit_part_btn(dep_id) {
-  //alert(dep_id);
-  document.getElementById('return_credit_all' + dep_id.toString()).classList.remove('transparent_button_pressed');
-  document.getElementById('return_credit_part' + dep_id.toString()).classList.add('transparent_button_pressed');
-
-  document.getElementById('credit_return_input' + dep_id.toString()).value = 0.;
-  document.getElementById('credit_return_input' + dep_id.toString()).readOnly = false;
+  document.getElementById('credit_return_input').value = 0.;
+  document.getElementById('credit_return_input').readOnly = false;
 }
 
 function withdraw_deposit_all_btn(dep_id) {
