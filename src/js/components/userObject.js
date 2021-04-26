@@ -819,12 +819,12 @@ let userObject = {
 
             let lbl = '';
 
-            txt = `<td class="table-cell">${createTableBtnWithIcon('price-tag', 'Leverage', `show_modal_leverage(${i.toString()})`)}</td>`;
+            txt = `<td class="table-cell w-12">${createTableBtnWithIcon('price-tag', 'Leverage', `show_modal_leverage(${i.toString()})`)}</td>`;
           } else if (lev_arr[i] > 0){ 
-            txt = `<td class="table-cell">${createTableBtnWithIcon('discount', 'Unfreeze', `show_modal_unfreeze(${i.toString()})`)}</td>`;
+            txt = `<td class="table-cell w-12">${createTableBtnWithIcon('discount', 'Unfreeze', `show_modal_unfreeze(${i.toString()})`)}</td>`;
           }
 
-          if (!txt) txt = '<td class="table-cell">-</td>';
+          if (!txt) txt = '<td class="table-cell w-12">-</td>';
           this.set_leverage_column.push(txt);
         } 	
 
@@ -857,7 +857,7 @@ let userObject = {
           let txt = '';
 
           if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
-            txt = `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon('money', 'Repay borrow', `return_credit(${i.toString()})`)}</td>`;
+            txt = `<td class="table-cell pl-0 rounded-r-lg" onclick="return_credit_modal.show()">${createTableBtnWithIcon('money', 'Repay borrow', `return_credit(${i.toString()})`)}</td>`;
           }
           if (!txt) txt = '<td class="table-cell pl-0 rounded-r-lg">-</td>';
           this.return_credit_col.push(txt);
