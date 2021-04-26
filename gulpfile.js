@@ -67,6 +67,13 @@ function nftTask(cb) {
     cb();
 }
 
+function nftTask(cb) {
+    return src('./src/notifications/*')
+        .pipe(gulp.dest('./public/notifications/'))
+        .pipe(browserSync.stream());
+    cb();
+}
+
 function phpInCommonTask(cb) {
     return src('./src/*.php')
         .pipe(gulp.dest('./public/'))

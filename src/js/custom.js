@@ -1,16 +1,16 @@
-const withdraw_modal = new Modal('modal-withdraw-deposit');
-const withdraw_rew_modal = new Modal('modal-withdraw-reward');
-const open_new_credit_modal = new Modal('modal-open-new-credit', () => {
+const modal_withdraw_deposit = new Modal('modal-withdraw-deposit');
+const modal_withdraw_yield = new Modal('modal-withdraw-reward');
+const modal_add_credit = new Modal('modal-open-new-credit', () => {
   initCreditProfilesDropdown();
   initGetCreditDropdown()
 });
-const return_credit_modal = new Modal('modal-return-credit');
-const set_leverage_modal = new Modal('modal-set-leverage');
+const modal_return_credit = new Modal('modal-return-credit');
+const modal_add_leverage = new Modal('modal-set-leverage');
 const modal_unfreeze = new Modal('modal-unfreeze');
-const add_liquidity_modal = new Modal('modal-add-liquidity', () => {
+const modal_add_lliquidity = new Modal('modal-add-liquidity', () => {
   initLiqPairsDropdown(), initLiqTermsDropdown()
 });
-const new_deposit_modal = new Modal('modal-new-deposit', initDepositProfilesDropdown, () => {
+const modal_add_deposit = new Modal('modal-new-deposit', initDepositProfilesDropdown, () => {
   depositModalRebuild();
   depositModalUpdateNftDropdown();
 }, null, depositModalUpdateNftDropdown);
@@ -179,9 +179,9 @@ window.addEventListener('DOMContentLoaded', async function () {
     //initCreditProfilesDropdown();
     //initGetCreditDropdown();
   }
-  open_new_credit_modal.onInitCallback();
-  add_liquidity_modal.onInitCallback();
-  new_deposit_modal.onInitCallback();
+  modal_add_credit.onInitCallback();
+  modal_add_lliquidity.onInitCallback();
+  modal_add_deposit.onInitCallback();
 });
 
 async function initWeb3Modal() {
@@ -463,52 +463,57 @@ async function initCyclopsNFTContract(callback = null) {
 async function getCredit() {
   //function getCredit(address cust_wallet, uint32 dep_id,  uint256 cred_amount, uint32 get_credit_profile_id) nonReentrant public
 
+  modal_add_credit.isLoadingAfterConfirm()
+
   if (userObject.state.selected_credprofile == -1 || !userObject.state.selected_credprofile) {
+    modal_add_credit.isLoadedAfterConfirm(false)
     errorMsg('you need to select collateral asset');
     return;
   }
 
   if (userObject.state.getcredit_profile == -1 || !userObject.state.getcredit_profile) {
+    modal_add_credit.isLoadedAfterConfirm(false)
     errorMsg('you need to select credit asset');
     return;
   }
 
   if (userObject.state.getcredit_profile == userObject.state.selected_credprofile) {
+    modal_add_credit.isLoadedAfterConfirm(false)
     errorMsg('assets for collateral and credit should be different');
     return;
   }
 
-  let cred_amount = (safeFloatToWei(document.getElementById('tokens_amount_getcredit').value)).toString(); //wei
+  let cred_amount = (safeFloatToWei(document.getElementById('tokens_amount_getcredit').innerText)).toString(); //wei
 
   let collateral_dep_id = depAmountByProfileId(userObject.state.selected_credprofile)[0];
 
-  let whole = false;
-  if (document.getElementById('full_collateral')) {
-    whole = document.getElementById('full_collateral').classList.contains('transparent_button_pressed');
-  }
+  const isFullCallateral = document.getElementById('full_collateral').checked;
 
-  let is_fixed_credit = false;
-  if (document.getElementById('set_fixed_credit')) {
-    is_fixed_credit = document.getElementById('set_fixed_credit').classList.contains('transparent_button_pressed');
-  }
+  const is_fixed_credit = document.getElementById('set_fixed_credit').checked
 
   initCreditContract(async (contract) => {
-    contract.methods.getCredit(userObject.account, collateral_dep_id, cred_amount, userObject.state.getcredit_profile, whole, is_fixed_credit).send({
+    contract.methods.getCredit(userObject.account, collateral_dep_id, cred_amount, userObject.state.getcredit_profile, isFullCallateral, is_fixed_credit).send({
         from: userObject.account,
         gasPrice: window.gp
       }, function (error, txnHash) {
-        if (error) throw error;
+        if (error) {
+          modal_add_credit.isLoadedAfterConfirm(false)
+          throw error;
+        }
         output_transaction(txnHash)
 
       })
-      .on('confirmation', function (confirmationNumber, receipt) {
-        if (confirmationNumber == 5) updateData('get_credit');
+      .on('confirmation', async function (confirmationNumber, receipt) {
+        if (confirmationNumber == 5) {
+          await updateData('get_credit');
+          modal_add_credit.isLoadedAfterConfirm()
+        }
         resetMsg();
 
       })
       .catch(error => {
+        modal_add_credit.isLoadedAfterConfirm(false)
         errorMsg('smartcontract communication error');
-
       });
   });
 
@@ -517,10 +522,10 @@ async function getCredit() {
 
 async function deposit() {
 
-  new_deposit_modal.isLoadingAfterConfirm();
+  modal_add_deposit.isLoadingAfterConfirm();
 
   if (userObject.state.selected_depprofile == -1) {
-    new_deposit_modal.isLoadedAfterConfirm(false);
+    modal_add_deposit.isLoadedAfterConfirm(false);
     errorMsg('you need to select asset');
     return;
   }
@@ -535,7 +540,7 @@ async function deposit() {
     //return;
 
     if (userObject.state.selectedNFTAssets.length == 0) {
-      new_deposit_modal.isLoadedAfterConfirm(false);
+      modal_add_deposit.isLoadedAfterConfirm(false);
       errorMsg('you need to select tokens');
       return;
     }
@@ -545,7 +550,7 @@ async function deposit() {
     });
 
     if (!isApproved) {
-      new_deposit_modal.isLoadedAfterConfirm(false, false);
+      modal_add_deposit.isLoadedAfterConfirm(false, false);
       errorMsg('you need to approve tokens move first');
       return;
     }
@@ -566,7 +571,7 @@ async function deposit() {
       let amount_bn = new BN(amount);
 
       if (wb_bn.cmp(amount_bn) == -1) {
-        new_deposit_modal.isLoadedAfterConfirm(false);
+        modal_add_deposit.isLoadedAfterConfirm(false);
         errorMsg('you do not have enough BNB in your wallet');
         return;
       }
@@ -583,7 +588,7 @@ async function deposit() {
       let calculatedApproveValue = tokenAmountToApprove; //tokenAmountToApprove.mul(new BN(ADJ_CONSTANT.toString()));
 
       if (allow < calculatedApproveValue) {
-        new_deposit_modal.isLoadedAfterConfirm(false);
+        modal_add_deposit.isLoadedAfterConfirm(false);
         errorMsg('please approve tokens move / wait for approval transaction to finish');
         return;
       }
@@ -595,7 +600,7 @@ async function deposit() {
       let amount_bn = new BN(amount);
 
       if (erc20_count_bn.cmp(amount_bn) == -1) {
-        new_deposit_modal.isLoadedAfterConfirm(false);
+        modal_add_deposit.isLoadedAfterConfirm(false);
         errorMsg('you do not have enough tokens in your wallet');
         return;
       }
@@ -611,7 +616,7 @@ async function deposit() {
         gasPrice: window.gp
       }, function (error, txnHash) {
         if (error) {
-          new_deposit_modal.isLoadedAfterConfirm(false);
+          modal_add_deposit.isLoadedAfterConfirm(false);
           throw error;
         }
         output_transaction(txnHash)
@@ -619,41 +624,41 @@ async function deposit() {
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) {
           await updateData('make_deposit');
-          new_deposit_modal.isLoadedAfterConfirm();
+          modal_add_deposit.isLoadedAfterConfirm();
         }
         resetMsg();
       })
       .catch(error => {
-        new_deposit_modal.isLoadedAfterConfirm(false);
+        modal_add_deposit.isLoadedAfterConfirm(false);
         errorMsg('smartcontract communication error');
       });
   });
 }
 
 async function approve_stake_liq() {
-  add_liquidity_modal.isLoadingAfterApprove();
+  modal_add_lliquidity.isLoadingAfterApprove();
 
   if (!userObject.state.liq_pair_name) {
-    add_liquidity_modal.isLoadedAfterApprove(false)
+    modal_add_lliquidity.isLoadedAfterApprove(false)
     errorMsg('You need to select liquidity pair');
     return;
   }
 
   let amount_wei = (safeFloatToWei(document.getElementById('liq_pair_stake_am').value)).toString(); //wei
-  approveTokenMove(userObject.state.liq_pair_address, amount_wei, window.staking_contract_address, add_liquidity_modal);
+  approveTokenMove(userObject.state.liq_pair_address, amount_wei, window.staking_contract_address, modal_add_lliquidity);
 }
 
 async function stake_liq() {
-  add_liquidity_modal.isLoadingAfterConfirm();
+  modal_add_lliquidity.isLoadingAfterConfirm();
 
   if (!userObject.state.liq_pair_name) {
-    add_liquidity_modal.isLoadedAfterConfirm(false, false);
+    modal_add_lliquidity.isLoadedAfterConfirm(false, false);
     errorMsg('you need to select liquidity pair');
     return;
   }
 
   if (!userObject.state.liq_pair_fullcode) {
-    add_liquidity_modal.isLoadedAfterConfirm(false, false);
+    modal_add_lliquidity.isLoadedAfterConfirm(false, false);
     errorMsg('you need to select term');
     return;
   }
@@ -678,7 +683,7 @@ async function stake_liq() {
   let calculatedApproveValue = tokenAmountToApprove; //tokenAmountToApprove.mul(new BN(ADJ_CONSTANT.toString()));
 
   if (allow < calculatedApproveValue) {
-    add_liquidity_modal.isLoadedAfterConfirm(false, false);
+    modal_add_lliquidity.isLoadedAfterConfirm(false, false);
     errorMsg('please approve tokens move / wait for approval transaction to finish');
     return;
   };
@@ -690,7 +695,7 @@ async function stake_liq() {
   let amount_bn = new BN(amount);
 
   if (erc20_count_bn.cmp(amount_bn) == -1) {
-    add_liquidity_modal.isLoadedAfterConfirm(false, false);
+    modal_add_lliquidity.isLoadedAfterConfirm(false, false);
     errorMsg('you do not have enough tokens in your wallet');
     return;
   }
@@ -705,7 +710,7 @@ async function stake_liq() {
         gasPrice: window.gp
       }, function (error, txnHash) {
         if (error) {
-          add_liquidity_modal.isLoadedAfterConfirm(false);
+          modal_add_lliquidity.isLoadedAfterConfirm(false);
           throw error;
         }
         output_transaction(txnHash)
@@ -714,13 +719,13 @@ async function stake_liq() {
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) {
           await updateData('stake_liq');
-          add_liquidity_modal.isLoadedAfterConfirm();
+          modal_add_lliquidity.isLoadedAfterConfirm();
         }
         resetMsg();
 
       })
       .catch(error => {
-        add_liquidity_modal.isLoadedAfterConfirm(false);
+        modal_add_lliquidity.isLoadedAfterConfirm(false);
         errorMsg('smartcontract communication error');
 
       });
@@ -729,10 +734,10 @@ async function stake_liq() {
 
 async function approve_deposit() {
 
-  new_deposit_modal.isLoadingAfterApprove();
+  modal_add_deposit.isLoadingAfterApprove();
 
   if (userObject.state.selected_depprofile == -1) {
-    new_deposit_modal.isLoadedAfterApprove(false);
+    modal_add_deposit.isLoadedAfterApprove(false);
     errorMsg('you need to select asset');
     return;
   }
@@ -744,7 +749,7 @@ async function approve_deposit() {
     });
 
     if (isApproved) {
-      new_deposit_modal.isLoadedAfterApprove();
+      modal_add_deposit.isLoadedAfterApprove();
       successMsg('already approved');
       return;
     } else {
@@ -754,7 +759,7 @@ async function approve_deposit() {
           gasPrice: window.gp
         }, function (error, txnHash) {
           if (error) {
-            new_deposit_modal.isLoadedAfterApprove(false);
+            modal_add_deposit.isLoadedAfterApprove(false);
             throw error;
           }
           output_transaction(txnHash)
@@ -763,12 +768,12 @@ async function approve_deposit() {
         .on('confirmation', function (confirmationNumber, receipt) {
           if (confirmationNumber == 5) {
             successMsg('NFT move approved');
-            new_deposit_modal.isLoadedAfterApprove();
+            modal_add_deposit.isLoadedAfterApprove();
           }
         })
         .catch(error => {
           errorMsg('smartcontract communication error');
-          new_deposit_modal.isLoadedAfterApprove(false);
+          modal_add_deposit.isLoadedAfterApprove(false);
         });
 
     }
@@ -779,7 +784,7 @@ async function approve_deposit() {
     }
 
     let amount_wei = (safeFloatToWei(document.getElementById('tokens_amount').value)).toString(); //wei
-    approveTokenMove(userObject.state.selected_depprofile_token_address, amount_wei, window.staking_contract_address, new_deposit_modal);
+    approveTokenMove(userObject.state.selected_depprofile_token_address, amount_wei, window.staking_contract_address, modal_add_deposit);
   }
 }
 
@@ -1754,12 +1759,12 @@ async function depositModalUpdateNftDropdown() {
 }
 
 async function depositModalRebuild() {
-  if (new_deposit_modal.isLoading) return;
+  if (modal_add_deposit.isLoading) return;
   var ddData = await getDepositProfilesList();
 
-  const depprofilesDropdown = new_deposit_modal.modal.querySelector('#depprofiles-dropdown');
-  const nftAssetsDropdownRow = new_deposit_modal.modal.querySelector('#assets-dropdown');
-  const assetsAmountRow = new_deposit_modal.modal.querySelector('#tokens_amount').parentNode;
+  const depprofilesDropdown = modal_add_deposit.modal.querySelector('#depprofiles-dropdown');
+  const nftAssetsDropdownRow = modal_add_deposit.modal.querySelector('#assets-dropdown');
+  const assetsAmountRow = modal_add_deposit.modal.querySelector('#tokens_amount').parentNode;
   const depositSelectedAsset = depprofilesDropdown.value;
   const currentDepProfile = ddData.find(item => item.text === depositSelectedAsset);
 
@@ -1771,13 +1776,13 @@ async function depositModalRebuild() {
   })
 
   if (currentDepProfile.d_type == NATIVE_ETHEREUM) {
-    new_deposit_modal.approve.classList.add('btn-done');
-    new_deposit_modal.approve.disabled = true;
-    new_deposit_modal.confirm.disabled = false;
+    modal_add_deposit.approve.classList.add('btn-done');
+    modal_add_deposit.approve.disabled = true;
+    modal_add_deposit.confirm.disabled = false;
   } else {
-    new_deposit_modal.approve.classList.remove('btn-done');
-    new_deposit_modal.approve.disabled = false;
-    new_deposit_modal.confirm.disabled = true;
+    modal_add_deposit.approve.classList.remove('btn-done');
+    modal_add_deposit.approve.disabled = false;
+    modal_add_deposit.confirm.disabled = true;
   }
 
   if (currentDepProfile.text == 'nft') {
@@ -1806,8 +1811,8 @@ async function initDepositProfilesDropdown() {
 
   initAssetsDropdown(nftData);
 
-  const depprofilesDropdown = new_deposit_modal.modal.querySelector('#depprofiles-dropdown');
-  const assetsAmmountValue = new_deposit_modal.modal.querySelector('#tokens_amount');
+  const depprofilesDropdown = modal_add_deposit.modal.querySelector('#depprofiles-dropdown');
+  const assetsAmmountValue = modal_add_deposit.modal.querySelector('#tokens_amount');
 
   setOptionsToSelect(ddData, depprofilesDropdown);
 
@@ -1822,8 +1827,13 @@ async function initDepositProfilesDropdown() {
 async function initCreditProfilesDropdown() {
   var ddData = await getCreditProfilesList();
 
-  const dropdown = open_new_credit_modal.modal.querySelector('#credprofiles-dropdown');
-
+  const dropdown = modal_add_credit.modal.querySelector('#credprofiles-dropdown');
+  const tokensAmmountCollateral = modal_add_credit.modal.querySelector('#tokens_amount_collateral');
+  const tokensAmmountGetCredit = modal_add_credit.modal.querySelector('#tokens_amount_getcredit');
+  const usdValueCollateral = modal_add_credit.modal.querySelector('#usd_value_collateral');
+  const creditPerc = modal_add_credit.modal.querySelector('#credit_perc');
+  const fullCollateral = modal_add_credit.modal.querySelector('#full_collateral');
+  const partCollateral = modal_add_credit.modal.querySelector('#part_collateral');
   setOptionsToSelect(ddData, dropdown);
 
   new CustomSelect({
@@ -1831,73 +1841,56 @@ async function initCreditProfilesDropdown() {
   });
 
   userObject.state.selected_credprofile = ddData[0].p_id;
+  full_collateral_btn(depAmountByProfileId(userObject.state.selected_credprofile)[0]);
 
-  dropdown.onchange = (e) => {
+  dropdown.onchange = async (e) => {
     const value = e.target.value;
     const selectedData = ddData.find(item => item.text === value);
+    if (value === 'nft') {
+      fullCollateral.checked = true;
+      partCollateral.parentNode.classList.add('hidden');
+    } else {
+      partCollateral.parentNode.classList.remove('hidden');
+    }
 
     resetMsg();
-    console.log(selectedData.p_id, userObject.state.getcredit_profile)
+
+    setState({
+      selected_credprofile: selectedData.p_id
+    })
+
     if (selectedData.p_id == userObject.state.getcredit_profile) {
-      userObject.state.selected_credprofile = selectedData.p_id;
       errorMsg("assets for collateral and credit should be different");
       return;
     }
+    setState({
+      selected_credprofile_name: selectedData.text,
+      selected_credprofile_type: selectedData.c_type,
+      selected_credprofile_token_address: selectedData.c_tok_addr
+    })
+
+    tokensAmmountCollateral.value = depAmountByProfileId(userObject.state.selected_credprofile)[1];
+
+    await updUSDValueCollateral('tokens_amount_collateral', 'usd_value_collateral', depAmountByProfileId(userObject.state.selected_credprofile)[0]);
+
+    if (userObject.state.getcredit_profile != -1) {
+      tokensAmmountGetCredit.innerText = await calcTokensFromUSD(userObject.state.getcredit_profile, usdValueCollateral.value);
+      let apy = await window.usage_calc_smartcontract_reader.methods.calcVarApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({
+        from: userObject.account
+      });
+
+      let apy_adj = (apy / apy_scale) * 100;
+      creditPerc.value = ((parseFloat(apy_adj)).toFixed(2)).toString();
+    }
   }
-
-  // $('#credprofiles-dropdown').ddslick({
-  //   data: ddData,
-  //   width: '16vw',
-  //   selectText: "Select Collateral",
-  //   imagePosition: "left",
-
-  //   onSelected: async function (selectedData) {
-  //     //callback function: do something with selectedData;
-  //     resetMsg();
-  //     if (selectedData.selectedData.p_id == userObject.state.getcredit_profile) {
-  //       userObject.state.selected_credprofile = selectedData.selectedData.p_id;
-  //       errorMsg("assets for collateral and credit should be different");
-  //       document.getElementById('tokens_amount_getcredit').value = '';
-  //       document.getElementById('tokens_amount_getcredit').style.display = 'none';
-  //       return;
-  //     }
-  //     userObject.state.selected_credprofile = selectedData.selectedData.p_id;
-  //     userObject.state.selected_credprofile_name = selectedData.selectedData.text;
-  //     userObject.state.selected_credprofile_type = selectedData.selectedData.c_type;
-  //     userObject.state.selected_credprofile_token_address = selectedData.selectedData.c_tok_addr;
-
-  //     document.getElementById('tokens_amount_collateral').value = depAmountByProfileId(userObject.state.selected_credprofile)[1];
-  //     document.getElementById('tokens_amount_collateral').style.height = (document.querySelectorAll("#credprofiles-dropdown > .dd-select")[0].offsetHeight).toString() + 'px';
-  //     document.getElementById('tokens_amount_collateral').style.display = "inline";
-  //     document.getElementById('collateral_full_part').style.height = document.getElementById('tokens_amount_collateral').style.height;
-  //     document.getElementById('collateral_full_part').style.display = "inline";
-
-  //     document.getElementById('usd_value_collateral').style.height = (document.querySelectorAll("#credprofiles-dropdown > .dd-select")[0].offsetHeight).toString() + 'px';
-  //     document.getElementById('usd_value_collateral').style.display = "inline";
-  //     document.getElementById('usd_value_label_collateral').style.display = "inline";
-
-  //     await updUSDValueCollateral('tokens_amount_collateral', 'usd_value_collateral', depAmountByProfileId(userObject.state.selected_credprofile)[0]);
-
-  //     // if  (document.getElementById('tokens_amount_getcredit').style.display == "inline") {
-  //     if (userObject.state.getcredit_profile != -1) {
-
-  //       document.getElementById('tokens_amount_getcredit').value = await calcTokensFromUSD(userObject.state.getcredit_profile, document.getElementById('usd_value_collateral').value);
-  //       let apy = await window.usage_calc_smartcontract_reader.methods.calcVarApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({
-  //         from: userObject.account
-  //       });
-  //       let apy_adj = (apy / apy_scale) * 100;
-  //       document.getElementById('credit_perc').value = ((parseFloat(apy_adj)).toFixed(2)).toString();
-  //     }
-
-  //   }
-  // });
-
 }
-
 async function initGetCreditDropdown() {
   var ddData = await getCreditProfilesListCredit();
 
-  const dropdown = open_new_credit_modal.modal.querySelector('#getcredit-dropdown');
+  const dropdown = modal_add_credit.modal.querySelector('#getcredit-dropdown');
+  const tokensAmmountGetCredit = modal_add_credit.modal.querySelector('#tokens_amount_getcredit');
+  const usdValueCollateral = modal_add_credit.modal.querySelector('#usd_value_collateral');
+  const creditPerc = modal_add_credit.modal.querySelector('#credit_perc');
 
   setOptionsToSelect(ddData, dropdown);
 
@@ -1905,63 +1898,31 @@ async function initGetCreditDropdown() {
     elem: dropdown,
   });
 
-  dropdown.onchange = (e) => {
+  dropdown.onchange = async (e) => {
     const value = e.target.value;
     const selectedData = ddData.find(item => item.text === value);
 
     resetMsg();
-    console.log(selectedData.p_id, userObject.state.selected_credprofile)
+
+    setState({
+      getcredit_profile: selectedData.p_id
+    })
+
     if (selectedData.p_id == userObject.state.selected_credprofile) {
-      userObject.state.getcredit_profile = selectedData.p_id;
       errorMsg("assets for collateral and credit should be different");
       return;
     }
+
+    tokensAmmountGetCredit.innerText = await calcTokensFromUSD(userObject.state.getcredit_profile, usdValueCollateral.value);
+
+    if (userObject.state.selected_credprofile != -1) {
+      let apy = await window.usage_calc_smartcontract_reader.methods.calcVarApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({
+        from: userObject.account
+      });
+      let apy_adj = (apy / apy_scale) * 100;
+      creditPerc.value = ((parseFloat(apy_adj)).toFixed(2)).toString();
+    }
   }
-
-  // $('#getcredit-dropdown').ddslick({
-  //   data: ddData,
-  //   width: '16vw',
-  //   selectText: "Get Credit In",
-  //   imagePosition: "left",
-
-  //   onSelected: async function (selectedData) {
-  //     //callback function: do something with selectedData;
-  //     //console.log('selected_credprofile=', userObject.state.selected_credprofile, selectedData.selectedData.p_id);
-  //     resetMsg();
-  //     if (selectedData.selectedData.p_id == userObject.state.selected_credprofile) {
-  //       userObject.state.getcredit_profile = selectedData.selectedData.p_id;
-  //       errorMsg("assets for collateral and credit should be different");
-  //       document.getElementById('tokens_amount_getcredit').value = '';
-  //       document.getElementById('tokens_amount_getcredit').style.display = 'none';
-  //       return;
-  //     }
-  //     userObject.state.getcredit_profile = selectedData.selectedData.p_id;
-  //     /*window.getcredit_name = selectedData.selectedData.text;
-  //     window.getcredit_type = selectedData.selectedData.c_type;
-  //     window.getcredit_token_address = selectedData.selectedData.c_tok_addr;*/
-
-  //     document.getElementById('tokens_amount_getcredit').value = await calcTokensFromUSD(userObject.state.getcredit_profile, document.getElementById('usd_value_collateral').value);
-  //     document.getElementById('tokens_amount_getcredit').style.height = (document.querySelectorAll("#getcredit-dropdown > .dd-select")[0].offsetHeight).toString() + 'px';
-  //     document.getElementById('tokens_amount_getcredit').style.display = "inline";
-
-  //     if (userObject.state.selected_credprofile != -1) {
-  //       document.getElementById('credit_perc_label').style.display = "inline";
-  //       document.getElementById('credit_perc').style.display = "inline";
-  //       document.getElementById('set_var_credit').style.display = "inline";
-  //       document.getElementById('set_fixed_credit').style.display = "inline";
-
-  //       let apy = await window.usage_calc_smartcontract_reader.methods.calcVarApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({
-  //         from: userObject.account
-  //       });
-  //       let apy_adj = (apy / apy_scale) * 100;
-  //       document.getElementById('credit_perc').value = ((parseFloat(apy_adj)).toFixed(2)).toString();
-  //     }
-
-  //     //document.getElementById('credit_perc_div').style.height = (document.getElementById('getcredit_button').offsetHeight).toString()+'px';
-
-  //   }
-  // });
-
 }
 
 function offset(el) {
@@ -2137,7 +2098,7 @@ const setApyStr = async (asset) => {
 
 async function initLiqTermsDropdown() {
 
-  const liqTermsSelect = add_liquidity_modal.modal.querySelector('#liqterms-dropdown');
+  const liqTermsSelect = modal_add_lliquidity.modal.querySelector('#liqterms-dropdown');
   const liqTermsData = userObject.liq_terms;
   setOptionsToSelect(liqTermsData, liqTermsSelect);
 
@@ -2164,7 +2125,7 @@ async function initLiqPairsDropdown() {
     safeSetInnerHTMLById('liq_pair_in_wallet', bal, 'flex');
   }
 
-  const liqPairsAssets = add_liquidity_modal.modal.querySelector('#liqpairs-dropdown');
+  const liqPairsAssets = modal_add_lliquidity.modal.querySelector('#liqpairs-dropdown');
   const liqPairsAssetsOptions = userObject.liq_pairs;
   setOptionsToSelect(liqPairsAssetsOptions, liqPairsAssets);
 
@@ -2179,7 +2140,7 @@ async function initLiqPairsDropdown() {
     const currentOption = liqPairsAssetsOptions.find(item => item.text === value)
     setBal(currentOption);
 
-    const liqTermsValue = add_liquidity_modal.modal.querySelector('#liqterms-dropdown').value;
+    const liqTermsValue = modal_add_lliquidity.modal.querySelector('#liqterms-dropdown').value;
     const currentLiqTerm = userObject.liq_terms.find(item => item.text === liqTermsValue)
     setApyStr(currentLiqTerm);
   }
@@ -3131,7 +3092,7 @@ async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
 
   if (userObject.state.getcredit_profile != -1) {
 
-    document.getElementById('tokens_amount_getcredit').value = await calcTokensFromUSD(userObject.state.getcredit_profile, document.getElementById('usd_value_collateral').value);
+    document.getElementById('tokens_amount_getcredit').innerText = await calcTokensFromUSD(userObject.state.getcredit_profile, document.getElementById('usd_value_collateral').value);
   }
 
 }
@@ -3158,14 +3119,14 @@ async function calcUSDValueByProfileNonNFT(wei_amount, profile_id) {
 
 
 function show_modal_leverage(cread_id) {
-  const confirm = set_leverage_modal.confirm;
-  const leveragePercentSelect = set_leverage_modal.modal.querySelector('#select-leverage');
+  const confirm = modal_add_leverage.confirm;
+  const leveragePercentSelect = modal_add_leverage.modal.querySelector('#select-leverage');
   set_leverage(leveragePercentSelect.value, cread_id);
 
   confirm.onclick = () => set_leverage_confirm(leveragePercentSelect.value, cread_id);
   leveragePercentSelect.onchange = (e) => set_leverage(leveragePercentSelect.value, cread_id);
 
-  set_leverage_modal.show();
+  modal_add_leverage.show();
 }
 
 function show_modal_unfreeze(cread_id) {
@@ -3181,9 +3142,9 @@ function compensate_with_leverage(cred_id) {
 
 async function set_leverage_confirm(ratio, cred_id) {
   // function freezeLeverageForCredit(address cust_wallet, uint32 dep_id, uint32 cred_id, uint256 lev_amount) nonReentrant public  
-  set_leverage_modal.isLoadingAfterConfirm();
+  modal_add_leverage.isLoadingAfterConfirm();
   if (userObject.credits.cred_arr[1][cred_id] == 0) {
-    set_leverage_modal.isLoadedAfterConfirm(false);
+    modal_add_leverage.isLoadedAfterConfirm(false);
     infoMsg("no active credit");
     return;
   }
@@ -3195,7 +3156,7 @@ async function set_leverage_confirm(ratio, cred_id) {
     });
 
     if (lev.lev_amount > 0) {
-      set_leverage_modal.isLoadedAfterConfirm(false);
+      modal_add_leverage.isLoadedAfterConfirm(false);
       infoMsg("you need to unfreeze current leverage first");
       return;
     }
@@ -3211,7 +3172,7 @@ async function set_leverage_confirm(ratio, cred_id) {
     let cytr_am_bn = new BN(cytr_am);
 
     if (window.lev_size_wei.cmp(cytr_am_bn) == 1) {
-      set_leverage_modal.isLoadedAfterConfirm(false);
+      modal_add_leverage.isLoadedAfterConfirm(false);
       infoMsg("not enough CYTR on deposit");
       return;
     }
@@ -3222,7 +3183,7 @@ async function set_leverage_confirm(ratio, cred_id) {
       }, function (error, txnHash) {
         console.log(error, txnHash)
         if (error) {
-          set_leverage_modal.isLoadedAfterConfirm(false);
+          modal_add_leverage.isLoadedAfterConfirm(false);
           throw error;
         }
         output_transaction(txnHash)
@@ -3231,14 +3192,14 @@ async function set_leverage_confirm(ratio, cred_id) {
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) {
           await updateData('set_leverage');
-          set_leverage_modal.isLoadedAfterConfirm();
+          modal_add_leverage.isLoadedAfterConfirm();
         }
         resetMsg();
 
       })
       .catch(error => {
         errorMsg('smartcontract communication error');
-        set_leverage_modal.isLoadedAfterConfirm(false);
+        modal_add_leverage.isLoadedAfterConfirm(false);
       });
 
 
@@ -3252,7 +3213,7 @@ async function unfreeze_leverage(cred_id) {
   	infoMsg("no active credit");
   	return;
   }*/
-  modal_unfreeze.isLoadingAfterApprove();
+  modal_unfreeze.isLoadingAfterConfirm();
   initLiqLevContract(async (contractInstance) => {
 
     contractInstance.methods.unfreezeLeverageForCredit(userObject.account, cred_id).send({
@@ -3260,7 +3221,7 @@ async function unfreeze_leverage(cred_id) {
         gasPrice: window.gp
       }, function (error, txnHash) {
         if (error) {
-          modal_unfreeze.isLoadedAfterApprove(false);
+          modal_unfreeze.isLoadedAfterConfirm(false);
           throw error;
         }
         output_transaction(txnHash)
@@ -3269,14 +3230,13 @@ async function unfreeze_leverage(cred_id) {
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) {
           await updateData('unfreeze_leverage');
-          modal_unfreeze.isLoadedAfterApprove();
+          modal_unfreeze.isLoadedAfterConfirm();
         }
         resetMsg();
-
       })
       .catch(error => {
         errorMsg('smartcontract communication error');
-        modal_unfreeze.isLoadedAfterApprove(false);
+        modal_unfreeze.isLoadedAfterConfirm(false);
       });
 
   });
@@ -3284,7 +3244,7 @@ async function unfreeze_leverage(cred_id) {
 
 function return_credit(cred_id) {
 
-  const modalElement = return_credit_modal.modal;
+  const modalElement = modal_return_credit.modal;
   const allCreditReturnBtn = modalElement.querySelector('#return_credit_all');
   const partCreditReturnBtn = modalElement.querySelector('#return_credit_part');
   const submitTokensBtn = modalElement.querySelector('#return_credit_mvtokens');
@@ -3297,23 +3257,23 @@ function return_credit(cred_id) {
   submitTokensBtn.onclick = () => return_credit_mvtokens(cred_id);
   submitBtn.onclick = () => return_credit_confirm(cred_id);
 
-  return_credit_modal.show();
+  modal_return_credit.show();
 
 }
 
 function withdraw_reward(dep_id) {
 
-  const modalElement = withdraw_rew_modal.modal;
+  const modalElement = modal_withdraw_yield.modal;
   const submitBtn = modalElement.querySelector('#withraw_rew_confirm');
 
   submitBtn.onclick = () => withdraw_reward_confirm(dep_id);
 
-  withdraw_rew_modal.show();
+  modal_withdraw_yield.show();
 }
 
 function withdraw_deposit(dep_id) {
   const deposit = userObject.deposits.am_arr[2][dep_id];
-  const modalElement = withdraw_modal.modal;
+  const modalElement = modal_withdraw_deposit.modal;
   const allDepositsBtn = modalElement.querySelector('#withraw_dep_all');
   const partDepositsBtn = modalElement.querySelector('#withraw_dep_part');
   const withdrawInput = modalElement.querySelector('#withraw_dep_input');
@@ -3326,9 +3286,9 @@ function withdraw_deposit(dep_id) {
   allDepositsBtn.checked = true;
   allDepositsBtn.onchange = () => withdraw_deposit_all_btn(dep_id);
   partDepositsBtn.onchange = () => withdraw_deposit_part_btn(dep_id);
-  withdraw_modal.confirm.onclick = () => withdraw_deposit_confirm(dep_id);
+  modal_withdraw_deposit.confirm.onclick = () => withdraw_deposit_confirm(dep_id);
 
-  withdraw_modal.show();
+  modal_withdraw_deposit.show();
 }
 
 function depAmountByProfileId(profile_id) {
@@ -3376,7 +3336,7 @@ function withdraw_deposit_confirm(dep_id) {
 
   const withdraw_amount = isWithdrawAllDeposit ? 0 : safeFloatToWei(depositValue);
 
-  withdraw_modal.isLoadingAfterConfirm();
+  modal_withdraw_deposit.isLoadingAfterConfirm();
 
   initStakingContract(async (stakingContractInstance) => {
 
@@ -3385,7 +3345,7 @@ function withdraw_deposit_confirm(dep_id) {
         gasPrice: window.gp
       }, function (error, txnHash) {
         if (error) {
-          withdraw_modal.isLoadedAfterConfirm(false);
+          modal_withdraw_deposit.isLoadedAfterConfirm(false);
           throw error;
         }
         output_transaction(txnHash)
@@ -3394,12 +3354,12 @@ function withdraw_deposit_confirm(dep_id) {
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) {
           await updateData('withdraw_deposit');
-          withdraw_modal.isLoadedAfterConfirm();
+          modal_withdraw_deposit.isLoadedAfterConfirm();
         }
         resetMsg();
       })
       .catch(error => {
-        withdraw_modal.isLoadedAfterConfirm(false);
+        modal_withdraw_deposit.isLoadedAfterConfirm(false);
         errorMsg('smartcontract communication error');
       });
 
@@ -3616,7 +3576,7 @@ function withdraw_reward_confirm(dep_id) {
     return;
   }
 
-  withdraw_rew_modal.isLoadingAfterConfirm();
+  modal_withdraw_yield.isLoadingAfterConfirm();
 
   initStakingContract(async (stakingContractInstance) => {
 
@@ -3625,7 +3585,7 @@ function withdraw_reward_confirm(dep_id) {
         gasPrice: window.gp
       }, function (error, txnHash) {
         if (error) {
-          withdraw_rew_modal.isLoadedAfterConfirm(false);
+          modal_withdraw_yield.isLoadedAfterConfirm(false);
           throw error;
         }
         output_transaction(txnHash)
@@ -3635,12 +3595,12 @@ function withdraw_reward_confirm(dep_id) {
 
         if (confirmationNumber == 5) {
           await updateData('withdraw_deposit_reward');
-          withdraw_rew_modal.isLoadedAfterConfirm();
+          modal_withdraw_yield.isLoadedAfterConfirm();
         }
         resetMsg();
       })
       .catch(error => {
-        withdraw_rew_modal.isLoadedAfterConfirm(false);
+        modal_withdraw_yield.isLoadedAfterConfirm(false);
         errorMsg('smartcontract communication error');
       });
 
@@ -3652,8 +3612,6 @@ function withdraw_reward_confirm(dep_id) {
 
 function full_collateral_btn(dep_id) {
 
-  document.getElementById('full_collateral').classList.add('transparent_button_pressed');
-  document.getElementById('part_collateral').classList.remove('transparent_button_pressed');
   document.getElementById('tokens_amount_collateral').value = depAmountByProfileId(userObject.state.selected_credprofile)[1];
   updUSDValueCollateral('tokens_amount_collateral', 'usd_value_collateral', dep_id);
   document.getElementById('tokens_amount_collateral').readOnly = true;
@@ -3662,27 +3620,17 @@ function full_collateral_btn(dep_id) {
 }
 
 function part_collateral_btn(dep_id) {
-
-  document.getElementById('full_collateral').classList.remove('transparent_button_pressed');
-  document.getElementById('part_collateral').classList.add('transparent_button_pressed');
   document.getElementById('tokens_amount_collateral').value = 0.;
   updUSDValueCollateral('tokens_amount_collateral', 'usd_value_collateral', dep_id);
   document.getElementById('tokens_amount_collateral').readOnly = false;
-
 }
 
 
 function return_credit_all_btn(dep_id) {
-
-  //alert(dep_id);
-  document.getElementById('return_credit_all' + dep_id.toString()).classList.add('transparent_button_pressed');
-  document.getElementById('return_credit_part' + dep_id.toString()).classList.remove('transparent_button_pressed');
   //let am = window.web3js_reader.utils.fromWei(userObject.credits.cred_arr[1][dep_id], 'ether');
   let adj_am = toTokens(userObject.credits.cred_arr[1][dep_id], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-  document.getElementById('credit_return_input' + dep_id.toString()).value = adj_am;
-  document.getElementById('credit_return_input' + dep_id.toString()).readOnly = true;
-
-
+  document.getElementById('credit_return_input').value = adj_am;
+  document.getElementById('credit_return_input').readOnly = true;
 }
 
 function return_credit_part_btn(dep_id) {
@@ -3695,7 +3643,7 @@ function return_credit_part_btn(dep_id) {
 }
 
 function withdraw_deposit_all_btn(dep_id) {
-  const modalElement = withdraw_modal.modal;
+  const modalElement = modal_withdraw_deposit.modal;
   const withdrawInput = modalElement.querySelector('#withraw_dep_input');
 
   //let am = window.web3js_reader.utils.fromWei(userObject.deposits.am_arr[2][dep_id], 'ether');
@@ -3706,7 +3654,7 @@ function withdraw_deposit_all_btn(dep_id) {
 }
 
 function withdraw_deposit_part_btn() {
-  const modalElement = withdraw_modal.modal;
+  const modalElement = modal_withdraw_deposit.modal;
   const withdrawInput = modalElement.querySelector('#withraw_dep_input');
 
   withdrawInput.value = 0.;

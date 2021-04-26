@@ -857,7 +857,7 @@ let userObject = {
           let txt = '';
 
           if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
-            txt = `<td class="table-cell pl-0 rounded-r-lg" onclick="return_credit_modal.show()">${createTableBtnWithIcon('money', 'Repay borrow', `return_credit(${i.toString()})`)}</td>`;
+            txt = `<td class="table-cell pl-0 rounded-r-lg" onclick="modal_return_credit.show()">${createTableBtnWithIcon('money', 'Repay borrow', `return_credit(${i.toString()})`)}</td>`;
           }
           if (!txt) txt = '<td class="table-cell pl-0 rounded-r-lg">-</td>';
           this.return_credit_col.push(txt);
