@@ -149,10 +149,6 @@ window.addEventListener('DOMContentLoaded', async function () {
   //await initVotesCalcContractReader();
   //await initUsageCalcContractReader();
 
-
-
-
-
   if (isMetaMaskInstalled()) {
 
     window.ethereum.autoRefreshOnNetworkChange = false;
@@ -167,18 +163,10 @@ window.addEventListener('DOMContentLoaded', async function () {
       window.location.reload();
     });
 
-
-
   } else {
-
-
     walletButton.style.display = "block";
-
     await initWeb3Modal();
-
-
     walletButton.addEventListener("click", toggleWeb3Connect);
-
   }
 
   if (window.location.pathname == '/') {
@@ -1849,7 +1837,7 @@ async function initCreditProfilesDropdown() {
     const selectedData = ddData.find(item => item.text === value);
 
     resetMsg();
-    console.log(selectedData.p_id,userObject.state.getcredit_profile)
+    console.log(selectedData.p_id, userObject.state.getcredit_profile)
     if (selectedData.p_id == userObject.state.getcredit_profile) {
       userObject.state.selected_credprofile = selectedData.p_id;
       errorMsg("assets for collateral and credit should be different");
@@ -1924,10 +1912,10 @@ async function initGetCreditDropdown() {
     resetMsg();
     console.log(selectedData.p_id, userObject.state.selected_credprofile)
     if (selectedData.p_id == userObject.state.selected_credprofile) {
-        userObject.state.getcredit_profile = selectedData.p_id;
-        errorMsg("assets for collateral and credit should be different");
-        return;
-      }
+      userObject.state.getcredit_profile = selectedData.p_id;
+      errorMsg("assets for collateral and credit should be different");
+      return;
+    }
   }
 
   // $('#getcredit-dropdown').ddslick({
@@ -2640,9 +2628,8 @@ async function getCreditsDashboard(callback = null) {
     '<th class="table-title">Duration days</th>' +
     '<th class="table-title">Curent APR<sup>*</sup></th>' +
     '<th class="table-title">Fee</th>' +
-    '<th class="table-title">Leverage Level</th>' +
-    '<th class="table-title">Cover Fees with CYTR Leverage</th>' +
-    '<th class="table-title">Repay borrow</th>' +
+    '<th class="table-title table-title-right">Leverage Level</th>' +
+    '<th class="table-title" colspan = "2" scope = "colgroup">Cover Fees with CYTR Leverage</th>' +
     '<th class="table-title table-title-empty"></th>' +
     '<th class="table-title">In wallet</th>' +
     '<th class="table-title">Deposit</th>' +
@@ -2730,7 +2717,7 @@ async function getCreditsDashboard(callback = null) {
   html += '</tbody>' +
     '</table>';
 
-  html += '<span style="inline; font-size: 60%; "><sup>*</sup> Effective current credit APR, based on all conditions, incl. Leverage</span>'
+  html += '<span style="display: inline; font-size: 60%; "><sup>*</sup> Effective current credit APR, based on all conditions, incl. Leverage</span>'
 
   safeSetInnerHTMLById('my_credits', html, false, 'empty')
 

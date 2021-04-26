@@ -76,10 +76,16 @@
 
   .table-title {
     @apply pt-1 px-5 tracking-wider text-primary-gray text-left text-xs font-medium hover: text-white transition-all cursor-default;
+    &-empty {
+      @apply px-1.5;
+    }
   }
 
   .table-cell {
-    @apply px-5 py-2 text-sm font-normal text-white flex items-center justify-start truncate h-14;
+    @apply px-5 py-2 text-sm font-normal text-white flex items-center justify-start truncate h-14 bg-blueish-black;
+    &-empty {
+      @apply px-1.5 bg-transparent;
+    }
   }
 
   .table-title,
@@ -108,7 +114,7 @@
   }
 
   .table-row {
-    @apply bg-blueish-black mb-3 rounded-lg;
+    @apply mb-3 rounded-lg;
   }
 
   .table-btn {

@@ -538,7 +538,7 @@ let userObject = {
               from: userObject.account
             });
 
-            txt = '<td class="hide_for_credit_return_panel tab-vert-line-left table-cell">' + token_count + '</td>';
+            txt = '<td class="rounded-l-lg table-cell">' + token_count + '</td>';
 
           } else if (depTypeByProfileId(cred_arr[0][i]) == ERC20_TOKEN || depTypeByProfileId(cred_arr[0][i]) == UNISWAP_PAIR) {
 
@@ -551,7 +551,7 @@ let userObject = {
             let token_name = await erc20contract.methods.name().call({
               from: userObject.account
             });
-            txt = '<td class="hide_for_credit_return_panel tab-vert-line-left table-cell">' + adj_count_str + '</td>';
+            txt = '<td class="rounded-l-lg table-cell">' + adj_count_str + '</td>';
 
             //html += '<span class="small-text-block">'+token_name+': '+adj_count_str+'</span>';  
 
@@ -559,10 +559,10 @@ let userObject = {
             let wb = await window.web3js_reader.eth.getBalance(userObject.account);
             //let eth_balance = window.web3js_reader.utils.fromWei(wb, 'ether');
             let adj_eth_balance = toTokens(wb, 4); //((parseFloat(eth_balance)).toFixed(4)).toString(); 
-            txt = '<td class="hide_for_credit_return_panel tab-vert-line-left table-cell">' + adj_eth_balance + '</td>';
+            txt = '<td class="rounded-l-lg table-cell">' + adj_eth_balance + '</td>';
 
           }
-          if (!txt) txt = '<td class="hide_for_credit_return_panel tab-vert-line-left table-cell">-</td>';
+          if (!txt) txt = '<td class="rounded-l-lg table-cell">-</td>';
           this.in_wallet_column.push(txt);
         }
 
@@ -857,9 +857,9 @@ let userObject = {
           let txt = '';
 
           if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
-            txt = `<td class="table-cell">${createTableBtnWithIcon('money', 'Repay borrow', `return_credit(${i.toString()})`)}</td>`;
+            txt = `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon('money', 'Repay borrow', `return_credit(${i.toString()})`)}</td>`;
           }
-          if (!txt) txt = '<td class="table-cell">-</td>';
+          if (!txt) txt = '<td class="table-cell pl-0 rounded-r-lg">-</td>';
           this.return_credit_col.push(txt);
         }
 
