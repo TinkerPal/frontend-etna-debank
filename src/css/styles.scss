@@ -88,7 +88,12 @@
     }
   }
 
-  .table-title,
+  .table-title {
+    &:nth-child(1) {
+      @apply w-5 h-5 pr-0;
+    }
+  }
+
   .table-cell {
     &:nth-child(2) {
       @apply pl-2;
@@ -96,20 +101,6 @@
 
     &:nth-child(1) {
       @apply w-5 h-5 pr-0;
-    }
-  }
-
-  .table-two-columns {
-
-    .table-title,
-    .table-cell {
-      &:nth-child(2) {
-        @apply px-5;
-      }
-
-      &:nth-child(1) {
-        @apply w-auto h-auto px-5;
-      }
     }
   }
 
@@ -630,6 +621,7 @@ input {
 
   &[readonly] {
     color: #C5C5CC;
+    cursor: not-allowed;
   }
 }
 

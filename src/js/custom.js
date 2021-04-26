@@ -2214,8 +2214,7 @@ async function buildTotalDashboard() {
     '<table class="min-w-full">' +
     '<thead>' +
     '<tr>' +
-    '<th class="table-title"></th>' + //icon
-    '<th class="table-title">Assets</th>' +
+    '<th class="table-title" colspan = "2" scope = "colgroup">Assets</th>' +
     '<th class="table-title">Total Deposits</th>' +
     '<th class="table-title">Total Borrowed</th>' +
     '<th class="table-title">Deposit APY<sup>*</sup></th>' +
@@ -2620,8 +2619,7 @@ async function getCreditsDashboard(callback = null) {
     '<table class="min-w-full">' +
     '<thead>' +
     '<tr>' +
-    '<th class="table-title"></th>' +
-    '<th class="table-title">Asset</th>' +
+    '<th class="table-title" colspan = "2" scope = "colgroup">Asset</th>' +
     '<th class="table-title">Borrowed mount</th>' +
     '<th class="table-title">USD value</th>' +
     '<th class="table-title">Collateral</th>' +
@@ -2734,8 +2732,7 @@ async function getLiquidityDashboard(callback = null) {
     '<table class="min-w-full">' +
     '<thead>' +
     '<tr>' +
-    '<th class="table-title"></th>' +
-    '<th class="table-title">Liquidity-Pair</th>' +
+    '<th class="table-title" colspan = "2" scope = "colgroup">Liquidity-Pair</th>' +
     //'<th>In wallet</th>'+
     '<th class="table-title">Quantity</th>' +
     '<th class="table-title">Lockup</th>' +
@@ -2876,8 +2873,7 @@ async function getDepositsDashboard(callback = null) {
     '<table class="min-w-full">' +
     '<thead>' +
     '<tr>' +
-    '<th class="table-title"></th>' +
-    '<th class="table-title">Asset</th>' +
+    '<th class="table-title" colspan = "2" scope = "colgroup">Asset</th>' +
     '<th class="table-title">In wallet</th>' +
     '<th class="table-title">Deposit</th>' +
     '<th class="table-title">USD value</th>' +
