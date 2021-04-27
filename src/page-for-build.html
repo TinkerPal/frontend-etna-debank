@@ -733,6 +733,263 @@
     <div class="w-1/12 flex justify-end h-full">
     </div>
   </div>
+
+  <!-- 
+    {
+  "totalAssetsInfo": [
+    {
+        "title": "Total assets",
+        "title-with-value": "Total assets USD value",
+        "amount": "12,748,120",
+        "index-icon": "arrow-up.svg",
+        "increase": "2%",
+        "decrease": "",
+        "compared-to-previous": "$121,504"
+    }
+  ],
+  "marketInfo": [
+    {
+      "users-name": "Total users",
+      "users-amount": "31,657"
+    },
+    {
+      "borrow-name": "Total borrow",
+      "borrow-amount": "32,982"
+    },
+    {
+      "credits-name": "Total credits",
+      "credits-amount": "23,657"
+    },
+    {
+      "deposits-name": "Total deposits",
+      "deposits-amount": "21,982"
+    }
+  ],
+  
+},
+  
+   -->
+   <div class="flex items-center mb-9">
+    <div class="flex items-center">
+      <div class="w-6 h-6 mr-4 ml-2">
+        <img src="../images/dashboard.svg" class="w-full h-full" alt="#">
+      </div>
+      <div class="text-3xl leading-9 font-bold mr-4">Dashboard</div>
+    </div>
+  </div>
+  <div class="flex xl:flex-col flex-row items-start">
+    <div class="flex flex-col bg-blueish-black py-5 px-7 xl:w-full w-1/2 xl:mr-0 mr-6 rounded-lg mb-7">
+      <div class="flex items-center justify-center w-36 h-36 mx-auto mb-4">
+        <img src="../images/circle-chart.svg" class="w-full h-full" alt="">
+      </div>
+      <div class="flex items-center flex-col justify-center text-center">
+        <div class="text-xl tracking-wider font-normal">
+          Total assets
+        </div>
+        <div class="flex items-center">
+          <div class="current-capit text-2xl font-bold mr-2">
+            12,748,120
+          </div>
+          <div class="current-state up flex items-center text-sm">
+            <span class="arrow-stat up mr-1 w-3 h-2">
+              <img src="../images/arrow-up.svg" alt="">
+            </span>
+            2%
+          </div>
+        </div>
+        <div class="text-xs text-opacity-50 text-white tracking-wider mb-10">
+          Compared to <span class="compared-sum">$121,504</span> last month
+        </div>
+      </div>
+      <div class="flex items-center w-full mb-3 assets-diagram">
+        <div class="w-5/12">
+          <div class="static-name">
+            Borrow
+          </div>
+        </div>
+        <div class="w-3/12">
+          <div class="static-data">
+            862
+          </div>
+        </div>
+        <div class="w-4/12">
+          <div class="h-5">
+            <img src="../images/pink-graph.svg" class="w-full h-full" alt="#">
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center w-full mb-3 assets-diagram">
+        <div class="w-5/12">
+          <div class="static-name">
+            Deposits
+          </div>
+        </div>
+        <div class="w-3/12">
+          <div class="static-data">
+            753
+          </div>
+        </div>
+        <div class="w-4/12">
+          <div class="h-5">
+            <img src="../images/green-graph.svg" class="w-full h-full" alt="#">
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center w-full assets-diagram">
+        <div class="w-5/12">
+          <div class="static-name">
+            Credits
+          </div>
+        </div>
+        <div class="w-3/12">
+          <div class="static-data">
+            553
+          </div>
+        </div>
+        <div class="w-4/12">
+          <div class="h-5">
+            <img src="../images/yellow-graph.svg" class="w-full h-full" alt="#">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col bg-blueish-black py-5 px-7 xl:w-full w-1/2 rounded-lg mb-5">
+    
+      <div class="flex items-center w-full mb-3 static-row">
+        <div class="w-5/12">
+          <div class="static-name">
+            ST1
+          </div>
+        </div>
+        <div class="w-3/12">
+          <div class="static-data">
+            760
+          </div>
+        </div>
+        <div class="w-4/12">
+          <div class="up-info">
+            <div class="static-data">
+              2,540
+            </div>
+            <span class="arrow-stat up w-3 h-2">
+              <img src="../images/arrow-up.svg" class="w-full h-full" alt="#">
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center w-full mb-3 static-row">
+        <div class="w-5/12">
+          <div class="static-name">
+            BNB
+          </div>
+        </div>
+        <div class="w-3/12">
+          <div class="static-data">
+            650
+          </div>
+        </div>
+        <div class="w-4/12">
+          <div class="up-info">
+            <div class="static-data">
+              2,304
+            </div>
+            <span class="arrow-stat up w-3 h-2">
+              <img src="../images/arrow-down.svg" class="w-full h-full" alt="#">
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center w-full mb-3 static-row">
+        <div class="w-5/12">
+          <div class="static-name">
+            ST2
+          </div>
+        </div>
+        <div class="w-3/12">
+          <div class="static-data">
+            612
+          </div>
+        </div>
+        <div class="w-4/12">
+          <div class="up-info">
+            <div class="static-data">
+              2,140
+            </div>
+            <span class="arrow-stat up w-3 h-2">
+              <img src="../images/arrow-up.svg" class="w-full h-full" alt="#">
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center w-full mb-3 static-row">
+        <div class="w-5/12">
+          <div class="static-name">
+            ST3
+          </div>
+        </div>
+        <div class="w-3/12">
+          <div class="static-data">
+            598
+          </div>
+        </div>
+        <div class="w-4/12">
+          <div class="up-info">
+            <div class="static-data">
+              1,976
+            </div>
+            <span class="arrow-stat up w-3 h-2">
+              <img src="../images/arrow-up.svg" class="w-full h-full" alt="#">
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center w-full mb-3 static-row">
+        <div class="w-5/12">
+          <div class="static-name">
+            ST4
+          </div>
+        </div>
+        <div class="w-3/12">
+          <div class="static-data">
+            513
+          </div>
+        </div>
+        <div class="w-4/12">
+          <div class="up-info">
+            <div class="static-data">
+              1,903
+            </div>
+            <span class="arrow-stat up w-3 h-2">
+              <img src="../images/arrow-down.svg" class="w-full h-full" alt="#">
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center w-full static-row">
+        <div class="w-5/12">
+          <div class="static-name">
+            CYTR
+          </div>
+        </div>
+        <div class="w-3/12">
+          <div class="static-data">
+            498
+          </div>
+        </div>
+        <div class="w-4/12">
+          <div class="up-info">
+            <div class="static-data">
+              1,320
+            </div>
+            <span class="arrow-stat up w-3 h-2">
+              <img src="../images/arrow-down.svg" class="w-full h-full" alt="#">
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 </body>
 
 </html>

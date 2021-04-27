@@ -67,8 +67,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
   notifAmount.innerHTML = sumItems;
 
-  console.log(sumItems);
-
   deleteBtns.forEach(item => {
     item.addEventListener('click', () => {
       item.parentElement.closest('.notif-block__item').remove();

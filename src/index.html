@@ -45,7 +45,7 @@
 
   <!-- end LoadBar -->
 
-  <div id="p1" class="page">
+  <div id="p1" class="page active">
     <div class="main mx-6 mt-11 text-white xl:flex-row flex flex-col">
       <div class="dashboard-col xl:w-96 w-full">
         @@include('./templates/dashboard.html')
@@ -58,7 +58,7 @@
   <div id="p2" class="page">
     @@include('./templates/deposits.html')
   </div>
-  <div id="p3" class="page active">
+  <div id="p3" class="page">
     @@include('./templates/borrow.html')
   </div>
   <div id="p4" class="page">
@@ -96,8 +96,9 @@
   <!-- end components -->
 
   <!-- static data dashboard -->
-  <!-- <script src="/js/staticData/dashboard.json"></script> -->
+  <script src="/js/staticData/dashboardCurrency.js"></script>
   <script src="/js/staticData/parseNotifData.js"></script>
+  <script src="/js/staticData/graphicInfo.js"></script>
   <!-- end data dashboard -->
   
   <script src="/js/common.js"></script>

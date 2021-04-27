@@ -1210,3 +1210,11 @@ button:disabled {
     }
   }
 }
+
+.static-row__data {
+  .static-row {
+    &:last-child {
+      margin-bottom: 0px;
+    }
+  }
+}
