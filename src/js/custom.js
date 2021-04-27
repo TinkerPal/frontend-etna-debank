@@ -1184,7 +1184,8 @@ async function updateData(action = null) {
     await getDepositsDashboard();
     getLiquidityDashboard();
   } else if (action == 'get_credit') {
-    getCreditsDashboard();
+    await getCreditsDashboard();
+    getDepositsDashboard();
   } else if (action == 'set_leverage') {
     getCreditsDashboard();
   } else if (action == 'unfreeze_leverage') {
@@ -1192,7 +1193,8 @@ async function updateData(action = null) {
   } else if (action == 'return_credit') {
     getCreditsDashboard();
   } else if (action == 'return_fee') {
-    getCreditsDashboard();
+    await getCreditsDashboard();
+    getDepositsDashboard();
   } else if (action == 'stake_liq') {
     getLiquidityDashboard();
   }
@@ -1838,8 +1840,11 @@ async function initCreditProfilesDropdown() {
 
   setOptionsToSelect(ddData, dropdown);
 
-  new CustomSelect({
-    elem: dropdown,
+  new Choices(dropdown, {
+    classNames: {
+      containerOuter: 'choices choices-collateral',
+    },
+    searchEnabled: false
   });
 
   userObject.state.selected_credprofile = ddData[0].p_id;
@@ -3434,7 +3439,9 @@ async function return_credit_confirm(cred_id) {
   let returned_asset_type = depTypeByProfileId(userObject.credits.cred_arr[0][cred_id]);
   let returned_asset_token_address = tokenAddressByProfileId(userObject.credits.cred_arr[0][cred_id]);
 
+  let return_val = 0;
   if (returned_asset_type == NATIVE_ETHEREUM) {
+    return_val = return_amount;
     //do nothing
   } else if (returned_asset_type == ERC721_TOKEN) {
     modal_return_credit.isLoadedAfterConfirm(false);
@@ -3480,6 +3487,7 @@ async function return_credit_confirm(cred_id) {
 
     creditContractInstance.methods.returnCredit(userObject.account, cred_id, return_amount).send({
         from: userObject.account,
+        value: return_val,
         gasPrice: window.gp
       }, function (error, txnHash) {
         if (error) {
@@ -3518,8 +3526,10 @@ async function return_fee_confirm(cred_id) {
   //alert(return_amount); return;
   let returned_asset_type = depTypeByProfileId(userObject.credits.cred_arr[0][cred_id]);
   let returned_asset_token_address = tokenAddressByProfileId(userObject.credits.cred_arr[0][cred_id]);
+  let return_val = 0;
 
   if (returned_asset_type == NATIVE_ETHEREUM) {
+    return_val = return_amount;
     //do nothing
   } else if (returned_asset_type == ERC721_TOKEN) {
     errorMsg('error: ERC721 is not possible type for credit');
@@ -3562,6 +3572,7 @@ async function return_fee_confirm(cred_id) {
 
     creditContractInstance.methods.returnFee(userObject.account, cred_id, return_amount).send({
         from: userObject.account,
+        value: return_val,
         gasPrice: window.gp
       }, function (error, txnHash) {
         if (error) throw error;

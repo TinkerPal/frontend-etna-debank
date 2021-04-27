@@ -53,9 +53,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
   var notifBlock = document.querySelector('.notif-block');
   var notifIcon = document.querySelector('.notif');
+  var notifCloseBtns = notifBlock.querySelectorAll('.modal-close');
 
-  notifBlock.querySelector('.modal-close').addEventListener('click', () => {
-    notifBlock.classList.add('hidden');
+  notifCloseBtns.forEach(item => {
+    item.addEventListener('click', () => {
+      notifBlock.classList.add('hidden');
+    });
   });
 
   notifIcon.addEventListener('click', () => {
@@ -69,5 +72,5 @@ document.addEventListener("DOMContentLoaded", function (event) {
       item.closest('.notif-row').remove();
     });
   });
-  
+
 });

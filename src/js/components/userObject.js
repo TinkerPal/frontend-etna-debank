@@ -658,10 +658,16 @@ let userObject = {
               let clt_id = cred_arr[4][i];
               let clt_profile_id = clt_arr[0][parseInt(clt_id)];
               let clt_amount = clt_arr[1][parseInt(clt_id)];
-              //let am = window.web3js_reader.utils.fromWei(clt_amount, 'ether');
-              let adj_am = toTokens(clt_amount, 4); //((parseFloat(am)).toFixed(4)).toString(); 
-              let tdtxt = profileNameByProfileId(clt_profile_id) + ': ' + adj_am;
-              txt = '<td class="table-cell">' + tdtxt + '</td>';
+              let tdtxt = profileNameByProfileId(clt_profile_id);
+              let adj_am;
+              if (tdtxt == 'nft'){
+                  adj_am =  clt_amount;
+              } else {
+                  adj_am =  toTokens(clt_amount,4);
+              }
+
+							tdtxt += ': '+adj_am; 
+		        	txt = '<td class="table-cell">'+tdtxt+'</td>';	
             }
 
           }
