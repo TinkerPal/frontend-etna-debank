@@ -734,41 +734,6 @@
     </div>
   </div>
 
-  <!-- 
-    {
-  "totalAssetsInfo": [
-    {
-        "title": "Total assets",
-        "title-with-value": "Total assets USD value",
-        "amount": "12,748,120",
-        "index-icon": "arrow-up.svg",
-        "increase": "2%",
-        "decrease": "",
-        "compared-to-previous": "$121,504"
-    }
-  ],
-  "marketInfo": [
-    {
-      "users-name": "Total users",
-      "users-amount": "31,657"
-    },
-    {
-      "borrow-name": "Total borrow",
-      "borrow-amount": "32,982"
-    },
-    {
-      "credits-name": "Total credits",
-      "credits-amount": "23,657"
-    },
-    {
-      "deposits-name": "Total deposits",
-      "deposits-amount": "21,982"
-    }
-  ],
-  
-},
-  
-   -->
    <div class="flex items-center mb-9">
     <div class="flex items-center">
       <div class="w-6 h-6 mr-4 ml-2">
@@ -989,7 +954,72 @@
       </div>
     </div>
   </div>
+
+  <div class="flex items-center w-full mb-3 assets-diagram">
+    <div class="w-5/12">
+      <div class="static-name">
+        Borrow
+      </div>
+    </div>
+    <div class="w-3/12">
+      <div class="static-data">
+        862
+      </div>
+    </div>
+    <div class="w-4/12">
+      <div class="h-5">
+        <img src="../images/pink-graph.svg" class="w-full h-full" alt="#">
+      </div>
+    </div>
+  </div>
+  <div class="flex items-center w-full mb-3 assets-diagram">
+    <div class="w-5/12">
+      <div class="static-name">
+        Deposits
+      </div>
+    </div>
+    <div class="w-3/12">
+      <div class="static-data">
+        753
+      </div>
+    </div>
+    <div class="w-4/12">
+      <div class="h-5">
+        <img src="../images/green-graph.svg" class="w-full h-full" alt="#">
+      </div>
+    </div>
+  </div>
+  <div class="flex items-center w-full assets-diagram">
+    <div class="w-5/12">
+      <div class="static-name">
+        Credits
+      </div>
+    </div>
+    <div class="w-3/12">
+      <div class="static-data">
+        553
+      </div>
+    </div>
+    <div class="w-4/12">
+      <div class="h-5">
+        <img src="../images/yellow-graph.svg" class="w-full h-full" alt="#">
+      </div>
+    </div>
+  </div>
   
+  <!-- <div class="flex items-center mt-3">
+    <a href="${data.notificationsArr[i].href}" class="btn mr-3">
+      Undo
+    </a>
+    <div class="btn bg-none border border-light-grey hover:text-grey-200 transition-all delete-btn">
+      Dismiss
+    </div>
+  </div> -->
+
+  <span class="active-span">
+    My Deposits
+  </span>
+
 </body>
 
 </html>

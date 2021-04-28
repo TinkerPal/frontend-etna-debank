@@ -36,10 +36,18 @@
 @layer components {
   .nav-link {
     @apply py-3.5 px-3 mr-4 border-b-2 flex items-center text-gray-300 text-sm border-transparent hover: text-white whitespace-nowrap font-medium cursor-pointer;
-  }
 
-  .nav-link.active {
-    @apply border-green;
+    &.active {
+      @apply border-green px-0 text-white;
+
+      .active-span {
+        @apply py-2 px-3 bg-gray-900 rounded-md;
+      }
+    }
+
+    .active-span {
+      @apply pointer-events-none;
+    }
   }
 
   .page.active {
@@ -234,7 +242,7 @@
   }
 
   .notif-row {
-    @apply mb-6 flex items-center justify-between py-4 px-5 border-l-4 rounded-md hidden;
+    @apply mb-6 flex items-center justify-between py-4 px-5 border-l-4 rounded-md hidden fixed w-full;
 
     .close-icon svg {
       @apply w-3 h-3;
@@ -1191,6 +1199,7 @@ button:disabled {
 .notif-block {
   max-height: calc(100vh - 100px);
   overflow: auto;
+
   &__item {
     .modal-close {
       display: none;
@@ -1201,6 +1210,7 @@ button:disabled {
         display: flex;
       }
     }
+
     &:last-child {
       .notif-item {
         border: none;

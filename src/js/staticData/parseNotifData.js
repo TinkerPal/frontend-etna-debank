@@ -5,18 +5,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
   "notificationsArr": [
     {
       "title": "Notification title 111111",
-      "text": "Lorem ipsum dolor sit amet consectetur adipisicing elit oluptatum tenetur.",
-      "href": "#3"
+      "text": "Lorem ipsum dolor sit amet consectetur adipisicing elit oluptatum tenetur."
     },
     {
       "title": "Notification title 222222",
-      "text": "Lorem ipsum dolor sit amet consectetur adipisicing elit oluptatum tenetur.",
-      "href": "#4"
+      "text": "Lorem ipsum dolor sit amet consectetur adipisicing elit oluptatum tenetur."
     },
     {
       "title": "Notification title 33333",
-      "text": "Lorem ipsum dolor sit amet consectetur adipisicing elit oluptatum tenetur.",
-      "href": "#5"
+      "text": "Lorem ipsum dolor sit amet consectetur adipisicing elit oluptatum tenetur."
     }
   ]
 }
@@ -41,14 +38,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
           <div class="text-sm text-white font-normal text-opacity-50">
             ${data.notificationsArr[i].text}
           </div>
-          <div class="flex items-center mt-3">
-            <a href="${data.notificationsArr[i].href}" class="btn mr-3">
-              Undo
-            </a>
-            <div class="btn bg-none border border-light-grey hover:text-grey-200 transition-all delete-btn">
-              Dismiss
-            </div>
-          </div>
+          
         </div>
       </div>
       <div class="w-1/12 flex justify-end h-full">
@@ -66,6 +56,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
   let deleteBtns = document.querySelectorAll('.delete-btn');
 
   notifAmount.innerHTML = sumItems;
+
+  if (sumItems < 1) {
+    notifAmount.remove();
+    notifCommon.remove();
+  }
 
   deleteBtns.forEach(item => {
     item.addEventListener('click', () => {

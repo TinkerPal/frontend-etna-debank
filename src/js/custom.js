@@ -1816,18 +1816,16 @@ async function initCreditProfilesDropdown() {
     searchEnabled: false
   });
 
-  let collateralDropdownOptions = [];
-  ddData.forEach(item => {
+  const collateralDropdownOptions = ddData.map(item => {
 
     const deposit = getDepositByTokenId(item.p_id);
 
     if(deposit > 0) {
       return { value: item.text, label: item.text}
     }
-    // profiles[j]['p_id']
-
-  })
-
+  }).filter(item => !!item);
+  
+  collateralDropdownOptions[0].selected = true;
   collateralDropdown.setChoices(collateralDropdownOptions, 'value', 'label', true);
 
 
