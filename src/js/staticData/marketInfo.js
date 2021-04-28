@@ -1,36 +1,38 @@
 document.addEventListener("DOMContentLoaded", function (event) {
-  
+
   const marketData = JSON.parse(`
   {  
-    "marketInfo": [
-      {
-        "usersName": "Total users",
-        "usersAmount": "31,657"
-      },
-      {
-        "borrowName": "Total borrow",
-        "borrowAmount": "32,982"
-      },
-      {
-        "creditsName": "Total credits",
-        "creditsAmount": "23,657"
-      },
-      {
-        "depositsName": "Total deposits",
-        "depositsAmount": "21,982"
-      },
-      {
-        "assetsNumb": "12,748,120",
-        "assetsCompared": "121,504"
-      }
-    ],
+    "usersName": "Total users",
+    "usersAmount": "31,657",
+    "borrowName": "Total borrow",
+    "borrowAmount": "32,982",
+    "creditsName": "Total credits",
+    "creditsAmount": "23,657",
+    "depositsName": "Total deposits",
+    "depositsAmount": "21,982",
+    "assetsNumb": "12,748,120",
+    "assetsCompared": "121,504"
   }
   `);
-  
-  for (const i in marketData.marketInfo) {
-    
-  }
-  
+
+  let creditsAmount = document.querySelector('#creditsAmount');
+  let depositsAmount = document.querySelector('#depositsAmount');
+  let totalBorrow = document.querySelector('#totalBorrow');
+  let usersAmount = document.querySelector('#usersAmount');
+  let comparedSum = document.querySelectorAll('.compared-sum');
+  let currentCapitItems = document.querySelectorAll('.current-capit');
+
+  currentCapitItems.forEach(item => {
+    item.innerHTML = marketData.assetsNumb;
   });
-  
-  
+
+  comparedSum.forEach(elem => {
+    elem.innerHTML = `$${marketData.assetsCompared}`;
+  });
+
+  usersAmount.innerHTML = `$${marketData.usersAmount}`;
+  totalBorrow.innerHTML = `$${marketData.borrowAmount}`;
+  depositsAmount.innerHTML = `$${marketData.depositsAmount}`;
+  creditsAmount.innerHTML = `$${marketData.creditsAmount}`;
+
+});

@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         </div>
       </div>
       <div class="w-10/12 h-full ml-2 flex flex-col">
-        <div class="notif-item flex flex-col pb-6 mb-6 border-b border-light-violet">
+        <div class="notif-item flex flex-col pb-5 mb-5 border-b border-light-violet">
           <div class="text-sm font-medium mb-1">
             ${data.notificationsArr[i].title}
           </div>

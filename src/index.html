@@ -21,7 +21,7 @@
 
 <body class="font-body bg-black text-white h-full min-h-screen relative w-screen flex flex-col relative">
 
-  <header class="w-full z-30">
+  <header class="w-full z-30 min-h-66">
     @@include('./templates/header.html')
   </header>
 
@@ -47,7 +47,7 @@
 
   <div id="total-dashboard-tab" class="page">
     <div class="main mx-6 mt-11 text-white xl:flex-row flex flex-col">
-      <div class="dashboard-col xl:w-96 w-full">
+      <div class="dashboard-col xl:w-290 w-full">
         @@include('./templates/dashboard.html')
       </div>
       <div class="dashboard-col__rest xl:w-rest w-full">
@@ -99,6 +99,7 @@
   <script src="/js/staticData/dashboardCurrency.js"></script>
   <script src="/js/staticData/parseNotifData.js"></script>
   <script src="/js/staticData/graphicInfo.js"></script>
+  <script src="/js/staticData/marketInfo.js"></script>
   <!-- end data dashboard -->
   
   <script src="/js/common.js"></script>

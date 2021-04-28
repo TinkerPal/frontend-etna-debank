@@ -20,10 +20,14 @@ module.exports = {
       },
       width: {
         'fit-content': 'fit-content',
-        'rest': 'calc(100% - 24rem)'
+        'rest': 'calc(100% - 24rem)',
+        '290': '290px'
       },
       fontSize: {
         '8': ['8px', '10px']
+      },
+      minHeight: {
+        '66': '66px'
       }
     },
     fontFamily: {
