@@ -266,7 +266,7 @@ async function getAccount() {
     window.gp = await window.web3js.eth.getGasPrice();
     window.gp = window.gp * 2;
   } catch (error) {
-    errorMsg('cannot access wallet');
+    errorMsg('Cannot access wallet. Reloar your page, please.');
   }
 }
 
@@ -339,7 +339,7 @@ async function getAccountWalletConnect() {
     window.gp = window.gp * 2;
 
   } catch (error) {
-    errorMsg('cannot access wallet');
+    errorMsg('Cannot access wallet. Reloar your page, please.');
   }
 
 }

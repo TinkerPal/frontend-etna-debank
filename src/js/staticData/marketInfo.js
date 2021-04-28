@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
   }
   `);
 
-  let creditsAmount = document.querySelector('#creditsAmount');
+  let borrowAmount = document.querySelector('#borrowAmount');
   let depositsAmount = document.querySelector('#depositsAmount');
   let totalBorrow = document.querySelector('#totalBorrow');
   let usersAmount = document.querySelector('#usersAmount');
@@ -33,6 +33,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
   usersAmount.innerHTML = `$${marketData.usersAmount}`;
   totalBorrow.innerHTML = `$${marketData.borrowAmount}`;
   depositsAmount.innerHTML = `$${marketData.depositsAmount}`;
-  creditsAmount.innerHTML = `$${marketData.creditsAmount}`;
+  borrowAmount.innerHTML = `$${marketData.creditsAmount}`;
 
 });

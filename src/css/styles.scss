@@ -35,27 +35,26 @@
 
 @layer components {
   .nav-link {
-    @apply py-3.5 px-3 mr-4 border-b-2 flex items-center text-gray-300 text-sm border-transparent hover: text-white whitespace-nowrap font-medium cursor-pointer;
+    @apply py-3.5 mr-4 border-b-2 flex items-center text-gray-300 text-sm border-transparent hover: text-white whitespace-nowrap font-medium cursor-pointer;
 
     &.active {
       @apply border-green px-0 text-white;
 
       .active-span {
-        @apply py-2 px-3 bg-gray-900 rounded-md;
+        @apply bg-gray-900 rounded-md;
       }
     }
 
     .active-span {
-      @apply pointer-events-none;
+      @apply pointer-events-none py-2 px-3;
     }
   }
 
-  .page.active {
-    @apply block;
-  }
-
   .page {
-    @apply hidden;
+    @apply hidden pt-16;
+    &.active {
+      @apply block;
+    }
   }
 
   .btn {
@@ -154,7 +153,7 @@
   }
 
   .icon-cell {
-    @apply flex items-center justify-center w-4 h-5 mr-2;
+    @apply flex items-center justify-center w-4 h-4 mr-2;
   }
 
   .crypto-icon {
@@ -206,7 +205,7 @@
   }
 
   .name-field {
-    @apply text-sm text-grey-100 font-medium mb-1;
+    @apply text-sm text-grey-100 font-medium mb-1 truncate;
   }
 
   .field-info {
@@ -417,9 +416,7 @@
   color: #fff;
   display: flex;
   align-items: center;
-}
-
-.js-Dropdown-title {
+  min-height: 44px;
   .li-link {
     display: none;
   }
@@ -607,12 +604,18 @@
   }
 }
 
+.parallax-main {
+  margin-top: -80px;
+}
+
 @media(max-width: 991px) {
   .parallax-main {
     width: 100%;
     height: 620px;
+    margin-top: 0px;
   }
 }
+
 
 .table-row td {
   &:first-child {

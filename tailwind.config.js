@@ -26,7 +26,7 @@ module.exports = {
       fontSize: {
         '8': ['8px', '10px']
       },
-      minHeight: {
+      height: {
         '66': '66px'
       }
     },
