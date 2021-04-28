@@ -45,7 +45,7 @@
 
   <!-- end LoadBar -->
 
-  <div id="p1" class="page active">
+  <div id="total-dashboard-tab" class="page">
     <div class="main mx-6 mt-11 text-white xl:flex-row flex flex-col">
       <div class="dashboard-col xl:w-96 w-full">
         @@include('./templates/dashboard.html')
@@ -55,13 +55,13 @@
       </div>
     </div>
   </div>
-  <div id="p2" class="page">
+  <div id="dashboard-tab" class="page">
     @@include('./templates/deposits.html')
   </div>
-  <div id="p3" class="page">
+  <div id="borrow-tab" class="page">
     @@include('./templates/borrow.html')
   </div>
-  <div id="p4" class="page">
+  <div id="liq-earn-tab" class="page">
     @@include('./templates/liquidity.html')
   </div>
 

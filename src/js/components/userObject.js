@@ -139,6 +139,7 @@ let userObject = {
         for (let j = 0; j < profiles.length; j++) {
           let txt = '';
           for (let i = 0; i < am_arr[0].length; i++) {
+
             if (am_arr[0][i] == profiles[j]['p_id']) {
               //found
               if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) { //amount
@@ -660,14 +661,14 @@ let userObject = {
               let clt_amount = clt_arr[1][parseInt(clt_id)];
               let tdtxt = profileNameByProfileId(clt_profile_id);
               let adj_am;
-              if (tdtxt == 'nft'){
-                  adj_am =  clt_amount;
+              if (tdtxt == 'nft') {
+                adj_am = clt_amount;
               } else {
-                  adj_am =  toTokens(clt_amount,4);
+                adj_am = toTokens(clt_amount, 4);
               }
 
-							tdtxt += ': '+adj_am; 
-		        	txt = '<td class="table-cell">'+tdtxt+'</td>';	
+              tdtxt += ': ' + adj_am;
+              txt = '<td class="table-cell">' + tdtxt + '</td>';
             }
 
           }
@@ -821,18 +822,18 @@ let userObject = {
         for (let i = 0; i < cred_arr[0].length; i++) { //i == credit id
           let txt = '';
 
-          if (cred_arr[1][i] > 0 && lev_arr[i] == 0 ) {
+          if (cred_arr[1][i] > 0 && lev_arr[i] == 0) {
 
             let lbl = '';
 
             txt = `<td class="table-cell w-12">${createTableBtnWithIcon('price-tag', 'Leverage', `show_modal_leverage(${i.toString()})`)}</td>`;
-          } else if (lev_arr[i] > 0){ 
+          } else if (lev_arr[i] > 0) {
             txt = `<td class="table-cell w-12">${createTableBtnWithIcon('discount', 'Unfreeze', `show_modal_unfreeze(${i.toString()})`)}</td>`;
           }
 
           if (!txt) txt = '<td class="table-cell w-12">-</td>';
           this.set_leverage_column.push(txt);
-        } 	
+        }
 
       }
       return this.set_leverage_column;
@@ -862,9 +863,14 @@ let userObject = {
         for (let i = 0; i < cred_arr[0].length; i++) { //i == deposit id
           let txt = '';
 
-          if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
-            txt = `<td class="table-cell pl-0 rounded-r-lg" onclick="modal_return_credit.show()">${createTableBtnWithIcon('money', 'Repay borrow', `return_credit(${i.toString()})`)}</td>`;
+          if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) {
+            if (cred_arr[1][i] > 0) { //credit or fee unpaid
+              txt = `<td class="table-cell pl-0 rounded-r-lg" onclick="modal_return_credit.show()">${createTableBtnWithIcon('money', 'Repay borrow', `return_credit(${i.toString()})`)}</td>`;
+            } else {
+              txt = `<td class="table-cell pl-0 rounded-r-lg" onclick="modal_return_fee.show()">${createTableBtnWithIcon('money', 'Repay fee', `return_fee(${i.toString()})`)}</td>`;
+            }
           }
+
           if (!txt) txt = '<td class="table-cell pl-0 rounded-r-lg">-</td>';
           this.return_credit_col.push(txt);
         }

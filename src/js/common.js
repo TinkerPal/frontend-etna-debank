@@ -1,35 +1,4 @@
 document.addEventListener("DOMContentLoaded", function (event) {
-
-  // active/current tab function
-  var pages = document.querySelectorAll('.page');
-  var tabs = document.querySelectorAll('.nav-link');
-
-  for (let j = 0; j < tabs.length; j++) {
-    // attach event listener to all tabs
-    tabs[j].addEventListener('click', clickTab)
-  }
-
-  // event listener function
-  function clickTab(e) {
-
-    var tabID = e.currentTarget.id
-    var pageID = tabID.replace('t', 'p')
-
-    for (let i = 0; i < pages.length; i++) {
-      // deactivate all tabs
-      tabs[i].classList.remove('active')
-      // hide all pages
-      pages[i].classList.remove('active')
-    }
-
-    // activate current tab
-    e.currentTarget.classList.add('active')
-
-    // show current page
-    var currentPage = document.querySelector('#' + pageID)
-    currentPage.classList.add('active'); {}
-  }
-
   (Element.prototype.appendAfter = function (element) {
     element.parentNode.insertBefore(this, element.nextSibling);
   }),
