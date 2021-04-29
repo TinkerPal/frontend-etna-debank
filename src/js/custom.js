@@ -3,7 +3,7 @@ const modal_withdraw_yield = new Modal('modal-withdraw-reward');
 const modal_add_credit = new Modal('modal-open-new-credit', () => {
   initCreditProfilesDropdown();
   initGetCreditDropdown()
-});
+}, creditProfilesDropdownBuild);
 const modal_return_fee = new Modal('modal-return-fee');
 const modal_return_credit = new Modal('modal-return-credit');
 const modal_add_leverage = new Modal('modal-set-leverage');
@@ -57,6 +57,14 @@ const nftAssetsSelect = new Choices('#nftAssetsSelect', {
       },
     };
   },
+});
+
+const collateralDropdown = new Choices('#credprofiles-dropdown', {
+  classNames: {
+    containerOuter: 'choices choices-collateral',
+  },
+  searchEnabled: false,
+  shouldSort: false,
 });
 
 const walletButton = document.getElementById("enableEthereumButton");
@@ -821,6 +829,13 @@ function safeSetValueById(id, value, disp = 'block') {
   }
 }
 
+function safeHtmlById(id, html = '-') {
+  var el = document.getElementById(id);
+  if (el) {
+    el.innerHTML = html;
+  }
+}
+
 function safeSetInnerHTMLById(id, value, disp = 'block', className = null) {
   const el = document.getElementById(id);
   if (el) {
@@ -1145,17 +1160,22 @@ async function updateData(action = null) {
 
   if (!action) { //only when loaded
 
-    getDepositsDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(100);
-    });
-
-    getCreditsDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(59);
-    });
 
     getLiquidityDashboard(() => {
       document.getElementById('debank_load_bar').ldBar.set(58);
     });
+
+    getDepositsDashboard(() => {
+      document.getElementById('debank_load_bar').ldBar.set(59);
+    });
+
+    getCreditsDashboard(() => {
+      document.getElementById('debank_load_bar').ldBar.set(75);
+    });
+
+    getCapDashbord(() => {
+      document.getElementById('debank_load_bar').ldBar.set(100);
+    })
 
     //getFamersDashboard();
   } else if (action == 'make_deposit') {
@@ -1797,9 +1817,37 @@ async function initDepositProfilesDropdown() {
   depprofilesDropdown.onchange = depositModalRebuild;
 }
 
-async function initCreditProfilesDropdown() {
+const getCollateralAvailableTokens = async () => {
   const ddData = await getCreditProfilesList();
 
+  return ddData.map(item => {
+
+    const deposit = getDepositByTokenId(item.p_id);
+
+    if (deposit > 0) {
+      return {
+        ...item
+      }
+    }
+  }).filter(item => !!item);
+}
+
+async function creditProfilesDropdownBuild() {
+  const ddData = await getCollateralAvailableTokens();
+
+  const collateralDropdownOptions = ddData.map(item => ({
+    value: item.text,
+    label: item.text
+  }))
+
+  collateralDropdownOptions[0].selected = true;
+  collateralDropdown.setChoices(collateralDropdownOptions, 'value', 'label', true);
+
+  userObject.state.selected_credprofile = ddData[0].p_id;
+  full_collateral_btn(depAmountByProfileId(userObject.state.selected_credprofile)[0]);
+}
+
+async function initCreditProfilesDropdown() {
   const dropdown = modal_add_credit.modal.querySelector('#credprofiles-dropdown');
   const tokensAmmountCollateral = modal_add_credit.modal.querySelector('#tokens_amount_collateral');
   const tokensAmmountGetCredit = modal_add_credit.modal.querySelector('#tokens_amount_getcredit');
@@ -1809,32 +1857,13 @@ async function initCreditProfilesDropdown() {
   const partCollateral = modal_add_credit.modal.querySelector('#part_collateral');
   const getCreditButton = modal_add_credit.modal.querySelector('#getcredit_button');
 
-  const collateralDropdown = new Choices(dropdown, {
-    classNames: {
-      containerOuter: 'choices choices-collateral',
-    },
-    searchEnabled: false
-  });
-
-  const collateralDropdownOptions = ddData.map(item => {
-
-    const deposit = getDepositByTokenId(item.p_id);
-
-    if(deposit > 0) {
-      return { value: item.text, label: item.text}
-    }
-  }).filter(item => !!item);
-  
-  collateralDropdownOptions[0].selected = true;
-  collateralDropdown.setChoices(collateralDropdownOptions, 'value', 'label', true);
-
-
-  userObject.state.selected_credprofile = ddData[0].p_id;
-  full_collateral_btn(depAmountByProfileId(userObject.state.selected_credprofile)[0]);
+  await creditProfilesDropdownBuild();
 
   dropdown.addEventListener(
     'change',
     async function (e) {
+        const ddData = await getCollateralAvailableTokens();
+
         const value = e.target.value;
         const selectedData = ddData.find(item => item.text === value);
         if (value === 'nft') {
@@ -1879,7 +1908,6 @@ async function initCreditProfilesDropdown() {
       },
       false,
   );
-
 }
 
 async function initGetCreditDropdown() {
@@ -2093,7 +2121,7 @@ const setApyStr = async (asset) => {
     errorMsg('cannot find APY for pair');
     return;
   }
-  safeSetInnerHTMLById('liq_pair_apy', apy_str + ' APY', 'flex');
+  safeHtmlById('liq_pair_apy', apy_str + ' APY');
 }
 
 async function initLiqTermsDropdown() {
@@ -2122,7 +2150,7 @@ async function initLiqPairsDropdown() {
       liq_pair_address: asset.addr,
     })
     const bal = await getWalletBalanceStr(userObject.state.liq_pair_address);
-    safeSetInnerHTMLById('liq_pair_in_wallet', bal, 'flex');
+    safeHtmlById('liq_pair_in_wallet', bal);
   }
 
   const liqPairsAssets = modal_add_lliquidity.modal.querySelector('#liqpairs-dropdown');
@@ -2816,6 +2844,72 @@ async function getLiquidityDashboard(callback = null) {
 
 // getDepositsDashboard
 
+async function getCapDashbord(callback = null) {
+  
+  const data = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&price_change_percentage=24h,30d').then(response => {
+    if (response.status !== 200) {
+      throw new Error(response.status);
+    } else {
+      return response.json();
+    }
+  }).catch(error => {
+    throw new Error(error);
+  })
+
+  
+
+  if (data.length === 0) {
+    return;
+  }
+  console.log(data)
+  const getClassForNumber = (value) => {
+    return value > 0 ? 'number_increase' : 'number_degrease';
+  }
+  const listCryptoTemplate = (imgSrc, name, price, priceChange) => {
+    const imgBlock = `<img width="25" height="25" src="${imgSrc}" />`;
+    const nameBlock = `<div>${name}</div>`;
+    const priceBlock = `<div>${numeral(price).format('$ 0,0.00')}</div>`;
+    const priceChangeBlock = `<div className="${getClassForNumber(price)}">${numeral(priceChange/ 100).format('0.0%')}</div>`;
+    return `
+    <div class="w-full flex">
+      <div class="w-2/12">${imgBlock}</div>
+      <div class="w-3/12">${nameBlock}</div>
+      <div class="w-4/12">${priceBlock}</div>
+      <div class="w-3/12">${priceChangeBlock}</div>
+    </div>
+    `;
+  }
+  const marketCapElem = document.querySelector('#dashboard-market-cap');
+  const marketCapCompared = document.querySelector('#dashboard-market-compared');
+  const marketTopFiveList = document.querySelector('#market-top-five-list');
+
+  let marketCap = 0;
+  let marketCapChange = 0;
+  let marketTopFiveCurrency = [];
+
+  data.forEach(item => {
+    marketCap += item.market_cap;
+    marketCapChange += item.market_cap_change_24h;
+    marketTopFiveList.innerHTML += listCryptoTemplate(item.image, item.symbol, item.current_price, item.price_change_percentage_24h);
+    marketTopFiveCurrency.push({
+      price: item.current_price,
+      name: item.name,
+      price_change: numeral(item.price_change_percentage_30d_in_currency/100).format('0.0%'),
+      price_change_class: getClassForNumber(item.price_change_percentage_30d_in_currency)
+    })
+  });
+  
+  const marketCapPercentChange = (marketCapChange / (marketCap + (marketCapChange * -1)));
+
+  marketCapElem.innerHTML = numeral(marketCap).format('$0,000');
+
+  marketCapCompared.innerHTML = numeral(marketCapPercentChange).format('0.0%');
+  marketCapCompared.classList.add(getClassForNumber(marketCapPercentChange));
+
+ 
+  if (callback) callback();
+}
+
 async function getDepositsDashboard(callback = null) {
 
   let html =
@@ -3161,7 +3255,7 @@ async function set_leverage_confirm(ratio, cred_id) {
         from: userObject.account,
         gasPrice: window.gp
       }, function (error, txnHash) {
-        
+
         if (error) {
           modal_add_leverage.isLoadedAfterConfirm(false);
           throw error;
@@ -3586,13 +3680,15 @@ async function return_fee_confirm(cred_id) {
 
 function withdraw_reward_confirm(dep_id) {
 
+  modal_withdraw_yield.isLoadingAfterConfirm();
   //alert(dep_id); return;
   if (userObject.deposits.rew_arr[2][dep_id] == 0) {
+    modal_withdraw_yield.isLoadedAfterConfirm(false);
     infoMsg("reward is not currently exractable");
     return;
   }
 
-  modal_withdraw_yield.isLoadingAfterConfirm();
+
 
   initStakingContract(async (stakingContractInstance) => {
 

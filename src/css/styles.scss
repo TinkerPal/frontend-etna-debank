@@ -208,11 +208,17 @@
   }
 
   .name-field {
-    @apply text-sm text-grey-100 font-medium mb-1 truncate;
+    @apply text-sm text-grey-100 font-medium mb-1 ;
   }
 
   .field-info {
-    @apply py-3 px-4 text-sm flex items-center border-l border-light-grey justify-center h-full;
+    @apply py-3 px-4 text-sm w-full border-l border-light-grey justify-center h-full whitespace-nowrap;
+    &__container {
+      @apply flex items-center justify-center w-full h-full;
+    }
+    span {
+     @apply truncate;
+    }
   }
 
   .top-divider {
@@ -354,18 +360,13 @@
 
 .info-block__popup {
   display: none;
-}
-
-.info-block:hover .info-block__popup {
-  display: block;
+  word-break: break-word;
 }
 
 .hover-element {
   position: relative;
-  &:hover {
-    .info-block__popup{
-      display: block;
-    }
+  &:hover .info-block__popup {
+    display: block;
   }
 }
 
@@ -614,15 +615,8 @@
     position: absolute;
     content: "";
     bottom: 40px;
-    width: calc(100% - 370px);
-    right: 0px;
-  }
-}
-
-@media(max-width: 1280px) {
-  .socials-row {
-    position: static;
     width: calc(100% - 48px);
+    right: 0px;
   }
 }
 

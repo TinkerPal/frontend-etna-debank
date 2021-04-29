@@ -18,8 +18,8 @@
             </select>
           </div>
           <div class="w-5/12">
-            <div class="field-info" data-title="Amount in wallet">In wallet: <span class="in-wallet flex items-center ml-1"
-                id="liq_pair_in_wallet"></span></div>
+            <div class="field-info" data-id="infoPopup"><span class="field-info__container"><span class="inline-flex">In
+                  wallet: <span class="in-wallet items-center ml-1" id="liq_pair_in_wallet"></span></span></span></div>
           </div>
         </div>
       </div>
@@ -35,13 +35,18 @@
             </select>
           </div>
           <div class="w-5/12">
-            <div class="field-info justify-center percent-data" data-title="Liq pair APY" id="liq_pair_apy"></div>
+            <div class="field-info justify-center percent-data">
+              <span class="field-info__container"><span class="inline-flex"><span class="in-wallet items-center ml-1"
+                    id="liq_pair_apy"></span></span></span>
+            </div>
           </div>
         </div>
       </div>
       <div class="flex flex-col">
-        <button type="submit" class="btn w-full mb-4" onclick="approve_stake_liq()" data-id="approve" id="approve_liq_confirm">Approve tokens move</button>
-        <button disabled="disabled" class="btn w-full" data-id="confirm" onclick="stake_liq()" id="stake_liq_confirm">Confirm</button>
+        <button type="submit" class="btn w-full mb-4" onclick="approve_stake_liq()" data-id="approve"
+          id="approve_liq_confirm">Approve tokens move</button>
+        <button disabled="disabled" class="btn w-full" data-id="confirm" onclick="stake_liq()"
+          id="stake_liq_confirm">Confirm</button>
       </div>
     </div>
   </div>
@@ -113,8 +118,10 @@
           placeholder="18.5000">
       </div>
       <div class="flex flex-col">
-        <button type="submit" class="btn w-full mb-4" data-id="approve" id="return_credit_mvtokens">Approve tokens move</button>
-        <button disabled="disabled" class="btn w-full" data-id="confirm" id="return_credit_confirm">Repay borrow</button>
+        <button type="submit" class="btn w-full mb-4" data-id="approve" id="return_credit_mvtokens">Approve tokens
+          move</button>
+        <button disabled="disabled" class="btn w-full" data-id="confirm" id="return_credit_confirm">Repay
+          borrow</button>
       </div>
     </div>
   </div>
@@ -137,7 +144,7 @@
         <div class="name-field">Select Collateral</div>
         <div class="flex border-medium-grey border rounded-lg w-full without-link">
           <select id="credprofiles-dropdown" name="credprofiles-dropdown">
-            
+
           </select>
         </div>
       </div>
@@ -146,13 +153,17 @@
           <div class="info-block__popup">
             Information about ...
           </div>
-          <input type="radio" onclick="full_collateral_btn(depAmountByProfileId(userObject.state.selected_credprofile)[0])" name="credit" value="full_collateral" id="full_collateral" checked class="hidden">
+          <input type="radio"
+            onclick="full_collateral_btn(depAmountByProfileId(userObject.state.selected_credprofile)[0])" name="credit"
+            value="full_collateral" id="full_collateral" checked class="hidden">
           <label for="full_collateral" class="btn-checked">
             Full
           </label>
         </div>
         <div class="flex-1 flex">
-          <input type="radio" name="credit" onclick="part_collateral_btn(depAmountByProfileId(userObject.state.selected_credprofile)[0])" value="part_collateral" id="part_collateral" class="hidden">
+          <input type="radio" name="credit"
+            onclick="part_collateral_btn(depAmountByProfileId(userObject.state.selected_credprofile)[0])"
+            value="part_collateral" id="part_collateral" class="hidden">
           <label for="part_collateral" class="btn-checked">
             Part
           </label>
@@ -160,8 +171,9 @@
       </div>
       <div class="flex flex-col mb-4">
         <label for="tokens_amount_collateral" class="name-field">Assets amount</label>
-        <input type="text" oninput="updUSDValueCollateral('tokens_amount_collateral','usd_value_collateral', depAmountByProfileId(userObject.state.selected_credprofile)[0]);" name="tokens_amount_collateral"  id="tokens_amount_collateral" class="input-type" value=""
-          placeholder="-">
+        <input type="text"
+          oninput="updUSDValueCollateral('tokens_amount_collateral','usd_value_collateral', depAmountByProfileId(userObject.state.selected_credprofile)[0]);"
+          name="tokens_amount_collateral" id="tokens_amount_collateral" class="input-type" value="" placeholder="-">
       </div>
       <div class="flex flex-col mb-4">
         <label for="usd_value_collateral" class="name-field ">Coll. USD value</label>
@@ -177,40 +189,42 @@
             </select>
           </div>
           <div class="w-4/12">
-            <div class="field-info"><span class="in-wallet flex items-center ml-1" data-title="Credit tokens amount" id="tokens_amount_getcredit" style="display: flex;">-</span></div>
+            <div class="field-info" data-id="infoPopup"><span class="in-wallet flex items-center ml-1"
+                id="tokens_amount_getcredit">-</span></div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="specify w-full flex items-center justify-center mb-4">
-      <div class="line h-px w-full bg-medium-grey"></div>
-      <div
-        class="flex whitespace-nowrap items-center w-fit-content justify-center py-1 px-2 text-xs text-center text-gray-500 border border-medium-grey rounded-2xl">
-        Specify credit type</div>
-      <div class="line h-px w-full bg-medium-grey"></div>
-    </div>
-    <div class="flex mb-4 w-full btns-array">
-      <div class="flex-1 flex">
-        <input type="radio" name="credit-type" value="percent-regular" id="set_var_credit" checked class="hidden">
-        <label for="set_var_credit" class="btn-checked">
-          Regular
-        </label>
+      <div class="specify w-full flex items-center justify-center mb-4">
+        <div class="line h-px w-full bg-medium-grey"></div>
+        <div
+          class="flex whitespace-nowrap items-center w-fit-content justify-center py-1 px-2 text-xs text-center text-gray-500 border border-medium-grey rounded-2xl">
+          Specify credit type</div>
+        <div class="line h-px w-full bg-medium-grey"></div>
       </div>
-      <div class="flex-1 flex">
-        <input type="radio" name="credit-type" value="percent-fixed" id="set_fixed_credit" class="hidden">
-        <label for="set_fixed_credit" class="btn-checked">
-          Fixed %
-        </label>
+      <div class="flex mb-4 w-full btns-array">
+        <div class="flex-1 flex">
+          <input type="radio" name="credit-type" value="percent-regular" id="set_var_credit" checked class="hidden">
+          <label for="set_var_credit" class="btn-checked">
+            Regular
+          </label>
+        </div>
+        <div class="flex-1 flex">
+          <input type="radio" name="credit-type" value="percent-fixed" id="set_fixed_credit" class="hidden">
+          <label for="set_fixed_credit" class="btn-checked">
+            Fixed %
+          </label>
+        </div>
       </div>
-    </div>
-    <div class="flex flex-col">
-      <label for="total-credit" class="name-field ">Total credit %</label>
-      <input type="number" readonly name="credit_perc" id="credit_perc" class="input-type" placeholder="-">
-    </div>
-    <div class="flex flex-col mt-11">
-      <button type="submit" onclick="getCredit()" data-id="confirm" class="btn w-full" id="getcredit_button">Confirm</button>
+      <div class="flex flex-col">
+        <label for="total-credit" class="name-field ">Total credit %</label>
+        <input type="number" readonly name="credit_perc" id="credit_perc" class="input-type" placeholder="-">
+      </div>
+      <div class="flex flex-col mt-11">
+        <button type="submit" onclick="getCredit()" data-id="confirm" class="btn w-full"
+          id="getcredit_button">Confirm</button>
+      </div>
     </div>
   </div>
-</div>
 </div>
 
 <!-- open new deposit -->
@@ -244,8 +258,10 @@
         <input type="number" name="usd_value" id="usd_value" class="input-type" value="0" readonly>
       </div>
       <div class="flex flex-col">
-        <button type="submit" class="btn w-full mb-4" data-id="approve" onclick="approve_deposit()" id="approve_button">Approve tokens move</button>
-        <button type="submit" disabled class="btn w-full" data-id="confirm" onclick="deposit()" id="deposit_button">Deposit tokens</button>
+        <button type="submit" class="btn w-full mb-4" data-id="approve" onclick="approve_deposit()"
+          id="approve_button">Approve tokens move</button>
+        <button type="submit" disabled class="btn w-full" data-id="confirm" onclick="deposit()"
+          id="deposit_button">Deposit tokens</button>
       </div>
     </div>
   </div>
@@ -327,7 +343,8 @@
         <div class="name-field">Do you confirm to return all fee?</div>
       </div>
       <div class="flex flex-col">
-        <button type="submit" id="return_fee_approve" data-id="approve" class="btn w-full mb-4" >Approve tokens move</button>
+        <button type="submit" id="return_fee_approve" data-id="approve" class="btn w-full mb-4">Approve tokens
+          move</button>
         <button type="submit" id="return_fee_confirm" data-id="confirm" class="btn w-full">Confirm</button>
       </div>
     </div>

@@ -42,17 +42,31 @@ document.addEventListener("DOMContentLoaded", function (event) {
     });
   });
 
-  function infoPopup() {
-    let allInfo = document.querySelectorAll('[data-title]');
-    let infoPopup;
+  let allInfo = document.querySelectorAll('[data-id="infoPopup"]');
 
-    allInfo.forEach(item => {
-      item.classList.add('hover-element');
-      infoPopup = `<div class="info-block__popup">${item.dataset.title}</div>`;
-      item.innerHTML = infoPopup;
-    });
-  }
+  const mustBeCut = (field) => {
+    const container = field.firstChild;
+    const child = container.firstChild;
+    return container.clientWidth <= child.clientWidth
+  } 
+  
+  allInfo.forEach(item => {
+    if (mustBeCut(item)) item.parentNode.classList.add('hover-element');
 
-  infoPopup();
+    const infoPopup = document.createElement('div');
+    infoPopup.classList.add('info-block__popup');
+    item.parentNode.appendChild(infoPopup);
+
+    item.onmouseenter = () => {
+      if (mustBeCut(item)) {
+        item.parentNode.classList.add('hover-element')
+      } else {
+        item.parentNode.classList.remove('hover-element')
+      }
+
+      const content = item.textContent;
+      if (infoPopup.innerHTML != content) infoPopup.innerHTML = content;
+    }
+  });
 
 });

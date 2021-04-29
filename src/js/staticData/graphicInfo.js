@@ -45,7 +45,7 @@ for (const i in graphicInfoData.graphicInfo) {
       </div>
     </div>
   `
-  assetsDiagramBlock.innerHTML += assetsRow;
+  // assetsDiagramBlock.innerHTML += assetsRow;
 }
 
 });
