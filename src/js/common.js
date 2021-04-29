@@ -42,16 +42,17 @@ document.addEventListener("DOMContentLoaded", function (event) {
     });
   });
 
-  let allInfo = document.querySelectorAll('[data-title]');
+  function infoPopup() {
+    let allInfo = document.querySelectorAll('[data-title]');
+    let infoPopup;
 
-  let infoPopup;
+    allInfo.forEach(item => {
+      item.classList.add('hover-element');
+      infoPopup = `<div class="info-block__popup">${item.dataset.title}</div>`;
+      item.innerHTML = infoPopup;
+    });
+  }
 
-  // need to remake it
-
-  allInfo.forEach(item => {
-   infoPopup = `<div class="info-block__popup">${item.dataset.title}</div>`; 
-   item.innerHTML = infoPopup;
-   item.style = 'position: relative';
-  });
+  infoPopup();
 
 });

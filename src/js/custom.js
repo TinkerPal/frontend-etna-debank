@@ -1150,11 +1150,11 @@ async function updateData(action = null) {
     });
 
     getCreditsDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(75);
+      document.getElementById('debank_load_bar').ldBar.set(59);
     });
 
     getLiquidityDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(45);
+      document.getElementById('debank_load_bar').ldBar.set(58);
     });
 
     //getFamersDashboard();
