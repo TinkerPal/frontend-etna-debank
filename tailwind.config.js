@@ -21,7 +21,8 @@ module.exports = {
       width: {
         'fit-content': 'fit-content',
         'rest': 'calc(100% - 24rem)',
-        '290': '290px'
+        '290': '290px',
+        'notif': 'calc(100% - 48px)'
       },
       fontSize: {
         '8': ['8px', '10px']

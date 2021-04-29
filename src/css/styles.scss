@@ -241,7 +241,7 @@
   }
 
   .notif-row {
-    @apply mb-6 flex items-center justify-between py-4 px-5 border-l-4 rounded-md hidden fixed w-full;
+    @apply mb-6 flex items-center justify-between py-4 px-5 border-l-4 rounded-md hidden fixed w-notif z-60;
 
     a {
       @apply underline;
@@ -327,10 +327,6 @@
   .stake-input {
     @apply border-medium-grey border text-sm rounded-lg w-full h-11 bg-blueish-black focus: outline-none py-3 px-4;
   }
-}
-
-.notif-row {
-  z-index: 60;
 }
 
 .btn {

@@ -46,12 +46,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
   let infoPopup;
 
+  // need to remake it
+
   allInfo.forEach(item => {
-    console.log(item);
    infoPopup = `<div class="info-block__popup">${item.dataset.title}</div>`; 
    item.innerHTML = infoPopup;
    item.style = 'position: relative';
-   console.log(item);
   });
 
 });
