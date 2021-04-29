@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     "creditsAmount": "23,657",
     "depositsName": "Total deposits",
     "depositsAmount": "21,982",
-    "assetsNumb": "12,748,120",
+    "assetsNumb": "XX.XX bln $$",
     "assetsCompared": "121,504"
   }
   `);
