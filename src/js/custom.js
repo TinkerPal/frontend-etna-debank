@@ -274,7 +274,7 @@ async function getAccount() {
     window.gp = await window.web3js.eth.getGasPrice();
     window.gp = window.gp * 2;
   } catch (error) {
-      errorEmptyMsg('Cannot access wallet. Reloar your page, please.');
+    errorEmptyMsg('Cannot access wallet. Reloar your page, please.');
   }
 }
 
@@ -2850,7 +2850,7 @@ async function getLiquidityDashboard(callback = null) {
 // getDepositsDashboard
 
 async function getCapDashbord(callback = null) {
-  
+
   const data = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&price_change_percentage=24h,30d').then(response => {
     if (response.status !== 200) {
       throw new Error(response.status);
@@ -2897,24 +2897,32 @@ async function getCapDashbord(callback = null) {
     marketTopFiveCurrency.push({
       market_cap: item.market_cap,
       name: item.name,
-      price_change: numeral(item.price_change_percentage_30d_in_currency/100).format('0.0%'),
+      price_change: numeral(item.price_change_percentage_30d_in_currency / 100).format('0.0%'),
       price_change_class: getClassForNumber(item.price_change_percentage_30d_in_currency)
     })
   });
 
   let cryptoNumb1 = document.querySelector('#crypto-cap-1');
   let cryptoName1 = document.querySelector('#crypto-name-1');
-  // let cryptoNumb2 = document.querySelector('#crypto-numb-2');
-  // let cryptoName2 = document.querySelector('#crypto-cap-2');
-  // let cryptoNumb3 = document.querySelector('#crypto-numb-3');
-  // let cryptoName3 = document.querySelector('#crypto-cap-3');
-  // let cryptoNumb4 = document.querySelector('#crypto-numb-4');
-  // let cryptoName4 = document.querySelector('#crypto-cap-4');
-  // let cryptoNumb5 = document.querySelector('#crypto-numb-5');
-  // let cryptoName5 = document.querySelector('#crypto-cap-5');
+  let cryptoNumb2 = document.querySelector('#crypto-cap-2');
+  let cryptoName2 = document.querySelector('#crypto-name-2');
+  let cryptoNumb3 = document.querySelector('#crypto-cap-3');
+  let cryptoName3 = document.querySelector('#crypto-name-3');
+  let cryptoNumb4 = document.querySelector('#crypto-cap-4');
+  let cryptoName4 = document.querySelector('#crypto-name-4');
+  let cryptoNumb5 = document.querySelector('#crypto-cap-5');
+  let cryptoName5 = document.querySelector('#crypto-name-5');
 
-  cryptoNumb1.innerHTML = numeral(marketTopFiveCurrency[0].market_cap).format('($0.0000a)');
+  cryptoNumb1.innerHTML = numeral(marketTopFiveCurrency[0].market_cap).format('($0.0000 a)');
   cryptoName1.innerHTML = marketTopFiveCurrency[0].name;
+  cryptoNumb2.innerHTML = numeral(marketTopFiveCurrency[1].market_cap).format('($0.00 a)');
+  cryptoName2.innerHTML = marketTopFiveCurrency[1].name;
+  cryptoNumb3.innerHTML = numeral(marketTopFiveCurrency[2].market_cap).format('($0.00 a)');
+  cryptoName3.innerHTML = marketTopFiveCurrency[2].name;
+  cryptoNumb4.innerHTML = numeral(marketTopFiveCurrency[3].market_cap).format('($0.00 a)');
+  cryptoName4.innerHTML = marketTopFiveCurrency[3].name;
+  cryptoNumb5.innerHTML = numeral(marketTopFiveCurrency[4].market_cap).format('($0.00 a)');
+  cryptoName5.innerHTML = marketTopFiveCurrency[4].name;
 
   const marketCapPercentChange = (marketCapChange / (marketCap + (marketCapChange * -1)));
 
@@ -2923,7 +2931,7 @@ async function getCapDashbord(callback = null) {
   marketCapCompared.innerHTML = numeral(marketCapPercentChange).format('0.0%');
   marketCapCompared.classList.add(getClassForNumber(marketCapPercentChange));
 
- 
+
   if (callback) callback();
 }
 
