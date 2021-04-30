@@ -2861,8 +2861,6 @@ async function getCapDashbord(callback = null) {
     throw new Error(error);
   })
 
-  
-
   if (data.length === 0) {
     return;
   }
@@ -2897,15 +2895,15 @@ async function getCapDashbord(callback = null) {
     marketCapChange += item.market_cap_change_24h;
     marketTopFiveList.innerHTML += listCryptoTemplate(item.image, item.symbol, item.current_price, item.price_change_percentage_24h);
     marketTopFiveCurrency.push({
-      price: item.current_price,
+      market_cap: item.market_cap,
       name: item.name,
       price_change: numeral(item.price_change_percentage_30d_in_currency/100).format('0.0%'),
       price_change_class: getClassForNumber(item.price_change_percentage_30d_in_currency)
     })
   });
 
-  // let cryptoNumb1 = document.querySelector('#crypto-numb-1');
-  // let cryptoName1 = document.querySelector('#crypto-cap-1');
+  let cryptoNumb1 = document.querySelector('#crypto-cap-1');
+  let cryptoName1 = document.querySelector('#crypto-name-1');
   // let cryptoNumb2 = document.querySelector('#crypto-numb-2');
   // let cryptoName2 = document.querySelector('#crypto-cap-2');
   // let cryptoNumb3 = document.querySelector('#crypto-numb-3');
@@ -2915,8 +2913,8 @@ async function getCapDashbord(callback = null) {
   // let cryptoNumb5 = document.querySelector('#crypto-numb-5');
   // let cryptoName5 = document.querySelector('#crypto-cap-5');
 
-  // cryptoNumb1.innerHTML = numeral(marketTopFiveCurrency[0].price).format('$0,000');
-  // cryptoName1.innerHTML = marketTopFiveCurrency[0].name;
+  cryptoNumb1.innerHTML = numeral(marketTopFiveCurrency[0].market_cap).format('($0.0000a)');
+  cryptoName1.innerHTML = marketTopFiveCurrency[0].name;
 
   const marketCapPercentChange = (marketCapChange / (marketCap + (marketCapChange * -1)));
 
