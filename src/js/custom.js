@@ -1162,19 +1162,19 @@ async function updateData(action = null) {
 
 
     getLiquidityDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(58);
+      document.getElementById('debank_load_bar').ldBar.set(54);
     });
 
     getDepositsDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(59);
+      document.getElementById('debank_load_bar').ldBar.set(85);
     });
 
     getCreditsDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(75);
+      document.getElementById('debank_load_bar').ldBar.set(100);
     });
 
     getCapDashbord(() => {
-      document.getElementById('debank_load_bar').ldBar.set(100);
+      document.getElementById('debank_load_bar').ldBar.set(55);
     })
 
     //getFamersDashboard();
@@ -2866,16 +2866,16 @@ async function getCapDashbord(callback = null) {
     return value > 0 ? 'number_increase' : 'number_degrease';
   }
   const listCryptoTemplate = (imgSrc, name, price, priceChange) => {
-    const imgBlock = `<img width="25" height="25" src="${imgSrc}" />`;
+    const imgBlock = `<img width="20" height="20" src="${imgSrc}" />`;
     const nameBlock = `<div>${name}</div>`;
     const priceBlock = `<div>${numeral(price).format('$ 0,0.00')}</div>`;
-    const priceChangeBlock = `<div className="${getClassForNumber(price)}">${numeral(priceChange/ 100).format('0.0%')}</div>`;
+    const priceChangeBlock = `<div class="${getClassForNumber(price)}">${numeral(priceChange/ 100).format('0.0%')}</div>`;
     return `
-    <div class="w-full flex">
-      <div class="w-2/12">${imgBlock}</div>
-      <div class="w-3/12">${nameBlock}</div>
-      <div class="w-4/12">${priceBlock}</div>
-      <div class="w-3/12">${priceChangeBlock}</div>
+    <div class="w-full flex items-center mb-5">
+      <div class="w-1/12">${imgBlock}</div>
+      <div class="w-3/12"><div class="ml-2 uppercase text-sm tracking-wide">${nameBlock}</div></div>
+      <div class="w-5/12"><div class="text-white text-opacity-50 text-sm tracking-wide">${priceBlock}</div></div>
+      <div class="w-3/12 justify-end">${priceChangeBlock}</div>
     </div>
     `;
   }

@@ -124,10 +124,6 @@
     @apply py-2 px-3 shadow-sm rounded-md border border-light-violet flex items-center max-w-max cursor-pointer;
   }
 
-  .up {
-    @apply text-electric-green tracking-wider;
-  }
-
   .modal {
     @apply flex items-center justify-center w-full h-screen opacity-0 top-0 left-0 fixed z-50;
 
@@ -196,7 +192,7 @@
   }
 
   .up-info {
-    @apply flex items-center justify-center up;
+    @apply flex items-center justify-center;
   }
 
   .modal-top {
@@ -250,7 +246,7 @@
   }
 
   .notif-row {
-    @apply mb-6 flex items-center justify-between py-4 px-5 border-l-4 rounded-md hidden fixed w-notif z-60;
+    @apply mb-6 flex items-center justify-between py-4 px-5 border-l-4 rounded-md bottom-0 hidden fixed w-notif z-60;
 
     a {
       @apply underline;
@@ -335,6 +331,45 @@
 
   .stake-input {
     @apply border-medium-grey border text-sm rounded-lg w-full h-11 bg-blueish-black focus: outline-none py-3 px-4;
+  }
+  .number_increase {
+    @apply pl-4 relative text-electric-green tracking-wider;
+    &:before {
+      @apply absolute;
+    }
+  }
+  .number_degrease {
+    @apply pl-4 relative text-red tracking-wider;
+    &:before {
+      @apply absolute;
+    }
+  }
+}
+
+.number_increase {
+  &:before {
+    content: '';
+    top: calc(50% - 3px);
+    left: 4px;
+    width: 8px;
+    height: 6px;
+    background-image: url('../images/arrow-up.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+}
+.number_degrease {
+  &:before {
+    content: '';
+    top: calc(50% - 3px);
+    left: 4px;
+    width: 8px;
+    height: 6px;
+    background-image: url('../images/arrow-down.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
   }
 }
 

@@ -11,6 +11,12 @@
 
 <body>
 
+  <!-- for blocks with title notification => add info-popup__container
+  data-id="infoPopup" -->
+
+  <div class="number_degrease"></div>
+  <div class="number_increase"></div>
+
   <!-- Deposit table -->
   <div class="btn btn-load btn-done" disabled></div>
   <div class="flex flex-col">
@@ -1008,7 +1014,45 @@
       </div>
     </div>
   </div>
+
+  <div class="flex flex-col bg-blueish-black xl:w-full w-1/2 rounded-lg py-5 px-6" id="market-top-five-list">
   
+  
+    <div class="w-full flex items-center mb-5">
+      <div class="w-1/12"><img width="20" height="20" src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579"></div>
+      <div class="w-3/12"><div class="ml-2 uppercase"><div>btc</div></div></div>
+      <div class="w-5/12"><div>$ 54,478.00</div></div>
+      <div class="w-3/12 justify-end"><div class="number_increase">0.0%</div></div>
+    </div>
+    
+    <div class="w-full flex items-center mb-5">
+      <div class="w-1/12"><img width="20" height="20" src="https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880"></div>
+      <div class="w-3/12"><div class="ml-2 uppercase"><div>eth</div></div></div>
+      <div class="w-5/12"><div>$ 2,791.07</div></div>
+      <div class="w-3/12 justify-end"><div class="number_increase">2.1%</div></div>
+    </div>
+    
+    <div class="w-full flex items-center mb-5">
+      <div class="w-1/12"><img width="20" height="20" src="https://assets.coingecko.com/coins/images/825/large/binance-coin-logo.png?1547034615"></div>
+      <div class="w-3/12"><div class="ml-2 uppercase"><div>bnb</div></div></div>
+      <div class="w-5/12"><div>$ 617.57</div></div>
+      <div class="w-3/12 justify-end"><div class="number_increase">8.6%</div></div>
+    </div>
+    
+    <div class="w-full flex items-center mb-5">
+      <div class="w-1/12"><img width="20" height="20" src="https://assets.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png?1605778731"></div>
+      <div class="w-3/12"><div class="ml-2 uppercase"><div>xrp</div></div></div>
+      <div class="w-5/12"><div>$ 1.57</div></div>
+      <div class="w-3/12 justify-end"><div class="number_increase">12.0%</div></div>
+    </div>
+    
+    <div class="w-full flex items-center mb-5">
+      <div class="w-1/12"><img width="20" height="20" src="https://assets.coingecko.com/coins/images/325/large/Tether-logo.png?1598003707"></div>
+      <div class="w-3/12"><div class="ml-2 uppercase"><div>usdt</div></div></div>
+      <div class="w-5/12"><div>$ 1.00</div></div>
+      <div class="w-3/12 justify-end"><div class="number_increase">0.2%</div></div>
+    </div>
+    </div>
   <!-- <div class="flex items-center mt-3">
     <a href="${data.notificationsArr[i].href}" class="btn mr-3">
       Undo
