@@ -347,7 +347,7 @@ async function getAccountWalletConnect() {
     window.gp = window.gp * 2;
 
   } catch (error) {
-    errorMsg('Cannot access wallet. Reloar your page, please.');
+    errorEmptyMsg('Cannot access wallet. Reloar your page, please.');
   }
 
 }
