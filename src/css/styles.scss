@@ -35,7 +35,7 @@
 
 @layer components {
   .admin-btn {
-    @apply bg-gray-900 rounded-md py-2 px-3 flex items-center justify-center lg:mr-8 cursor-pointer mr-6 w-fit-content my-3 hover:bg-white hover:text-black transition-all hidden;
+    @apply bg-gray-900 rounded-md py-2 px-3 flex items-center justify-center cursor-pointer mr-6 w-fit-content hover:bg-white hover:text-black transition-all hidden;
   }
   .nav-link {
     @apply py-3.5 mr-4 border-b-2 flex items-center text-gray-300 text-sm border-transparent hover: text-white whitespace-nowrap font-medium cursor-pointer;
