@@ -274,7 +274,7 @@ async function getAccount() {
     window.gp = await window.web3js.eth.getGasPrice();
     window.gp = window.gp * 2;
   } catch (error) {
-    errorMsg('Cannot access wallet. Reloar your page, please.');
+      errorEmptyMsg('Cannot access wallet. Reloar your page, please.');
   }
 }
 
@@ -968,6 +968,11 @@ function errorMsg(msg) {
   safeSetInnerHTMLById('info_pane_message', msg);
   document.getElementById('info_pane').classList.remove('info_pane_error', 'info_pane_info', 'info_pane_success');
   document.getElementById('info_pane').classList.add('info_pane_error');
+}
+
+function errorEmptyMsg(msg) {
+  safeSetInnerHTMLById('empty-error__msg', msg);
+  document.querySelector('.empty-access').classList.remove('hidden');
 }
 
 function resetMsg() {
@@ -2898,7 +2903,21 @@ async function getCapDashbord(callback = null) {
       price_change_class: getClassForNumber(item.price_change_percentage_30d_in_currency)
     })
   });
-  
+
+  // let cryptoNumb1 = document.querySelector('#crypto-numb-1');
+  // let cryptoName1 = document.querySelector('#crypto-cap-1');
+  // let cryptoNumb2 = document.querySelector('#crypto-numb-2');
+  // let cryptoName2 = document.querySelector('#crypto-cap-2');
+  // let cryptoNumb3 = document.querySelector('#crypto-numb-3');
+  // let cryptoName3 = document.querySelector('#crypto-cap-3');
+  // let cryptoNumb4 = document.querySelector('#crypto-numb-4');
+  // let cryptoName4 = document.querySelector('#crypto-cap-4');
+  // let cryptoNumb5 = document.querySelector('#crypto-numb-5');
+  // let cryptoName5 = document.querySelector('#crypto-cap-5');
+
+  // cryptoNumb1.innerHTML = numeral(marketTopFiveCurrency[0].price).format('$0,000');
+  // cryptoName1.innerHTML = marketTopFiveCurrency[0].name;
+
   const marketCapPercentChange = (marketCapChange / (marketCap + (marketCapChange * -1)));
 
   marketCapElem.innerHTML = numeral(marketCap).format('$0,000');

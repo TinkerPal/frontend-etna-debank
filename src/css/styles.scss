@@ -333,17 +333,22 @@
     @apply border-medium-grey border text-sm rounded-lg w-full h-11 bg-blueish-black focus: outline-none py-3 px-4;
   }
   .number_increase {
-    @apply pl-4 relative text-electric-green tracking-wider;
+    @apply pl-4 relative text-electric-green tracking-wider text-sm;
     &:before {
       @apply absolute;
     }
   }
   .number_degrease {
-    @apply pl-4 relative text-red tracking-wider;
+    @apply pl-4 relative text-red tracking-wider text-sm;
     &:before {
       @apply absolute;
     }
   }
+}
+
+.empty-access {
+  top: 66px;
+  height: calc(100% - 60px);
 }
 
 .number_increase {
