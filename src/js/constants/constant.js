@@ -7,6 +7,12 @@ const CRYPTO_ICONS = [{
 }, {
   name: 'etna'
 }, {
+  name: 'eth'
+}, {
+  name: 'btcb'
+}, {
+  name: 'dai'
+}, {
   name: 'bnb-st1-2w',
   icon: 'pancake'
 },{
