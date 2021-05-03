@@ -1840,6 +1840,8 @@ const getCollateralAvailableTokens = async () => {
 async function creditProfilesDropdownBuild() {
   const ddData = await getCollateralAvailableTokens();
 
+  if(ddData.length === 0) return;
+
   const collateralDropdownOptions = ddData.map(item => ({
     value: item.text,
     label: item.text
