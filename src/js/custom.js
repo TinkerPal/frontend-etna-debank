@@ -219,8 +219,8 @@ async function getAccount() {
     else {window.location.replace('https://fame.cyclops.game/upgrade.html')}*/
 
     window.chainId = window.ethereum.chainId;
-
-    document.getElementById('debank_load_bar').ldBar.set(10);
+    
+    setLdBar(10);
 
     safeSetValueBySelector('.current-wallet', userObject.account);
     safeSetInnerHTMLBySelector('.current-wallet', userObject.account, ' inline');
@@ -232,26 +232,13 @@ async function getAccount() {
 
     await Promise.all([initStakingContract(), initCreditContract(), initLiqLevContract(), initCyclopsNFTContract()])
 
-    document.getElementById('debank_load_bar').ldBar.set(15);
+    setLdBar(15);
 
     await userObject.load();
 
-    document.getElementById('debank_load_bar').ldBar.set(25);
+    setLdBar(25);
 
     if (window.location.pathname == '/') {
-
-      window.barCheck = setInterval(barChecker, 1000);
-      async function barChecker() {
-        if (document.getElementById('load_bar_cover')) {
-          if (
-            document.getElementById('tokens_balance').innerHTML
-          ) {
-            await new Promise(r => setTimeout(r, 1000));
-            document.getElementById('load_bar_cover').style.display = "none";
-            clearInterval(window.barCheck);
-          }
-        }
-      }
 
       if (window.chainId == undefined) {
         document.getElementById('net_name').innerHTML = "unknown net";
@@ -267,9 +254,6 @@ async function getAccount() {
       }
 
       await updateData();
-
-      // 	//initFamersDropdowns();
-      // 	initLiqTermsDropdown();
     }
 
     window.gp = await window.web3js.eth.getGasPrice();
@@ -292,7 +276,7 @@ async function getAccountWalletConnect() {
     //do not rely on automatic..
     if (window.chainId == undefined) window.chainId = '0x1';
 
-    document.getElementById('debank_load_bar').ldBar.set(10);
+    setLdBar(10);
 
     // Load chain information over an HTTP API
     const chainData = evmChains.getChain(chainId);
@@ -312,36 +296,16 @@ async function getAccountWalletConnect() {
 
     window.BN = web3js.utils.BN;
 
-    await Promise.all([initStakingContract(), initCreditContract(), initLiqLevContract()])
+    await Promise.all([initStakingContract(), initCreditContract(), initLiqLevContract(), initCyclopsNFTContract()])
 
-    document.getElementById('debank_load_bar').ldBar.set(15);
+    setLdBar(15);
 
     await userObject.load();
 
-    document.getElementById('debank_load_bar').ldBar.set(25);
+    setLdBar(25);
 
     if (window.location.pathname == '/') {
-
-      // if (window.chainId == undefined){
-      // 	document.getElementById('net_name').innerHTML="unknown net";
-      // 	document.getElementById('net_info').style.display ="block";
-      // 	document.getElementById('net_info').style.color ="red";
-      // 	document.getElementById('net_txt').innerHTML=" wrong network, connect to BSC-Test";
-      // } else if (window.chainId != '0x61') {
-      // 	document.getElementById('net_name').innerHTML=chains[window.chainId];
-      // 	document.getElementById('net_info').style.display ="block";
-      // 	document.getElementById('net_icon').style.color ="red";
-      // 	document.getElementById('net_txt').innerHTML=" wrong network, connect to BSC-Test";
-      // } else {
-      // 	document.getElementById('net_icon').style.color ="green";
-      // 	document.getElementById('net_info').style.display ="block";
-      // 	document.getElementById('net_txt').innerHTML=" BSC-Test";
-      // }
-
       await updateData();
-
-      //initFamersDropdowns();
-      // initLiqTermsDropdown();
     }
 
     window.gp = await window.web3js.eth.getGasPrice();
@@ -1166,22 +1130,20 @@ async function updateData(action = null) {
 
   if (!action) { //only when loaded
 
-
+    
     getLiquidityDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(25);
+      setLdBar(null, '25');
     });
 
     getDepositsDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(100);
+      setLdBar(null, '25');  
     });
 
     getCreditsDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(50);
+      setLdBar(null, '25')
     });
 
-    getCapDashbord(() => {
-      document.getElementById('debank_load_bar').ldBar.set(75);
-    })
+    getCapDashbord()
 
     //getFamersDashboard();
   } else if (action == 'make_deposit') {
@@ -2864,7 +2826,7 @@ async function getCapDashbord(callback = null) {
   }).catch(error => {
     throw new Error(error);
   })
-
+  
   if (data.length === 0) {
     return;
   }
@@ -2877,7 +2839,7 @@ async function getCapDashbord(callback = null) {
     const nameBlock = `<div>${name}</div>`;
     const priceBlock = `<div>${numeral(price).format('$ 0,0.00')}</div>`;
     const priceChangeBlock = `<div class="${getClassForNumber(priceChange)}">${numeral(priceChange/ 100).format('0.0%')}</div>`;
-    console.log(priceChange);
+    
     return `
     <div class="w-full flex items-center mb-5">
       <div class="w-1/12">${imgBlock}</div>
@@ -2963,7 +2925,7 @@ async function getDepositsDashboard(callback = null) {
     '<tbody>';
 
   let profiles = userObject.deposit_profiles;
-
+  
   let [am_arr, rew_arr] = await Promise.all([userObject.deposits.getAmArr(),
     userObject.deposits.getRewArr()
   ]);
@@ -3067,7 +3029,7 @@ async function getDepositsDashboard(callback = null) {
   html += '</tbody>' +
     '</table>';
 
-  safeSetInnerHTMLById('tokens_balance', html)
+  safeSetTableData('tokens_balance', html, 'empty')
 
   if (callback) callback();
 }

@@ -12,6 +12,27 @@ const isEmptyTable = (idContainer) => {
   return document.querySelector(`#${idContainer} table tbody`).innerHTML === '';
 }
 
+const setLdBar = (value, part = 'null') => {
+  const ldBar = document.getElementById('debank_load_bar').ldBar;
+  const ldBarWrapper = document.getElementById('load_bar_cover');
+
+  if (!value) {
+    value = Number(ldBar.value) + Number(part);
+  }
+
+  if (Number(value) > 100) value = 100;
+
+  ldBar.set(value);
+
+  if (ldBar.value === 100) {
+    setTimeout(() => {
+      ldBarWrapper.style.display = 'none';
+    }, 1000);
+  } else {
+    ldBarWrapper.style.display = 'block';
+  }
+}
+
 const safeSetTableData = (id, value, className) => {
   const el = document.getElementById(id);
   if (el) {
