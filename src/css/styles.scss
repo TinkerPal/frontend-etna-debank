@@ -143,7 +143,7 @@
   }
 
   .input-type {
-    @apply border-medium-grey border text-sm rounded-lg w-full h-11 bg-blueish-black focus: outline-none py-3 px-4;
+    @apply border-medium-grey border text-sm rounded-lg w-full h-10 bg-blueish-black focus: outline-none py-3 px-4;
   }
 
 
@@ -208,7 +208,7 @@
   }
 
   .field-info {
-    @apply py-3 px-4 text-sm w-full border-l border-light-grey justify-center h-full whitespace-nowrap;
+    @apply py-3 px-4 text-sm w-full border-l border-light-grey h-10 justify-center whitespace-nowrap;
     &__container {
       @apply flex items-center justify-center w-full h-full;
     }
@@ -429,7 +429,15 @@
   display: none;
 }
 
+.empty-liquidity {
+  display: none;
+}
+
 .empty .empty-borrow {
+  display: flex;
+}
+
+.empty .empty-liquidity {
   display: flex;
 }
 
@@ -455,7 +463,8 @@
   border-radius: 6px;
   box-sizing: border-box;
   cursor: pointer;
-  height: 38px;
+  height: 40px;
+  min-height: 40px;
   padding: 8px 12px;
   position: relative;
   text-align: left;
@@ -465,7 +474,6 @@
   color: #fff;
   display: flex;
   align-items: center;
-  min-height: 44px;
   .li-link {
     display: none;
   }
@@ -598,11 +606,11 @@
 .without-link {
   .js-Dropdown {
     width: 100%;
-    height: 100%;
+    height: 40px;
 
     &-title {
       border: 0px;
-      height: 100%;
+      height: 40px;
     }
   }
 }
@@ -1224,7 +1232,7 @@ button:disabled {
   }
 
   .choices__inner {
-    min-height: 44px;
+    min-height: 40px;
     border-width: 0px;
   }
 }

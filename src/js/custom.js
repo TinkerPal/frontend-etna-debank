@@ -188,6 +188,7 @@ window.addEventListener('DOMContentLoaded', async function () {
     //initCreditProfilesDropdown();
     //initGetCreditDropdown();
   }
+  
   modal_add_credit.onInitCallback();
   modal_add_lliquidity.onInitCallback();
   modal_add_deposit.onInitCallback();
@@ -1167,19 +1168,19 @@ async function updateData(action = null) {
 
 
     getLiquidityDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(54);
+      document.getElementById('debank_load_bar').ldBar.set(25);
     });
 
     getDepositsDashboard(() => {
-      document.getElementById('debank_load_bar').ldBar.set(85);
-    });
-
-    getCreditsDashboard(() => {
       document.getElementById('debank_load_bar').ldBar.set(100);
     });
 
+    getCreditsDashboard(() => {
+      document.getElementById('debank_load_bar').ldBar.set(50);
+    });
+
     getCapDashbord(() => {
-      document.getElementById('debank_load_bar').ldBar.set(55);
+      document.getElementById('debank_load_bar').ldBar.set(75);
     })
 
     //getFamersDashboard();
@@ -1840,7 +1841,7 @@ const getCollateralAvailableTokens = async () => {
 async function creditProfilesDropdownBuild() {
   const ddData = await getCollateralAvailableTokens();
 
-  if(ddData.length === 0) return;
+  if(ddData.length === 0) return;2
 
   const collateralDropdownOptions = ddData.map(item => ({
     value: item.text,
@@ -2704,7 +2705,7 @@ async function getCreditsDashboard(callback = null) {
 
   html += '<span style="display: inline; font-size: 60%; "><sup>*</sup> Effective current credit APR, based on all conditions, incl. Leverage</span>'
 
-  safeSetInnerHTMLById('my_credits', html, false, 'empty')
+  safeSetTableData('my_credits', html, 'empty')
 
   if (callback) callback();
 }
@@ -2844,7 +2845,8 @@ async function getLiquidityDashboard(callback = null) {
   html += '</tbody>' +
     '</table>';
 
-  safeSetInnerHTMLById('deposits_uniswap', html)
+  safeSetTableData('deposits_uniswap', html, 'empty')
+
   if (callback) callback();
 
 }
@@ -2866,7 +2868,7 @@ async function getCapDashbord(callback = null) {
   if (data.length === 0) {
     return;
   }
-  console.log(data)
+  
   const getClassForNumber = (value) => {
     return value > 0 ? 'number_increase' : 'number_degrease';
   }
@@ -2874,7 +2876,8 @@ async function getCapDashbord(callback = null) {
     const imgBlock = `<img width="20" height="20" src="${imgSrc}" />`;
     const nameBlock = `<div>${name}</div>`;
     const priceBlock = `<div>${numeral(price).format('$ 0,0.00')}</div>`;
-    const priceChangeBlock = `<div class="${getClassForNumber(price)}">${numeral(priceChange/ 100).format('0.0%')}</div>`;
+    const priceChangeBlock = `<div class="${getClassForNumber(priceChange)}">${numeral(priceChange/ 100).format('0.0%')}</div>`;
+    console.log(priceChange);
     return `
     <div class="w-full flex items-center mb-5">
       <div class="w-1/12">${imgBlock}</div>
@@ -2887,6 +2890,7 @@ async function getCapDashbord(callback = null) {
   const marketCapElem = document.querySelector('#dashboard-market-cap');
   const marketCapCompared = document.querySelector('#dashboard-market-compared');
   const marketTopFiveList = document.querySelector('#market-top-five-list');
+  marketTopFiveList.innerHTML = '';
 
   let marketCap = 0;
   let marketCapChange = 0;
