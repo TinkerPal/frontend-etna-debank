@@ -195,12 +195,10 @@ window.addEventListener('DOMContentLoaded', async function () {
 });
 
 async function initWeb3Modal() {
-
   web3Modal = new Web3Modal({
     cacheProvider: false, // optional
     providerOptions, // required
     disableInjectedProvider: true, // optional. For MetaMask / Brave / Opera.
-
   });
 }
 
@@ -1536,7 +1534,6 @@ async function initDataProviderContractReader(callback = null) {
 
     //if (window.web3js_reader){
     window.data_provider_smartcontract_reader = await new(web3jsReadersList.get()).eth.Contract(data_provider_abi, window.data_provider_contract_address);
-
     //window.data_provider_smartcontract_reader = await new window.web3js_reader.eth.Contract(data_provider_abi, window.data_provider_contract_address); 
     if (callback) callback(window.data_provider_smartcontract_reader);
     //}
@@ -1770,6 +1767,8 @@ async function initDepositProfilesDropdown() {
   const ddData = await getDepositProfilesList();
   const nftData = await getNFTAssets();
 
+  if(ddData.length === 0) return;
+
   initAssetsDropdown(nftData);
 
   const depprofilesDropdown = modal_add_deposit.modal.querySelector('#depprofiles-dropdown');
@@ -1883,6 +1882,8 @@ async function initCreditProfilesDropdown() {
 
 async function initGetCreditDropdown() {
   var ddData = await getCreditProfilesListCredit();
+
+  if(!ddData.length === 0) return;
 
   const dropdown = modal_add_credit.modal.querySelector('#getcredit-dropdown');
   const tokensAmmountGetCredit = modal_add_credit.modal.querySelector('#tokens_amount_getcredit');
@@ -2096,9 +2097,11 @@ const setApyStr = async (asset) => {
 }
 
 async function initLiqTermsDropdown() {
-
   const liqTermsSelect = modal_add_lliquidity.modal.querySelector('#liqterms-dropdown');
   const liqTermsData = userObject.liq_terms;
+
+  if(liqTermsData.length === 0) return;
+
   setOptionsToSelect(liqTermsData, liqTermsSelect);
 
   new CustomSelect({
@@ -2115,6 +2118,7 @@ async function initLiqTermsDropdown() {
 }
 
 async function initLiqPairsDropdown() {
+
   const setBal = async (asset) => {
     setState({
       liq_pair_name: asset.text,
@@ -2126,6 +2130,9 @@ async function initLiqPairsDropdown() {
 
   const liqPairsAssets = modal_add_lliquidity.modal.querySelector('#liqpairs-dropdown');
   const liqPairsAssetsOptions = userObject.liq_pairs;
+
+  if(liqPairsAssetsOptions.length === 0) return;
+
   setOptionsToSelect(liqPairsAssetsOptions, liqPairsAssets);
 
   new CustomSelect({
@@ -3074,11 +3081,11 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
     })]);
 
     let usd_bn = new BN(wei_amount.mul(new BN(data)));
-    //console.log('usd_bn', usd_bn.toString());
+
     let base = new BN(10);
     let div_dec = new BN(base.pow(new BN(dec)));
     let usd_adj = new BN(usd_bn.div(div_dec));
-    //console.log('usd_adj', usd_adj.toString());
+
     let usd_float = parseFloat(window.web3js_reader.utils.fromWei(usd_adj, 'ether'));
     safeSetValueById(usd_val_elem, usd_float.toFixed(3), 'inline');
   } else if (userObject.state.selected_depprofile_type == ERC721_TOKEN) {
@@ -3107,11 +3114,11 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
     //let data = await contract.methods.getData('CYTRUSD').call({from:userObject.account});
     //let dec = await contract.methods.getDecimals('CYTRUSD').call({from:userObject.account});
     let usd_bn = new BN(wei_amount.mul(new BN(data)));
-    //console.log('usd_bn', usd_bn.toString());
+
     let base = new BN(10);
     let div_dec = new BN(base.pow(new BN(dec)));
     let usd_adj = new BN(usd_bn.div(div_dec));
-    //console.log('usd_adj', usd_adj.toString());
+
     let usd_float = parseFloat(window.web3js_reader.utils.fromWei(usd_adj, 'ether'));
     safeSetValueById(usd_val_elem, usd_float.toFixed(3), 'inline');
 
@@ -3128,11 +3135,11 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
     //let data = await contract.methods.getData(userObject.state.selected_depprofile_name).call({from:userObject.account});
     //let dec = await contract.methods.getDecimals(userObject.state.selected_depprofile_name).call({from:userObject.account});
     let usd_bn = new BN(wei_amount.mul(new BN(data)));
-    //console.log('usd_bn', usd_bn.toString());
+
     let base = new BN(10);
     let div_dec = new BN(base.pow(new BN(dec)));
     let usd_adj = new BN(usd_bn.div(div_dec));
-    //console.log('usd_adj', usd_adj.toString());
+
     let usd_float = parseFloat(window.web3js_reader.utils.fromWei(usd_adj, 'ether'));
     safeSetValueById(usd_val_elem, usd_float.toFixed(3), 'inline');
   }
@@ -3141,10 +3148,9 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
 
 async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
   let am_arr = userObject.deposits.am_arr;
-  //console.log('am_arr[1][dep_id]=',dep_id, am_arr[1][dep_id]);
 
   let tokens_amount = document.getElementById(tokens_amount_elem).value;
-  //console.log('tokens_amount=',tokens_amount);
+
   let BN = window.BN;
   let wei_amount = 0;
   if (parseInt(userObject.state.selected_credprofile_type) != ERC721_TOKEN) {
@@ -3188,13 +3194,11 @@ async function calcUSDValueOfDeposit(wei_amount, dep_id) {
   let usd_val = await window.usage_calc_smartcontract_reader.methods.calcUSDValue(userObject.account, dep_id, wei_amount).call({
     from: userObject.account
   });
-  //console.log('usd_val',usd_val);
+
   return usd_val["est_usd"];
 }
 
 async function calcUSDValueByProfileNonNFT(wei_amount, profile_id) {
-  //console.log('calc usd', profile_id);
-  //return 0;
   if (profileNameByProfileId(profile_id) == 'nft') return 0;
   let usd_val = await window.usage_calc_smartcontract_reader.methods.calcUSDValueByProfileNonNFT(profile_id, wei_amount).call({
     from: userObject.account
@@ -3655,7 +3659,6 @@ async function return_fee_confirm(cred_id) {
   }
 
   initCreditContract(async (creditContractInstance) => {
-    //console.log(userObject.account, cred_id, return_amount);
 
     creditContractInstance.methods.returnFee(userObject.account, cred_id, return_amount).send({
         from: userObject.account,
