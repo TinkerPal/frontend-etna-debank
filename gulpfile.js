@@ -13,8 +13,6 @@ const gulp = require('gulp');
 const env = require('gulp-env');
 var tailwindcss = require('tailwindcss');
 
-const envFile = require('./env.json');
-
 function fileIncludeTask(cb) {
   return src([ './src/*.html' ])
     .pipe(
