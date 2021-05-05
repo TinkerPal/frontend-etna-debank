@@ -45,11 +45,14 @@ const safeSetTableData = (id, value, className) => {
 }
 
 const getDepositByTokenId = (p_id) => {
+
+  if(userObject.deposits.am_arr.length === 0) return;
+
   const index = userObject.deposits.am_arr[0].findIndex((item) =>
     item === p_id
   );
 
-  if(index === -1) return
+  if(index === -1) return;
 
   const deposit = userObject.deposits.am_arr[2][index];
 

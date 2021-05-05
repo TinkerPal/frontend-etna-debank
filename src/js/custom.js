@@ -234,6 +234,16 @@ async function getAccount() {
     });
     userObject.account = accounts[0];
 
+    const response = await fetch('/whitelisted.json');
+
+		const whitelisted_wallets = (await response.json()).whitelisted_wallets;
+    
+    const isWhitelistedAccount = whitelisted_wallets.some(whitelistedWallet => whitelistedWallet.toUpperCase() === userObject.account.toUpperCase());
+
+    if(!isWhitelistedAccount) {
+      window.location.replace('/by-invitation.html');
+    }
+
     /*
     if (userObject.account == '0xddc58f7839a71787eb94211bc922e0ae2bfb5501'){}
     else if( userObject.account == '0xc358a60bccec7d0efe5c5e0d9f3862bba6cb5cd8'){}
@@ -269,7 +279,7 @@ async function getAccount() {
     window.gp = await window.web3js.eth.getGasPrice();
     window.gp = window.gp * 2;
   } catch (error) {
-    errorEmptyMsg('Cannot access wallet. Reloar your page, please.');
+    errorEmptyMsg('Cannot access wallet. Reload your page, please.');
   }
 }
 
@@ -325,7 +335,7 @@ async function getAccountWalletConnect() {
     await postWalletCallback();
 
   } catch (error) {
-    errorEmptyMsg('Cannot access wallet. Reloar your page, please.');
+    errorEmptyMsg('Cannot access wallet. Reload your page, please.');
   }
 
 }
@@ -1797,7 +1807,7 @@ async function initDepositProfilesDropdown() {
   const ddData = await getDepositProfilesList();
   const nftData = await getNFTAssets();
 
-  if(ddData.length === 0) return;
+  if(ddData.length === 0 || nftData.length === 0) return;
 
   initAssetsDropdown(nftData);
 
@@ -1816,6 +1826,8 @@ async function initDepositProfilesDropdown() {
 
 const getCollateralAvailableTokens = async () => {
   const ddData = await getCreditProfilesList();
+
+  if(ddData.length === 0) return
 
   return ddData.map(item => {
 

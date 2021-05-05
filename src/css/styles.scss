@@ -318,6 +318,15 @@
 
   }
 
+  .web3 {
+    &-connected {
+      @apply fill-green focus:outline-none;
+    } 
+    &-disconnected{
+      @apply fill-yellow focus:outline-none;
+    }
+  }
+
   .close-icon {
     @apply w-5 h-5 flex items-center justify-center cursor-pointer;
   }

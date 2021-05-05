@@ -36,10 +36,6 @@ const CRYPTO_ICONS = [{
 }];
 
 
-let WALLETS_API_URL = "https://prod-debank-wallet-api.etna.network";
-window.cyclops_nft_contract_address  = "0x83C454FF387cebbC3CbAa5a7a44F412F4FA63c0E";
-window.chainId = "0x38";
-
 /*
 let WALLETS_API_URL;
 
