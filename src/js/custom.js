@@ -200,11 +200,12 @@ async function initWeb3Modal() {
 
     if (window.web3Modal) return;
 
-    let walletConnectProvider =  new WalletConnectProvider({
-      rpc: {
-        WALLET_OPTION_RPC
-          }
-    });
+    // not used?
+    // let walletConnectProvider =  new WalletConnectProvider({
+    //   rpc: {
+    //     WALLET_OPTION_RPC
+    //       }
+    // });
     
     let providerOptions = {
     walletconnect: {
