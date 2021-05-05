@@ -1,0 +1,582 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+	background-color: rgba(0,0,0,0.85);
+}
+
+a {
+ color: #e54353;
+}
+
+a:hover{
+ color: #e54353;
+ text-decoration: underline;
+}
+
+h1{
+  font-size: 6vh ;
+}
+
+h2{
+  font-size: 5vh ;
+}
+
+
+h5{
+  font-size: 4vh ;
+}
+
+
+.line-menu-wrap {
+	position: fixed;
+	display:block;
+
+	left:10vw;
+	top: 2vh;
+	
+	cursor: pointer;
+}
+
+.line-menu-wrap a{
+	color:  rgba(255,255,255,.8);
+	overflow: hidden;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 900;
+	font-size: 3vh;
+	line-height: 5vh;
+	letter-spacing: 0.2vw;
+	padding: 0;
+	margin: 0 auto;
+	text-align: left;
+    -webkit-transition: all 200ms linear;
+    transition: all 200ms linear; 
+	margin-right: 2vw;
+}
+
+.line-menu-wrap a:hover, .menu-selected{
+	color:  #DCDCDC;
+	text-decoration: underline !important;
+  text-decoration-color: #e54353 !important;
+}
+
+.cd-header{
+	background-color: rgba(0,0,0,1);
+	height: 14vh;
+	overflow: hidden;
+  
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 100%; /* Full width */
+}
+
+.content-div{
+	margin-top: 6vh;
+	margin-bottom: 6vh;
+}
+
+
+.black-select {
+	height: 4vh; 
+	font-size: 3vh; 
+	background-color: black; 
+	color:white; 
+	float: left; 
+	border-color: white;
+	outline: none;
+}
+
+.black-select:focus{
+	outline: none;
+}
+
+#price_chart_host{
+	
+
+}
+
+.top-text {margin-top:20vh;padding:1vh 1vh 0;background:transparent}
+.top-text h1{text-transform:uppercase;font-weight:400}
+.top-text h5{font-family: 'Roboto', sans-serif;font-weight:300;}
+
+.desc-paragraph{color:hsla(0,0%,100%,0.6);font-weight:300;font-size:2vh}
+
+
+.btn-cyclops{
+	border:2px solid #DC143C;
+	border-radius:1vw;
+	background:#101921;
+	min-width:12vw; 
+	height: 4vw; 
+	margin-top: 2vh;
+}
+
+.btn-cyclops:disabled{
+  background:grey;
+}
+
+.btn-cyclops-sel{
+  height: 3vw; 
+  border:2px solid purple;
+}
+
+.btn-cyclops-sel:disabled{
+  background:grey;
+}
+
+.btn-cyclops-long{
+	min-width: 20vw;
+}
+
+@media screen and (max-width: 899px) {
+	.btn-cyclops-long{
+		min-width: 25vw;
+	}
+	
+}
+
+.btn-cyclops,.btn-cyclops:hover{color:#fff;transition:all .5s}
+
+.btn-cyclops:hover{background:#DC143C; border:2px solid grey}
+
+.btn-cyclops-sel:hover{background:purple}
+
+
+
+.chart-box {
+  border: solid;
+  border-color: #e54353;
+  width: 82vw;
+  height: auto;
+  text-align: center;
+  background-color: black;
+  color: black;
+  font-size: 2vw;
+  font-weight: 600;
+  border-radius: 1em;
+  
+}
+
+.pool-box {
+  border: solid;
+  border-color: white;
+  width: 30vw! important;
+  min-width: 30vw! important;
+  height: auto;
+  text-align: center;
+  background-color: black;
+  color: white;
+  font-size: 2vw;
+  font-weight: 600;
+  border-radius: 1em;
+  margin-right:  1vw;
+}
+
+.pool-box:hover {
+  border-color: #e54353;
+}
+
+
+.pool-box-wide {
+  border: solid;
+  border-color: white;
+  width: 92vw! important;
+  min-width: 92vw! important;
+  height: auto;
+  text-align: center;
+  background-color: black;
+  color: white;
+  font-size: 2vw;
+  font-weight: 600;
+  border-radius: 1em;
+  margin-right:  1vw;
+}
+
+.pool-box-wide:hover {
+  border-color: #e54353;//rgb(68,213,26)
+}
+
+.dashboard-wide {
+  border: solid;
+  border-color: white;
+  width: 92vw! important;
+  min-width: 92vw! important;
+  height: auto;
+ 
+  background-color: black;
+  color: white;
+  font-size: 2vw;
+  font-weight: 600;
+  border-radius: 1em;
+  margin-right:  1vw;
+}
+
+.dashboard-wide:hover {
+  border-color: #e54353;//rgb(68,213,26)
+}
+
+.little-text{
+  font-size: 50%;
+  display: block;
+  margin: 2px;
+  padding: 0;
+}
+
+.small-text{
+  font-size: 70%;
+  display: inline;
+  margin: 2px;
+  padding: 0;
+}
+
+.small-text-block{
+  font-size: 70%;
+  display: block;
+  margin: 2px;
+  padding: 0;
+}
+
+
+.inbox-text{
+  display: block;
+  margin: 2px;
+  padding: 0;
+}
+
+
+.cycr-icon {
+    background-image: url('../img/cycrlogo.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 1em;
+    width: 1em;
+    display: block;
+    /* Other styles here */
+}
+
+.cytr-icon {
+    background-image: url('../img/cytrlogo.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 1em;
+    width: 1em;
+    display: block;
+    /* Other styles here */
+}
+
+.etna-icon {
+    background-image: url('../img/etna_icon.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 1em;
+    width: 1em;
+    display: block;
+    /* Other styles here */
+}
+
+.usdt-icon {
+    background-image: url('../img/usdtlogo.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 1em;
+    width: 1em;
+    display: block;
+    /* Other styles here */
+}
+
+.unsw-icon {
+    background-image: url('../img/unswlogo.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 1em;
+    width: 1em;
+    display: block;
+    /* Other styles here */
+}
+
+
+.input-right-label{
+  font-weight: 600;
+  width: 4em;
+}
+
+#enableEthereumButton {
+  position: fixed;
+  right: 5em;
+  top: 13px;
+}
+
+
+.top-row-button{
+  border: none; 
+  background-color: black;
+  color: white;
+  cursor: pointer;
+  font-size: 2vh;
+  
+}
+
+.top-row-button:hover{
+  color: #ba55d3;
+
+}
+
+
+
+#info_pane {
+  position: fixed;
+  bottom: 15px;
+  width: 50%;
+  left: 25%;
+  z-index: 94;
+  text-align: center;
+  background-color: black;
+  word-wrap: break-word;
+  
+  border: solid;
+  border-radius: 5px;
+  border-width: 2px;
+  
+    font-family: 'Poppins', sans-serif;
+  font-size: 1vw;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #fff;
+}
+
+#info_pane:empty {
+  display: none;
+}
+
+.info_pane_error {
+  border-color: red !important;
+}
+
+.info_pane_info {
+  border-color: #fff !important;
+}
+
+
+
+.clickable{
+  -webkit-transition: 0 2s;
+       -moz-transition: 0s 2s;
+        -ms-transition: 0 2s;
+         -o-transition: 0 2s;
+            transition: 0 2s;
+}
+
+.clickable:hover{
+  border: solid;
+  border-color: #e54353;
+  cursor: pointer;
+}
+
+.clickable:active{
+  font-size: 90%;
+  color: #e54353;
+  -webkit-transition: none;
+       -moz-transition: none;
+        -ms-transition: none;
+         -o-transition: none;
+            transition: none;
+}
+
+
+
+
+
+.dd-select{ border-radius: 0.5em ! important; border:solid 1px #ccc; position:relative; cursor:pointer; background: black; color: white; display:inline-block;
+  overflow:hidden;}
+
+
+
+.dd-desc { color:#aaa; display:block; overflow: hidden; font-weight:normal; line-height: 1.4em; }
+
+.dd-selected{ overflow:hidden; display:block; padding:10px; font-weight:bold; background: black; color: white;}
+.dd-pointer{ width:0; height:0; position:absolute; right:10px; top:50%; margin-top:-3px;}
+.dd-pointer-down{ border:solid 5px transparent; border-top:solid 5px #000; }
+
+
+.dd-pointer-up{border:solid 5px transparent !important; border-bottom:solid 5px #000 !important; margin-top:-8px;}
+.dd-options{ border:solid 1px #ccc; border-top:none; list-style:none; box-shadow:0px 1px 5px #ddd; 
+display:none; position:absolute; z-index:2000; margin:0; padding:0; overflow:auto; background: black; color: white;}
+
+
+.dd-option{ padding:10px; display:block; border-bottom:solid 1px #ddd; overflow:hidden; 
+text-decoration:none; cursor:pointer;-webkit-transition: all 0.25s ease-in-out;
+ -moz-transition: all 0.25s ease-in-out;-o-transition: all 0.25s ease-in-out;-ms-transition: all 0.25s ease-in-out; background: black; color: white;}
+.dd-options > li:last-child > 
+.dd-option{ border-bottom:none; background: black; color: white;}
+
+
+.dd-option:hover{ background: black; color: white;}
+.dd-selected-description-truncated { text-overflow: ellipsis; white-space:nowrap; background: black; color: white;}
+.dd-option-selected {  background: white !important; color: black! important; }
+
+
+
+.dd-option-image, .dd-selected-image { vertical-align:middle; float:left; margin-right:5px; max-width:64px;}
+.dd-image-right { float:right; margin-right:15px; margin-left:5px;}
+
+/*
+
+.dd-container { 
+  position: relative; 
+}​ 
+
+
+.dd-selected-text { 
+  font-weight: 400; 
+}​*/
+
+
+#nft_assets_list {
+  background-color: black; 
+  width: 95%;color:white; 
+  border: solid; 
+  border-color: white; 
+  border-width: 1px; 
+  height: auto; 
+  border-radius: 0.25em;
+  text-align: left;
+  position: relative;
+  padding: 0.25em;
+  overflow-wrap: break-word
+}
+
+.box-span {
+  display: inline;
+  border: solid;
+  border-color: purple;
+  border-width: 1px;
+  margin-right: 0.25em;
+  
+  padding: 0.25em;
+}
+
+
+
+.dashboard-box {
+  border: solid;
+  border-color: black;
+  background-color: white;
+  color: black;
+  width: 92vw! important;
+  min-width: 92vw! important;
+  height: auto;
+  text-align: center;
+ 
+  font-size: 2vw;
+  font-weight: 600;
+  border-radius: 1em;
+  margin-right:  1vw;
+}
+
+
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+}
+
+
+
+.transparent_button{
+  border-width: 1px;
+  border-style: solid;
+  border-color: white;  
+  border-radius: 0.25em;
+  background-color: black! important;
+  color: white !important;
+  width: 4vw;
+  max-width: 6vw;
+  height: 2vw;
+  font-size: 1.5vh;
+  font-weight: 400;
+}
+
+
+.transparent_button_pressed{
+  
+  background-color: grey !important;
+  
+}
+
+
+.tab-vert-line-left{
+  border-left: 2px solid;
+  border-color: white;
+}
+
+
+
+#wrap-uniswap {
+  width: 100%;
+  height: auto;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  border-radius: 2em;
+}
+#scaled-frame {
+  width: 80%;
+  height: 1200px;
+  border: 0px;
+ 
+  position: absolute;
+  top: -100px;
+  left: 47%;
+  z-index: 0;
+}
+
+#scaled-frame {
+  zoom: 1;
+  -moz-transform: scale(0.8);
+  -moz-transform-origin: 0 0;
+  -o-transform: scale(0.8);
+  -o-transform-origin: 0 0;
+  -webkit-transform: scale(0.8);
+  -webkit-transform-origin: 0 0;
+}
+
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  #scaled-frame {
+    zoom: 1;
+  }
+}
+
+
+#div_liq_buttons_panel {
+   
+    padding: 0;
+    
+    top: 5vh;
+    left: 3vw;
+    width: 15vw;
+    height: auto;
+    z-index: 2000; 
+}
+
+
+
+
+#div_liq_action_panel {
+   
+    padding: 0;
+  
+    
+    width: 100%;
+    height: auto;
+    z-index: 2000;
+    border-radius: 1em;
+    border: solid;
+    border-width: 1px;
+    border-color:  grey;
+    background: black;
+}
+
+
+

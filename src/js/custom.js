@@ -168,9 +168,12 @@ window.addEventListener('DOMContentLoaded', async function () {
     });
 
     window.ethereum.on('chainChanged', async (chainId) => {
-      if (chainId == '0x2a') window.location.replace('https://debank.cyclops.game');
       window.location.reload();
     });
+
+    //loginAdmin(); return;
+
+    await postWalletCallback();
 
   } else {
     walletButton.style.display = "block";
@@ -178,28 +181,48 @@ window.addEventListener('DOMContentLoaded', async function () {
     walletButton.addEventListener("click", toggleWeb3Connect);
   }
 
-  if (window.location.pathname == '/') {
-    await getWalletPref();
-    openTab({
-      srcElement: document.getElementById(userObject.state.current_page_id + '-menu')
-    }, userObject.state.current_page_id);
-
-    //initDepositProfilesDropdown()
-    //initCreditProfilesDropdown();
-    //initGetCreditDropdown();
-  }
-
-  modal_add_credit.onInitCallback();
-  modal_add_lliquidity.onInitCallback();
-  modal_add_deposit.onInitCallback();
 });
 
+async function postWalletCallback(){
+    if (window.location.pathname == '/') {
+      await getWalletPref();
+      openTab({
+        srcElement: document.getElementById(userObject.state.current_page_id + '-menu')
+      }, userObject.state.current_page_id);
+
+      modal_add_credit.onInitCallback();
+      modal_add_lliquidity.onInitCallback();
+      modal_add_deposit.onInitCallback();
+    }
+}
+
 async function initWeb3Modal() {
-  web3Modal = new Web3Modal({
-    cacheProvider: false, // optional
-    providerOptions, // required
-    disableInjectedProvider: true, // optional. For MetaMask / Brave / Opera.
-  });
+
+    if (window.web3Modal) return;
+
+    let walletConnectProvider =  new WalletConnectProvider({
+      rpc: {
+           56: "https://bsc-dataseed.binance.org/",
+          }
+    });
+    
+    let providerOptions = {
+    walletconnect: {
+          package: WalletConnectProvider,
+          options: {
+            rpc: {
+           56: "https://bsc-dataseed.binance.org/",
+            }
+          }
+        }
+    };
+    
+    window.web3Modal = new Web3Modal({
+      network: "binance", 
+        cacheProvider: false, // optional
+        providerOptions, // required
+        disableInjectedProvider: true, // optional. For MetaMask / Brave / Opera.
+    });
 }
 
 async function getAccount() {
@@ -216,7 +239,7 @@ async function getAccount() {
     else if( userObject.account == '0xc358a60bccec7d0efe5c5e0d9f3862bba6cb5cd8'){}
     else {window.location.replace('https://fame.cyclops.game/upgrade.html')}*/
 
-    window.chainId = window.ethereum.chainId;
+    window.chainId = '0x38';
 
     setLdBar(10);
 
@@ -238,18 +261,7 @@ async function getAccount() {
 
     if (window.location.pathname == '/') {
 
-      if (window.chainId == undefined) {
-        document.getElementById('net_name').innerHTML = "unknown net";
-        document.getElementById('net_info').style.color = "red";
-        document.getElementById('net_txt').innerHTML = " wrong network, connect to BSC-Test";
-      } else if (window.chainId != '0x61') {
-        document.getElementById('net_name').innerHTML = chains[window.chainId];
-        document.getElementById('net_icon').style.color = "red";
-        document.getElementById('net_txt').innerHTML = " wrong network, connect to BSC-Test";
-      } else {
-        document.getElementById('net_icon').style.color = "#48A68E";
-        document.getElementById('net_txt').innerHTML = " BSC-Test";
-      }
+      setNetInfo();
 
       await updateData();
     }
@@ -264,35 +276,33 @@ async function getAccount() {
 async function getAccountWalletConnect() {
 
   try {
-    ////
-    window.web3js = await new Web3(window.provider);
-    window.web3 = window.web3js;
-
+    console.log('in getAccountWalletConnect');
     // Get connected chain id from Ethereum node
-    const chainId = await window.web3js.eth.getChainId();
-
+    //  const chainId = '0x38';// await window.web3js.eth.getChainId();
     //do not rely on automatic..
-    if (window.chainId == undefined) window.chainId = '0x1';
-
-    setLdBar(10);
+    
+    window.chainId = '0x38';
 
     // Load chain information over an HTTP API
-    const chainData = evmChains.getChain(chainId);
+    // const chainData = evmChains.getChain(chainId);
+    window.web3js =  await new Web3(window.provider);
+    window.web3 = window.web3js;
+    window.BN = web3js.utils.BN;
 
-    // Get list of accounts of the connected wallet
-    let accounts = await web3js.eth.getAccounts();
-
+      // Get list of accounts of the connected wallet
+    window.accounts = await web3js.eth.getAccounts();
+  
     userObject.account = accounts[0];
+
+   
+    setLdBar(10);
 
     safeSetValueBySelector('.current-wallet', userObject.account);
     safeSetInnerHTMLBySelector('.current-wallet', userObject.account, 'inline');
 
-    //for MM-based code to work without changes for smart contract interactions
-    window.ethereum = window.provider;
+   // checkAdminButton();
 
-    await window.provider.enable();
 
-    window.BN = web3js.utils.BN;
 
     await Promise.all([initStakingContract(), initCreditContract(), initLiqLevContract(), initCyclopsNFTContract()])
 
@@ -303,16 +313,39 @@ async function getAccountWalletConnect() {
     setLdBar(25);
 
     if (window.location.pathname == '/') {
+
+      setNetInfo();
+    
       await updateData();
     }
 
     window.gp = await window.web3js.eth.getGasPrice();
     window.gp = window.gp * 2;
 
+    await postWalletCallback();
+
   } catch (error) {
     errorEmptyMsg('Cannot access wallet. Reloar your page, please.');
   }
 
+}
+
+function setNetInfo() {
+  if (window.chainId == undefined) {
+    document.getElementById('net_name').innerHTML = "unknown net";
+    document.getElementById('net_info').style.display ="block";
+    document.getElementById('net_icon').style.color = "red";
+    document.getElementById('net_txt').innerHTML = " wrong network, connect to BSC";
+  } else if (window.chainId != '0x38') {
+    document.getElementById('net_name').innerHTML = chains[window.chainId];
+    document.getElementById('net_info').style.display ="block";
+    document.getElementById('net_icon').style.color = "red";
+    document.getElementById('net_txt').innerHTML = " wrong network, connect to BSC";
+  } else {
+    document.getElementById('net_icon').style.color = "#48A68E";
+    document.getElementById('net_info').style.display ="block";
+    document.getElementById('net_txt').innerHTML = " BSC";
+  }
 }
 
 function temporaryDisableCurrentButton(element_id = null) {
@@ -955,27 +988,26 @@ function eventFire(el, etype) {
 
 async function onUniversalConnect() {
 
-  try {
-    window.provider = await web3Modal.connect();
-    getAccountWalletConnect();
-  } catch (e) {
-    return;
-  }
+    try {
+      window.provider = await web3Modal.connectTo("walletconnect");
+      getAccountWalletConnect();
+    } catch(e) {
+      return;
+    }
 
-  window.provider.on("accountsChanged", (accounts) => {
-    getAccountWalletConnect();
-  });
+    window.provider.on("accountsChanged", (accounts) => {
+      getAccountWalletConnect();
+    });
 
-  // Subscribe to chainId change
-  window.provider.on("chainChanged", (chainId) => {
-    if (chainId == '0x2a') window.location.replace('https://debank.cyclops.game');
-    window.location.reload();
-  });
+    // Subscribe to chainId change
+    window.provider.on("chainChanged", (chainId) => {
+      getAccountWalletConnect();
+    });
 
-  // Subscribe to networkId change
-  window.provider.on("networkChanged", (networkId) => {
-    getAccountWalletConnect();
-  });
+    // Subscribe to networkId change
+    window.provider.on("networkChanged", (networkId) => {
+      getAccountWalletConnect();
+    });
 
 }
 
@@ -991,12 +1023,9 @@ https://data-seed-prebsc-2-s3.binance.org:8545/
 */
 let web3jsReadersList = {
   rpc_list: new Array(
-    'https://data-seed-prebsc-1-s1.binance.org:8545/',
-    'https://data-seed-prebsc-2-s1.binance.org:8545/',
-    'https://data-seed-prebsc-1-s2.binance.org:8545/',
-    'https://data-seed-prebsc-2-s2.binance.org:8545/',
-    'https://data-seed-prebsc-1-s3.binance.org:8545/',
-    'https://data-seed-prebsc-2-s3.binance.org:8545/'
+    'https://bsc-dataseed.binance.org/',
+    'https://bsc-dataseed1.defibit.io/',
+    'https://bsc-dataseed1.ninicoin.io/'
   ),
   web3js_list: new Array,
   index: 0,
@@ -1012,7 +1041,7 @@ let web3jsReadersList = {
   get: function () {
     let ret_val = this.web3js_list[this.index];
     this.index++;
-    if (this.index > 3) this.index = 0;
+    if (this.index > this.rpc_list.length-1) this.index = 0;
     return ret_val;
   }
 }
@@ -1034,40 +1063,40 @@ function isWeb3Connected() {
   }
 }
 
-async function connectWeb3() {
-  if (isMetaMaskInstalled()) {
-    window.ethereum.autoRefreshOnNetworkChange = false;
-    getAccount();
+async function connectWeb3(){
 
-    window.ethereum.on('accountsChanged', function (accounts) {
+  if (isMetaMaskInstalled()){
+      window.ethereum.autoRefreshOnNetworkChange = false;
       getAccount();
-    });
 
-    window.ethereum.on('chainChanged', (chainId) => {
-      if (chainId == '0x2a') window.location.replace('https://debank.cyclops.game');
-      window.location.reload();
-    });
+      
+      window.ethereum.on('accountsChanged', function(accounts){
+          getAccount();
+        });
+
+        window.ethereum.on('chainChanged', (chainId) => {
+        getAccount();
+      });
 
   } else {
 
     //try to connect with something built-in, like Opera
-    try {
+    try{
+      await initWeb3Modal();
       await window.web3.currentProvider.enable();
-      if (window.web3.currentProvider.isConnected()) {
-        window.provider = window.web3.currentProvider;
-        getAccountWalletConnect();
+      if (window.web3.currentProvider.isConnected()){
+        window.provider =  window.web3.currentProvider;
+        await getAccountWalletConnect();
         return;
       }
 
-    } catch {
-      //do nothing
+    } catch (error)  {
+      console.warn(error)
     }
 
-    initWeb3Modal();
     //await web3Modal.updateTheme("dark");
 
-    await onUniversalConnect();
-    //errorMsg("You need to install MetaMask");
+      await onUniversalConnect();
 
   }
 }
@@ -1075,7 +1104,7 @@ async function connectWeb3() {
 async function onUniversalDisconnect() {
 
   // TODO: Which providers have close method?
-  if (window.provider.close) {
+  if(window.provider.close) {
     await window.provider.close();
 
     // If the cached provider is not cleared,
@@ -1087,25 +1116,29 @@ async function onUniversalDisconnect() {
 
   }
 
-  userObject.account = null;
-
-  window.location.reload();
+  window.account = null;
+  window.location.reload(); 
 }
 
-async function toggleWeb3Connect() {
-  if (isMetaMaskInstalled()) return; //do nothing, we just use metamask
+async function toggleWeb3Connect(){
+  console.log('in toggleWeb3Connect');
+  if (isMetaMaskInstalled()){
+    console.log('MM installed');
+    return; //do nothing, we just use metamask
+  } 
 
-  if (!isWeb3Connected()) { //connect to mobile wallet
+  if (!isWeb3Connected()){  //connect to mobile wallet
+    console.log('!isWeb3Connected');
     await connectWeb3();
-    if (isWeb3Connected()) {
+    if (isWeb3Connected()){ 
       walletButton.classList.remove('web3-disconnected');
       walletButton.classList.add('web3-connected');
     }
 
     return;
-  } else { //disconnect from mobile wallet
+  } else {    //disconnect from mobile wallet
     await onUniversalDisconnect();
-    if (!isWeb3Connected()) {
+    if (!isWeb3Connected()){ 
       walletButton.classList.remove('web3-connected');
       walletButton.classList.add('web3-disconnected');
     }
@@ -1138,10 +1171,10 @@ async function updateData(action = null) {
     });
 
     getCreditsDashboard(() => {
-      setLdBar(null, '25')
+      setLdBar(null, '25');
     });
 
-    getCapDashbord()
+    getCapDashbord();
 
     //getFamersDashboard();
   } else if (action == 'make_deposit') {
@@ -1285,6 +1318,7 @@ function checkAdminButton(token) {
         if (document.getElementById("adminButton")) {
           document.getElementById("adminButton").style.display = "block";
           document.getElementById("adminButton").addEventListener("click", loginAdmin);
+          document.getElementById("net_txt").addEventListener("click", loginAdminTst);
         }
 
         if (document.getElementById("upd_totals")) {
@@ -1442,22 +1476,18 @@ function checkAdminAuthentification(msg_params, encr_message, php_script, extra_
     });
 }
 
-function postAndRedirect(url, postData) {
-
-  var postFormStr = "<form method='POST' action='" + url + "'>\n";
-
-  for (var key in postData) {
-    if (postData.hasOwnProperty(key)) {
-      postFormStr += "<input type='hidden' name='" + key + "' value='" + postData[key] + "'></input>";
-    }
-  }
-
-  postFormStr += "</form>";
-
-  var formElement = $(postFormStr);
-
-  $('body').append(formElement);
-  $(formElement).submit();
+function postAndRedirect(url, postData){
+  let myForm = document.createElement('form');
+    myForm.setAttribute('action', url);
+    myForm.setAttribute('method', 'post');
+    myForm.setAttribute('hidden', 'true');
+    let myInput = document.createElement('input');
+    myInput.setAttribute('type', 'text');
+    myInput.setAttribute('name', 'body_raw');
+    myInput.setAttribute('value', postData['body_raw']);
+    myForm.appendChild(myInput);
+    document.body.appendChild(myForm);
+    myForm.submit();
 }
 
 function assetNFTUrlByName(asset_name) {
@@ -1802,8 +1832,7 @@ const getCollateralAvailableTokens = async () => {
 async function creditProfilesDropdownBuild() {
   const ddData = await getCollateralAvailableTokens();
 
-  if (ddData.length === 0) return;
-  2
+  if(ddData.length === 0) return;
 
   const collateralDropdownOptions = ddData.map(item => ({
     value: item.text,
@@ -2056,12 +2085,12 @@ async function getLiqPairs() {
   let lpairs = new Array();
 
   let pairs = [{
-      text: 'BNB-ST1',
-      addr: '0xc5b5b56e9ba3b43a3960d8b48ac7fcdc535dc80e'
+      text: 'ETNA-BNB',
+      addr: '0xa2facc7286e621c63a81a817dba57a3c4dcc5ff2'
     },
     {
-      text: 'BNB-ST2',
-      addr: '0xf5f7ac1821beaba18e690298fe9c681d4a1971a4'
+      text: 'ETNA-BUSD',
+      addr: '0xa1a1dc3a23882e33f41943ec620a2f68a6703fcc'
     }
   ];
 
@@ -2118,7 +2147,6 @@ async function initLiqTermsDropdown() {
 }
 
 async function initLiqPairsDropdown() {
-
   const setBal = async (asset) => {
     setState({
       liq_pair_name: asset.text,
@@ -2815,8 +2843,7 @@ async function getLiquidityDashboard(callback = null) {
   html += '</tbody>' +
     '</table>';
 
-  safeSetTableData('deposits_uniswap', html, 'empty')
-
+    safeSetTableData('deposits_uniswap', html, 'empty')
   if (callback) callback();
 
 }
@@ -2825,13 +2852,23 @@ async function getLiquidityDashboard(callback = null) {
 
 async function getCapDashbord(callback = null) {
 
-  const data = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&price_change_percentage=24h,30d').then(response => {
+  const data = await fetch('https://a1pi.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&price_change_percentage=24h,30d').then(response => {
     if (response.status !== 200) {
       throw new Error(response.status);
     } else {
       return response.json();
     }
   }).catch(error => {
+
+    // if api for get dashboard data failed, remove dashboard page and change current page to 
+    document.getElementById('total-dashboard-tab-menu').remove();
+
+    if(userObject.state.current_page_id === 'total-dashboard-tab') {
+      openTab({
+        srcElement: document.getElementById('dashboard-tab-menu')
+      }, 'dashboard-tab');
+    }
+
     throw new Error(error);
   })
 
@@ -2889,10 +2926,6 @@ async function getCapDashbord(callback = null) {
   let cryptoNumb5 = document.querySelector('#crypto-cap-5');
   let cryptoName5 = document.querySelector('#crypto-name-5');
 
-  // start cryptoBalls
-  // let cryptoBall5 = document.querySelector('#crypto-ball-5');
-  // end cryptoBalls
-
   cryptoNumb1.innerHTML = numeral(marketTopFiveCurrency[0].market_cap).format('($0.0000 a)');
   cryptoName1.innerHTML = marketTopFiveCurrency[0].name;
   cryptoNumb2.innerHTML = numeral(marketTopFiveCurrency[1].market_cap).format('($0.00 a)');
@@ -2911,15 +2944,6 @@ async function getCapDashbord(callback = null) {
   marketCapCompared.innerHTML = numeral(marketCapPercentChange).format('0.0%');
   marketCapCompared.classList.add(getClassForNumber(marketCapPercentChange));
 
-  // let widthOfElement = cryptoBall5.getBBox().width;
-  // let heightOfElement = cryptoBall5.getBBox().height;
-  // let posXOfElement = cryptoBall5.getBBox().x;
-  // let posYOfElement = cryptoBall5.getBBox().y;
-
-  // document.querySelector('#parent5').setAttribute('width', `${widthOfElement}px`);
-  // document.querySelector('#parent5').setAttribute('height', `${heightOfElement}px`);
-  // document.querySelector('#parent5').setAttribute('x', `${posXOfElement}`);
-  // document.querySelector('#parent5').setAttribute('y', `${posYOfElement}`);
 
   if (callback) callback();
 }

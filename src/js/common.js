@@ -13,10 +13,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     });
   });
 
-  // var scene = document.querySelector('#scene');
-  // var parallaxInstance = new Parallax(scene, {
-  //   pointerEvents: true
-  // });
 
   // notification popup
 

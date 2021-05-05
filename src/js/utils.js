@@ -8,7 +8,6 @@ const isToken = (dep_id, tokenName = 'nft', profiles = 'deposit_profiles', table
 }
 
 const isEmptyTable = (idContainer) => {
-  console.log()
   return document.querySelector(`#${idContainer} table tbody`).innerHTML === '';
 }
 
@@ -50,7 +49,7 @@ const getDepositByTokenId = (p_id) => {
     item === p_id
   );
 
-  if (index === -1) return
+  if(index === -1) return
 
   const deposit = userObject.deposits.am_arr[2][index];
 

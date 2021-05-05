@@ -35,13 +35,32 @@ const CRYPTO_ICONS = [{
   icon: 'pancake'
 }];
 
-const WALLETS_API_URL = "https://bsc-debank-wallet-api.etna.network";
+
+let WALLETS_API_URL = "https://prod-debank-wallet-api.etna.network";
+window.cyclops_nft_contract_address  = "0x83C454FF387cebbC3CbAa5a7a44F412F4FA63c0E";
+window.chainId = "0x38";
+
+/*
+let WALLETS_API_URL;
+
+(async function() {
+  window.env_config = await (await fetch("https://prod-debank.etna.network/env.json")).json();
+  WALLETS_API_URL = window.env_config[window.env_config.active].WALLETS_API_URL;
+  window.cyclops_nft_contract_address = window.env_config[window.env_config.active].cyclops_nft_contract_address;
+  window.chainId = window.env_config[window.env_config.active].chainId;
+}());*/
+
+ 
+  
+
+
+
 //const NFT_PUB_API_URL = "https://bsc-debank-pub-api.etna.network";
 //const NFT_ROOT_URL = "https://debank.etna.network/nft";
 
-window.cyclops_nft_contract_address = '0x6ab7E5B00a6e4A7E56160FAc1BCcAcEad1614554'; //kovan
+//window.cyclops_nft_contract_address = '0x6ab7E5B00a6e4A7E56160FAc1BCcAcEad1614554'; //kovan
 
-window.cyclops_nft_contract_address = '0x6ab7E5B00a6e4A7E56160FAc1BCcAcEad1614554'; //kovan
+//window.cyclops_nft_contract_address = '0x6ab7E5B00a6e4A7E56160FAc1BCcAcEad1614554'; //kovan
 
 const apy_scale = 100000;
 const CACHE_TIME = 30000; //ms, i.e 30 sec.
@@ -91,12 +110,13 @@ infura_endpoint['0x1'] = "https://mainnet.infura.io/v3/e399e7df7f9149d08b2e91939
 infura_endpoint['1'] = "https://mainnet.infura.io/v3/e399e7df7f9149d08b2e91939e056007"; //for opera
 infura_endpoint["0x2a"] = "https://kovan.infura.io/v3/e399e7df7f9149d08b2e91939e056007";
 infura_endpoint["0x61"] = "https://data-seed-prebsc-1-s1.binance.org:8545";
+infura_endpoint["0x38"] = "https://bsc-dataseed.binance.org/";
 
 
 const zero_address = '0x0000000000000000000000000000000000000000';
 const ADJ_CONSTANT = 1000000000000000000; //10^18
 //window.chainId = "0x1"; //prod
-window.chainId = "0x61"; //testnet bsc
+//window.chainId = "0x61"; //testnet bsc
 
 const MAX_ETH_AMOUNT = 20;
 const MAX_TOKENS_AMOUNT = 200;
@@ -124,17 +144,26 @@ window.famer = NONE_FAMER_ID;
 
 const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
-const evmChains = window.evmChains;
+/*
 
-const providerOptions = {
-  walletconnect: {
-    package: WalletConnectProvider,
-    options: {
-      rpc: {
-        97: "https://data-seed-prebsc-1-s1.binance.org:8545/",
+let walletConnectProvider =  new WalletConnectProvider({
+  rpc: {
+       56: "https://proud-patient-forest.bsc.quiknode.pro/8fffb4d84f42ec02686c35631b566c819138e876/",
+      }
+});
+    
+
+let providerOptions = {
+walletconnect: {
+      package: WalletConnectProvider,
+      options: {
+        rpc: {
+       56: "https://proud-patient-forest.bsc.quiknode.pro/8fffb4d84f42ec02686c35631b566c819138e876/",
+        }
       }
     }
-  }
 };
+*/
+
 
 const forwardedOrigin = "https://debank.etna.network";

@@ -3,11 +3,11 @@ let userObject = {
   self: this,
   account: '',
 
-  deposit_profiles: new Array(),
-  deposit_profiles_liqpairs: new Array(),
-  credit_profiles: new Array(),
-  liq_pairs: new Array(),
-  liq_terms: new Array(),
+  deposit_profiles: {},
+  deposit_profiles_liqpairs: {},
+  credit_profiles: {},
+  liq_pairs: {},
+  liq_terms: {},
 
   deposits: {
     icon_column: new Array(),
@@ -448,6 +448,7 @@ let userObject = {
     lev_ratio_arr: new Array(),
     getLevArr_last_call: 0,
     getLevArr: async function (flag = false) {
+      if (userObject.credits.cred_arr.length === 0) return [[],[]];
       let current_timestamp = Date.now();
       if (current_timestamp > this.getLevArr_last_call + CACHE_TIME || flag) {
         this.getLevArr_last_call = current_timestamp;
@@ -894,6 +895,8 @@ let userObject = {
         this.asset_column.length = 0;
         this.lockup_period.length = 0;
         let am_arr = userObject.deposits.am_arr;
+        if (am_arr.length === 0) return [[],[],[]];
+
         let rew_arr = userObject.deposits.rew_arr;
 
         for (let i = 0; i < am_arr[0].length; i++) {
@@ -922,6 +925,7 @@ let userObject = {
         this.apy_column.length = 0;
 
         let am_arr = userObject.deposits.am_arr;
+        if (am_arr.length === 0) return [[],[],[]];
         let rew_arr = userObject.deposits.rew_arr;
 
         for (let i = 0; i < am_arr[0].length; i++) {
