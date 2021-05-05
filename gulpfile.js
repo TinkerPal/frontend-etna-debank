@@ -25,7 +25,7 @@ function fileIncludeTask(cb) {
     )
     .pipe(gulp.dest('./public/'))
     .pipe(browserSync.stream());
-    cb();
+  cb();
 }
 
 // Task for compiling our CSS files using PostCSS
@@ -61,7 +61,7 @@ function copyStatic(cb) {
 
 function jsEnvTask(cb) {
   return src('./src/js/constants/env.js')
-    .pipe(env({ vars: envFile.dev }))
+    .pipe(env({ vars: { NODE_ENV: 'development' } }))
     .pipe(
       babel({
         plugins: [ 'transform-inline-environment-variables' ],
@@ -73,7 +73,7 @@ function jsEnvTask(cb) {
 
 function jsEnvProdTask(cb) {
   return src('./src/js/constants/env.js')
-    .pipe(env({ vars: envFile[envFile.active] }))
+    .pipe(env({ vars: { NODE_ENV: 'production' } }))
     .pipe(
       babel({
         plugins: [ 'transform-inline-environment-variables' ],
@@ -129,6 +129,18 @@ exports.default = series(
   cssTask,
   jsTask,
   jsEnvTask,
+  imageminTask,
+  fontsTask,
+  copyStatic,
+  browsersyncServe,
+  watchTask
+);
+
+exports.watch_prod = series(
+  fileIncludeTask,
+  cssTask,
+  jsTask,
+  jsEnvProdTask,
   imageminTask,
   fontsTask,
   copyStatic,

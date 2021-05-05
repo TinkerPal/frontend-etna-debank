@@ -202,7 +202,7 @@ async function initWeb3Modal() {
 
     let walletConnectProvider =  new WalletConnectProvider({
       rpc: {
-           56: "https://bsc-dataseed.binance.org/",
+        WALLET_OPTION_RPC
           }
     });
     
@@ -210,9 +210,7 @@ async function initWeb3Modal() {
     walletconnect: {
           package: WalletConnectProvider,
           options: {
-            rpc: {
-           56: "https://bsc-dataseed.binance.org/",
-            }
+            rpc: WALLET_OPTION_RPC
           }
         }
     };
@@ -248,8 +246,6 @@ async function getAccount() {
     if (userObject.account == '0xddc58f7839a71787eb94211bc922e0ae2bfb5501'){}
     else if( userObject.account == '0xc358a60bccec7d0efe5c5e0d9f3862bba6cb5cd8'){}
     else {window.location.replace('https://fame.cyclops.game/upgrade.html')}*/
-
-    window.chainId = '0x38';
 
     setLdBar(10);
 
@@ -291,8 +287,6 @@ async function getAccountWalletConnect() {
     //  const chainId = '0x38';// await window.web3js.eth.getChainId();
     //do not rely on automatic..
     
-    window.chainId = '0x38';
-
     // Load chain information over an HTTP API
     // const chainData = evmChains.getChain(chainId);
     window.web3js =  await new Web3(window.provider);
@@ -311,8 +305,6 @@ async function getAccountWalletConnect() {
     safeSetInnerHTMLBySelector('.current-wallet', userObject.account, 'inline');
 
    // checkAdminButton();
-
-
 
     await Promise.all([initStakingContract(), initCreditContract(), initLiqLevContract(), initCyclopsNFTContract()])
 
@@ -347,6 +339,7 @@ function setNetInfo() {
     document.getElementById('net_icon').style.color = "red";
     document.getElementById('net_txt').innerHTML = " wrong network, connect to BSC";
   } else if (window.chainId != '0x38') {
+    console.log(chains)
     document.getElementById('net_name').innerHTML = chains[window.chainId];
     document.getElementById('net_info').style.display ="flex";
     document.getElementById('net_icon').style.color = "red";
@@ -1032,11 +1025,7 @@ https://data-seed-prebsc-2-s3.binance.org:8545/
 
 */
 let web3jsReadersList = {
-  rpc_list: new Array(
-    'https://bsc-dataseed.binance.org/',
-    'https://bsc-dataseed1.defibit.io/',
-    'https://bsc-dataseed1.ninicoin.io/'
-  ),
+  rpc_list: RPC_LIST,
   web3js_list: new Array,
   index: 0,
 
