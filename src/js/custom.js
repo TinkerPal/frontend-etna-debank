@@ -343,18 +343,18 @@ async function getAccountWalletConnect() {
 function setNetInfo() {
   if (window.chainId == undefined) {
     document.getElementById('net_name').innerHTML = "unknown net";
-    document.getElementById('net_info').style.display ="block";
+    document.getElementById('net_info').style.display ="flex";
     document.getElementById('net_icon').style.color = "red";
     document.getElementById('net_txt').innerHTML = " wrong network, connect to BSC";
   } else if (window.chainId != '0x38') {
     document.getElementById('net_name').innerHTML = chains[window.chainId];
-    document.getElementById('net_info').style.display ="block";
+    document.getElementById('net_info').style.display ="flex";
     document.getElementById('net_icon').style.color = "red";
     document.getElementById('net_txt').innerHTML = " wrong network, connect to BSC";
   } else {
     document.getElementById('net_icon').style.color = "#48A68E";
-    document.getElementById('net_info').style.display ="block";
-    document.getElementById('net_txt').innerHTML = " BSC";
+    document.getElementById('net_info').style.display ="flex";
+    document.getElementById('net_name').innerHTML = " BSC";
   }
 }
 
@@ -2864,7 +2864,7 @@ async function getLiquidityDashboard(callback = null) {
 
 async function getCapDashbord(callback = null) {
 
-  const data = await fetch('https://a1pi.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&price_change_percentage=24h,30d').then(response => {
+  const data = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&price_change_percentage=24h,30d').then(response => {
     if (response.status !== 200) {
       throw new Error(response.status);
     } else {

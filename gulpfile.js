@@ -115,7 +115,7 @@ function browsersyncReload(cb) {
 function watchTask() {
   watch('./src/**/*.html', series(fileIncludeTask, cssTask, browsersyncReload));
   watch([ './src/css/*.scss' ], series(cssTask, browsersyncReload));
-  watch([ './src/js/**/*.js' ], series(jsTask, browsersyncReload));
+  watch([ './src/js/**/*.js' ], series(jsTask, jsEnvTask, browsersyncReload));
   watch([ './src/images/**/*' ], series(imageminTask, browsersyncReload));
   watch(
     [ 'tailwind.config.js' ],
