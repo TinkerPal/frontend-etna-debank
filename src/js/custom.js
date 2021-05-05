@@ -188,7 +188,7 @@ window.addEventListener('DOMContentLoaded', async function () {
     //initCreditProfilesDropdown();
     //initGetCreditDropdown();
   }
-  
+
   modal_add_credit.onInitCallback();
   modal_add_lliquidity.onInitCallback();
   modal_add_deposit.onInitCallback();
@@ -219,7 +219,7 @@ async function getAccount() {
     else {window.location.replace('https://fame.cyclops.game/upgrade.html')}*/
 
     window.chainId = window.ethereum.chainId;
-    
+
     setLdBar(10);
 
     safeSetValueBySelector('.current-wallet', userObject.account);
@@ -1130,13 +1130,13 @@ async function updateData(action = null) {
 
   if (!action) { //only when loaded
 
-    
+
     getLiquidityDashboard(() => {
       setLdBar(null, '25');
     });
 
     getDepositsDashboard(() => {
-      setLdBar(null, '25');  
+      setLdBar(null, '25');
     });
 
     getCreditsDashboard(() => {
@@ -1803,7 +1803,8 @@ const getCollateralAvailableTokens = async () => {
 async function creditProfilesDropdownBuild() {
   const ddData = await getCollateralAvailableTokens();
 
-  if(ddData.length === 0) return;2
+  if (ddData.length === 0) return;
+  2
 
   const collateralDropdownOptions = ddData.map(item => ({
     value: item.text,
@@ -2826,11 +2827,11 @@ async function getCapDashbord(callback = null) {
   }).catch(error => {
     throw new Error(error);
   })
-  
+
   if (data.length === 0) {
     return;
   }
-  
+
   const getClassForNumber = (value) => {
     return value > 0 ? 'number_increase' : 'number_degrease';
   }
@@ -2839,7 +2840,7 @@ async function getCapDashbord(callback = null) {
     const nameBlock = `<div>${name}</div>`;
     const priceBlock = `<div>${numeral(price).format('$ 0,0.00')}</div>`;
     const priceChangeBlock = `<div class="${getClassForNumber(priceChange)}">${numeral(priceChange/ 100).format('0.0%')}</div>`;
-    
+
     return `
     <div class="w-full flex items-center mb-5">
       <div class="w-1/12">${imgBlock}</div>
@@ -2881,6 +2882,10 @@ async function getCapDashbord(callback = null) {
   let cryptoNumb5 = document.querySelector('#crypto-cap-5');
   let cryptoName5 = document.querySelector('#crypto-name-5');
 
+  // start cryptoBalls
+  // let cryptoBall5 = document.querySelector('#crypto-ball-5');
+  // end cryptoBalls
+
   cryptoNumb1.innerHTML = numeral(marketTopFiveCurrency[0].market_cap).format('($0.0000 a)');
   cryptoName1.innerHTML = marketTopFiveCurrency[0].name;
   cryptoNumb2.innerHTML = numeral(marketTopFiveCurrency[1].market_cap).format('($0.00 a)');
@@ -2899,6 +2904,15 @@ async function getCapDashbord(callback = null) {
   marketCapCompared.innerHTML = numeral(marketCapPercentChange).format('0.0%');
   marketCapCompared.classList.add(getClassForNumber(marketCapPercentChange));
 
+  // let widthOfElement = cryptoBall5.getBBox().width;
+  // let heightOfElement = cryptoBall5.getBBox().height;
+  // let posXOfElement = cryptoBall5.getBBox().x;
+  // let posYOfElement = cryptoBall5.getBBox().y;
+
+  // document.querySelector('#parent5').setAttribute('width', `${widthOfElement}px`);
+  // document.querySelector('#parent5').setAttribute('height', `${heightOfElement}px`);
+  // document.querySelector('#parent5').setAttribute('x', `${posXOfElement}`);
+  // document.querySelector('#parent5').setAttribute('y', `${posYOfElement}`);
 
   if (callback) callback();
 }
@@ -2925,7 +2939,7 @@ async function getDepositsDashboard(callback = null) {
     '<tbody>';
 
   let profiles = userObject.deposit_profiles;
-  
+
   let [am_arr, rew_arr] = await Promise.all([userObject.deposits.getAmArr(),
     userObject.deposits.getRewArr()
   ]);
@@ -3036,9 +3050,11 @@ async function getDepositsDashboard(callback = null) {
 
 function openTab(event, tabid) {
   safeRemoveClassBySelector(".nav-link", "active");
-  safeRemoveClassBySelector(".page", "active");
+  safeAddClassBySelector(".page", "hide");
+
   event.srcElement.classList.add("active");
-  document.getElementById(tabid).classList.add("active");
+
+  document.getElementById(tabid).classList.remove("hide");
   userObject.state.current_page_id = tabid;
 }
 
