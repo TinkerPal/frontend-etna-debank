@@ -641,9 +641,9 @@
   }
 }
 
-.socials-row {
-  width: calc(100% - 48px);
-}
+// .socials-row {
+//   width: calc(100% - 48px);
+// }
 
 .parallax-main {
   margin-top: -80px;
@@ -1321,4 +1321,8 @@ button:disabled {
 
 .copyright-width {
   width: calc(100% - 18px);
+}
+
+#dashboard-tab, #borrow-tab, #liq-earn-tab {
+  padding-bottom: 110px;
 }
