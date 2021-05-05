@@ -1313,3 +1313,12 @@ button:disabled {
     }
   }
 }
+
+.copyright-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.copyright-width {
+  width: calc(100% - 18px);
+}
