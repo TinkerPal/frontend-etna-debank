@@ -24,14 +24,11 @@ const nftAssetsSelect = new Choices('#nftAssetsSelect', {
         const value = `${data.value.text}[${data.value.t_id}]`;
 
         return template(`
-            <div class="${classNames.item} ${
-            data.highlighted
-              ? classNames.highlightedState
-              : classNames.itemSelectable
-          } ${
-            data.placeholder ? classNames.placeholder : ''
-          }" data-item data-id="${data.id}" data-value="${value}" ${
-            data.active ? 'aria-selected="true"' : ''
+            <div class="${classNames.item} ${data.highlighted
+            ? classNames.highlightedState
+            : classNames.itemSelectable
+          } ${data.placeholder ? classNames.placeholder : ''
+          }" data-item data-id="${data.id}" data-value="${value}" ${data.active ? 'aria-selected="true"' : ''
           } ${data.disabled ? 'aria-disabled="true"' : ''} data-deletable>
               <span class="choices__item-img"><img src="${data.value.imageSrc}"></span> ${value}
               <button type="button" class="choices__button" aria-label="Remove item: '${value}'" data-button="">Remove item</button>
@@ -42,14 +39,11 @@ const nftAssetsSelect = new Choices('#nftAssetsSelect', {
         const value = `${data.value.text}[${data.value.t_id}]`;
 
         return template(`
-            <div class="${classNames.item} ${classNames.itemChoice} ${
-            data.disabled ? classNames.itemDisabled : classNames.itemSelectable
-          }" data-select-text="${this.config.itemSelectText}" data-choice ${
-            data.disabled
-              ? 'data-choice-disabled aria-disabled="true"'
-              : 'data-choice-selectable'
-          } data-id="${data.id}" data-value="${value}" ${
-            data.groupId > 0 ? 'role="treeitem"' : 'role="option"'
+            <div class="${classNames.item} ${classNames.itemChoice} ${data.disabled ? classNames.itemDisabled : classNames.itemSelectable
+          }" data-select-text="${this.config.itemSelectText}" data-choice ${data.disabled
+            ? 'data-choice-disabled aria-disabled="true"'
+            : 'data-choice-selectable'
+          } data-id="${data.id}" data-value="${value}" ${data.groupId > 0 ? 'role="treeitem"' : 'role="option"'
           }>
               <span class="choices__item-img"><img src="${data.value.imageSrc}"></span> ${data.label}
             </div>
@@ -183,45 +177,45 @@ window.addEventListener('DOMContentLoaded', async function () {
 
 });
 
-async function postWalletCallback(){
-    if (window.location.pathname == '/') {
-      await getWalletPref();
-      openTab({
-        srcElement: document.getElementById(userObject.state.current_page_id + '-menu')
-      }, userObject.state.current_page_id);
+async function postWalletCallback() {
+  if (window.location.pathname == '/') {
+    await getWalletPref();
+    openTab({
+      srcElement: document.getElementById(userObject.state.current_page_id + '-menu')
+    }, userObject.state.current_page_id);
 
-      modal_add_credit.onInitCallback();
-      modal_add_lliquidity.onInitCallback();
-      modal_add_deposit.onInitCallback();
-    }
+    modal_add_credit.onInitCallback();
+    modal_add_lliquidity.onInitCallback();
+    modal_add_deposit.onInitCallback();
+  }
 }
 
 async function initWeb3Modal() {
 
-    if (window.web3Modal) return;
+  if (window.web3Modal) return;
 
-    // not used?
-    // let walletConnectProvider =  new WalletConnectProvider({
-    //   rpc: {
-    //     WALLET_OPTION_RPC
-    //       }
-    // });
-    
-    let providerOptions = {
+  // not used?
+  // let walletConnectProvider =  new WalletConnectProvider({
+  //   rpc: {
+  //     WALLET_OPTION_RPC
+  //       }
+  // });
+
+  let providerOptions = {
     walletconnect: {
-          package: WalletConnectProvider,
-          options: {
-            rpc: WALLET_OPTION_RPC
-          }
-        }
-    };
-    
-    window.web3Modal = new Web3Modal({
-      network: "binance", 
-        cacheProvider: false, // optional
-        providerOptions, // required
-        disableInjectedProvider: true, // optional. For MetaMask / Brave / Opera.
-    });
+      package: WalletConnectProvider,
+      options: {
+        rpc: WALLET_OPTION_RPC
+      }
+    }
+  };
+
+  window.web3Modal = new Web3Modal({
+    network: "binance",
+    cacheProvider: false, // optional
+    providerOptions, // required
+    disableInjectedProvider: true, // optional. For MetaMask / Brave / Opera.
+  });
 }
 
 async function getAccount() {
@@ -235,11 +229,11 @@ async function getAccount() {
 
     const response = await fetch('/whitelisted.json');
 
-		const whitelisted_wallets = (await response.json()).whitelisted_wallets;
-    
+    const whitelisted_wallets = (await response.json()).whitelisted_wallets;
+
     const isWhitelistedAccount = whitelisted_wallets.some(whitelistedWallet => whitelistedWallet.toUpperCase() === userObject.account.toUpperCase());
 
-    if(!isWhitelistedAccount) {
+    if (!isWhitelistedAccount) {
       window.location.replace('/by-invitation.html');
     }
 
@@ -287,25 +281,25 @@ async function getAccountWalletConnect() {
     // Get connected chain id from Ethereum node
     //  const chainId = '0x38';// await window.web3js.eth.getChainId();
     //do not rely on automatic..
-    
+
     // Load chain information over an HTTP API
     // const chainData = evmChains.getChain(chainId);
-    window.web3js =  await new Web3(window.provider);
+    window.web3js = await new Web3(window.provider);
     window.web3 = window.web3js;
     window.BN = web3js.utils.BN;
 
-      // Get list of accounts of the connected wallet
+    // Get list of accounts of the connected wallet
     window.accounts = await web3js.eth.getAccounts();
-  
+
     userObject.account = accounts[0];
 
-   
+
     setLdBar(10);
 
     safeSetValueBySelector('.current-wallet', userObject.account);
     safeSetInnerHTMLBySelector('.current-wallet', userObject.account, 'inline');
 
-   // checkAdminButton();
+    // checkAdminButton();
 
     await Promise.all([initStakingContract(), initCreditContract(), initLiqLevContract(), initCyclopsNFTContract()])
 
@@ -318,7 +312,7 @@ async function getAccountWalletConnect() {
     if (window.location.pathname == '/') {
 
       setNetInfo();
-    
+
       await updateData();
     }
 
@@ -336,18 +330,18 @@ async function getAccountWalletConnect() {
 function setNetInfo() {
   if (window.chainId == undefined) {
     document.getElementById('net_name').innerHTML = "unknown net";
-    document.getElementById('net_info').style.display ="flex";
+    document.getElementById('net_info').style.display = "flex";
     document.getElementById('net_icon').style.color = "red";
     document.getElementById('net_txt').innerHTML = " wrong network, connect to BSC";
   } else if (window.chainId != '0x38') {
     console.log(chains)
     document.getElementById('net_name').innerHTML = chains[window.chainId];
-    document.getElementById('net_info').style.display ="flex";
+    document.getElementById('net_info').style.display = "flex";
     document.getElementById('net_icon').style.color = "red";
     document.getElementById('net_txt').innerHTML = " wrong network, connect to BSC";
   } else {
     document.getElementById('net_icon').style.color = "#48A68E";
-    document.getElementById('net_info').style.display ="flex";
+    document.getElementById('net_info').style.display = "flex";
     document.getElementById('net_name').innerHTML = " BSC";
   }
 }
@@ -491,16 +485,16 @@ async function getCredit() {
 
   initCreditContract(async (contract) => {
     contract.methods.getCredit(userObject.account, collateral_dep_id, cred_amount, userObject.state.getcredit_profile, isFullCallateral, is_fixed_credit).send({
-        from: userObject.account,
-        gasPrice: window.gp
-      }, function (error, txnHash) {
-        if (error) {
-          modal_add_credit.isLoadedAfterConfirm(false)
-          throw error;
-        }
-        output_transaction(txnHash)
+      from: userObject.account,
+      gasPrice: window.gp
+    }, function (error, txnHash) {
+      if (error) {
+        modal_add_credit.isLoadedAfterConfirm(false)
+        throw error;
+      }
+      output_transaction(txnHash)
 
-      })
+    })
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) {
           await updateData('get_credit');
@@ -608,16 +602,16 @@ async function deposit() {
 
   initStakingContract(async (stakingContractInstance) => {
     stakingContractInstance.methods.deposit(amount, token_ids, dep_profile_id, window.famer).send({
-        from: userObject.account,
-        value: wei_val,
-        gasPrice: window.gp
-      }, function (error, txnHash) {
-        if (error) {
-          modal_add_deposit.isLoadedAfterConfirm(false);
-          throw error;
-        }
-        output_transaction(txnHash)
-      })
+      from: userObject.account,
+      value: wei_val,
+      gasPrice: window.gp
+    }, function (error, txnHash) {
+      if (error) {
+        modal_add_deposit.isLoadedAfterConfirm(false);
+        throw error;
+      }
+      output_transaction(txnHash)
+    })
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) {
           await updateData('make_deposit');
@@ -700,17 +694,17 @@ async function stake_liq() {
   initStakingContract(async (stakingContractInstance) => {
 
     stakingContractInstance.methods.deposit(amount, token_ids, dep_profile_id, NONE_FAMER_ID).send({
-        from: userObject.account,
-        value: wei_val,
-        gasPrice: window.gp
-      }, function (error, txnHash) {
-        if (error) {
-          modal_add_lliquidity.isLoadedAfterConfirm(false);
-          throw error;
-        }
-        output_transaction(txnHash)
+      from: userObject.account,
+      value: wei_val,
+      gasPrice: window.gp
+    }, function (error, txnHash) {
+      if (error) {
+        modal_add_lliquidity.isLoadedAfterConfirm(false);
+        throw error;
+      }
+      output_transaction(txnHash)
 
-      })
+    })
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) {
           await updateData('stake_liq');
@@ -750,16 +744,16 @@ async function approve_deposit() {
     } else {
       //solidity: function setApprovalForAll(address _operator,bool _approved) external{}
       window.cyclops_nft_smartcontract.methods.setApprovalForAll(window.staking_contract_address, true).send({
-          from: userObject.account,
-          gasPrice: window.gp
-        }, function (error, txnHash) {
-          if (error) {
-            modal_add_deposit.isLoadedAfterApprove(false);
-            throw error;
-          }
-          output_transaction(txnHash)
+        from: userObject.account,
+        gasPrice: window.gp
+      }, function (error, txnHash) {
+        if (error) {
+          modal_add_deposit.isLoadedAfterApprove(false);
+          throw error;
+        }
+        output_transaction(txnHash)
 
-        })
+      })
         .on('confirmation', function (confirmationNumber, receipt) {
           if (confirmationNumber == 5) {
             successMsg('NFT move approved');
@@ -793,16 +787,16 @@ async function approveTokenMove(token_address, amount_wei, toAddress, modal) {
   let token_contract = await new window.web3js.eth.Contract(erc20TokenContractAbi, token_address);
 
   await token_contract.methods.approve(toAddress, calculatedApproveValue).send({
-      from: userObject.account,
-      gasPrice: window.gp
-    }, function (error, txnHash) {
-      if (error) {
-        modal.isLoadedAfterApprove(false);
-        throw error;
-      }
-      output_transaction(txnHash)
+    from: userObject.account,
+    gasPrice: window.gp
+  }, function (error, txnHash) {
+    if (error) {
+      modal.isLoadedAfterApprove(false);
+      throw error;
+    }
+    output_transaction(txnHash)
 
-    })
+  })
     .on('confirmation', function (confirmationNumber, receipt) {
       if (confirmationNumber == 5) {
         successMsg('Tokens move approved');
@@ -992,26 +986,26 @@ function eventFire(el, etype) {
 
 async function onUniversalConnect() {
 
-    try {
-      window.provider = await web3Modal.connectTo("walletconnect");
-      getAccountWalletConnect();
-    } catch(e) {
-      return;
-    }
+  try {
+    window.provider = await web3Modal.connectTo("walletconnect");
+    getAccountWalletConnect();
+  } catch (e) {
+    return;
+  }
 
-    window.provider.on("accountsChanged", (accounts) => {
-      getAccountWalletConnect();
-    });
+  window.provider.on("accountsChanged", (accounts) => {
+    getAccountWalletConnect();
+  });
 
-    // Subscribe to chainId change
-    window.provider.on("chainChanged", (chainId) => {
-      getAccountWalletConnect();
-    });
+  // Subscribe to chainId change
+  window.provider.on("chainChanged", (chainId) => {
+    getAccountWalletConnect();
+  });
 
-    // Subscribe to networkId change
-    window.provider.on("networkChanged", (networkId) => {
-      getAccountWalletConnect();
-    });
+  // Subscribe to networkId change
+  window.provider.on("networkChanged", (networkId) => {
+    getAccountWalletConnect();
+  });
 
 }
 
@@ -1041,7 +1035,7 @@ let web3jsReadersList = {
   get: function () {
     let ret_val = this.web3js_list[this.index];
     this.index++;
-    if (this.index > this.rpc_list.length-1) this.index = 0;
+    if (this.index > this.rpc_list.length - 1) this.index = 0;
     return ret_val;
   }
 }
@@ -1063,40 +1057,40 @@ function isWeb3Connected() {
   }
 }
 
-async function connectWeb3(){
+async function connectWeb3() {
 
-  if (isMetaMaskInstalled()){
-      window.ethereum.autoRefreshOnNetworkChange = false;
+  if (isMetaMaskInstalled()) {
+    window.ethereum.autoRefreshOnNetworkChange = false;
+    getAccount();
+
+
+    window.ethereum.on('accountsChanged', function (accounts) {
       getAccount();
+    });
 
-      
-      window.ethereum.on('accountsChanged', function(accounts){
-          getAccount();
-        });
-
-        window.ethereum.on('chainChanged', (chainId) => {
-        getAccount();
-      });
+    window.ethereum.on('chainChanged', (chainId) => {
+      getAccount();
+    });
 
   } else {
 
     //try to connect with something built-in, like Opera
-    try{
+    try {
       await initWeb3Modal();
       await window.web3.currentProvider.enable();
-      if (window.web3.currentProvider.isConnected()){
-        window.provider =  window.web3.currentProvider;
+      if (window.web3.currentProvider.isConnected()) {
+        window.provider = window.web3.currentProvider;
         await getAccountWalletConnect();
         return;
       }
 
-    } catch (error)  {
+    } catch (error) {
       console.warn(error)
     }
 
     //await web3Modal.updateTheme("dark");
 
-      await onUniversalConnect();
+    await onUniversalConnect();
 
   }
 }
@@ -1104,7 +1098,7 @@ async function connectWeb3(){
 async function onUniversalDisconnect() {
 
   // TODO: Which providers have close method?
-  if(window.provider.close) {
+  if (window.provider.close) {
     await window.provider.close();
 
     // If the cached provider is not cleared,
@@ -1117,28 +1111,28 @@ async function onUniversalDisconnect() {
   }
 
   window.account = null;
-  window.location.reload(); 
+  window.location.reload();
 }
 
-async function toggleWeb3Connect(){
+async function toggleWeb3Connect() {
   console.log('in toggleWeb3Connect');
-  if (isMetaMaskInstalled()){
+  if (isMetaMaskInstalled()) {
     console.log('MM installed');
     return; //do nothing, we just use metamask
-  } 
+  }
 
-  if (!isWeb3Connected()){  //connect to mobile wallet
+  if (!isWeb3Connected()) { //connect to mobile wallet
     console.log('!isWeb3Connected');
     await connectWeb3();
-    if (isWeb3Connected()){ 
+    if (isWeb3Connected()) {
       walletButton.classList.remove('web3-disconnected');
       walletButton.classList.add('web3-connected');
     }
 
     return;
-  } else {    //disconnect from mobile wallet
+  } else { //disconnect from mobile wallet
     await onUniversalDisconnect();
-    if (!isWeb3Connected()){ 
+    if (!isWeb3Connected()) {
       walletButton.classList.remove('web3-connected');
       walletButton.classList.add('web3-disconnected');
     }
@@ -1206,20 +1200,20 @@ async function updateData(action = null) {
 function loginAdmin() {
 
   const msgParams = [{
-      type: 'string',
-      name: 'Authorization',
-      value: 'Sign to confirm your access to admin wallet'
-    },
-    {
-      type: 'string',
-      name: 'Timestamp',
-      value: Math.floor(Date.now() / 100000).toString()
-    },
-    {
-      type: 'uint32',
-      name: 'Randon number for extra security',
-      value: Math.floor(Math.random() * 100000000)
-    }
+    type: 'string',
+    name: 'Authorization',
+    value: 'Sign to confirm your access to admin wallet'
+  },
+  {
+    type: 'string',
+    name: 'Timestamp',
+    value: Math.floor(Date.now() / 100000).toString()
+  },
+  {
+    type: 'uint32',
+    name: 'Randon number for extra security',
+    value: Math.floor(Math.random() * 100000000)
+  }
   ];
 
   window.ethereum
@@ -1245,20 +1239,20 @@ function loginAdmin() {
 function updTotalsTable() {
 
   const msgParams = [{
-      type: 'string',
-      name: 'Authorization',
-      value: 'Sign to confirm your access to admin wallet'
-    },
-    {
-      type: 'string',
-      name: 'Timestamp',
-      value: Math.floor(Date.now() / 100000).toString()
-    },
-    {
-      type: 'uint32',
-      name: 'Randon number for extra security',
-      value: Math.floor(Math.random() * 100000000)
-    }
+    type: 'string',
+    name: 'Authorization',
+    value: 'Sign to confirm your access to admin wallet'
+  },
+  {
+    type: 'string',
+    name: 'Timestamp',
+    value: Math.floor(Date.now() / 100000).toString()
+  },
+  {
+    type: 'uint32',
+    name: 'Randon number for extra security',
+    value: Math.floor(Math.random() * 100000000)
+  }
   ];
 
   window.ethereum
@@ -1476,18 +1470,18 @@ function checkAdminAuthentification(msg_params, encr_message, php_script, extra_
     });
 }
 
-function postAndRedirect(url, postData){
+function postAndRedirect(url, postData) {
   let myForm = document.createElement('form');
-    myForm.setAttribute('action', url);
-    myForm.setAttribute('method', 'post');
-    myForm.setAttribute('hidden', 'true');
-    let myInput = document.createElement('input');
-    myInput.setAttribute('type', 'text');
-    myInput.setAttribute('name', 'body_raw');
-    myInput.setAttribute('value', postData['body_raw']);
-    myForm.appendChild(myInput);
-    document.body.appendChild(myForm);
-    myForm.submit();
+  myForm.setAttribute('action', url);
+  myForm.setAttribute('method', 'post');
+  myForm.setAttribute('hidden', 'true');
+  let myInput = document.createElement('input');
+  myInput.setAttribute('type', 'text');
+  myInput.setAttribute('name', 'body_raw');
+  myInput.setAttribute('value', postData['body_raw']);
+  myForm.appendChild(myInput);
+  document.body.appendChild(myForm);
+  myForm.submit();
 }
 
 function assetNFTUrlByName(asset_name) {
@@ -1526,7 +1520,7 @@ async function getBackendParameter(var_name, callback = null) {
       }
 
     })
-    .catch(error => {});
+    .catch(error => { });
 }
 
 async function initFamersRegisterContract(callback = null) {
@@ -1563,7 +1557,7 @@ async function initDataProviderContractReader(callback = null) {
   if (!window.data_provider_smartcontract_reader) {
 
     //if (window.web3js_reader){
-    window.data_provider_smartcontract_reader = await new(web3jsReadersList.get()).eth.Contract(data_provider_abi, window.data_provider_contract_address);
+    window.data_provider_smartcontract_reader = await new (web3jsReadersList.get()).eth.Contract(data_provider_abi, window.data_provider_contract_address);
     //window.data_provider_smartcontract_reader = await new window.web3js_reader.eth.Contract(data_provider_abi, window.data_provider_contract_address); 
     if (callback) callback(window.data_provider_smartcontract_reader);
     //}
@@ -1640,10 +1634,10 @@ async function getFamersList() {
 async function getDepositProfilesList() { //for dropdown
 
   /*	
-  	if (!userObject.deposit_profiles){
-      	userObject.deposit_profiles = await getAllProfiles();
+    if (!userObject.deposit_profiles){
+        userObject.deposit_profiles = await getAllProfiles();
       } else {
-      		
+        	
       }*/
   let plist = new Array();
 
@@ -1719,9 +1713,9 @@ async function getCreditProfilesListCredit() { //for dropdown
   let plist = new Array();
 
   /*if (!userObject.credit_profiles){
-    		userObject.credit_profiles = await getAllCreditProfiles();
-    	} else {
-    		
+        userObject.credit_profiles = await getAllCreditProfiles();
+      } else {
+      	
     }*/
   //all except NFT, we do not give credits in NFT
   for (let i = 0; i < full_list.length; i++) {
@@ -1797,7 +1791,7 @@ async function initDepositProfilesDropdown() {
   const ddData = await getDepositProfilesList();
   const nftData = await getNFTAssets();
 
-  if(ddData.length === 0 || nftData.length === 0) return;
+  if (ddData.length === 0 || nftData.length === 0) return;
 
   initAssetsDropdown(nftData);
 
@@ -1817,7 +1811,7 @@ async function initDepositProfilesDropdown() {
 const getCollateralAvailableTokens = async () => {
   const ddData = await getCreditProfilesList();
 
-  if(ddData.length === 0) return
+  if (ddData.length === 0) return
 
   return ddData.map(item => {
 
@@ -1834,7 +1828,7 @@ const getCollateralAvailableTokens = async () => {
 async function creditProfilesDropdownBuild() {
   const ddData = await getCollateralAvailableTokens();
 
-  if(ddData.length === 0) return;
+  if (ddData.length === 0) return;
 
   const collateralDropdownOptions = ddData.map(item => ({
     value: item.text,
@@ -1863,58 +1857,58 @@ async function initCreditProfilesDropdown() {
   dropdown.addEventListener(
     'change',
     async function (e) {
-        const ddData = await getCollateralAvailableTokens();
+      const ddData = await getCollateralAvailableTokens();
 
-        const value = e.target.value;
-        const selectedData = ddData.find(item => item.text === value);
-        if (value === 'nft') {
-          fullCollateral.checked = true;
-          partCollateral.parentNode.classList.add('hidden');
-        } else {
-          partCollateral.parentNode.classList.remove('hidden');
-        }
+      const value = e.target.value;
+      const selectedData = ddData.find(item => item.text === value);
+      if (value === 'nft') {
+        fullCollateral.checked = true;
+        partCollateral.parentNode.classList.add('hidden');
+      } else {
+        partCollateral.parentNode.classList.remove('hidden');
+      }
 
-        resetMsg();
+      resetMsg();
 
-        setState({
-          selected_credprofile: selectedData.p_id
-        })
+      setState({
+        selected_credprofile: selectedData.p_id
+      })
 
-        if (selectedData.p_id == userObject.state.getcredit_profile) {
-          errorMsg("assets for collateral and credit should be different");
-          getCreditButton.disabled = true;
-        } else {
-          getCreditButton.disabled = false;
-        }
+      if (selectedData.p_id == userObject.state.getcredit_profile) {
+        errorMsg("assets for collateral and credit should be different");
+        getCreditButton.disabled = true;
+      } else {
+        getCreditButton.disabled = false;
+      }
 
-        setState({
-          selected_credprofile_name: selectedData.text,
-          selected_credprofile_type: selectedData.c_type,
-          selected_credprofile_token_address: selectedData.c_tok_addr
-        })
+      setState({
+        selected_credprofile_name: selectedData.text,
+        selected_credprofile_type: selectedData.c_type,
+        selected_credprofile_token_address: selectedData.c_tok_addr
+      })
 
-        tokensAmmountCollateral.value = depAmountByProfileId(userObject.state.selected_credprofile)[1];
+      tokensAmmountCollateral.value = depAmountByProfileId(userObject.state.selected_credprofile)[1];
 
-        await updUSDValueCollateral('tokens_amount_collateral', 'usd_value_collateral', depAmountByProfileId(userObject.state.selected_credprofile)[0]);
+      await updUSDValueCollateral('tokens_amount_collateral', 'usd_value_collateral', depAmountByProfileId(userObject.state.selected_credprofile)[0]);
 
-        if (userObject.state.getcredit_profile != -1) {
-          tokensAmmountGetCredit.innerText = await calcTokensFromUSD(userObject.state.getcredit_profile, usdValueCollateral.value);
-          let apy = await window.usage_calc_smartcontract_reader.methods.calcVarApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({
-            from: userObject.account
-          });
+      if (userObject.state.getcredit_profile != -1) {
+        tokensAmmountGetCredit.innerText = await calcTokensFromUSD(userObject.state.getcredit_profile, usdValueCollateral.value);
+        let apy = await window.usage_calc_smartcontract_reader.methods.calcVarApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({
+          from: userObject.account
+        });
 
-          let apy_adj = (apy / apy_scale) * 100;
-          creditPerc.value = ((parseFloat(apy_adj)).toFixed(2)).toString();
-        }
-      },
-      false,
+        let apy_adj = (apy / apy_scale) * 100;
+        creditPerc.value = ((parseFloat(apy_adj)).toFixed(2)).toString();
+      }
+    },
+    false,
   );
 }
 
 async function initGetCreditDropdown() {
   var ddData = await getCreditProfilesListCredit();
 
-  if(!ddData.length === 0) return;
+  if (!ddData.length === 0) return;
 
   const dropdown = modal_add_credit.modal.querySelector('#getcredit-dropdown');
   const tokensAmmountGetCredit = modal_add_credit.modal.querySelector('#tokens_amount_getcredit');
@@ -2052,17 +2046,17 @@ async function getLiqTerms() {
   let lterms = new Array();
 
   let terms = [{
-      text: '1 week',
-      code: '1W'
-    },
-    {
-      text: '2 weeks',
-      code: '2W'
-    },
-    {
-      text: '1 month',
-      code: '1M'
-    }
+    text: '1 week',
+    code: '1W'
+  },
+  {
+    text: '2 weeks',
+    code: '2W'
+  },
+  {
+    text: '1 month',
+    code: '1M'
+  }
   ];
 
   for (let i = 0; i < terms.length; i++) {
@@ -2123,7 +2117,7 @@ async function initLiqTermsDropdown() {
   const liqTermsSelect = modal_add_lliquidity.modal.querySelector('#liqterms-dropdown');
   const liqTermsData = userObject.liq_terms;
 
-  if(liqTermsData.length === 0) return;
+  if (liqTermsData.length === 0) return;
 
   setOptionsToSelect(liqTermsData, liqTermsSelect);
 
@@ -2153,7 +2147,7 @@ async function initLiqPairsDropdown() {
   const liqPairsAssets = modal_add_lliquidity.modal.querySelector('#liqpairs-dropdown');
   const liqPairsAssetsOptions = userObject.liq_pairs;
 
-  if(liqPairsAssetsOptions.length === 0) return;
+  if (liqPairsAssetsOptions.length === 0) return;
 
   setOptionsToSelect(liqPairsAssetsOptions, liqPairsAssets);
 
@@ -2240,7 +2234,7 @@ async function buildTotalDashboard() {
     /*
     let extr_dep_total = dep_stat[1];
     if (parseInt(profiles[i]['p_dep_type']) != ERC721_TOKEN)
-     	extr_dep_total = window.web3js_reader.utils.fromWei(extr_dep_total, 'ether');
+        extr_dep_total = window.web3js_reader.utils.fromWei(extr_dep_total, 'ether');
 
     let extr_dep_total_str = ((parseFloat(extr_dep_total)).toFixed(3)).toString();  
     extractable_dep_col.push('<td class="table-cell">'+extr_dep_total_str+'</td>');
@@ -2451,7 +2445,7 @@ async function getAllProfilesUniswap() {
 
 async function getAllCreditProfiles() { //for dropdown
   /*
-  	 struct CreditProfile {
+     struct CreditProfile {
         uint32 id;
         string name; // == data label for data provider
         uint8  _type; 
@@ -2478,21 +2472,21 @@ async function getAllCreditProfiles() { //for dropdown
 
   
   for(let i=0; i< profiles_len; i++){
-  	let option = {};
-  	let prof_details = await cred_profiles_contract.methods.creditProfiles(i).call({from:userObject.account});
+    let option = {};
+    let prof_details = await cred_profiles_contract.methods.creditProfiles(i).call({from:userObject.account});
   	
   	
   
-  	option['id'] = prof_details[0];
-  	option['name'] = prof_details[1];
-  	option['_type'] = prof_details[2];
-  	option['_token_address'] = prof_details[3];
-  	option['valuation_percent'] = prof_details[4];
-  	option['init_apy'] = prof_details[5];
-  	option['rate'] = prof_details[6];
+    option['id'] = prof_details[0];
+    option['name'] = prof_details[1];
+    option['_type'] = prof_details[2];
+    option['_token_address'] = prof_details[3];
+    option['valuation_percent'] = prof_details[4];
+    option['init_apy'] = prof_details[5];
+    option['rate'] = prof_details[6];
   
 
-  	plist.push(option);
+    plist.push(option);
   }
   return plist;*/
 
@@ -2618,8 +2612,8 @@ async function getCreditsDashboard(callback = null) {
   //let profiles = userObject.deposit_profiles;
 
   let [am_arr, cred_arr, clt_arr] = await Promise.all([userObject.deposits.getAmArr(),
-    userObject.credits.getCredArr(),
-    userObject.credits.getCltArr()
+  userObject.credits.getCredArr(),
+  userObject.credits.getCltArr()
   ]);
 
   let [lev_arr, lev_ratio_arr] = await userObject.credits.getLevArr();
@@ -2639,18 +2633,18 @@ async function getCreditsDashboard(callback = null) {
     return_credit_col,
     return_empty_col,
   ] = await Promise.all([userObject.credits.getIconAssetsCols(),
-    userObject.credits.getAPRCol(),
-    userObject.credits.getInWalletCol(),
-    userObject.credits.getDepCol(),
-    userObject.credits.getCredCol(),
-    userObject.credits.getCltCol(),
-    userObject.credits.getUsdValCol(),
-    userObject.credits.getDurationCol(),
-    userObject.credits.getFeeCol(),
-    userObject.credits.getLevCol(),
-    userObject.credits.getSetLevCol(),
-    userObject.credits.getReturnCreditCol(),
-    userObject.credits.getReturnEmptyCol(),
+  userObject.credits.getAPRCol(),
+  userObject.credits.getInWalletCol(),
+  userObject.credits.getDepCol(),
+  userObject.credits.getCredCol(),
+  userObject.credits.getCltCol(),
+  userObject.credits.getUsdValCol(),
+  userObject.credits.getDurationCol(),
+  userObject.credits.getFeeCol(),
+  userObject.credits.getLevCol(),
+  userObject.credits.getSetLevCol(),
+  userObject.credits.getReturnCreditCol(),
+  userObject.credits.getReturnEmptyCol(),
   ]);
 
   for (let i = 0; i < cred_arr[0].length; i++) { //i == credit id
@@ -2731,7 +2725,7 @@ async function getLiquidityDashboard(callback = null) {
   let profiles = userObject.deposit_profiles;
 
   let [am_arr, rew_arr] = await Promise.all([userObject.deposits.getAmArr(),
-    userObject.deposits.getRewArr()
+  userObject.deposits.getRewArr()
   ]);
 
   let [
@@ -2747,16 +2741,16 @@ async function getLiquidityDashboard(callback = null) {
     extractable_reward_col,
     withdraw_rew_col,
   ] = await Promise.all([userObject.liq_earn.getIconAssetLockupCols(),
-    userObject.liq_earn.getApyCol(),
-    userObject.liq_earn.getDepCol(),
-    userObject.liq_earn.getUsdValCol(),
-    userObject.liq_earn.getDurationUnlockCol(),
-    userObject.liq_earn.getExtrDepCol(),
-    userObject.liq_earn.getWithdrawDepCol(),
-    userObject.liq_earn.getWithdrawDepInputsCol(),
-    userObject.liq_earn.getRewardCol(),
-    userObject.liq_earn.getExtractableRewardCol(),
-    userObject.liq_earn.getWithdrawRewCol()
+  userObject.liq_earn.getApyCol(),
+  userObject.liq_earn.getDepCol(),
+  userObject.liq_earn.getUsdValCol(),
+  userObject.liq_earn.getDurationUnlockCol(),
+  userObject.liq_earn.getExtrDepCol(),
+  userObject.liq_earn.getWithdrawDepCol(),
+  userObject.liq_earn.getWithdrawDepInputsCol(),
+  userObject.liq_earn.getRewardCol(),
+  userObject.liq_earn.getExtractableRewardCol(),
+  userObject.liq_earn.getWithdrawRewCol()
   ]);
 
   let icon_column_s = new Array(icon_column.length);
@@ -2837,7 +2831,7 @@ async function getLiquidityDashboard(callback = null) {
   html += '</tbody>' +
     '</table>';
 
-    safeSetTableData('deposits_uniswap', html, 'empty')
+  safeSetTableData('deposits_uniswap', html, 'empty')
   if (callback) callback();
 
 }
@@ -2857,7 +2851,7 @@ async function getCapDashbord(callback = null) {
     // if api for get dashboard data failed, remove dashboard page and change current page to 
     document.getElementById('total-dashboard-tab-menu').remove();
 
-    if(userObject.state.current_page_id === 'total-dashboard-tab') {
+    if (userObject.state.current_page_id === 'total-dashboard-tab') {
       openTab({
         srcElement: document.getElementById('dashboard-tab-menu')
       }, 'dashboard-tab');
@@ -2877,7 +2871,7 @@ async function getCapDashbord(callback = null) {
     const imgBlock = `<img width="20" height="20" src="${imgSrc}" />`;
     const nameBlock = `<div>${name}</div>`;
     const priceBlock = `<div>${numeral(price).format('$ 0,0.00')}</div>`;
-    const priceChangeBlock = `<div class="${getClassForNumber(priceChange)}">${numeral(priceChange/ 100).format('0.0%')}</div>`;
+    const priceChangeBlock = `<div class="${getClassForNumber(priceChange)}">${numeral(priceChange / 100).format('0.0%')}</div>`;
 
     return `
     <div class="w-full flex items-center mb-5">
@@ -2966,7 +2960,7 @@ async function getDepositsDashboard(callback = null) {
   let profiles = userObject.deposit_profiles;
 
   let [am_arr, rew_arr] = await Promise.all([userObject.deposits.getAmArr(),
-    userObject.deposits.getRewArr()
+  userObject.deposits.getRewArr()
   ]);
 
   //let rew_arr = await userObject.deposits.getRewArr();
@@ -2985,17 +2979,17 @@ async function getDepositsDashboard(callback = null) {
     extractable_reward_col,
     withdraw_rew_col
   ] = await Promise.all([userObject.deposits.getIconAssetsCols(),
-    userObject.deposits.getApyCol(),
-    userObject.deposits.getInWalletCol(),
-    userObject.deposits.getDepCol(),
-    userObject.deposits.getUsdValCol(),
-    userObject.deposits.getDurationCol(),
-    userObject.deposits.getExtractableDepCol(),
-    userObject.deposits.getWithdrawDepCol(),
-    userObject.deposits.getWithdrawDepInputsCol(),
-    userObject.deposits.getRewardCol(),
-    userObject.deposits.getExtractableRewardCol(),
-    userObject.deposits.getWithdrawRewCol()
+  userObject.deposits.getApyCol(),
+  userObject.deposits.getInWalletCol(),
+  userObject.deposits.getDepCol(),
+  userObject.deposits.getUsdValCol(),
+  userObject.deposits.getDurationCol(),
+  userObject.deposits.getExtractableDepCol(),
+  userObject.deposits.getWithdrawDepCol(),
+  userObject.deposits.getWithdrawDepInputsCol(),
+  userObject.deposits.getRewardCol(),
+  userObject.deposits.getExtractableRewardCol(),
+  userObject.deposits.getWithdrawRewCol()
   ]);
 
   let icon_column_s = new Array(profiles.length);
@@ -3283,17 +3277,17 @@ async function set_leverage_confirm(ratio, cred_id) {
     }
 
     contractInstance.methods.freezeLeverageForCredit(userObject.account, dep_id, cred_id, ratio).send({
-        from: userObject.account,
-        gasPrice: window.gp
-      }, function (error, txnHash) {
+      from: userObject.account,
+      gasPrice: window.gp
+    }, function (error, txnHash) {
 
-        if (error) {
-          modal_add_leverage.isLoadedAfterConfirm(false);
-          throw error;
-        }
-        output_transaction(txnHash)
+      if (error) {
+        modal_add_leverage.isLoadedAfterConfirm(false);
+        throw error;
+      }
+      output_transaction(txnHash)
 
-      })
+    })
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) {
           await updateData('set_leverage');
@@ -3314,23 +3308,23 @@ async function unfreeze_leverage(cred_id) {
   // function freezeLeverageForCredit(address cust_wallet, uint32 dep_id, uint32 cred_id, uint256 lev_amount) nonReentrant public  
 
   /*if (userObject.credits.cred_arr[1][cred_id] ==  0){
-  	infoMsg("no active credit");
-  	return;
+    infoMsg("no active credit");
+    return;
   }*/
   modal_unfreeze.isLoadingAfterConfirm();
   initLiqLevContract(async (contractInstance) => {
 
     contractInstance.methods.unfreezeLeverageForCredit(userObject.account, cred_id).send({
-        from: userObject.account,
-        gasPrice: window.gp
-      }, function (error, txnHash) {
-        if (error) {
-          modal_unfreeze.isLoadedAfterConfirm(false);
-          throw error;
-        }
-        output_transaction(txnHash)
+      from: userObject.account,
+      gasPrice: window.gp
+    }, function (error, txnHash) {
+      if (error) {
+        modal_unfreeze.isLoadedAfterConfirm(false);
+        throw error;
+      }
+      output_transaction(txnHash)
 
-      })
+    })
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) {
           await updateData('unfreeze_leverage');
@@ -3477,16 +3471,16 @@ function withdraw_deposit_confirm(dep_id) {
   initStakingContract(async (stakingContractInstance) => {
 
     stakingContractInstance.methods.withdrawDepositById(userObject.account, dep_id, withdraw_amount, isWithdrawAllDeposit).send({
-        from: userObject.account,
-        gasPrice: window.gp
-      }, function (error, txnHash) {
-        if (error) {
-          modal_withdraw_deposit.isLoadedAfterConfirm(false);
-          throw error;
-        }
-        output_transaction(txnHash)
+      from: userObject.account,
+      gasPrice: window.gp
+    }, function (error, txnHash) {
+      if (error) {
+        modal_withdraw_deposit.isLoadedAfterConfirm(false);
+        throw error;
+      }
+      output_transaction(txnHash)
 
-      })
+    })
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) {
           await updateData('withdraw_deposit');
@@ -3595,17 +3589,17 @@ async function return_credit_confirm(cred_id) {
   initCreditContract(async (creditContractInstance) => {
 
     creditContractInstance.methods.returnCredit(userObject.account, cred_id, return_amount).send({
-        from: userObject.account,
-        value: return_val,
-        gasPrice: window.gp
-      }, function (error, txnHash) {
-        if (error) {
-          modal_return_credit.isLoadedAfterConfirm(false);
-          throw error;
-        }
-        output_transaction(txnHash)
+      from: userObject.account,
+      value: return_val,
+      gasPrice: window.gp
+    }, function (error, txnHash) {
+      if (error) {
+        modal_return_credit.isLoadedAfterConfirm(false);
+        throw error;
+      }
+      output_transaction(txnHash)
 
-      })
+    })
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) {
           await updateData('return_credit');
@@ -3679,17 +3673,17 @@ async function return_fee_confirm(cred_id) {
   initCreditContract(async (creditContractInstance) => {
 
     creditContractInstance.methods.returnFee(userObject.account, cred_id, return_amount).send({
-        from: userObject.account,
-        value: return_val,
-        gasPrice: window.gp
-      }, function (error, txnHash) {
-        if (error) {
-          modal_return_fee.isLoadedAfterConfirm(false)
-          throw error;
-        }
-        output_transaction(txnHash)
+      from: userObject.account,
+      value: return_val,
+      gasPrice: window.gp
+    }, function (error, txnHash) {
+      if (error) {
+        modal_return_fee.isLoadedAfterConfirm(false)
+        throw error;
+      }
+      output_transaction(txnHash)
 
-      })
+    })
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (confirmationNumber == 5) {
           await updateData('return_fee');
@@ -3723,16 +3717,16 @@ function withdraw_reward_confirm(dep_id) {
   initStakingContract(async (stakingContractInstance) => {
 
     stakingContractInstance.methods.withdrawDepositRewardById(userObject.account, dep_id).send({
-        from: userObject.account,
-        gasPrice: window.gp
-      }, function (error, txnHash) {
-        if (error) {
-          modal_withdraw_yield.isLoadedAfterConfirm(false);
-          throw error;
-        }
-        output_transaction(txnHash)
+      from: userObject.account,
+      gasPrice: window.gp
+    }, function (error, txnHash) {
+      if (error) {
+        modal_withdraw_yield.isLoadedAfterConfirm(false);
+        throw error;
+      }
+      output_transaction(txnHash)
 
-      })
+    })
       .on('confirmation', async function (confirmationNumber, receipt) {
 
         if (confirmationNumber == 5) {
