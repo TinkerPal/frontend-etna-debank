@@ -140,26 +140,7 @@ window.famer = NONE_FAMER_ID;
 
 const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
-/*
 
-let walletConnectProvider =  new WalletConnectProvider({
-  rpc: {
-       56: "https://proud-patient-forest.bsc.quiknode.pro/8fffb4d84f42ec02686c35631b566c819138e876/",
-      }
-});
-    
-
-let providerOptions = {
-walletconnect: {
-      package: WalletConnectProvider,
-      options: {
-        rpc: {
-       56: "https://proud-patient-forest.bsc.quiknode.pro/8fffb4d84f42ec02686c35631b566c819138e876/",
-        }
-      }
-    }
-};
-*/
 
 
 const forwardedOrigin = "https://debank.etna.network";

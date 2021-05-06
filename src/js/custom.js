@@ -211,7 +211,7 @@ async function initWeb3Modal() {
   };
 
   window.web3Modal = new Web3Modal({
-    network: "binance",
+    WEB3_MODAL_NETWORK,
     cacheProvider: false, // optional
     providerOptions, // required
     disableInjectedProvider: true, // optional. For MetaMask / Brave / Opera.
@@ -1012,16 +1012,7 @@ async function onUniversalConnect() {
 
 }
 
-/*
 
-https://data-seed-prebsc-1-s1.binance.org:8545/
-https://data-seed-prebsc-2-s1.binance.org:8545/
-https://data-seed-prebsc-1-s2.binance.org:8545/
-https://data-seed-prebsc-2-s2.binance.org:8545/
-https://data-seed-prebsc-1-s3.binance.org:8545/
-https://data-seed-prebsc-2-s3.binance.org:8545/
-
-*/
 let web3jsReadersList = {
   rpc_list: RPC_LIST,
   web3js_list: new Array,
