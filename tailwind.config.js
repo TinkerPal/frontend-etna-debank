@@ -39,7 +39,8 @@ module.exports = {
       'green': '#27AE60',
       'yellow': '#F2C94C',
       'grey': '#9CA3AF',
-      'white': '#ffffff'
+      'white': '#ffffff',
+      'swamp': '#48A68E'
     }),
     backgroundColor: theme => ({
       ...theme('colors'),

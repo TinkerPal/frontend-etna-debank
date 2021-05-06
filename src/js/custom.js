@@ -327,7 +327,7 @@ async function getAccountWalletConnect() {
 
 }
 
-function setNetInfo() {
+async function setNetInfo() {
   const chanId = await window.web3js.eth.getChainId();
   const chainIdHex = `0x${chanId.toString(16)}`;
 

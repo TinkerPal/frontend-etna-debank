@@ -35,8 +35,9 @@
 
 @layer components {
   .admin-btn {
-    @apply bg-gray-900 rounded-md py-2 px-3 flex items-center justify-center cursor-pointer mr-6 w-fit-content hover:bg-white hover:text-black transition-all hidden;
+    @apply bg-gray-900 rounded-md py-2 px-3 flex items-center justify-center cursor-pointer mr-6 w-fit-content hover: bg-white hover:text-black transition-all hidden;
   }
+
   .nav-link {
     @apply py-3.5 mr-4 border-b-2 flex items-center text-gray-300 text-sm border-transparent hover: text-white whitespace-nowrap font-medium cursor-pointer;
 
@@ -201,16 +202,18 @@
   }
 
   .name-field {
-    @apply text-sm text-grey-100 font-medium mb-1 ;
+    @apply text-sm text-grey-100 font-medium mb-1;
   }
 
   .field-info {
     @apply py-3 px-4 text-sm w-full border-l border-light-grey h-10 justify-center whitespace-nowrap;
+
     &__container {
       @apply flex items-center justify-center w-full h-full;
     }
+
     span {
-     @apply truncate;
+      @apply truncate;
     }
   }
 
@@ -231,7 +234,7 @@
   }
 
   .notif {
-    @apply bg-gray-800 rounded-full relative w-8 h-8 flex items-center justify-center mr-5 cursor-pointer;
+    @apply bg-gray-800 rounded-full relative w-8 h-8 flex items-center justify-center cursor-pointer;
   }
 
   .social-icon svg {
@@ -320,10 +323,11 @@
 
   .web3 {
     &-connected {
-      @apply fill-green focus:outline-none;
-    } 
-    &-disconnected{
-      @apply fill-yellow focus:outline-none;
+      @apply fill-swamp focus: outline-none;
+    }
+
+    &-disconnected {
+      @apply fill-red focus: outline-none;
     }
   }
 
@@ -338,14 +342,18 @@
   .stake-input {
     @apply border-medium-grey border text-sm rounded-lg w-full h-11 bg-blueish-black focus: outline-none py-3 px-4;
   }
+
   .number_increase {
     @apply pl-4 relative text-electric-green tracking-wider text-sm;
+
     &:before {
       @apply absolute;
     }
   }
+
   .number_degrease {
     @apply pl-4 relative text-red tracking-wider text-sm;
+
     &:before {
       @apply absolute;
     }
@@ -370,6 +378,7 @@
     background-size: contain;
   }
 }
+
 .number_degrease {
   &:before {
     content: '';
@@ -411,6 +420,7 @@
 
 .hover-element {
   position: relative;
+
   &:hover .info-block__popup {
     display: block;
   }
@@ -424,7 +434,7 @@
   display: none;
 }
 
-#borrow-tab:not(.hide) ~ footer {
+#borrow-tab:not(.hide)~footer {
   .copyright-common {
     display: none;
   }
@@ -484,6 +494,7 @@
   color: #fff;
   display: flex;
   align-items: center;
+
   .li-link {
     display: none;
   }
@@ -1300,11 +1311,13 @@ button:disabled {
   .svg-name {
     font-size: 18px;
   }
+
   .svg-numb {
     font-size: 24px;
     letter-spacing: 0.15px;
     font-weight: bold;
   }
+
   .svg-market {
     color: #8C8C98;
     font-size: 12px;
@@ -1314,9 +1327,11 @@ button:disabled {
     .svg-name {
       font-size: 16px;
     }
+
     .svg-numb {
       font-size: 18px;
     }
+
     .svg-market {
       color: #8684C1;
     }
@@ -1332,6 +1347,30 @@ button:disabled {
   width: calc(100% - 18px);
 }
 
-#dashboard-tab, #borrow-tab, #liq-earn-tab {
+#dashboard-tab,
+#borrow-tab,
+#liq-earn-tab {
   padding-bottom: 110px;
+}
+
+.web3 {
+  &-connected {
+    .not-connect {
+      display: none;
+    }
+
+    .connect {
+      display: block;
+    }
+  }
+
+  &-disconnected {
+    .not-connect {
+      display: block;
+    }
+
+    .connect {
+      display: none;
+    }
+  }
 }
