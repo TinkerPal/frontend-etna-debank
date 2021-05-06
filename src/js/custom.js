@@ -328,12 +328,15 @@ async function getAccountWalletConnect() {
 }
 
 function setNetInfo() {
-  if (window.chainId == undefined) {
+  const chanId = await window.web3js.eth.getChainId();
+  const chainIdHex = `0x${chanId.toString(16)}`;
+
+  if (chainIdHex  == undefined) {
     document.getElementById('net_name').innerHTML = "unknown net";
     document.getElementById('net_info').style.display = "flex";
     document.getElementById('net_icon').style.color = "red";
     document.getElementById('net_txt').innerHTML = " wrong network, connect to BSC";
-  } else if (window.chainId != '0x38') {
+  } else if (chainIdHex  != window.chainId) {
     console.log(chains)
     document.getElementById('net_name').innerHTML = chains[window.chainId];
     document.getElementById('net_info').style.display = "flex";
