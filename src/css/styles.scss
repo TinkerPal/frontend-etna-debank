@@ -55,7 +55,7 @@
   }
 
   .page {
-    @apply pt-16;
+    @apply pt-16 min-h-screen h-full;
   }
 
   .btn {

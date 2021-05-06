@@ -20,7 +20,7 @@ module.exports = {
       },
       width: {
         'fit-content': 'fit-content',
-        'rest': 'calc(100% - 24rem)',
+        'rest': 'calc(100% - 290px)',
         '290': '290px',
         'notif': 'calc(100% - 48px)'
       },
@@ -28,7 +28,8 @@ module.exports = {
         '8': ['8px', '10px']
       },
       height: {
-        '66': '66px'
+        '66': '66px',
+        'empty': 'calc(100% - 160px)'
       }
     },
     fontFamily: {
