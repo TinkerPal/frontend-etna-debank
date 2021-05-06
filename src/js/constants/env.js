@@ -6,7 +6,7 @@ const GLOBAL_VARIABLES = {
     WALLET_OPTION_RPC: {
       '56': 'https://bsc-dataseed.binance.org/',
     },
-    WEB3_MODAL_NETWORK: "binance",
+    WEB3_MODAL_NETWORK: { network: "binance" },
     RPC_LIST: [
       'https://bsc-dataseed.binance.org/',
       'https://bsc-dataseed1.defibit.io/',
@@ -30,7 +30,7 @@ const GLOBAL_VARIABLES = {
     WALLET_OPTION_RPC: {
       '97': 'https://data-seed-prebsc-1-s1.binance.org:8545/',
     },
-    WEB3_MODAL_NETWORK: "",
+    WEB3_MODAL_NETWORK: { network: "" },
     RPC_LIST: [
       'https://data-seed-prebsc-1-s1.binance.org:8545/',
       'https://data-seed-prebsc-2-s1.binance.org:8545/',

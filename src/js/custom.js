@@ -211,7 +211,7 @@ async function initWeb3Modal() {
   };
 
   window.web3Modal = new Web3Modal({
-    WEB3_MODAL_NETWORK,
+    ...WEB3_MODAL_NETWORK,
     cacheProvider: false, // optional
     providerOptions, // required
     disableInjectedProvider: true, // optional. For MetaMask / Brave / Opera.
