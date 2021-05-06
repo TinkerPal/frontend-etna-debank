@@ -11,6 +11,16 @@ const GLOBAL_VARIABLES = {
       'https://bsc-dataseed1.defibit.io/',
       'https://bsc-dataseed1.ninicoin.io/',
     ],
+    LIQ_PAIRS: [
+      {
+        text: 'ETNA-BNB',
+        addr: '0xa2facc7286e621c63a81a817dba57a3c4dcc5ff2',
+      },
+      {
+        text: 'ETNA-BUSD',
+        addr: '0xa1a1dc3a23882e33f41943ec620a2f68a6703fcc',
+      },
+    ],
   },
   development: {
     WALLETS_API_URL: 'https://bsc-debank-wallet-api.etna.network',
@@ -27,6 +37,16 @@ const GLOBAL_VARIABLES = {
       'https://data-seed-prebsc-1-s3.binance.org:8545/',
       'https://data-seed-prebsc-2-s3.binance.org:8545/',
     ],
+    LIQ_PAIRS: [
+      {
+        text: 'BNB-ST1',
+        addr: '0xc5b5b56e9ba3b43a3960d8b48ac7fcdc535dc80e',
+      },
+      {
+        text: 'BNB-ST2',
+        addr: '0xf5f7ac1821beaba18e690298fe9c681d4a1971a4',
+      },
+    ],
   },
 };
 
@@ -35,7 +55,7 @@ const env = process.env.NODE_ENV;
 const WALLETS_API_URL = GLOBAL_VARIABLES[env].WALLETS_API_URL;
 const WALLET_OPTION_RPC = GLOBAL_VARIABLES[env].WALLET_OPTION_RPC;
 const RPC_LIST = GLOBAL_VARIABLES[env].RPC_LIST;
-
+const LIQ_PAIRS = GLOBAL_VARIABLES[env].LIQ_PAIRS
 window.cyclops_nft_contract_address =
   GLOBAL_VARIABLES[env].cyclops_nft_contract_address;
 window.chainId = GLOBAL_VARIABLES[env].chainId;

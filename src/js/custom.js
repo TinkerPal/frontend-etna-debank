@@ -2086,15 +2086,7 @@ async function getLiqPairs() {
 
   let lpairs = new Array();
 
-  let pairs = [{
-      text: 'ETNA-BNB',
-      addr: '0xa2facc7286e621c63a81a817dba57a3c4dcc5ff2'
-    },
-    {
-      text: 'ETNA-BUSD',
-      addr: '0xa1a1dc3a23882e33f41943ec620a2f68a6703fcc'
-    }
-  ];
+  let pairs = LIQ_PAIRS;
 
   for (let i = 0; i < pairs.length; i++) {
 
