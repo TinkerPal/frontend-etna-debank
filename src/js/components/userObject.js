@@ -3,11 +3,11 @@ let userObject = {
   self: this,
   account: '',
 
-  deposit_profiles: {},
-  deposit_profiles_liqpairs: {},
-  credit_profiles: {},
-  liq_pairs: {},
-  liq_terms: {},
+  deposit_profiles: new Array(),
+  deposit_profiles_liqpairs: new Array(),
+  credit_profiles: new Array(),
+  liq_pairs: new Array(),
+  liq_terms: new Array(),
 
   deposits: {
     icon_column: new Array(),

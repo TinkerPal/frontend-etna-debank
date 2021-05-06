@@ -329,7 +329,7 @@ async function getAccountWalletConnect() {
 
 async function setNetInfo() {
   const chanId = await window.web3js.eth.getChainId();
-  const chainIdHex = `0x${chanId.toString(16)}`;
+  const chainIdHex = chanId && `0x${chanId.toString(16)}`;
 
   if (chainIdHex  == undefined) {
     document.getElementById('net_name').innerHTML = "unknown net";
@@ -1805,7 +1805,7 @@ async function initDepositProfilesDropdown() {
 const getCollateralAvailableTokens = async () => {
   const ddData = await getCreditProfilesList();
 
-  if (ddData.length === 0) return
+  if (ddData.length === 0) return new Array();
 
   return ddData.map(item => {
 
