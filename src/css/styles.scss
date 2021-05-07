@@ -1349,6 +1349,10 @@ button:disabled {
 
 .page {
   padding-bottom: 110px;
+
+  &#total-dashboard-tab {
+    padding-bottom: 80px;
+  }
 }
 
 .web3 {
@@ -1370,5 +1374,34 @@ button:disabled {
     .connect {
       display: none;
     }
+  }
+}
+
+.select-additional__options {
+  margin-top: -2px;
+  margin-bottom: -2px;
+}
+
+.empty-metamask {
+  &__img {
+    width: 240px;
+    height: 240px;
+    position: relative;
+    z-index: 2;
+
+    &:before {
+      position: absolute;
+      content: '';
+      background: #26262D;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      left: 20px;
+      bottom: 0px;
+    }
+  }
+
+  a {
+    color: #898989;
   }
 }

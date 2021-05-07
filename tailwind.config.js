@@ -99,7 +99,8 @@ module.exports = {
       'wiggle-3': 'wiggle-3 74s ease-in-out infinite',
       'bounce': 'bounce 48s ease infinite',
       'bounce-2': 'bounceModified 46s ease-in-out infinite',
-      spin: 'spin 1s linear infinite'
+      'bounce-3': 'bounce3 10s ease-in-out infinite',
+      spin: 'spin 1s linear infinite',
     },
     keyframes: {
       spin: {
@@ -123,6 +124,14 @@ module.exports = {
           transform: 'translateY(10%)'
         },
         '50%': {
+          transform: 'translateY(0)'
+        },
+      },
+      bounce3: {
+        '50%': {
+          transform: 'translateY(-10%)'
+        },
+        '0%, 100%': {
           transform: 'translateY(0)'
         },
       },

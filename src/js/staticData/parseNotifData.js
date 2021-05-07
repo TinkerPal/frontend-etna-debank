@@ -4,16 +4,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 {  
   "notificationsArr": [
     {
-      "title": "Notification title 111111",
-      "text": "Lorem ipsum dolor sit amet consectetur adipisicing elit oluptatum tenetur."
-    },
-    {
-      "title": "Notification title 222222",
-      "text": "Lorem ipsum dolor sit amet consectetur adipisicing elit oluptatum tenetur."
-    },
-    {
-      "title": "Notification title 33333",
-      "text": "Lorem ipsum dolor sit amet consectetur adipisicing elit oluptatum tenetur."
+      "title": "Welcome to Debank!",
+      "text": ""
     }
   ]
 }
