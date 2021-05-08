@@ -133,6 +133,7 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
 
   init = () => {
     const exits = this.modal.querySelectorAll(".modal-exit");
+    this.modal.classList.remove('hidden');
     exits.forEach(exit => {
       exit.addEventListener("click", this.hide);
     });
