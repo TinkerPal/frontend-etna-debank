@@ -279,6 +279,7 @@ async function getAccountWalletConnect() {
 
   try {
     console.log('in getAccountWalletConnect');
+    errorEmptyMetamaskMsg(false);
     // Get connected chain id from Ethereum node
     //  const chainId = '0x38';// await window.web3js.eth.getChainId();
     //do not rely on automatic..
@@ -1066,7 +1067,6 @@ async function connectWeb3() {
     window.ethereum.autoRefreshOnNetworkChange = false;
     getAccount();
 
-
     window.ethereum.on('accountsChanged', function (accounts) {
       getAccount();
     });
@@ -1082,7 +1082,6 @@ async function connectWeb3() {
       await initWeb3Modal();
       await window.web3.currentProvider.enable();
       if (window.web3.currentProvider.isConnected()) {
-        errorEmptyMetamaskMsg(false);
         window.provider = window.web3.currentProvider;
         await getAccountWalletConnect();
         return;
