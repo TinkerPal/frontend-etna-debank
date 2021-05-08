@@ -121,6 +121,18 @@ function watchTask() {
   );
 }
 
+function watchTask_prod() {
+  watch('./src/**/*.html', series(fileIncludeTask, cssTask, browsersyncReload));
+  watch([ './src/css/*.scss' ], series(cssTask, browsersyncReload));
+  watch([ './src/js/**/*.js' ], series(jsTask, jsEnvProdTask, browsersyncReload));
+  watch([ './src/images/**/*' ], series(imageminTask, browsersyncReload));
+  watch(
+    [ 'tailwind.config.js' ],
+    series(fileIncludeTask, cssTask, browsersyncReload)
+  );
+}
+
+
 // Default Gulp Task
 exports.default = series(
   fileIncludeTask,
@@ -143,7 +155,7 @@ exports.watch_prod = series(
   fontsTask,
   copyStatic,
   browsersyncServe,
-  watchTask
+  watchTask_prod
 );
 
 exports.build = series(

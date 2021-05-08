@@ -1794,9 +1794,11 @@ async function initDepositProfilesDropdown() {
   const ddData = await getDepositProfilesList();
   const nftData = await getNFTAssets();
 
-  if (ddData.length === 0 || nftData.length === 0) return;
+  if (ddData.length === 0) return;
 
-  initAssetsDropdown(nftData);
+  if(nftData.length > 0) {
+    initAssetsDropdown(nftData);
+  }
 
   const depprofilesDropdown = modal_add_deposit.modal.querySelector('#depprofiles-dropdown');
   const assetsAmmountValue = modal_add_deposit.modal.querySelector('#tokens_amount');
