@@ -123,7 +123,7 @@
   }
 
   .modal {
-    @apply flex items-center justify-center w-full h-screen opacity-0 top-0 left-0 fixed z-50;
+    @apply flex items-center justify-center w-full h-screen opacity-0 top-0 left-0 fixed z-70;
 
     &-loading {
       .top-divider {
@@ -246,7 +246,7 @@
   }
 
   .notif-row {
-    @apply mb-6 flex items-center justify-between py-4 px-5 border-l-4 rounded-md bottom-0 hidden fixed w-notif z-60;
+    @apply mb-6 flex items-center justify-between py-4 px-5 border-l-4 rounded-md bottom-0 hidden fixed w-notif z-80;
 
     a {
       @apply underline;
