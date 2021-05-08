@@ -973,8 +973,12 @@ function errorEmptyMsg(msg) {
   document.querySelector('.empty-access').classList.remove('hidden');
 }
 
-function errorEmptyMetamaskMsg() {
+function errorEmptyMetamaskMsg(state = true) {
+  if (state) {
   document.querySelector('.empty-metamask').classList.remove('hidden');
+  } else {
+    document.querySelector('.empty-metamask').classList.add('hidden');
+  }
 }
 
 function resetMsg() {
@@ -1078,6 +1082,7 @@ async function connectWeb3() {
       await initWeb3Modal();
       await window.web3.currentProvider.enable();
       if (window.web3.currentProvider.isConnected()) {
+        errorEmptyMetamaskMsg(false);
         window.provider = window.web3.currentProvider;
         await getAccountWalletConnect();
         return;
