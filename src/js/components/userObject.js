@@ -405,7 +405,7 @@ let userObject = {
           for (let i = 0; i < rew_arr[0].length; i++) {
             if (rew_arr[0][i] == profiles[j]['p_id'] && rew_arr[2][i] > 0) {
               let lbl = '';
-              if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) lbl = '&nbsp;CYTR</span>';
+              if (parseInt(profiles[j]['p_dep_type']) == ERC721_TOKEN) lbl = '&nbsp;ETNA</span>';
               txt = `<td class="table-cell">${createTableBtnWithIcon('withdraw', 'Withdraw yield', `withdraw_reward(${i.toString()})`)}</td>`
               break;
             }

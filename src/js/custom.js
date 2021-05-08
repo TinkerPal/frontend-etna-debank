@@ -2606,7 +2606,7 @@ async function getCreditsDashboard(callback = null) {
     '<th class="table-title">Curent APR<sup>*</sup></th>' +
     '<th class="table-title">Fee</th>' +
     '<th class="table-title table-title-right">Leverage Level</th>' +
-    '<th class="table-title" colspan = "2" scope = "colgroup">Cover Fees with CYTR Leverage</th>' +
+    '<th class="table-title" colspan = "2" scope = "colgroup">Cover Fees with ETNA Leverage</th>' +
     '<th class="table-title table-title-empty"></th>' +
     '<th class="table-title">In wallet</th>' +
     '<th class="table-title">Deposit</th>' +
@@ -2720,8 +2720,8 @@ async function getLiquidityDashboard(callback = null) {
     '<th class="table-title">Duration days</th>' +
     '<th class="table-title">Extractable</th>' +
     '<th class="table-title">Withdraw deposit</th>' +
-    '<th class="table-title">Current Yield CYTR</th>' +
-    '<th class="table-title">Extractable Yield CYTR</th>' +
+    '<th class="table-title">Current Yield ETNA</th>' +
+    '<th class="table-title">Extractable Yield ETNA</th>' +
     '<th class="table-title">Withdraw yield</th>' +
     '</tr>' +
     '</thead>' +
@@ -3277,7 +3277,7 @@ async function set_leverage_confirm(ratio, cred_id) {
 
     if (window.lev_size_wei.cmp(cytr_am_bn) == 1) {
       modal_add_leverage.isLoadedAfterConfirm(false);
-      infoMsg("not enough CYTR on deposit");
+      infoMsg("not enough ETNA on deposit");
       return;
     }
 
@@ -3869,7 +3869,7 @@ async function getCYTRProfileId() {
 
   if (!window.cytr_profile_id) {
     for (let i = 0; i < userObject.deposit_profiles.length; i++) {
-      if (userObject.deposit_profiles[i].p_name == 'CYTR') {
+      if (userObject.deposit_profiles[i].p_name == 'ETNA') {
         window.cytr_profile_id = parseInt(userObject.deposit_profiles[i].p_id);
         return window.cytr_profile_id;
       }
