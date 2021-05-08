@@ -22,6 +22,7 @@ const GLOBAL_VARIABLES = {
         addr: '0xa1a1dc3a23882e33f41943ec620a2f68a6703fcc',
       },
     ],
+    LEVERAGE_TOKEN: 'ETNA'
   },
   development: {
     WALLETS_API_URL: 'https://bsc-debank-wallet-api.etna.network',
@@ -49,11 +50,13 @@ const GLOBAL_VARIABLES = {
         addr: '0xf5f7ac1821beaba18e690298fe9c681d4a1971a4',
       },
     ],
+    LEVERAGE_TOKEN: 'CYTR'
   },
 };
 
 const env = process.env.NODE_ENV;
 
+const LEVERAGE_TOKEN =  GLOBAL_VARIABLES[env].LEVERAGE_TOKEN
 const WEB3_MODAL_NETWORK =  GLOBAL_VARIABLES[env].WEB3_MODAL_NETWORK
 const WALLETS_API_URL = GLOBAL_VARIABLES[env].WALLETS_API_URL;
 const WALLET_OPTION_RPC = GLOBAL_VARIABLES[env].WALLET_OPTION_RPC;

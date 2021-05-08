@@ -3869,7 +3869,7 @@ async function getCYTRProfileId() {
 
   if (!window.cytr_profile_id) {
     for (let i = 0; i < userObject.deposit_profiles.length; i++) {
-      if (userObject.deposit_profiles[i].p_name == 'ETNA') {
+      if (userObject.deposit_profiles[i].p_name == LEVERAGE_TOKEN) {
         window.cytr_profile_id = parseInt(userObject.deposit_profiles[i].p_id);
         return window.cytr_profile_id;
       }
