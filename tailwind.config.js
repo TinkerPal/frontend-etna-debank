@@ -10,7 +10,8 @@ module.exports = {
   theme: {
     extend: {
       zIndex: {
-        '60': 60
+        '60': 60,
+        '70': 70
        },
       inset: {
         '5/6': '85%',
