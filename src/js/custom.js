@@ -173,6 +173,7 @@ window.addEventListener('DOMContentLoaded', async function () {
     walletButton.style.display = "block";
     await initWeb3Modal();
     walletButton.addEventListener("click", toggleWeb3Connect);
+    errorEmptyMetamaskMsg();
   }
 
 });
@@ -970,6 +971,10 @@ function errorMsg(msg) {
 function errorEmptyMsg(msg) {
   safeSetInnerHTMLById('empty-error__msg', msg);
   document.querySelector('.empty-access').classList.remove('hidden');
+}
+
+function errorEmptyMetamaskMsg() {
+  document.querySelector('.empty-metamask').classList.remove('hidden');
 }
 
 function resetMsg() {

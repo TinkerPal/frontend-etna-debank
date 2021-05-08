@@ -3984,8 +3984,9 @@ function setBackendParameter(var_name, var_value){
 
 function openEtherscanLink(eth_addr){
 	let ch ='';
-	//if (window.chainId != '0x1' && window.chainId != '1') ch = chains[window.ethereum.chainId]+'.';
-	let url = 'https://'+ch+'testnet.bscscan.com/address/'+eth_addr;
+	if (window.chainId == '0x38') ch = ''
+	else ch = 'testnet.';
+	let url = 'https://'+ch+'bscscan.com/address/'+eth_addr;
 	window.open(url,'_blank');
 }
 
