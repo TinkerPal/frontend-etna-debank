@@ -1,19 +1,102 @@
 // gulpfile.js
 const { watch, series, src, dest } = require('gulp');
 var browserSync = require('browser-sync').create();
-var postcss = require('gulp-postcss');
-var uglify = require('gulp-uglify');
-var concat = require('gulp-concat');
-var babel = require('gulp-babel');
-var sass = require('gulp-sass');
-var replace = require('gulp-replace');
-const imagemin = require('gulp-imagemin');
-const fileinclude = require('gulp-file-include');
-const gulp = require('gulp');
-const env = require('gulp-env');
-var tailwindcss = require('tailwindcss');
 
-function fileIncludeTask(cb) {
+const postcss = require('gulp-postcss'),
+  uglify = require('gulp-uglify'),
+  htmlreplace = require('gulp-html-replace'),
+  hash = require('gulp-hash-filename'),
+  babel = require('gulp-babel'),
+  sass = require('gulp-sass'),
+  tap = require('gulp-tap'),
+  imagemin = require('gulp-imagemin'),
+  fileinclude = require('gulp-file-include'),
+  gulp = require('gulp'),
+  minifyCSS = require('gulp-minify-css'),
+  env = require('gulp-env'),
+  tailwindcss = require('tailwindcss'),
+  fs = require('fs'),
+  replace = require('gulp-replace'),
+  autoprefixer = require('gulp-autoprefixer'),
+  clean = require('gulp-clean'),
+  rename = require('gulp-rename'),
+  htmlmin = require('gulp-htmlmin'),
+  concat = require('gulp-concat');
+
+var hashedJS;
+var hashedCSS;
+var noop = function() {};
+const js = [
+  './src/js/utils.js',
+  './src/js/constants/env.js',
+  './src/js/constants/constant.js',
+  './src/js/constants/token.js',
+  './src/js/components/userObject.js',
+  './src/js/components/customSelect.js',
+  './src/js/components/modal.js',
+  './src/js/staticData/parseNotifData.js',
+  './src/js/common.js',
+  './src/js/custom.js',
+];
+
+function foo(folder, enconding) {
+  return new Promise(function(resolve, reject) {
+    fs.readdir(folder, enconding, function(err, filenames) {
+      if (err) reject(err);
+      else resolve(filenames);
+    });
+  });
+}
+
+const getCssPath = async () => {
+  var cssPath;
+  try {
+    await foo('./public/css/').then(
+      (files) =>
+        (cssPath = '/css/' + files.filter((el) => /\.min.css$/.test(el)))
+    );
+  } catch (error) {
+    cssPath;
+  }
+  return cssPath;
+};
+
+const getJsPath = async () => {
+  var jsPath;
+  await foo('./public/js/').then(
+    (files) => (jsPath = '/js/' + files.filter((el) => /\.min.js$/.test(el)))
+  );
+  return jsPath;
+};
+
+function jsTask(envs) {
+  return src(js)
+    .pipe(env({ vars: { NODE_ENV: envs } }))
+    .pipe(
+      babel({
+        presets: [ '@babel/preset-env' ],
+        plugins: [ 'transform-inline-environment-variables' ],
+      })
+    )
+    .pipe(envs === 'production' ? uglify() : tap(noop))
+    .pipe(concat('common.js'))
+    .pipe(
+      hash({
+        format: '{name}-{hash:8}{ext}',
+      })
+    )
+    .pipe(
+      rename(function(path) {
+        path.basename += '.min';
+        hashedJS = '/js/' + path.basename + '.js';
+      })
+    )
+    .pipe(gulp.dest('./public/js/'))
+    .pipe(copyLibs())
+    .pipe(browserSync.stream());
+}
+
+function htmlTask() {
   return src([ './src/*.html' ])
     .pipe(
       fileinclude({
@@ -21,13 +104,19 @@ function fileIncludeTask(cb) {
         basepath: '@file',
       })
     )
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(
+      htmlreplace({
+        css: hashedCSS ? hashedCSS : getCssPath(),
+        js: hashedJS ? hashedJS : getJsPath(),
+      })
+    )
     .pipe(gulp.dest('./public/'))
     .pipe(browserSync.stream());
-  cb();
 }
 
 // Task for compiling our CSS files using PostCSS
-function cssTask(cb) {
+function cssTask() {
   return src('./src/css/*.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(replace('hover: ', 'hover:'))
@@ -40,55 +129,48 @@ function cssTask(cb) {
         require('tailwindcss'),
       ])
     )
+    .pipe(
+      autoprefixer({
+        cascade: false,
+      })
+    )
+    .pipe(minifyCSS())
+    .pipe(
+      hash({
+        format: '{name}-{hash:8}{ext}',
+      })
+    )
+    .pipe(
+      rename(function(path) {
+        path.basename += '.min';
+        hashedCSS = '/css/' + path.basename + '.css';
+      })
+    )
     .pipe(gulp.dest('./public/css/'))
     .pipe(browserSync.stream());
 }
 
 // Task for compiling our CSS files using PostCSS
-function fontsTask(cb) {
+function fontsTask() {
   return src('./src/fonts/*')
     .pipe(gulp.dest('./public/fonts/'))
     .pipe(browserSync.stream());
 }
 
-function copyStatic(cb) {
+function copyStatic() {
   return src('./static/**/*')
     .pipe(gulp.dest('./public/'))
     .pipe(browserSync.stream());
 }
 
-function jsEnvTask(cb) {
-  return src('./src/js/constants/env.js')
-    .pipe(env({ vars: { NODE_ENV: 'development' } }))
-    .pipe(
-      babel({
-        plugins: [ 'transform-inline-environment-variables' ],
-      })
-    )
-    .pipe(gulp.dest('./public/js/constants'))
-    .pipe(browserSync.stream());
-}
-
-function jsEnvProdTask(cb) {
-  return src('./src/js/constants/env.js')
-    .pipe(env({ vars: { NODE_ENV: 'production' } }))
-    .pipe(
-      babel({
-        plugins: [ 'transform-inline-environment-variables' ],
-      })
-    )
-    .pipe(gulp.dest('./public/js/constants'))
-    .pipe(browserSync.stream());
-}
-
-function jsTask(cb) {
-  return src('./src/js/**/*')
-    .pipe(gulp.dest('./public/js/'))
+function copyLibs() {
+  return src('./src/js/libs/*.js')
+    .pipe(gulp.dest('./public/js/libs/'))
     .pipe(browserSync.stream());
 }
 
 // Task for minifying images
-function imageminTask(cb) {
+function imageminTask() {
   return src('./src/images/**/*')
     .pipe(imagemin())
     .pipe(dest('./public/images/'));
@@ -109,71 +191,64 @@ function browsersyncReload(cb) {
   cb();
 }
 
+// Чистим директорию назначения и делаем ребилд, чтобы удаленные из проекта файлы не остались
+function cleanOldCss() {
+  return gulp
+    .src([ './public/css' ], { read: false, allowEmpty: true })
+    .pipe(clean());
+}
+
+function cleanOldJs() {
+  return gulp
+    .src([ './public/js' ], { read: false, allowEmpty: true })
+    .pipe(clean());
+}
+
 // Watch Files & Reload browser after tasks
-function watchTask() {
-  watch('./src/**/*.html', series(fileIncludeTask, cssTask, browsersyncReload));
-  watch([ './src/css/*.scss' ], series(cssTask, browsersyncReload));
-  watch([ './src/js/**/*.js' ], series(jsTask, jsEnvTask, browsersyncReload));
+function watchTask(envs) {
+  watch(
+    './src/**/*.html',
+    series(htmlTask, cleanOldCss, cssTask, htmlTask, browsersyncReload)
+  );
+  watch(
+    [ './src/css/*.scss' ],
+    series(htmlTask, cleanOldCss, cssTask, htmlTask, browsersyncReload)
+  );
+  watch(
+    [ './src/js/**/*.js' ],
+    series(cleanOldJs, () => jsTask(envs), htmlTask, browsersyncReload)
+  );
   watch([ './src/images/**/*' ], series(imageminTask, browsersyncReload));
   watch(
     [ 'tailwind.config.js' ],
-    series(fileIncludeTask, cssTask, browsersyncReload)
+    series(htmlTask, cleanOldCss, cssTask, htmlTask, browsersyncReload)
   );
 }
 
-function watchTask_prod() {
-  watch('./src/**/*.html', series(fileIncludeTask, cssTask, browsersyncReload));
-  watch([ './src/css/*.scss' ], series(cssTask, browsersyncReload));
-  watch([ './src/js/**/*.js' ], series(jsTask, jsEnvProdTask, browsersyncReload));
-  watch([ './src/images/**/*' ], series(imageminTask, browsersyncReload));
-  watch(
-    [ 'tailwind.config.js' ],
-    series(fileIncludeTask, cssTask, browsersyncReload)
+function build(envs) {
+  return series(
+    cleanOldCss,
+    cleanOldJs,
+    cssTask,
+    () => jsTask(envs),
+    htmlTask,
+    cssTask,
+    htmlTask,
+    imageminTask,
+    fontsTask,
+    copyStatic
   );
 }
-
 
 // Default Gulp Task
-exports.default = series(
-  fileIncludeTask,
-  cssTask,
-  jsTask,
-  jsEnvTask,
-  imageminTask,
-  fontsTask,
-  copyStatic,
-  browsersyncServe,
-  watchTask
+exports.default = series(build('development'), browsersyncServe, () =>
+  watchTask('development')
 );
 
-exports.watch_prod = series(
-  fileIncludeTask,
-  cssTask,
-  jsTask,
-  jsEnvProdTask,
-  imageminTask,
-  fontsTask,
-  copyStatic,
-  browsersyncServe,
-  watchTask_prod
+exports.prod = series(build('production'), browsersyncServe, () =>
+  watchTask('production')
 );
 
-exports.build = series(
-  fileIncludeTask,
-  cssTask,
-  jsTask,
-  jsEnvTask,
-  imageminTask,
-  fontsTask,
-  copyStatic
-);
+exports.build = series(build('development'));
 
-exports.build_prod = series(
-  fileIncludeTask,
-  cssTask,
-  jsTask,
-  jsEnvProdTask,
-  imageminTask,
-  fontsTask,
-  copyStatic
-);
+exports.build_prod = series(build('production'));

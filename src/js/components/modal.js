@@ -131,7 +131,7 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
     this.onHideCallback && this.onHideCallback();
   }
 
-  init = () => {
+  this.init = () => {
     const exits = this.modal.querySelectorAll(".modal-exit");
     this.modal.classList.remove('hidden');
     exits.forEach(exit => {
@@ -139,5 +139,5 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
     });
   }
 
-  init();
+  this.init();
 }

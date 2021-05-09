@@ -2557,7 +2557,7 @@ async function unswAPYStrByProfileName(profile_name) {
     if (userObject.deposit_profiles_liqpairs[i].p_name == profile_name) {
       let apy = parseInt(userObject.deposit_profiles_liqpairs[i].init_apy);
       let apy_real = apy / apy_scale;
-      apy_str = ((apy_real * 100).toFixed(1)).toString() + '%';
+      const apy_str = ((apy_real * 100).toFixed(1)).toString() + '%';
       return apy_str;
     }
   }
@@ -2724,7 +2724,7 @@ async function getCreditsDashboard(callback = null) {
 async function getLiquidityDashboard(callback = null) {
 
   //	initStakingContract(async (stakingContractInstance) => {
-  stakingContractInstance = window.staking_smartcontract;
+  // stakingContractInstance = window.staking_smartcontract;
 
   let html =
     '<table class="min-w-full">' +
@@ -2747,7 +2747,7 @@ async function getLiquidityDashboard(callback = null) {
     '</thead>' +
     '<tbody>';
 
-  let profiles = userObject.deposit_profiles;
+  // let profiles = userObject.deposit_profiles;
 
   let [am_arr, rew_arr] = await Promise.all([userObject.deposits.getAmArr(),
   userObject.deposits.getRewArr()

@@ -4,7 +4,7 @@ const colors = require('tailwindcss/colors')
 module.exports = {
   purge: {
     enabled: true,
-    content: ['./public/*.html']
+    content: ['./public/*.html', './src/tailwind_dynamic_html/*.html']
   },
   darkMode: false, // or 'media' or 'class'
   theme: {
