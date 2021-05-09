@@ -795,7 +795,7 @@ let userObject = {
             //let am = window.web3js_reader.utils.fromWei(lev_arr[i], 'ether');
 
             let adj_am = toTokens(lev_arr[i], 4); //((parseFloat(am)).toFixed(4)).toString(); 
-            txt = '<td class="table-cell">' + adj_am + ' ' + lev_ratio_arr[i] + '%</td>';
+            txt = `<td class="table-cell">${lev_ratio_arr[i]}% (${adj_am})</td>`;
           }
 
           //	}

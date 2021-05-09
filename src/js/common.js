@@ -30,14 +30,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     notifBlock.classList.remove('hidden');
   });
 
-  var closeIcon = document.querySelectorAll('.close-icon');
-
-  closeIcon.forEach(item => {
-    item.addEventListener('click', () => {
-      item.closest('.notif-row').remove();
-    });
-  });
-
   let allInfo = document.querySelectorAll('[data-id="infoPopup"]');
 
   const mustBeCut = (field) => {

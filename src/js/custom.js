@@ -10,7 +10,7 @@ const modal_add_leverage = new Modal('modal-set-leverage');
 const modal_unfreeze = new Modal('modal-unfreeze');
 const modal_add_lliquidity = new Modal('modal-add-liquidity', () => {
   initLiqPairsDropdown(), initLiqTermsDropdown()
-});
+}, liqModalBuild);
 const modal_add_deposit = new Modal('modal-new-deposit', initDepositProfilesDropdown, () => {
   depositModalRebuild();
   depositModalUpdateNftDropdown();
@@ -1187,10 +1187,13 @@ async function updateData(action = null) {
     await getDepositsDashboard();
   } else if (action == 'set_leverage') {
     await getCreditsDashboard();
+    await getDepositsDashboard();
   } else if (action == 'unfreeze_leverage') {
     await getCreditsDashboard();
+    await getDepositsDashboard();
   } else if (action == 'return_credit') {
     await getCreditsDashboard();
+    await getDepositsDashboard();
   } else if (action == 'return_fee') {
     await getCreditsDashboard();
     await getDepositsDashboard();
@@ -2171,6 +2174,23 @@ async function initLiqPairsDropdown() {
     const currentLiqTerm = userObject.liq_terms.find(item => item.text === liqTermsValue)
     setApyStr(currentLiqTerm);
   }
+}
+
+async function liqModalBuild() {
+  const setBal = async (asset) => {
+    setState({
+      liq_pair_name: asset.text,
+      liq_pair_address: asset.addr,
+    })
+    const bal = await getWalletBalanceStr(userObject.state.liq_pair_address);
+    safeHtmlById('liq_pair_in_wallet', bal);
+  }
+
+  const liqPairsAssetsOptions = userObject.liq_pairs;
+
+  if (liqPairsAssetsOptions.length === 0) return;
+
+  setBal(liqPairsAssetsOptions[0])
 }
 
 async function getTotalDashboard(callback = null) {
