@@ -1,2 +1,15 @@
-<script src="https://browser.sentry-cdn.com/6.3.5/bundle.min.js"
-  integrity="sha384-qBgjc56ljouxNiUODXpsqJSZ7mGL+PcExG0in9vErnovL9TPZwHxfnved8g6bzfM" crossorigin="anonymous"></script>
+<script
+  src="https://browser.sentry-cdn.com/6.3.5/bundle.tracing.min.js"
+  integrity="sha384-0RpBr4PNjUAqckh8BtmPUuFGNC082TAztkL1VE2ttmtsYJBUvqcZbThnfE5On6h1"
+  crossorigin="anonymous"
+></script>
+<script>
+  Sentry.init({
+  dsn: "https://88a9855d93e94646b7f21b1c1d50c180@o592518.ingest.sentry.io/5740978",
+  integrations: [new Sentry.Integrations.BrowserTracing()],
+
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0,
+});
+</script>
