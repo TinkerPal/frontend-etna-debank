@@ -2723,9 +2723,6 @@ async function getCreditsDashboard(callback = null) {
 
 async function getLiquidityDashboard(callback = null) {
 
-  //	initStakingContract(async (stakingContractInstance) => {
-  // stakingContractInstance = window.staking_smartcontract;
-
   let html =
     '<table class="min-w-full">' +
     '<thead>' +
@@ -3240,7 +3237,6 @@ async function calcUSDValueByProfileNonNFT(wei_amount, profile_id) {
   let usd_val = await window.usage_calc_smartcontract_reader.methods.calcUSDValueByProfileNonNFT(profile_id, wei_amount).call({
     from: userObject.account
   });
-
   return usd_val;
 }
 

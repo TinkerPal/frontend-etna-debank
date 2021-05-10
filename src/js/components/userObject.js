@@ -1039,7 +1039,7 @@ let userObject = {
             let txt_unl = '';
 
             if (am_arr[1][i] > 0 && am_arr[2][i] == 0) {
-              let days = await stakingContractInstance.methods.depositDays(userObject.account, i).call({
+              let days = await window.staking_smartcontract.methods.depositDays(userObject.account, i).call({
                 from: userObject.account
               }); //duration
               txt = '<td class="table-cell">' + days.toString() + '</td>';
