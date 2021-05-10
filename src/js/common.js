@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     element.parentNode.insertBefore(this, element.nextSibling);
   }),
   false;
-
+  myUndefinedFunction();
   let colorSelect = document.querySelectorAll(".color-select");
 
   colorSelect.forEach(item => {

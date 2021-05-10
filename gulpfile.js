@@ -21,7 +21,9 @@ const postcss = require('gulp-postcss'),
   clean = require('gulp-clean'),
   rename = require('gulp-rename'),
   htmlmin = require('gulp-htmlmin'),
-  concat = require('gulp-concat');
+  concat = require('gulp-concat'),
+  sourcemaps = require('gulp-sourcemaps'),
+  plumber = require('gulp-plumber');
 
 var hashedJS;
 var hashedCSS;
@@ -71,7 +73,9 @@ const getJsPath = async () => {
 
 function jsTask(envs) {
   return src(js)
+    .pipe(plumber())
     .pipe(env({ vars: { NODE_ENV: envs } }))
+    .pipe(sourcemaps.init())
     .pipe(
       babel({
         presets: [ '@babel/preset-env' ],
@@ -91,6 +95,7 @@ function jsTask(envs) {
         hashedJS = '/js/' + path.basename + '.js';
       })
     )
+    .pipe(sourcemaps.write('maps'))
     .pipe(gulp.dest('./public/js/'))
     .pipe(copyLibs())
     .pipe(browserSync.stream());
