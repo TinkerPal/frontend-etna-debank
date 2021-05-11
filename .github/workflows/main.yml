@@ -23,8 +23,8 @@ jobs:
         uses: wlixcc/SFTP-Deploy-Action@v1.2.1       
         with:
           username: 'irina'
-          server: 'dev-old-debank.etna.network'
+          server: 'preprod-debank.etna.network'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
           local_path: './public/*'
-          remote_path: '/home/irina/frontend/old-etna-debank/'
+          remote_path: '/home/irina/frontend/preprod-debank/'
           args: '-o ConnectTimeout=5'
