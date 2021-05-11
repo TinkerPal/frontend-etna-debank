@@ -106,7 +106,7 @@
 
   .table-cell {
     &:nth-child(2) {
-      @apply pl-2;
+      @apply pl-2 uppercase;
     }
 
     &:nth-child(1) {
@@ -1128,7 +1128,7 @@ button:disabled {
 
 .choices__input {
   background-color: transparent;
-  border: 0px;  
+  border: 0px;
 }
 
 .choices__list--dropdown {
@@ -1406,5 +1406,22 @@ button:disabled {
 
   a {
     color: #898989;
+  }
+}
+
+#credprofiles-dropdown, #custom-depprofiles-dropdown {
+  text-transform: uppercase;
+  .js-Dropdown-title {
+    text-transform: uppercase;
+  }
+}
+
+#custom-getcredit-dropdown {
+  li {
+    text-transform: uppercase;
+
+    &[data-value=""] {
+      text-transform: none;
+    }
   }
 }
