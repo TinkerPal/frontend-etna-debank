@@ -75,14 +75,14 @@ function jsTask(envs) {
   return src(js)
     .pipe(plumber())
     .pipe(env({ vars: { NODE_ENV: envs } }))
-    .pipe(sourcemaps.init())
+    // .pipe(sourcemaps.init())
     .pipe(
       babel({
         // presets: [ '@babel/preset-env' ],
         plugins: [ 'transform-inline-environment-variables' ],
       })
     )
-    .pipe(envs === 'production' ? uglify() : tap(noop))
+    // .pipe(envs === 'production' ? uglify() : tap(noop))
     .pipe(concat('common.js'))
     .pipe(
       hash({
@@ -95,7 +95,7 @@ function jsTask(envs) {
         hashedJS = '/js/' + path.basename + '.js';
       })
     )
-    .pipe(sourcemaps.write('maps'))
+    // .pipe(sourcemaps.write('maps'))
     .pipe(gulp.dest('./public/js/'))
     .pipe(copyLibs())
     .pipe(browserSync.stream());
