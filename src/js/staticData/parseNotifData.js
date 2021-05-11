@@ -1,14 +1,14 @@
 document.addEventListener("DOMContentLoaded", function (event) {
 
   const data = JSON.parse(`
-{  
-  "notificationsArr": [
-    {
-      "title": "Welcome to Debank!",
-      "text": ""
-    }
-  ]
-}
+  {
+    "notificationsArr":[
+       {
+          "title":"Welcome to Debank!",
+          "text":"You are \\"early accesss\\" user and you can participate in <a href=\\"/bug-bounty.html\\">“bug bounty”</a> program."
+       }
+    ]
+ }
 `);
 
   let notifItem = '';

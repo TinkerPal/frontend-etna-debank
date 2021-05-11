@@ -1,39 +1,59 @@
 const CRYPTO_ICONS = [{
-  name: 'bnb'
-}, {
-  name: 'st1'
-}, {
-  name: 'cytr'
-}, {
-  name: 'etna'
-}, {
-  name: 'eth'
-}, {
-  name: 'btcb'
-}, {
-  name: 'dai'
-}, {
-  name: 'bnb-st1-2w',
-  icon: 'pancake'
-},{
-  name: 'bnb-st1-1w',
-  icon: 'pancake'
-},{
-  name: 'bnb-st1-1m',
-  icon: 'pancake'
-},{
-  name: 'bnb-st2-1m',
-  icon: 'pancake'
-},{
-  name: 'bnb-st2-2w',
-  icon: 'pancake'
-},{
-  name: 'bnb-st2-1w',
-  icon: 'pancake'
-},{
-  name: 'bnb-st2',
-  icon: 'pancake'
-}];
+    name: 'bnb'
+  }, {
+    name: 'st1'
+  }, {
+    name: 'cytr'
+  }, {
+    name: 'etna'
+  }, {
+    name: 'eth'
+  }, {
+    name: 'btcb'
+  }, {
+    name: 'dai'
+  }, {
+    name: 'busd'
+  }, {
+    name: 'usdt'
+  }, {
+    name: 'usdc'
+  }, {
+    name: 'btc'
+  }, {
+    name: 'link'
+  }, {
+    name: 'ada'
+  }, {
+    name: 'xpr'
+  }, {
+    name: 'dot'
+  }, {
+    name: 'ltc'
+  },
+  {
+    name: 'bnb-st1-2w',
+    icon: 'pancake'
+  }, {
+    name: 'bnb-st1-1w',
+    icon: 'pancake'
+  }, {
+    name: 'bnb-st1-1m',
+    icon: 'pancake'
+  }, {
+    name: 'bnb-st2-1m',
+    icon: 'pancake'
+  }, {
+    name: 'bnb-st2-2w',
+    icon: 'pancake'
+  }, {
+    name: 'bnb-st2-1w',
+    icon: 'pancake'
+  }, {
+    name: 'bnb-st2',
+    icon: 'pancake'
+  }
+];
 
 
 /*
@@ -46,8 +66,8 @@ let WALLETS_API_URL;
   window.chainId = window.env_config[window.env_config.active].chainId;
 }());*/
 
- 
-  
+
+
 
 
 
