@@ -78,7 +78,7 @@ function jsTask(envs) {
     .pipe(sourcemaps.init())
     .pipe(
       babel({
-        presets: [ '@babel/preset-env' ],
+        // presets: [ '@babel/preset-env' ],
         plugins: [ 'transform-inline-environment-variables' ],
       })
     )
