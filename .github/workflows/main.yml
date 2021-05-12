@@ -19,6 +19,13 @@ jobs:
           node-version: '12.x'
       - name: Install dependencies and build
         run: yarn && yarn build:prod
+      - name: Clear old js/css files
+        uses: garygrossgarten/github-action-ssh@v0.6.3
+        with:
+          command: '(rm -rf /home/irina/frontend/preprod-debank/css/; rm -rf /home/irina/frontend/preprod-debank/js/)'
+          host: 'preprod-debank.etna.network'
+          username: 'irina'
+          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: SFTP Deploy
         uses: wlixcc/SFTP-Deploy-Action@v1.2.1       
         with:

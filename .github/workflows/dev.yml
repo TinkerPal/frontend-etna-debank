@@ -22,7 +22,7 @@ jobs:
       - name: Clear old js/css files
         uses: garygrossgarten/github-action-ssh@v0.6.3
         with:
-          command: '(ls -a /home/irina/frontend/new-etna-debank/; rm -rf /home/irina/frontend/new-etna-debank/css/; rm -rf /home/irina/frontend/new-etna-debank/js/; ls -a /home/irina/frontend/new-etna-debank/)'
+          command: '(rm -rf /home/irina/frontend/new-etna-debank/css/; rm -rf /home/irina/frontend/new-etna-debank/js/)'
           host: 'dev-new-debank.etna.network'
           username: 'irina'
           privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
