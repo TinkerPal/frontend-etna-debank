@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function (event) {
+document.addEventListener("DOMContentLoaded", async function (event) {
 
   const data = await fetch('/notifications.json').then(response => {
     if (response.status !== 200) {
