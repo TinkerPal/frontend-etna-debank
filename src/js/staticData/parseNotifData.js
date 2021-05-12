@@ -1,15 +1,14 @@
 document.addEventListener("DOMContentLoaded", function (event) {
 
-  const data = JSON.parse(`
-  {
-    "notificationsArr":[
-       {
-          "title":"Welcome to Debank!",
-          "text":"You are \\"early accesss\\" user and you can participate in <a href=\\"/bug-bounty.html\\">“bug bounty”</a> program."
-       }
-    ]
- }
-`);
+  const data = await fetch('/notifications.json').then(response => {
+    if (response.status !== 200) {
+      throw new Error(response.status);
+    } else {
+      return response.json();
+    }
+  }).catch(error => {
+    throw new Error(error);
+  })
 
   let notifItem = '';
   const notifCommon = document.querySelector('.notif-block');

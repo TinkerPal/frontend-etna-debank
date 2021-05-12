@@ -1,0 +1,8 @@
+{
+  "notificationsArr":[
+     {
+        "title":"Welcome to Debank!",
+        "text":"You are \"early accesss\" user and you can participate in <a href=\"/bug-bounty.html\">“bug bounty”</a> program."
+     }
+  ]
+}
