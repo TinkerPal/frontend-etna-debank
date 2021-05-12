@@ -21,6 +21,14 @@ const GLOBAL_VARIABLES = {
         text: 'ETNA-BUSD',
         addr: '0xa1a1dc3a23882e33f41943ec620a2f68a6703fcc',
       },
+      {
+        text: 'ETNA-ETH',
+        addr: '0x645A56649E8B8B14F5738f9388Be363AA4d8BbEA',
+      },
+      {
+        text: 'ETNA-BTC',
+        addr: '0x0EAF6AADca3356b558091B76555De801ea837932',
+      },
     ],
     LEVERAGE_TOKEN: 'ETNA'
   },
