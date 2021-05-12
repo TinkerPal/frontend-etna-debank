@@ -1833,19 +1833,33 @@ const getCollateralAvailableTokens = async () => {
 }
 
 async function creditProfilesDropdownBuild() {
+  const getCreditButton = modal_add_credit.modal.querySelector('#getcredit_button');
+  const fullCollateral = modal_add_credit.modal.querySelector('#full_collateral');
+
   const ddData = await getCollateralAvailableTokens();
 
   if (ddData.length === 0) return;
 
   const collateralDropdownOptions = ddData.map(item => ({
-    value: item.text,
+    value: item.text, 
     label: item.text
   }))
 
   collateralDropdownOptions[0].selected = true;
   collateralDropdown.setChoices(collateralDropdownOptions, 'value', 'label', true);
 
-  userObject.state.selected_credprofile = ddData[0].p_id;
+  setState({
+    selected_credprofile: ddData[0].p_id,
+  })
+
+  if (userObject.state.selected_credprofile == userObject.state.getcredit_profile) {
+    errorMsg("assets for collateral and credit should be different");
+    getCreditButton.disabled = true;
+  } else {
+    getCreditButton.disabled = false;
+  }
+
+  fullCollateral.checked = true;
   full_collateral_btn(depAmountByProfileId(userObject.state.selected_credprofile)[0]);
 }
 
@@ -3180,6 +3194,8 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
 }
 
 async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
+  if (dep_id === 9999999) return;
+
   let am_arr = userObject.deposits.am_arr;
 
   let tokens_amount = document.getElementById(tokens_amount_elem).value;
@@ -3443,13 +3459,15 @@ function withdraw_deposit(dep_id) {
 }
 
 function depAmountByProfileId(profile_id) {
-  for (let i = 0; i < userObject.deposits.am_arr[0].length; i++) {
-    if (userObject.deposits.am_arr[0][i] == profile_id) {
-      let am = userObject.deposits.am_arr[1][i];
-      if (depTypeByProfileId(profile_id) !== ERC721_TOKEN) {
-        am = window.web3js_reader.utils.fromWei(am, 'ether');
+  if(profile_id != -1) {
+    for (let i = 0; i < userObject.deposits.am_arr[0].length; i++) {
+      if (userObject.deposits.am_arr[0][i] == profile_id) {
+        let am = userObject.deposits.am_arr[1][i];
+        if (depTypeByProfileId(profile_id) !== ERC721_TOKEN) {
+          am = window.web3js_reader.utils.fromWei(am, 'ether');
+        }
+        return ([i, am]);
       }
-      return ([i, am]);
     }
   }
   return [BAD_DEPOSIT_ID, 0];
@@ -3467,6 +3485,7 @@ function depAmountByProfileIdReal(profile_id) {
 }
 
 async function calcTokensFromUSD(cred_profile_id, amount_usd) {
+  if(!amount_usd) return 0;
   // function calcFromUSDValue(uint256 usd_value, uint256 profile_id) public view returns(uint256 est_tokens)
   let tokens = await window.usage_calc_smartcontract_reader.methods.calcFromUSDValue(amount_usd, cred_profile_id).call({
     from: userObject.account

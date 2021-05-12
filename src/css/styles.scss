@@ -1400,15 +1400,15 @@ button:disabled {
   }
 }
 
-#credprofiles-dropdown, #custom-depprofiles-dropdown {
+#credprofiles-dropdown, #custom-depprofiles-dropdown, .choices-collateral {
   text-transform: uppercase;
-  .js-Dropdown-title {
+  .js-Dropdown-title, .choices__item {
     text-transform: uppercase;
   }
 }
 
 #custom-getcredit-dropdown {
-  li {
+  li, .dropdown-text {
     text-transform: uppercase;
 
     &[data-value=""] {
