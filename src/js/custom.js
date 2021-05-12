@@ -815,8 +815,7 @@ async function approveTokenMove(token_address, amount_wei, toAddress, modal) {
 }
 
 function output_transaction(txnHash) {
-  const ch = 'testnet.';
-  infoMsg(`<a target="_blank" href="https://${ch}bscscan.com/tx/${txnHash}">last transaction:${txnHash}</a>`);
+  infoMsg(`<a target="_blank" href="https://${TRANSACTION_LINK}/tx/${txnHash}">last transaction:${txnHash}</a>`);
 }
 
 function safeSetValueById(id, value, disp = 'block') {

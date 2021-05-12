@@ -30,7 +30,8 @@ const GLOBAL_VARIABLES = {
         addr: '0x0EAF6AADca3356b558091B76555De801ea837932',
       },
     ],
-    LEVERAGE_TOKEN: 'ETNA'
+    LEVERAGE_TOKEN: 'ETNA',
+    TRANSACTION_LINK: 'bscscan.com'
   },
   development: {
     WALLETS_API_URL: 'https://bsc-debank-wallet-api.etna.network',
@@ -58,18 +59,20 @@ const GLOBAL_VARIABLES = {
         addr: '0xf5f7ac1821beaba18e690298fe9c681d4a1971a4',
       },
     ],
-    LEVERAGE_TOKEN: 'CYTR'
+    LEVERAGE_TOKEN: 'CYTR',
+    TRANSACTION_LINK: 'testnet.bscscan.com'
   },
 };
 
 const env = process.env.NODE_ENV;
 
-const LEVERAGE_TOKEN =  GLOBAL_VARIABLES[env].LEVERAGE_TOKEN
-const WEB3_MODAL_NETWORK =  GLOBAL_VARIABLES[env].WEB3_MODAL_NETWORK
+const TRANSACTION_LINK = GLOBAL_VARIABLES[env].TRANSACTION_LINK;
+const LEVERAGE_TOKEN =  GLOBAL_VARIABLES[env].LEVERAGE_TOKEN;
+const WEB3_MODAL_NETWORK =  GLOBAL_VARIABLES[env].WEB3_MODAL_NETWORK;
 const WALLETS_API_URL = GLOBAL_VARIABLES[env].WALLETS_API_URL;
 const WALLET_OPTION_RPC = GLOBAL_VARIABLES[env].WALLET_OPTION_RPC;
 const RPC_LIST = GLOBAL_VARIABLES[env].RPC_LIST;
-const LIQ_PAIRS = GLOBAL_VARIABLES[env].LIQ_PAIRS
+const LIQ_PAIRS = GLOBAL_VARIABLES[env].LIQ_PAIRS;
 window.cyclops_nft_contract_address =
   GLOBAL_VARIABLES[env].cyclops_nft_contract_address;
 window.chainId = GLOBAL_VARIABLES[env].chainId;
