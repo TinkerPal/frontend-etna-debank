@@ -25,7 +25,7 @@
       </div>
       <div class="flex flex-col mb-4">
         <label for="stake-qnt" class="name-field ">Stake qnt</label>
-        <input type="text" name="stake-qnt" id="liq_pair_stake_am" placeholder="-" class="stake-input">
+        <input type="number" name="stake-qnt" id="liq_pair_stake_am" placeholder="-" class="stake-input">
       </div>
       <div class="flex flex-col mb-11">
         <div class="name-field ">Period and Annual rate</div>
@@ -114,7 +114,7 @@
       </div>
       <div class="flex flex-col mb-11">
         <label for="credit_return_input" class="name-field ">Total repay</label>
-        <input type="text" name="total-repay" id="credit_return_input" class="input-type" readonly value="18.5000"
+        <input type="number" name="total-repay" id="credit_return_input" class="input-type" readonly value="18.5000"
           placeholder="18.5000">
       </div>
       <div class="flex flex-col">
@@ -171,13 +171,13 @@
       </div>
       <div class="flex flex-col mb-4">
         <label for="tokens_amount_collateral" class="name-field">Assets amount</label>
-        <input type="text"
+        <input type="number"
           oninput="updUSDValueCollateral('tokens_amount_collateral','usd_value_collateral', depAmountByProfileId(userObject.state.selected_credprofile)[0]);"
           name="tokens_amount_collateral" id="tokens_amount_collateral" class="input-type" value="" placeholder="-">
       </div>
       <div class="flex flex-col mb-4">
         <label for="usd_value_collateral" class="name-field ">Coll. USD value</label>
-        <input type="text" name="usd_value_collateral" id="usd_value_collateral" readonly class="input-type" value=""
+        <input type="number" name="usd_value_collateral" id="usd_value_collateral" readonly class="input-type" value=""
           placeholder="-">
       </div>
       <div class="flex flex-col mb-4">
