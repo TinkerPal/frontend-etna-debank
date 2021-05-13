@@ -448,7 +448,10 @@ let userObject = {
     lev_ratio_arr: new Array(),
     getLevArr_last_call: 0,
     getLevArr: async function (flag = false) {
-      if (userObject.credits.cred_arr.length === 0) return [[],[]];
+      if (userObject.credits.cred_arr.length === 0) return [
+        [],
+        []
+      ];
       let current_timestamp = Date.now();
       if (current_timestamp > this.getLevArr_last_call + CACHE_TIME || flag) {
         this.getLevArr_last_call = current_timestamp;
@@ -644,19 +647,19 @@ let userObject = {
       let current_timestamp = Date.now();
       if (current_timestamp > this.getCltCol_last_call + CACHE_TIME || flag) {
         this.getCltCol_last_call = current_timestamp;
-
         this.clt_column.length = 0;
         let cred_arr = this.cred_arr;
         let clt_arr = this.clt_arr;
-
         for (let i = 0; i < cred_arr[0].length; i++) {
           let txt = '';
-
-          if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) { //credit or fee unpaid
+          if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) {
+            //credit or fee unpaid
             //found
-            if (depTypeByProfileId(cred_arr[0][i]) == ERC721_TOKEN) { //amount
+            if (depTypeByProfileId(cred_arr[0][i]) == ERC721_TOKEN) {
+              //amount
               txt = '<td class="table-cell">' + cred_arr[4][i] + '</td>';
             } else {
+              let isCollateralCheaperThenCredit = false;
               let clt_id = cred_arr[4][i];
               let clt_profile_id = clt_arr[0][parseInt(clt_id)];
               let clt_amount = clt_arr[1][parseInt(clt_id)];
@@ -666,18 +669,32 @@ let userObject = {
                 adj_am = clt_amount;
               } else {
                 adj_am = toTokens(clt_amount, 4);
+                let cc = await window.credit_smartcontract.methods.viewCustomerCredit(userObject.account, 0).call({
+                  from: userObject.account
+                });
+                let cc_index = parseInt(cc['index']);
+                let credit = await window.credit_smartcontract.methods.viewCustomerCreditByIndex(cc_index, i).call({
+                  from: userObject.account
+                });
+                let credit_usd_val = await calcUSDValueByProfileNonNFT(credit.credit_amount, credit.profile_id); //usd value for credit
+                let coll = await window.credit_smartcontract.methods.viewCustomerCollateralByIndex(cc_index, credit.collateral_id).call({
+                  from: userObject.account
+                });
+                let coll_usd_val = await window.usage_calc_smartcontract_reader.methods.calcUSDValueCollateral(userObject.account, parseInt(credit.linked_dep_id), coll.deposit_amount, parseInt(credit.profile_id)).call({
+                  from: userObject.account
+                });
+
+                if (coll_usd_val < credit_usd_val) {
+                  isCollateralCheaperThenCredit = true;
+                }
               }
-
               tdtxt += ': ' + adj_am;
-              txt = '<td class="table-cell">' + tdtxt + '</td>';
+              txt = `<td class="table-cell ${isCollateralCheaperThenCredit && 'attention-cell'}"><span>${tdtxt}</span></td>`;
             }
-
           }
-
           if (!txt) txt = '<td class="table-cell">-</td>';
           this.clt_column.push(txt);
         }
-
       }
       return this.clt_column;
 
@@ -895,7 +912,11 @@ let userObject = {
         this.asset_column.length = 0;
         this.lockup_period.length = 0;
         let am_arr = userObject.deposits.am_arr;
-        if (am_arr.length === 0) return [[],[],[]];
+        if (am_arr.length === 0) return [
+          [],
+          [],
+          []
+        ];
 
         let rew_arr = userObject.deposits.rew_arr;
 
@@ -925,7 +946,11 @@ let userObject = {
         this.apy_column.length = 0;
 
         let am_arr = userObject.deposits.am_arr;
-        if (am_arr.length === 0) return [[],[],[]];
+        if (am_arr.length === 0) return [
+          [],
+          [],
+          []
+        ];
         let rew_arr = userObject.deposits.rew_arr;
 
         for (let i = 0; i < am_arr[0].length; i++) {
