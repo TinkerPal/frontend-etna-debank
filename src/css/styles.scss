@@ -114,6 +114,10 @@
     }
   }
 
+  .attention-cell {
+    @apply border border-red;
+  }
+
   .table-row {
     @apply mb-3 rounded-lg;
   }

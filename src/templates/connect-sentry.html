@@ -7,7 +7,12 @@
   Sentry.init({
   dsn: "https://ef64a3c1aef64e878bfdc7a13add1daf@o639119.ingest.sentry.io/5756522",
   integrations: [new Sentry.Integrations.BrowserTracing()],
+  denyUrls: [
 
+    /extensions\//i,
+    /^chrome:\/\//i,
+    /unpkg\.com/i
+  ],
   // We recommend adjusting this value in production, or using tracesSampler
   // for finer control
   tracesSampleRate: 1.0,
