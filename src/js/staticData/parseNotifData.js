@@ -45,6 +45,13 @@ document.addEventListener("DOMContentLoaded", async function (event) {
   let sumItems = data.notificationsArr.length;
   let notifAmount = document.querySelector('.notif-amount');
   let deleteBtns = document.querySelectorAll('.delete-btn');
+  const notifCommonCloseBtns = notifCommon.querySelectorAll('.modal-exit');
+
+  notifCommonCloseBtns.forEach(item => {
+    item.addEventListener('click', () => {
+      notifCommon.classList.add('hidden');
+    });
+  });
 
   notifAmount.innerHTML = sumItems;
 
