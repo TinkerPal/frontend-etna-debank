@@ -3836,6 +3836,11 @@ function reorder_divs(id1, id2) {
 async function set_fixed_credit() {
   document.getElementById('set_fixed_credit').classList.add('transparent_button_pressed');
   document.getElementById('set_var_credit').classList.remove('transparent_button_pressed');
+
+  if(userObject.state.getcredit_profile === -1 || userObject.state.selected_credprofile === -1) {
+    return document.getElementById('credit_perc').value = '';
+  }
+
   let apy = await window.usage_calc_smartcontract_reader.methods.calcFixedApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({
     from: userObject.account
   });
@@ -3846,6 +3851,11 @@ async function set_fixed_credit() {
 async function set_var_credit() {
   document.getElementById('set_fixed_credit').classList.remove('transparent_button_pressed');
   document.getElementById('set_var_credit').classList.add('transparent_button_pressed');
+
+  if(userObject.state.getcredit_profile === -1 || userObject.state.selected_credprofile === -1) {
+    return document.getElementById('credit_perc').value = '';
+  }
+
   let apy = await window.usage_calc_smartcontract_reader.methods.calcVarApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({
     from: userObject.account
   });

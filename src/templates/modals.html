@@ -203,13 +203,13 @@
       </div>
       <div class="flex mb-4 w-full btns-array">
         <div class="flex-1 flex">
-          <input type="radio" name="credit-type" value="percent-regular" id="set_var_credit" checked class="hidden">
+          <input type="radio" name="credit-type" value="percent-regular" id="set_var_credit" onclick="set_var_credit()" checked class="hidden">
           <label for="set_var_credit" class="btn-checked">
             Regular
           </label>
         </div>
         <div class="flex-1 flex">
-          <input type="radio" name="credit-type" value="percent-fixed" id="set_fixed_credit" class="hidden">
+          <input type="radio" name="credit-type" value="percent-fixed" id="set_fixed_credit" onclick="set_fixed_credit()" class="hidden">
           <label for="set_fixed_credit" class="btn-checked">
             Fixed %
           </label>
