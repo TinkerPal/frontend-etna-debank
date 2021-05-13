@@ -1420,3 +1420,11 @@ button:disabled {
     }
   }
 }
+
+.simplebar-scrollbar::before {
+  background-color: #838996;
+}
+
+.simplebar-track {
+  z-index: 0!important;
+}

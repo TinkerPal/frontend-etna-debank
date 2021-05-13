@@ -2727,8 +2727,6 @@ async function getCreditsDashboard(callback = null) {
   html += '</tbody>' +
     '</table>';
 
-  html += '<span style="display: inline; font-size: 60%; "><sup>*</sup> Effective current credit APR, based on all conditions, incl. Leverage</span>'
-
   safeSetTableData('my_credits', html, 'empty')
 
   if (callback) callback();

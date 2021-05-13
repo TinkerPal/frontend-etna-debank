@@ -31,7 +31,7 @@ module.exports = {
       },
       height: {
         '66': '66px',
-        'empty': 'calc(100% - 160px)'
+        'empty': 'calc(100vh - 346px)'
       }
     },
     fontFamily: {

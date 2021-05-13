@@ -24,7 +24,7 @@
   </title>
 </head>
 
-<body class="font-body bg-black text-white h-full min-h-screen relative w-screen flex flex-col relative">
+<body class="font-body bg-black text-white h-full min-h-screen relative w-screen flex flex-col relative" data-simplebar>
 
   <header class="w-full z-70 h-66 fixed bg-black">
     @@include('./templates/header.html')
@@ -52,7 +52,7 @@
   <!-- end LoadBar -->
 
   <main>
-    <div id="total-dashboard-tab" class="page hide" data-simplebar>
+    <div id="total-dashboard-tab" class="page hide">
       <div class="main mx-6 mt-11 text-white xl:flex-row flex flex-col">
         <div class="dashboard-col xl:w-290 w-full">
           @@include('./templates/dashboard.html')
@@ -62,13 +62,13 @@
         </div>
       </div>
     </div>
-    <div id="dashboard-tab" class="page hide" data-simplebar>
+    <div id="dashboard-tab" class="page hide">
       @@include('./templates/deposits.html')
     </div>
-    <div id="borrow-tab" class="page hide" data-simplebar>
+    <div id="borrow-tab" class="page hide">
       @@include('./templates/borrow.html')
     </div>
-    <div id="liq-earn-tab" class="page hide" data-simplebar>
+    <div id="liq-earn-tab" class="page hide">
       @@include('./templates/liquidity.html')
     </div>
 

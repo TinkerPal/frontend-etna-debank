@@ -36,6 +36,7 @@ const safeSetTableData = (id, value, className) => {
   const el = document.getElementById(id);
   if (el) {
     el.innerHTML = value;
+    new SimpleBar(el);
     if (isEmptyTable(id)) {
       el.closest('.page').classList.add(className)
     } else {
