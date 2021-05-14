@@ -278,7 +278,7 @@ async function getAccount() {
 async function getAccountWalletConnect() {
 
   try {
-    console.log('in getAccountWalletConnect');
+    // console.log('in getAccountWalletConnect');
     errorEmptyMetamaskMsg(false);
     // Get connected chain id from Ethereum node
     //  const chainId = '0x38';// await window.web3js.eth.getChainId();
@@ -339,7 +339,7 @@ async function setNetInfo() {
     document.getElementById('net_icon').style.color = "red";
     document.getElementById('net_txt').innerHTML = " wrong network, connect to BSC";
   } else if (chainIdHex  != window.chainId) {
-    console.log(chains)
+    // console.log(chains)
     document.getElementById('net_name').innerHTML = chains[window.chainId];
     document.getElementById('net_info').style.display = "flex";
     document.getElementById('net_icon').style.color = "red";
@@ -1117,14 +1117,14 @@ async function onUniversalDisconnect() {
 }
 
 async function toggleWeb3Connect() {
-  console.log('in toggleWeb3Connect');
+  // console.log('in toggleWeb3Connect');
   if (isMetaMaskInstalled()) {
-    console.log('MM installed');
+    // console.log('MM installed');
     return; //do nothing, we just use metamask
   }
 
   if (!isWeb3Connected()) { //connect to mobile wallet
-    console.log('!isWeb3Connected');
+    // console.log('!isWeb3Connected');
     await connectWeb3();
     if (isWeb3Connected()) {
       walletButton.classList.remove('web3-disconnected');
@@ -1151,7 +1151,7 @@ function copyToClipboard(elem) { //elem should be input
 
 async function updateData(action = null) {
 
-  console.log('update data call, action =', action);
+  // console.log('update data call, action =', action);
 
   await userObject.load(); //only once, userObject controls it
 
@@ -3221,8 +3221,8 @@ async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
   }
 
   //let data = await contract.methods.calcUSDValueCollateral(userObject.account, dep_id.toString(), wei_amount.toString()).call({from: userObject.account});
-  console.log('userObject.state.selected_credprofile=', userObject.state.selected_credprofile);
-  console.log('param= ', userObject.account, dep_id, wei_amount.toString(), userObject.state.selected_credprofile);
+  // console.log('userObject.state.selected_credprofile=', userObject.state.selected_credprofile);
+  // console.log('param= ', userObject.account, dep_id, wei_amount.toString(), userObject.state.selected_credprofile);
   //param=  0xddc58f7839a71787eb94211bc922e0ae2bfb5501 9 4 6
   let usd_val = await window.usage_calc_smartcontract_reader.methods.calcUSDValueCollateral(userObject.account, dep_id, wei_amount, userObject.state.selected_credprofile).call({
     from: userObject.account
