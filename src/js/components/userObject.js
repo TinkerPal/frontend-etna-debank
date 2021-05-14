@@ -688,6 +688,7 @@ let userObject = {
                   isCollateralCheaperThenCredit = true;
                 }
               }
+              tdtxt = tdtxt.toUpperCase();
               tdtxt += ': ' + adj_am;
               txt = `<td class="table-cell ${isCollateralCheaperThenCredit && 'attention-cell'}"><span>${tdtxt}</span></td>`;
             }

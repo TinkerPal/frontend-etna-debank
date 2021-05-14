@@ -2632,7 +2632,7 @@ async function getCreditsDashboard(callback = null) {
     '<thead>' +
     '<tr>' +
     '<th class="table-title" colspan = "2" scope = "colgroup">Asset</th>' +
-    '<th class="table-title">Borrowed mount</th>' +
+    '<th class="table-title">Borrowed amount</th>' +
     '<th class="table-title">USD value</th>' +
     '<th class="table-title">Collateral</th>' +
     '<th class="table-title">Duration days</th>' +
