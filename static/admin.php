@@ -5158,8 +5158,9 @@ async function processLiquidationForCreditClick(cust_id, cred_id, cust_wallet){
 }
 
 async function processLiquidationForCreditNFTClick(cust_id, cred_id, cust_wallet){
+	infoMsg('you need to proceed manually. current approach - just leave it on bank balance and do not liquidate');
 	//console.log(cust_id, cred_id, cust_wallet); return;
-	let creditContractInstance;
+	/*let creditContractInstance;
 	await initCreditContract((contract) => {
 			creditContractInstance = contract;
 	});
@@ -5173,7 +5174,7 @@ async function processLiquidationForCreditNFTClick(cust_id, cred_id, cust_wallet
 
 	await creditContractInstance.methods.decreaseCollateral(cust_wallet,parseInt(credit.collateral_id),coll.deposit_amount).send({from: userObject.account,gasPrice: window.gp});
 
-     
+    */ 
   	
   	//creditContractInstance.methods.returnFee(cust_wallet,cred_id,credit.acc_fee).send({from: userObject.account,gasPrice: window.gp, value: credit.acc_fee});
 
