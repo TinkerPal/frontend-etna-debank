@@ -155,6 +155,12 @@ function cssTask() {
     .pipe(browserSync.stream());
 }
 
+function cssLibsTask() {
+  return src('./src/css/libs/*')
+    .pipe(gulp.dest('./public/css/libs/'))
+    .pipe(browserSync.stream());
+}
+
 // Task for compiling our CSS files using PostCSS
 function fontsTask() {
   return src('./src/fonts/*')
@@ -240,6 +246,7 @@ function build(envs) {
     cssTask,
     htmlTask,
     imageminTask,
+    cssLibsTask,
     fontsTask,
     copyStatic
   );

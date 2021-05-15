@@ -141,7 +141,7 @@
   }
 
   .pop-up {
-    @apply max-w-460 w-full flex flex-col rounded-xl border border-light-grey bg-blueish-black relative shadow;
+    @apply max-w-460 w-full flex flex-col rounded-xl border border-light-grey bg-blueish-black relative shadow max-h-screen overflow-auto;
   }
 
   .input-type {
@@ -664,6 +664,13 @@
       background-position: center;
     }
   }
+}
+
+#assets-dropdown .choices__inner {
+  max-height: 128px;
+  height: 100%;
+  overflow: auto;
+  align-items: flex-start;
 }
 
 // .socials-row {
@@ -1404,15 +1411,21 @@ button:disabled {
   }
 }
 
-#credprofiles-dropdown, #custom-depprofiles-dropdown, .choices-collateral {
+#credprofiles-dropdown,
+#custom-depprofiles-dropdown,
+.choices-collateral {
   text-transform: uppercase;
-  .js-Dropdown-title, .choices__item {
+
+  .js-Dropdown-title,
+  .choices__item {
     text-transform: uppercase;
   }
 }
 
 #custom-getcredit-dropdown {
-  li, .dropdown-text {
+
+  li,
+  .dropdown-text {
     text-transform: uppercase;
 
     &[data-value=""] {
@@ -1426,5 +1439,5 @@ button:disabled {
 }
 
 .simplebar-track {
-  z-index: 0!important;
+  z-index: 0 !important;
 }
