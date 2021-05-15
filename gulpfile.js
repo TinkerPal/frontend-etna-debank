@@ -222,8 +222,8 @@ function watchTask(envs) {
     series(htmlTask, cleanOldCss, cssTask, htmlTask, browsersyncReload)
   );
   watch(
-    [ './src/css/*.scss' ],
-    series(htmlTask, cleanOldCss, cssTask, htmlTask, browsersyncReload)
+    [ './src/css/**/*' ],
+    series(htmlTask, cleanOldCss, cssTask, htmlTask, cssLibsTask, browsersyncReload)
   );
   watch(
     [ './src/js/**/*.js' ],

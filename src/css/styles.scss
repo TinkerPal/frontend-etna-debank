@@ -673,6 +673,11 @@
   align-items: flex-start;
 }
 
+#assets-dropdown .choices__list--dropdown .choices__list {
+  max-height: 200px;
+  overflow: auto;
+}
+
 // .socials-row {
 //   width: calc(100% - 48px);
 // }
