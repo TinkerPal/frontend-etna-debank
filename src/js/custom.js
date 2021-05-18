@@ -1,20 +1,53 @@
 const modal_withdraw_deposit = new Modal('modal-withdraw-deposit');
 const modal_withdraw_yield = new Modal('modal-withdraw-reward');
-const modal_add_credit = new Modal('modal-open-new-credit', () => {
-  initCreditProfilesDropdown();
-  initGetCreditDropdown()
-}, creditProfilesDropdownBuild);
+const modal_add_credit = new Modal(
+  'modal-open-new-credit',
+  () => {
+    initCreditProfilesDropdown();
+    initGetCreditDropdown();
+  },
+  creditProfilesDropdownBuild
+);
 const modal_return_fee = new Modal('modal-return-fee');
 const modal_return_credit = new Modal('modal-return-credit');
 const modal_add_leverage = new Modal('modal-set-leverage');
 const modal_unfreeze = new Modal('modal-unfreeze');
-const modal_add_lliquidity = new Modal('modal-add-liquidity', () => {
-  initLiqPairsDropdown(), initLiqTermsDropdown()
-}, liqModalBuild);
-const modal_add_deposit = new Modal('modal-new-deposit', initDepositProfilesDropdown, () => {
-  depositModalRebuild();
-  depositModalUpdateNftDropdown();
-}, null, depositModalUpdateNftDropdown);
+const modal_add_lliquidity = new Modal(
+  'modal-add-liquidity',
+  () => {
+    initLiqPairsDropdown(), initLiqTermsDropdown();
+  },
+  liqModalBuild
+);
+const modal_add_deposit = new Modal(
+  'modal-new-deposit',
+  initDepositProfilesDropdown,
+  () => {
+    depositModalRebuild();
+    depositModalUpdateNftDropdown();
+  },
+  null,
+  depositModalUpdateNftDropdown
+);
+
+const modals = [
+  modal_withdraw_deposit,
+  modal_withdraw_yield,
+  modal_add_credit,
+  modal_return_fee,
+  modal_return_credit,
+  modal_add_leverage,
+  modal_unfreeze,
+  modal_add_lliquidity,
+  modal_add_deposit,
+];
+
+function closeAllModals() {
+  modals.forEach((modal) => {
+    modal.hide(false);
+  });
+}
+
 
 const nftAssetsSelect = new Choices('#nftAssetsSelect', {
   removeItemButton: true,
@@ -220,11 +253,11 @@ async function initWeb3Modal() {
 }
 
 async function getAccount() {
-
+  resetMsg();
+  closeAllModals();
   try {
-
     let accounts = await ethereum.request({
-      method: 'eth_requestAccounts'
+      method: 'eth_requestAccounts',
     });
     userObject.account = accounts[0];
 
@@ -232,7 +265,10 @@ async function getAccount() {
 
     const whitelisted_wallets = (await response.json()).whitelisted_wallets;
 
-    const isWhitelistedAccount = whitelisted_wallets.some(whitelistedWallet => whitelistedWallet.toUpperCase() === userObject.account.toUpperCase());
+    const isWhitelistedAccount = whitelisted_wallets.some(
+      (whitelistedWallet) =>
+        whitelistedWallet.toUpperCase() === userObject.account.toUpperCase()
+    );
 
     if (!isWhitelistedAccount) {
       window.location.replace('/by-invitation.html');
@@ -246,14 +282,23 @@ async function getAccount() {
     setLdBar(10);
 
     safeSetValueBySelector('.current-wallet', userObject.account);
-    safeSetInnerHTMLBySelector('.current-wallet', userObject.account, ' inline');
+    safeSetInnerHTMLBySelector(
+      '.current-wallet',
+      userObject.account,
+      ' inline'
+    );
 
     checkAdminButton();
     window.web3js = await new Web3(window.ethereum);
     window.web3 = window.web3js;
     window.BN = web3js.utils.BN;
 
-    await Promise.all([initStakingContract(), initCreditContract(), initLiqLevContract(), initCyclopsNFTContract()])
+    await Promise.all([
+      initStakingContract(),
+      initCreditContract(),
+      initLiqLevContract(),
+      initCyclopsNFTContract(),
+    ]);
 
     setLdBar(15);
 
@@ -262,7 +307,6 @@ async function getAccount() {
     setLdBar(25);
 
     if (window.location.pathname == '/') {
-
       setNetInfo();
 
       await updateData();
@@ -276,7 +320,8 @@ async function getAccount() {
 }
 
 async function getAccountWalletConnect() {
-
+  resetMsg();
+  closeAllModals();
   try {
     // console.log('in getAccountWalletConnect');
     errorEmptyMetamaskMsg(false);
@@ -295,7 +340,6 @@ async function getAccountWalletConnect() {
 
     userObject.account = accounts[0];
 
-
     setLdBar(10);
 
     safeSetValueBySelector('.current-wallet', userObject.account);
@@ -303,7 +347,12 @@ async function getAccountWalletConnect() {
 
     // checkAdminButton();
 
-    await Promise.all([initStakingContract(), initCreditContract(), initLiqLevContract(), initCyclopsNFTContract()])
+    await Promise.all([
+      initStakingContract(),
+      initCreditContract(),
+      initLiqLevContract(),
+      initCyclopsNFTContract(),
+    ]);
 
     setLdBar(15);
 
@@ -312,7 +361,6 @@ async function getAccountWalletConnect() {
     setLdBar(25);
 
     if (window.location.pathname == '/') {
-
       setNetInfo();
 
       await updateData();
@@ -322,11 +370,9 @@ async function getAccountWalletConnect() {
     window.gp = window.gp * 2;
 
     await postWalletCallback();
-
   } catch (error) {
     errorEmptyMsg('Cannot access wallet. Reload your page, please.');
   }
-
 }
 
 async function setNetInfo() {

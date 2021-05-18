@@ -227,7 +227,7 @@ function watchTask(envs) {
   );
   watch(
     [ './src/js/**/*.js' ],
-    series(cleanOldJs, () => jsTask(envs), htmlTask, browsersyncReload)
+    series(cleanOldJs, () => jsTask(envs), htmlTask, htmlTask, browsersyncReload)
   );
   watch([ './src/images/**/*' ], series(imageminTask, browsersyncReload));
   watch(

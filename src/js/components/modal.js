@@ -103,7 +103,7 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
     };
   }
 
-  this.hide = () => {
+  this.hide = (withCallback = true) => {
     this.modal.classList.remove("open");
 
     if (this.timerToCloseModal) {
@@ -128,6 +128,9 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
         this.confirm.classList.remove('btn-load', 'btn-done');
       }
     }, 300);
+
+    if(!withCallback) return;
+    
     this.onHideCallback && this.onHideCallback();
   }
 
