@@ -103,8 +103,8 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
     };
   }
 
-  this.hide = (withCallback = true) => {
-    this.modal.classList.remove("open");
+  this.hide = () => {
+    this.hideModal();
 
     if (this.timerToCloseModal) {
       clearTimeout(this.timerToCloseModal);
@@ -128,10 +128,12 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
         this.confirm.classList.remove('btn-load', 'btn-done');
       }
     }, 300);
-
-    if(!withCallback) return;
     
     this.onHideCallback && this.onHideCallback();
+  }
+
+  this.hideModal = () => {
+    this.modal.classList.remove("open");
   }
 
   this.init = () => {
