@@ -127,7 +127,6 @@
   </div>
 </div>
 
-
 <!-- open new credit -->
 
 <div class="modal hidden" id="modal-open-new-credit">
@@ -246,10 +245,17 @@
         <select id="depprofiles-dropdown" name="depprofiles-dropdown">
         </select>
       </div>
-      <div id="assets-dropdown" class="flex flex-col mb-4">
+      <div id="assets-dropdown" class="flex flex-col mb-4 hidden">
         <div class="name-field ">Select NFT</div>
         <select class="form-control" name="choices-multiple" id="nftAssetsSelect" multiple>
         </select>
+
+        <!-- add in select -->
+        <div class="flex items-center w-full">
+          <div class="w-1/2"><button type="submit" class="btn w-full mb-4 mr-2">Select all NFT</button></div>
+          <div class="w-1/2"><button type="submit" class="btn w-full mb-4 ml-2 disabled">Unselect all NFT</button></div>          
+        </div>
+
       </div>
       <div class="flex flex-col mb-4">
         <label for="tokens_amount" class="name-field ">Assets amount</label>

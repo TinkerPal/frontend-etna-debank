@@ -54,6 +54,7 @@ const nftAssetsSelect = new Choices('#nftAssetsSelect', {
   callbackOnCreateTemplates: function (template) {
     return {
       item: (classNames, data) => {
+
         const value = `${data.value.text}[${data.value.t_id}]`;
 
         return template(`

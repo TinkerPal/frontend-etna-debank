@@ -219,11 +219,11 @@ function cleanOldJs() {
 function watchTask(envs) {
   watch(
     './src/**/*.html',
-    series(htmlTask, cleanOldCss, cssTask, htmlTask, browsersyncReload)
+    series(htmlTask, cleanOldCss, cssTask, htmlTask,htmlTask, cssLibsTask, browsersyncReload)
   );
   watch(
     [ './src/css/**/*' ],
-    series(htmlTask, cleanOldCss, cssTask, htmlTask, cssLibsTask, browsersyncReload)
+    series(htmlTask, cleanOldCss, cssTask, htmlTask,htmlTask, cssLibsTask, browsersyncReload)
   );
   watch(
     [ './src/js/**/*.js' ],

@@ -54,7 +54,8 @@ module.exports = {
       'green-success': 'rgba(39, 174, 96, 0.2)',
       'warning': 'rgba(255, 235, 153, 0.25)',
       'error': 'rgba(255, 70, 70, 0.15)',
-      violet: '#5A5A89'
+      violet: '#5A5A89',
+      'green-400': '#68D391'
     }),
     textColor: theme => ({
       ...theme('colors'),
@@ -78,7 +79,8 @@ module.exports = {
       'light-grey': '#292948',
       'green-3': '#6FCF97',
       'medium-grey': '#35354E',
-      red: '#EB5757'
+      red: '#EB5757',
+      'green-400': '#68D391'
     }),
     gradientColorStops: theme => ({
       ...theme('colors'),
