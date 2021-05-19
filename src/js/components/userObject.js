@@ -684,7 +684,7 @@ let userObject = {
                   from: userObject.account
                 });
 
-                if (coll_usd_val < credit_usd_val) {
+                if (coll_usd_val * 0.9 < credit_usd_val) {
                   isCollateralCheaperThenCredit = true;
                 }
               }
