@@ -360,6 +360,9 @@
       @apply absolute;
     }
   }
+  .nft-btn {
+    @apply w-full mt-2 max-w-full text-center items-center justify-center hover:bg-medium-grey;
+  }
 }
 
 .empty-access,
@@ -677,7 +680,7 @@
 
 #assets-dropdown .choices__list--dropdown .choices__list {
   max-height: 200px;
-  overflow: visible;
+  overflow: auto;
 }
 
 // .socials-row {

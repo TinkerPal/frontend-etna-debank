@@ -70,7 +70,7 @@ function choiseOnInitNft(choice) {
   const nftButtonsWrapper = document.createElement('div');
   nftButtonsWrapper.classList.add('flex', 'items-center', 'w-full', 'p-2');
   const selectAllBtn = document.createElement('button');
-  selectAllBtn.classList.add('btn', 'w-full','mr-2');
+  selectAllBtn.classList.add('table-btn', 'mr-2', 'nft-btn');
   selectAllBtn.innerHTML = 'Select all NFT';
 
   selectAllBtn.onclick = () => {
@@ -89,7 +89,7 @@ function choiseOnInitNft(choice) {
   }
 
   const unSelectAllBtn = document.createElement('button');
-  unSelectAllBtn.classList.add('btn', 'w-full', 'mt-2');
+  unSelectAllBtn.classList.add('table-btn', 'nft-btn');
   unSelectAllBtn.innerHTML = 'Unselect all NFT';
 
   unSelectAllBtn.onclick = () => {

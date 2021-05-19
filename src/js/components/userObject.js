@@ -690,7 +690,7 @@ let userObject = {
               }
               tdtxt = tdtxt.toUpperCase();
               tdtxt += ': ' + adj_am;
-              txt = `<td class="table-cell ${isCollateralCheaperThenCredit && 'attention-cell'}"><span>${tdtxt}</span></td>`;
+              txt = `<td class="table-cell ${isCollateralCheaperThenCredit && 'attention-cell'}" ${isCollateralCheaperThenCredit && 'title="Your collateral doesn’t cover credit value, please be aware that bank can liquidate your collateral partially or fully at any moment. To prevent that - please return your credit fully or partially."'}><span>${tdtxt}</span></td>`;
             }
           }
           if (!txt) txt = '<td class="table-cell">-</td>';
