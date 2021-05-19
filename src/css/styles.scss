@@ -115,7 +115,7 @@
   }
 
   .attention-cell {
-    @apply border border-red;
+    @apply border-l-4 pl-4 border-red bg-error;
   }
 
   .table-row {
