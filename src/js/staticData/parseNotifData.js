@@ -1,19 +1,20 @@
-document.addEventListener("DOMContentLoaded", async function (event) {
-
-  const data = await fetch('/notifications.json').then(response => {
-    if (response.status !== 200) {
-      throw new Error(response.status);
-    } else {
-      return response.json();
-    }
-  }).catch(error => {
-    throw new Error(error);
-  })
+document.addEventListener('DOMContentLoaded', async function (event) {
+  const data = await fetch('/notifications.json')
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new Error(response.status);
+      } else {
+        return response.json();
+      }
+    })
+    .catch((error) => {
+      throw new Error(error);
+    });
 
   let notifItem = '';
   const notifCommon = document.querySelector('.notif-block');
 
-  for (const i in data.notificationsArr) {
+  data.notificationsArr.forEach((i) => {
     notifItem = `
     <div class="flex w-full notif-block__item" data-id="${[i]}">
       <div class="w-1/12 flex justify-start h-full">
@@ -24,10 +25,10 @@ document.addEventListener("DOMContentLoaded", async function (event) {
       <div class="w-10/12 h-full ml-2 flex flex-col">
         <div class="notif-item flex flex-col pb-5 mb-5 border-b border-light-violet">
           <div class="text-sm font-medium mb-1">
-            ${data.notificationsArr[i].title}
+            ${i.title}
           </div>
           <div class="text-sm text-white font-normal text-opacity-50">
-            ${data.notificationsArr[i].text}
+            ${i.text}
           </div>
           
         </div>
@@ -38,16 +39,16 @@ document.addEventListener("DOMContentLoaded", async function (event) {
         </button>
       </div>
     </div>
-  `
+  `;
     notifCommon.innerHTML += notifItem;
-  }
+  });
 
   let sumItems = data.notificationsArr.length;
-  let notifAmount = document.querySelector('.notif-amount');
-  let deleteBtns = document.querySelectorAll('.delete-btn');
+  const notifAmount = document.querySelector('.notif-amount');
+  const deleteBtns = document.querySelectorAll('.delete-btn');
   const notifCommonCloseBtns = notifCommon.querySelectorAll('.modal-exit');
 
-  notifCommonCloseBtns.forEach(item => {
+  notifCommonCloseBtns.forEach((item) => {
     item.addEventListener('click', () => {
       notifCommon.classList.add('hidden');
     });
@@ -60,18 +61,16 @@ document.addEventListener("DOMContentLoaded", async function (event) {
     notifCommon.remove();
   }
 
-  deleteBtns.forEach(item => {
+  deleteBtns.forEach((item) => {
     item.addEventListener('click', () => {
       item.parentElement.closest('.notif-block__item').remove();
-      sumItems = sumItems - 1;
+      sumItems -= 1;
       notifAmount.innerHTML = sumItems;
 
       if (sumItems < 1) {
         notifAmount.remove();
         notifCommon.remove();
       }
-
     });
   });
-
 });

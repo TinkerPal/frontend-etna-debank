@@ -1,4 +1,10 @@
-function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHideCallback) {
+function Modal(
+  modalId,
+  onInitCallback,
+  onShowCallback,
+  onSubmitCallback,
+  onHideCallback
+) {
   this.modal = document.getElementById(modalId);
   this.data = {};
   this.approve = this.modal.querySelector('[data-id="approve"]');
@@ -21,7 +27,7 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
 
     this.approve.disabled = true;
     this.approve.classList.add('btn-load');
-  }
+  };
 
   this.isLoadedAfterApprove = (success = true) => {
     this.isLoading = false;
@@ -35,7 +41,10 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
       if (this.confirm) {
         this.confirm.disabled = false;
       } else {
-        this.timerToCloseModal = setTimeout(() => this.hide(), this.closeModalTimer);
+        this.timerToCloseModal = setTimeout(
+          () => this.hide(),
+          this.closeModalTimer
+        );
       }
 
       return;
@@ -48,14 +57,14 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
     }
 
     this.hide();
-  }
+  };
 
   this.isLoadingAfterConfirm = () => {
     this.isLoading = true;
     this.modal.classList.add('modal-loading');
     this.confirm.disabled = true;
     this.confirm.classList.add('btn-load');
-  }
+  };
 
   this.isLoadedAfterConfirm = (success = true, isApproved = true) => {
     this.isLoading = false;
@@ -66,7 +75,7 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
       this.confirm.classList.remove('btn-load');
       this.confirm.classList.add('btn-done');
       this.timerToCloseModal = setTimeout(() => {
-        this.hide()
+        this.hide();
       }, this.closeModalTimer);
 
       this.onSubmitCallback && this.onSubmitCallback();
@@ -83,25 +92,25 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
     }
 
     this.hide();
-  }
+  };
 
   this.show = () => {
-    this.modal.classList.add("open");
+    this.modal.classList.add('open');
     this.onShowCallback && this.onShowCallback();
-  }
+  };
 
   this.setData = (data) => {
     this.data = {
-      ...data
+      ...data,
     };
-  }
+  };
 
   this.updateData = (newData) => {
     this.data = {
       ...data,
-      ...newData
+      ...newData,
     };
-  }
+  };
 
   this.hide = () => {
     this.hideModal();
@@ -120,7 +129,7 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
       }
 
       if (this.confirm) {
-        if(this.approve && !this.onShowCallback) {
+        if (this.approve && !this.onShowCallback) {
           this.confirm.disabled = true;
         } else {
           this.confirm.disabled = false;
@@ -128,21 +137,21 @@ function Modal(modalId, onInitCallback, onShowCallback, onSubmitCallback, onHide
         this.confirm.classList.remove('btn-load', 'btn-done');
       }
     }, 300);
-    
+
     this.onHideCallback && this.onHideCallback();
-  }
+  };
 
   this.hideModal = () => {
-    this.modal.classList.remove("open");
-  }
+    this.modal.classList.remove('open');
+  };
 
   this.init = () => {
-    const exits = this.modal.querySelectorAll(".modal-exit");
+    const exits = this.modal.querySelectorAll('.modal-exit');
     this.modal.classList.remove('hidden');
-    exits.forEach(exit => {
-      exit.addEventListener("click", this.hide);
+    exits.forEach((exit) => {
+      exit.addEventListener('click', this.hide);
     });
-  }
+  };
 
   this.init();
 }

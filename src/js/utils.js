@@ -1,18 +1,27 @@
-const isToken = (dep_id, tokenName = 'nft', profiles = 'deposit_profiles', table = 'deposits', collumnName = 'am_arr', keyId_InTableArray = 'p_id', keyOfName = 'p_name') => {
+const isToken = (
+  dep_id,
+  tokenName = 'nft',
+  profiles = 'deposit_profiles',
+  table = 'deposits',
+  collumnName = 'am_arr',
+  keyId_InTableArray = 'p_id',
+  keyOfName = 'p_name'
+) => {
   const assetPID = userObject[table][collumnName][0][dep_id];
-  const asset = userObject[profiles].find(profile => profile[keyId_InTableArray] === assetPID);
+  const asset = userObject[profiles].find(
+    (profile) => profile[keyId_InTableArray] === assetPID
+  );
 
   if (!asset) return;
 
   return asset[keyOfName] === tokenName;
-}
+};
 
 const isEmptyTable = (idContainer) => {
   return document.querySelector(`#${idContainer} table tbody`).innerHTML === '';
-}
-
+};
 const setLdBar = (value, part = 'null') => {
-  const ldBar = document.getElementById('debank_load_bar').ldBar;
+  const { ldBar } = document.getElementById('debank_load_bar');
   const ldBarWrapper = document.getElementById('load_bar_cover');
 
   if (!value) {
@@ -30,38 +39,36 @@ const setLdBar = (value, part = 'null') => {
   } else {
     ldBarWrapper.style.display = 'block';
   }
-}
+};
 
 const safeSetTableData = (id, value, className) => {
   const el = document.getElementById(id);
   if (el) {
     el.innerHTML = value;
-    new SimpleBar(el);
+    const tableWithScroll = new SimpleBar(el);
     if (isEmptyTable(id)) {
-      el.closest('.page').classList.add(className)
+      el.closest('.page').classList.add(className);
     } else {
-      el.closest('.page').classList.remove(className)
+      el.closest('.page').classList.remove(className);
     }
   }
-}
-
+};
 const getDepositByTokenId = (p_id) => {
+  if (userObject.deposits.am_arr.length === 0) return;
 
-  if(userObject.deposits.am_arr.length === 0) return;
-
-  const index = userObject.deposits.am_arr[0].findIndex((item) =>
-    item === p_id
+  const index = userObject.deposits.am_arr[0].findIndex(
+    (item) => item === p_id
   );
 
-  if(index === -1) return;
+  if (index === -1) return;
 
   const deposit = userObject.deposits.am_arr[1][index];
 
   return isToken(index) ? deposit : toTokens(deposit, 4);
-}
+};
 
 const isMetaMaskInstalled = () => {
-  if (typeof window.ethereum != undefined) {
+  if (typeof window.ethereum !== 'undefined') {
     return Boolean(window.ethereum && window.ethereum.isMetaMask);
   }
-}
+};

@@ -4,16 +4,16 @@ const GLOBAL_VARIABLES = {
     cyclops_nft_contract_address: '0x83C454FF387cebbC3CbAa5a7a44F412F4FA63c0E',
     chainId: '0x38',
     WALLET_OPTION_RPC: {
-      '56': 'https://bsc-dataseed.binance.org/',
+      56: 'https://bsc-dataseed.binance.org/',
     },
-    WEB3_MODAL_NETWORK: { network: "binance" },
+    WEB3_MODAL_NETWORK: { network: 'binance' },
     RPC_LIST: [
       // 'https://bsc-dataseed.binance.org/',
       // 'https://bsc-dataseed1.defibit.io/',
       // 'https://bsc-dataseed1.ninicoin.io/',
       'https://proud-patient-forest.bsc.quiknode.pro/8fffb4d84f42ec02686c35631b566c819138e876/',
       'https://proud-patient-forest.bsc.quiknode.pro/8fffb4d84f42ec02686c35631b566c819138e876/',
-      'https://proud-patient-forest.bsc.quiknode.pro/8fffb4d84f42ec02686c35631b566c819138e876/'
+      'https://proud-patient-forest.bsc.quiknode.pro/8fffb4d84f42ec02686c35631b566c819138e876/',
     ],
     LIQ_PAIRS: [
       {
@@ -34,16 +34,16 @@ const GLOBAL_VARIABLES = {
       },
     ],
     LEVERAGE_TOKEN: 'ETNA',
-    TRANSACTION_LINK: 'bscscan.com'
+    TRANSACTION_LINK: 'bscscan.com',
   },
   development: {
     WALLETS_API_URL: 'https://bsc-debank-wallet-api.etna.network',
     cyclops_nft_contract_address: '0x6ab7E5B00a6e4A7E56160FAc1BCcAcEad1614554',
     chainId: '0x61',
     WALLET_OPTION_RPC: {
-      '97': 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+      97: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
     },
-    WEB3_MODAL_NETWORK: { network: "" },
+    WEB3_MODAL_NETWORK: { network: '' },
     RPC_LIST: [
       'https://data-seed-prebsc-1-s1.binance.org:8545/',
       'https://data-seed-prebsc-2-s1.binance.org:8545/',
@@ -63,19 +63,19 @@ const GLOBAL_VARIABLES = {
       },
     ],
     LEVERAGE_TOKEN: 'CYTR',
-    TRANSACTION_LINK: 'testnet.bscscan.com'
+    TRANSACTION_LINK: 'testnet.bscscan.com',
   },
 };
 
 const env = process.env.NODE_ENV;
 
-const TRANSACTION_LINK = GLOBAL_VARIABLES[env].TRANSACTION_LINK;
-const LEVERAGE_TOKEN =  GLOBAL_VARIABLES[env].LEVERAGE_TOKEN;
-const WEB3_MODAL_NETWORK =  GLOBAL_VARIABLES[env].WEB3_MODAL_NETWORK;
-const WALLETS_API_URL = GLOBAL_VARIABLES[env].WALLETS_API_URL;
-const WALLET_OPTION_RPC = GLOBAL_VARIABLES[env].WALLET_OPTION_RPC;
-const RPC_LIST = GLOBAL_VARIABLES[env].RPC_LIST;
-const LIQ_PAIRS = GLOBAL_VARIABLES[env].LIQ_PAIRS;
+const { TRANSACTION_LINK } = GLOBAL_VARIABLES[env];
+const { LEVERAGE_TOKEN } = GLOBAL_VARIABLES[env];
+const { WEB3_MODAL_NETWORK } = GLOBAL_VARIABLES[env];
+const { WALLETS_API_URL } = GLOBAL_VARIABLES[env];
+const { WALLET_OPTION_RPC } = GLOBAL_VARIABLES[env];
+const { RPC_LIST } = GLOBAL_VARIABLES[env];
+const { LIQ_PAIRS } = GLOBAL_VARIABLES[env];
 window.cyclops_nft_contract_address =
   GLOBAL_VARIABLES[env].cyclops_nft_contract_address;
 window.chainId = GLOBAL_VARIABLES[env].chainId;
