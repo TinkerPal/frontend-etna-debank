@@ -1775,10 +1775,10 @@
 	
 	<!-- JAVASCRIPT
     ================================================== -->
-	<script src="admin/js/jquery.min.js"></script>
+	<!--<script src="admin/js/jquery.min.js"></script>
 	<script src="admin/js/popper.min.js"></script>
 	<script src="admin/js/bootstrap.min.js"></script>
-	<script src="admin/js/plugins_cut.js"></script> 
+	<script src="admin/js/plugins_cut.js"></script> -->
 	
 	<script type="text/javascript" src="https://unpkg.com/web3@1.3.4/dist/web3.min.js"></script>
   	<script type="text/javascript" src="https://unpkg.com/web3modal@1.9.3/dist/index.js"></script>
@@ -2352,6 +2352,10 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 	window.gp = await window.web3js.eth.getGasPrice();
 	window.gp = window.gp*2;
+
+	await initStakingContractReader();
+	await initCreditContractReader();
+	await initLiqLevContractReader();
 
 	await initStakingContract();
   	
@@ -4452,15 +4456,16 @@ function copyToClipboardInput(elem = null){
 async function getAnalysisTable(){
 		
 
-		let creditContractInstance;
-		await initCreditContract((contract) => {
-			creditContractInstance = contract;
-		});
 	
-		let liqlevContractInstance;
-		await initLiqLevContract((contract) => {
-			liqlevContractInstance = contract;
-		});
+			
+		
+		depositContractInstance = window.staking_smartcontract_reader;
+		
+		
+		creditContractInstance = window.credit_smartcontract_reader;
+		
+	
+		liqlevContractInstance = window.liqlev_smartcontract_reader;
 		
 		if (!userObject.deposit_profiles){
 			userObject.deposit_profiles = await getAllProfiles();;
@@ -4484,56 +4489,52 @@ async function getAnalysisTable(){
     	let cust_count = await creditContractInstance.methods.getCustomersCreditsLength().call({from: userObject.account});
 
 		
-    	 console.log('cust_count=', cust_count);
+    	//console.log('cust_count=', cust_count);
 		let cust_id_col = new Array();
 		let cust_wallets_col = new Array();
 		let cust_status_col = new Array();
 
 		//let analyze_res = await liqlevContractInstance.methods.analyzeLiquidationAll().call({from: userObject.account});
 		
+		let active_customers_arr = new Array();
 		for (let i = 0; i < cust_count; i++){
+			infoMsg('analyze customer '+(i+1).toString()+' out of '+cust_count.toString());
 			cust_id_col.push('<td>'+i.toString()+'</td>');
 
 			let cust = await creditContractInstance.methods.getCustomersCreditsItem(i).call({from: userObject.account});
 			cust_wallets_col.push('<td>'+cust[0]+'</td>');
 
-			/*
+			
+			let bad__credits_count = 0; 
+			let active_credits = 0;
+	        for (let j=0; j < parseInt(cust[1]); j++){
+	        	let res;
+	        	 try {
+	             	res = await analyzeLiquidationForCredit(i,j, cust[0]);
+	             	active_credits += parseInt(res[3]);
+	             } catch(err) {
 
-			 	(address cust_wallet, uint256 dn) = creditContract.getCustomersCreditsItem(cust_index);
-			        uint32[]  memory bad_credits_ids_for_customer = new uint32[](dn);
-			        
-			        uint32 bad__credits_count = 0; 
-			        for (uint32 j=0; j < dn; j++){
-			             (bool liq_flag, , ) = analyzeLiquidationForCredit(cust_index,j, cust_wallet);
-			             if (liq_flag){
-			                 bad_credits_ids_for_customer[bad__credits_count]= j;
-			                 
-			                 bad__credits_count++;
-			             }
-			        }
-        
+	             	//console.log('i,j=',i,j);
+	             }
+	             //console.log('res =',res)
+	             if (res[0]){		                 
+	                 bad__credits_count++;
+	             }
+	        }
 
-			*/
-					let bad__credits_count = 0; 
-			        for (let j=0; j < parseInt(cust[1]); j++){
-			        	let res;
-			        	 try {
-			             	res = await liqlevContractInstance.methods.analyzeLiquidationForCredit(i,j, cust[0]).call({from: userObject.account});
-			             } catch(err) {
-
-			             	console.log('i,j=',i,j);
-			             }
-			             console.log('res =',res)
-			             if (res[0]){		                 
-			                 bad__credits_count++;
-			             }
-			        }
-
-			//let cust_res = await liqlevContractInstance.methods.analyzeLiquidationForCustomer(i).call({from: userObject.account});
-
+	        if (active_credits > 0){
+	        	active_customers_arr.push(1);
+	        } else {
+	        	active_customers_arr.push(0);
+	        }
+		
 			let txt ='';
 			if (bad__credits_count == 0){
-				txt = 'Yes: <button  onclick="analyze_customer('+i.toString()+')">Details</button>';
+				if (active_credits > 0){
+					txt = 'Yes: <button  onclick="analyze_customer('+i.toString()+')">Details</button>';
+				} else {
+					txt = 'Yes';
+				}
 				cust_status_col.push('<td style="background-color: green">'+txt+'</td>');
 			} else {
 				txt = 'No: <button  onclick="analyze_customer('+i.toString()+')">Details</button>';
@@ -4549,6 +4550,7 @@ async function getAnalysisTable(){
 		
 		for (let i = 0; i < cust_count; i++){
             //0 means max amount for ERC20 compatible and ignored for ERC721
+            	if (active_customers_arr[i] == 0) continue;
              	html += '<tr style="text-align: left; font-size: 0.75em">';
             
             	html += cust_id_col[i];
@@ -4569,28 +4571,372 @@ async function getAnalysisTable(){
 
 	    safeSetInnerHTMLById('analysis_table', html);
 	    safeSetInnerHTMLById('cust_analysis_table', '');
+	    resetMsg();
 
 
 }
 
+/*
+async function processLiquidationForCredit_aux1( cust_index,  credit_index){
+
+		 let creditContract = window.credit_smartcontract_reader;
+
+		 let res = await creditContract.methods.viewCustomerCreditByIndex(cust_index,credit_index).call({from: userObject.account});
+         
+         let credit_profile_id = parseInt(res[0]);
+         let collateral_profile_id = parseInt(res[1]);
+         let collateral_id = parseInt(res[2]);
+         let credit_amount = new BN(res[3]);
+         let linked_dep_id = parseInt(res[6]); 
+        
+        
+        return [credit_profile_id, collateral_profile_id, linked_dep_id, 
+                    credit_amount, collateral_id ]; 
+}*/
+/*
+async function processLiquidationForCredit_aux2(cust_wallet,  collateral_id,  collateral_profile_id){
+         
+        let creditContract = window.credit_smartcontract_reader;
+      
+        let res = await creditContract.methods.viewCustomerCollateral(cust_wallet, collateral_id).call({from: userObject.account});
+        let clt_index = parseInt(res[1]);
+         
+        
+        let res1  = await creditContract.methods.viewCustomerCollateralByIndex( clt_index, collateral_id).call({from: userObject.account});
+
+        let deposit_profile_id = parseInt(res1[0]);
+        let deposit_amount = new BN(res1[1]);
+                
+        if (deposit_profile_id != collateral_profile_id) alert('failure 38');
+        
+        return [deposit_amount, clt_index]; 
+}*/
+
+
+async function calcLiq_aux(credit_usd_value_bn, coll_usd_value_bn, credit_profile_id,  collateral_profile_id){
+
+	//	console.log('===calcLiq_aux===');
+
+		let usageContract = window.usage_calc_smartcontract_reader;
+
+
+		if (credit_usd_value_bn.lt(coll_usd_value_bn)){
+			return [0,0];
+		} 
+        
+		credit_usd_value = credit_usd_value_bn.div(new BN(ADJ_CONSTANT.toString()));
+		coll_usd_value = coll_usd_value_bn.div(new BN(ADJ_CONSTANT.toString()));	
+		
+	//	console.log('credit/collateral', credit_usd_value.toString(), coll_usd_value.toString());	
+
+        let t_am_to_liq = credit_usd_value.sub(coll_usd_value); //in usd
+        t_am_to_liq = await usageContract.methods.calcFromUSDValue(t_am_to_liq, collateral_profile_id).call({from: userObject.account}); //in coll asset tokens_number
+        t_am_to_liq = await usageContract.methods.adjustedAsset(collateral_profile_id, t_am_to_liq).call({from: userObject.account}); //adjusted to (1/(1-coll_val%))
+        let coll_am_to_liq = new BN(t_am_to_liq); //it is amount we will liquidate in customers collateral
+        t_am_to_liq = await usageContract.methods.calcUSDValueByProfileNonNFT(collateral_profile_id, coll_am_to_liq).call({from: userObject.account});//back to usd
+        t_am_to_liq = await usageContract.methods.calcFromUSDValue(t_am_to_liq, credit_profile_id).call({from: userObject.account}); //in credit asset tokens_number
+        let credit_am_to_liq = new BN(t_am_to_liq);
+        return [coll_am_to_liq, credit_am_to_liq];
+}
+
+/*
+async function analyzeLiquidation( cust_index,  credit_index,  cust_wallet){
+
+		 let usageContract = window.usage_calc_smartcontract_reader;
+
+		 let credit_profile_id,  collateral_profile_id,  linked_dep_id, credit_amount,  collateral_id;
+
+         [ cred_p_id,  clt_p_id,  l_dep_id, 
+          credit_amount,  clt_id] = await processLiquidationForCredit_aux1(cust_index, credit_index);
+
+        if (credit_amount.toString() == "0") return [false,0,0];
+
+        credit_profile_id = parseInt(cred_p_id);  
+        collateral_profile_id = parseInt(clt_p_id);
+        linked_dep_id = parseInt(l_dep_id);
+        collateral_id = parseInt(clt_id);
+
+
+        let coll_amount,  clt_index;
+        [coll_amount, clt_index] =  await processLiquidationForCredit_aux2( cust_wallet, collateral_id, collateral_profile_id);
+       
+        if (collateral_profile_id != 7){//NFT
+            coll_amount = coll_amount.mul(new BN(mwei_scale));//in mwei_scale for usd
+        }
+        credit_amount = credit_amount.mul(new BN(mwei_scale));//in mwei_scale for usd
+        
+        let coll_usd_value = new BN(await usageContract.methods.calcUSDValueCollateral(cust_wallet,linked_dep_id,coll_amount, credit_profile_id ).call({from: userObject.account}));
+        let credit_usd_value = new BN(await usageContract.methods.calcUSDValueByProfileNonNFT(credit_profile_id, credit_amount).call({from: userObject.account}));
+        
+        if (coll_usd_value.lt(credit_usd_value)) console.log('failure: coll_usd_value < credit_usd_value')
+
+         if (collateral_profile_id == 7){//NFT
+            coll_usd_value = coll_usd_value.mul(new BN(mwei_scale));//in mwei_scale for usd
+        }
+        
+        
+        let need_to_liquidate = false;
+        let coll_am_to_liq = new BN(0);
+        let credit_am_to_liq = new BN(0);
+        
+        //adjust with liq %% 
+        let liq_limit = 0;
+       
+        liq_limit = await usageContract.methods.getLiquidationLimitByProfileId(credit_profile_id).call({from: userObject.account});; //return like 95% = 95000
+        
+        if (liq_limit == 0) liq_limit = apy_scale;
+        
+        let comp_value = credit_usd_value.mul(new BN(liq_limit));
+        comp_value = comp_value.div(new BN(apy_scale));
+        
+        if (coll_usd_value.lt(comp_value)){   
+            need_to_liquidate = true;    
+        } 
+       
+        
+        if (need_to_liquidate){ //calc volume to liquidate
+             if (collateral_profile_id != 7){
+                  [coll_am_to_liq, credit_am_to_liq] = await calcLiq_aux( credit_usd_value, coll_usd_value, credit_profile_id,  collateral_profile_id);
+                  coll_am_to_liq = coll_am_to_liq.div(new BN(mwei_scale));
+                  credit_am_to_liq = credit_am_to_liq.div(new BN(mwei_scale));
+                  return [true,coll_am_to_liq, credit_am_to_liq];
+             } else {
+                  return [true,coll_amount, credit_amount.div(new BN(mwei_scale))];
+             }
+        } else {
+            return [false,0,0];
+        }
+        
+     
+        
+        //1 - 10 ETH collateral, rate 1300, 0,75 ratio, eth coll usd value = 9750, credit 9750 USDT 
+        //2 - 10 ETH collateral, rate 1200, 0,75 ratio, eth coll usd value = 9000, credit 9750 USDT
+        //3 - 750 usd in eth = 0,625 (@ 1200), cut = 0,625 /(1-0,75) = 2,5 ETH, usd value = 3000 usdt 
+        //4  - final coll cut 2,5 = 7,5 // credit cut 3000 = 6750
+        //5 7,5 x 1200 = 9000 x 0,75 = 6750, credit = 6750
+        
+        
+}
+*/
+
+async function calcAssetUsdValue(profile_id, w_amount, token_ids){//wei amount - BN(!)
+		//console.log('calcAssetUsdValue params:', profile_id,w_amount,token_ids);
+
+		let contract = window.data_provider_smartcontract_reader;
+		let dep_profiles_contract = await new window.web3js_reader.eth.Contract(profiles_register_abi, window.depprofiles_register_contract_address); 
+	
+        
+        let res  = await dep_profiles_contract.methods.getDepositProfileById(profile_id).call({from:userObject.account});
+        //console.log('res profiles=', res);
+
+		if (parseInt(res[2]) == NATIVE_ETHEREUM){
+			let wei_amount = w_amount;
+			
+			let [data, dec] = await Promise.all([ contract.methods.getData('BNBUSD').call({from:userObject.account}), contract.methods.getDecimals('BNBUSD').call({from:userObject.account})]);
+			
+			let usd_bn = new BN(wei_amount.mul(new BN(data) ));
+			//console.log('usd_bn', usd_bn.toString());
+			let base = new BN(10);
+			let div_dec = new BN(base.pow(new BN(dec)));	
+			let usd_adj = new BN( usd_bn.div(div_dec));	
+
+			//console.log ('usd_adj eth=', usd_adj);
+			
+			//let usd_float = parseFloat(window.web3js_reader.utils.fromWei(usd_adj, 'ether'));
+			return usd_adj;
+		} else if (parseInt(res[2]) == ERC721_TOKEN){
+			let vc_contract;
+			await initVotesCalcContractReader(async (c) => {
+				vc_contract = c;
+			});
+
+			
+		 
+
+		 	let wei_am = await vc_contract.methods.calcNFTTokensValue(token_ids).call({from:userObject.account});//cytr
+		 	let wei_amount = new BN(wei_am);
+		 	
+		 	let [data, dec] = await Promise.all([ contract.methods.getData('ETNAUSD').call({from:userObject.account}), contract.methods.getDecimals('ETNAUSD').call({from:userObject.account})]);
+			
+		 	//let data = await contract.methods.getData('CYTRUSD').call({from:userObject.account});
+			//let dec = await contract.methods.getDecimals('CYTRUSD').call({from:userObject.account});
+			let usd_bn = new BN(wei_amount.mul(new BN(data) ));
+			//console.log('usd_bn', usd_bn.toString());
+			let base = new BN(10);
+			let div_dec = new BN(base.pow(new BN(dec)));	
+			let usd_adj = new BN( usd_bn.div(div_dec));	
+			//console.log('usd_adj', usd_adj.toString());
+			//let usd_float = parseFloat(window.web3js_reader.utils.fromWei(usd_adj, 'ether'));
+			//console.log ('usd_adj erc721=', usd_adj);
+			return usd_adj;
+
+		} else if (parseInt(res[2])  == ERC20_TOKEN || parseInt(res[2])  == UNISWAP_PAIR){
+			
+			
+			let wei_amount = w_amount; 
+
+			let [data, dec] = await Promise.all([contract.methods.getData(res[1]).call({from:userObject.account}), contract.methods.getDecimals(res[1]).call({from:userObject.account})]);  
+			//let data = await contract.methods.getData(userObject.state.selected_depprofile_name).call({from:userObject.account});
+			//let dec = await contract.methods.getDecimals(userObject.state.selected_depprofile_name).call({from:userObject.account});
+			let usd_bn = new BN(wei_amount.mul(new BN(data) ));
+			//console.log('usd_bn', usd_bn.toString());
+			let base = new BN(10);
+			let div_dec = new BN(base.pow(new BN(dec)));	
+			let usd_adj = new BN( usd_bn.div(div_dec));	
+			//console.log('usd_adj', usd_adj.toString());
+			//let usd_float = parseFloat(window.web3js_reader.utils.fromWei(usd_adj, 'ether'));
+			//console.log ('usd_adj erc20=', usd_adj);
+			return usd_adj;
+		}
+}
+
+
+async function calcCollateralUSDValue( clt_amount,  collateral_profile_id, get_credit_profile_id, token_ids){   
+
+		let usd_val = await calcAssetUsdValue(collateral_profile_id, clt_amount, token_ids);
+		//console.log('calcCollateralUSDValue usd_val =', usd_val.toString());
+        
+        let cred_profile = await window.credprofiles_smartcontract.methods.getCreditProfileById(collateral_profile_id).call({from:userObject.account});
+		//console.log(cred_profile);
+
+		let c_id = cred_profile[0];
+		let c_val_perc = new BN(cred_profile[4]);
+      
+        if (c_id == BAD_CREDIT_PROFILE_ID) return 0;
+        
+        
+        let usd_valued =  usd_val.mul(c_val_perc);
+        usd_valued = usd_valued.div(new BN(apy_scale));
+     	//console.log('calcCollateralUSDValue usd_valued =', usd_valued.toString());   
+     
+
+        let usd_valued_adj = await adjustWithPairCoefficientGet(get_credit_profile_id, collateral_profile_id, usd_valued);
+        //console.log('calcCollateralUSDValue usd_valued_adj =', usd_valued_adj.toString());   
+     
+        
+        return usd_valued_adj;
+       
+}
+
+
+
+
+async function adjustWithPairCoefficientGet( get_credit_profile_id,  collateral_profile_id,  amount){//amount - BN
+         let adj_coeff = await window.usage_calc_smartcontract_reader.methods.getAdjCoeffByPair( collateral_profile_id,  get_credit_profile_id).call({from:userObject.account});
+      
+         if (parseInt(adj_coeff) == 0 || parseInt(adj_coeff) == apy_scale) return amount;
+         
+         amount = amount.mul(new BN(adj_coeff));
+         amount = amount.div(new BN(apy_scale));
+         return amount;
+}
+
+
+async function analyzeLiquidationForCredit(cust_id, cred_id, cust_wallet){
+
+			let creditContractInstance = window.credit_smartcontract_reader;
+			let usageContract = window.usage_calc_smartcontract_reader;
+
+
+			let credit = await creditContractInstance.methods.viewCustomerCreditByIndex(cust_id,cred_id).call({from: userObject.account});
+			
+			
+			if (credit.credit_amount == 0 && credit.acc_fee == 0) return [false,0,0,0];
+		
+			
+			let coll = await creditContractInstance.methods.viewCustomerCollateralByIndex(cust_id, parseInt(credit.collateral_id)).call({from: userObject.account});
+			
+			
+			let usd_v_cred =  await calcAssetUsdValue(parseInt(credit.profile_id),new BN(credit.credit_amount),new Array());
+			//console.log('usd_v_cred=',usd_v_cred.toString());
+
+
+			let token_ids = new Array();
+			if (credit.collateral_profile_id == "7"){
+				let tn = parseInt(coll.tokens_number);
+				for (let j=0; j < tn; j++){
+					let t_id = await window.credit_smartcontract_reader.methods.viewCustomerCollateralTokenByIndex(cust_id, parseInt(credit.collateral_id),j).call({from: userObject.account});
+					token_ids.push(t_id);
+				}
+
+			}
+			let usd_v_coll = await calcCollateralUSDValue( new BN(coll.deposit_amount),  parseInt(coll.deposit_profile_id), parseInt(credit.profile_id), token_ids);  
+
+			//console.log('usd_v_coll=',usd_v_coll.toString());
+			
+			
+			let bad_credit = false;
+			let analyze_res;
+		
+/***/
+			//if (usd_v_coll.lt(usd_v_cred)) return [true, new BN(coll.deposit_amount), new BN(credit.credit_amount)];
+
+	        
+	        let need_to_liquidate = false;
+	        let coll_am_to_liq = new BN(0);
+	        let credit_am_to_liq = new BN(0);
+	        
+	        //adjust with liq %% 
+	        let liq_limit = new BN(0);
+	       
+	        liq_limit = await usageContract.methods.getLiquidationLimitByProfileId(parseInt(credit.profile_id)).call({from: userObject.account});; //return like 95% = 95000
+	        
+	        if (liq_limit == 0) liq_limit = apy_scale;
+	        
+	        let comp_value = usd_v_cred.mul(new BN(liq_limit));
+	        comp_value = comp_value.div(new BN(apy_scale));
+	        
+	        if (usd_v_coll.lt(comp_value)){   
+	            need_to_liquidate = true;    
+	        } 
+	       
+	       
+	        if (need_to_liquidate){ //calc volume to liquidate
+	             if (credit.collateral_profile_id != "7"){
+	             	  //console.log('comp_val=', comp_value.toString(),'usd_v_coll=',usd_v_coll.toString() );
+
+	                  [coll_am_to_liq, credit_am_to_liq] = await calcLiq_aux( comp_value, usd_v_coll, parseInt(credit.profile_id), parseInt(credit.collateral_profile_id));
+	                  //coll_am_to_liq = coll_am_to_liq.div(new BN(mwei_scale));
+	                  //credit_am_to_liq = credit_am_to_liq.div(new BN(mwei_scale));
+	                  //console.log('need to liquidate', true, coll_am_to_liq.toString(), credit_am_to_liq.toString());
+	                  return [true,coll_am_to_liq, credit_am_to_liq,1];
+	             } else {
+	                  return [true, new BN(coll.deposit_amount), new BN(credit.credit_amount),1];
+	                  //console.log('need to liquidate', false,coll.deposit_amount, credit.credit_amount);
+	             }
+	        } else {
+	        	//console.log('need to liquidate', false,0,0);
+	            return [false,0,0,1];
+	        }
+	
+
+}
+
+
 async function analyze_customer(cust_id){
 		
 		safeSetInnerHTMLById('cust_analysis_table', '');
-		let creditContractInstance;
-		await initCreditContract((contract) => {
-			creditContractInstance = contract;
-		});
+		depositContractInstance = window.staking_smartcontract_reader;
 		
-		let liqlevContractInstance;
-		await initLiqLevContract((contract) => {
-			liqlevContractInstance = contract;
-		});
+		
+		creditContractInstance = window.credit_smartcontract_reader;
+		
+	
+		liqlevContractInstance = window.liqlev_smartcontract_reader;
 
 		if (!userObject.deposit_profiles){
 			userObject.deposit_profiles = await getAllProfiles();;
 		} else {
 			//
 		}
+
+		let profiles;
+    	if (!window.all_profiles){
+    		profiles = await getAllProfilesWithUniswap();
+    		window.all_profiles = profiles;
+    	} else {
+    		profiles = window.all_profiles;
+    	}
 		
 		let cust = await creditContractInstance.methods.getCustomersCreditsItem(cust_id).call({from: userObject.account});
 		window.current_cust = cust;
@@ -4612,7 +4958,7 @@ async function analyze_customer(cust_id){
 									      '<th>Liquidation: credit/ collateral</th>'+
 									      '<th>Credit after liquidation</th>'+	
 									      '<th>Collateral after liquidation</th>'+	
-									      '<th>Leverage</th>'+	
+									      //'<th>Leverage</th>'+	
 									   '</tr>'+
 									  '</thead>'+ 
 									  '<tbody>';
@@ -4629,12 +4975,14 @@ async function analyze_customer(cust_id){
 		let liq_amnts_col = new Array();
 		let credit_after_liq_col = new Array();
 		let coll_after_liq_col = new Array();
-		let lev_data_col = new Array();
+		//let lev_data_col = new Array();
 
-		console.log('credits_count=',credits_count);		
+		//console.log('credits_count=',credits_count);		
 		for (let i = 0; i < credits_count; i++){
+			infoMsg('analyze credit '+(i+1).toString()+' out of '+credits_count.toString());
+
 			let credit = await creditContractInstance.methods.viewCustomerCreditByIndex(cust_id,i).call({from: userObject.account});
-			console.log('credit=', credit, 'c_id=',i);
+			//console.log('credit=', credit, 'c_id=',i);
 			//continue;
 			
 			if (credit.credit_amount == 0 && credit.acc_fee == 0) continue;
@@ -4642,27 +4990,43 @@ async function analyze_customer(cust_id){
 		
 			
 			let coll = await creditContractInstance.methods.viewCustomerCollateralByIndex(cust_id, credit.collateral_id).call({from: userObject.account});
-			console.log('coll=', coll);
+			//console.log('coll=', coll);
 			//let asset_name = 
 
 			credit_id_col.push('<td>'+i.toString()+'</td>');
 
-			credit_asset_col.push('<td>'+credit.profile_id+'</td>');
+			let p_cred_name;
+			profiles.forEach( e => {if (e.p_id == credit.profile_id){ p_cred_name = e.p_name;} });
+
+			credit_asset_col.push('<td>'+p_cred_name+'</td>');
 			
 			
 			let usd_v_cred =  await calcUSDValueByProfileNonNFT(credit.credit_amount,credit.profile_id);
-			//console.log(usd_v_cred);
-
+			
 			credit_val_col.push('<td>body: '+(credit.credit_amount)+'<br>fee: '+credit.acc_fee+'<br>USD val: '+usd_v_cred.toString()+'USD</td>');
 			
-			
+			let p_clt_name;
+			profiles.forEach( e => {if (e.p_id == credit.collateral_profile_id){ p_clt_name = e.p_name;} });
 
-			coll_asset_col.push('<td>'+credit.collateral_profile_id+'</td>');
-			console.log(cust[0], credit.linked_dep_id,coll.deposit_amount,credit.profile_id);
+
+			coll_asset_col.push('<td>'+p_clt_name+'</td>');
+			//console.log(cust[0], credit.linked_dep_id,coll.deposit_amount,credit.profile_id);
 			
-			let usd_v_coll  = await window.usage_calc_smartcontract_reader.methods.calcUSDValueCollateral(cust[0], parseInt(credit.linked_dep_id),coll.deposit_amount,parseInt(credit.profile_id)).call({ from: userObject.account});
-			coll_val_col.push('<td>'+(coll.deposit_amount)+'<br>'+usd_v_coll.toString()+'USD</td>');
-			console.log('usd_v_coll', usd_v_coll);
+			//let usd_v_coll  = await window.usage_calc_smartcontract_reader.methods.calcUSDValueCollateral(cust[0], parseInt(credit.linked_dep_id),coll.deposit_amount,parseInt(credit.profile_id)).call({ from: userObject.account});
+			let token_ids = new Array();
+			if (credit.collateral_profile_id == "7"){
+				let tn = parseInt(coll.tokens_number);
+				for (let j=0; j < tn; j++){
+					let t_id = await window.credit_smartcontract_reader.methods.viewCustomerCollateralTokenByIndex(cust_id, parseInt(credit.collateral_id),j).call({from: userObject.account});
+					token_ids.push(t_id);
+				}
+
+			}
+			let usd_v_coll = await calcCollateralUSDValue( new BN(coll.deposit_amount),  coll.deposit_profile_id, credit.profile_id, token_ids);  
+			let usd_v_coll_t = (parseFloat(window.web3js_reader.utils.fromWei(usd_v_coll, 'ether'))).toFixed(2);
+
+			coll_val_col.push('<td>native: '+(coll.deposit_amount)+'<br>in usd:'+usd_v_coll_t.toString()+'</td>');
+			//console.log('usd_v_coll', usd_v_coll);
 	
 			
 			let bad_credit = false;
@@ -4671,12 +5035,13 @@ async function analyze_customer(cust_id){
 
 			
 			if (credit.collateral_profile_id != "7"){
-				analyze_res = await liqlevContractInstance.methods.analyzeLiquidationForCredit(cust_id, i, cust[0]).call({from: userObject.account});
+				//console.log('anal params=',cust_id, i, cust[0]);
+				analyze_res = await analyzeLiquidationForCredit(cust_id, i, cust[0]);
 				bad_credit = analyze_res[0];
 				//console.log(analyze_res);
 			} else {
 
-				if (usd_v_cred > usd_v_coll){
+				if (usd_v_cred > usd_v_coll_t){
 					bad_credit = true;
 				}
 			}
@@ -4704,18 +5069,27 @@ async function analyze_customer(cust_id){
 				let cred_am_bn = new BN(credit.credit_amount);
 				let coll_am_bn = new BN(coll.deposit_amount);
 
+				
+
 				let diff_cred_bn = cred_am_bn.sub(cred_liq_bn);
 				let diff_coll_bn = coll_am_bn.sub(coll_liq_bn);
 
-				let usd_cred_diff =  await calcUSDValueByProfileNonNFT(diff_cred_bn.toString(),credit.profile_id);
+				let usd_cred_diff =  await calcUSDValueByProfileNonNFT(diff_cred_bn.toString(),parseInt(credit.profile_id));
 			
 				
 				credit_after_liq_col.push('<td>'+diff_cred_bn.toString()+'<br>'+usd_cred_diff.toString()+' USD </td>');
 
-			
-				let usd_v_coll_diff  = await window.usage_calc_smartcontract_reader.methods.calcUSDValueCollateral(cust[0], credit.linked_dep_id,diff_coll_bn.toString(),credit.profile_id).call({ from: userObject.account});
 
-				coll_after_liq_col.push('<td>'+diff_coll_bn.toString()+'<br>'+usd_v_coll_diff.toString()+' USD </td>');
+				/**/
+				let empty_t_ids = new Array();
+				
+				let usd_v_coll_diff = await calcCollateralUSDValue( diff_coll_bn,  coll.deposit_profile_id, credit.profile_id, empty_t_ids);  
+
+				/**/
+			
+				//***let usd_v_coll_diff  = await window.usage_calc_smartcontract_reader.methods.calcUSDValueCollateral(cust[0], parseInt(credit.linked_dep_id),diff_coll_bn.toString(),parseInt(credit.profile_id)).call({ from: userObject.account});
+
+				coll_after_liq_col.push('<td>'+diff_coll_bn.toString()+'<br>'+(parseFloat(window.web3js_reader.utils.fromWei(usd_v_coll_diff, 'ether'))).toFixed(2)+' USD </td>');
 			} else {
 				liq_amnts_col.push('<td>NA</td>');
 				credit_after_liq_col.push('<td>NA (NFT)</td>');
@@ -4724,9 +5098,9 @@ async function analyze_customer(cust_id){
 
 			// function viewCustomerLeverageByCredId(address cust_wallet, uint256 cred_id) public view 
     		//	returns (uint32 lev_dep_id, uint256 cust_index, uint256 lev_index, uint32 deposit_profile_id, uint256 lev_amount, uint256 lev_date) {
-			let lev = await liqlevContractInstance.methods.viewCustomerLeverageByCredId(cust[0], i).call({from:userObject.account});
-			let lev_s = 'lev. amount: '+lev.lev_amount+ '<br>lev.date:'+timeConverter(parseInt(lev.lev_date));
-			lev_data_col.push('<td>'+lev_s+'</td>');
+			//let lev = await liqlevContractInstance.methods.viewCustomerLeverageByCredId(cust[0], i).call({from:userObject.account});
+			//let lev_s = 'lev. amount: '+lev.lev_amount+ '<br>lev.date:'+timeConverter(parseInt(lev.lev_date));
+			//lev_data_col.push('<td>'+lev_s+'</td>');
 
 		}
 
@@ -4749,7 +5123,7 @@ async function analyze_customer(cust_id){
 				html += liq_amnts_col[i];
 				html += credit_after_liq_col[i];
 				html += coll_after_liq_col[i];
-    			html += lev_data_col[i];
+    			//html += lev_data_col[i];
 	           
               	html += '</tr>';
     	}
@@ -4760,35 +5134,129 @@ async function analyze_customer(cust_id){
 		html +=	'</tbody>'+
 			'</table>';
 
-	    safeSetInnerHTMLById('cust_analysis_table', html)
+	    safeSetInnerHTMLById('cust_analysis_table', html);
+	    resetMsg();
 
 
 }
 
 
-async function buildPortfolioTable(){
-		
-		let depositContractInstance;
-		await initStakingContract((contract) => {
-			depositContractInstance = contract;
-		});
+function depositIsExtractable( index,  dep_id, customers_deposits, p_min_lock_time) {
+        
+        if (customers_deposits[index][dep_id].imply_lock == false) return true;
 
-		let creditContractInstance;
-		await initCreditContract((contract) => {
-			creditContractInstance = contract;
-		});
+
+        if (parseInt(Date.now()/1000) < (parseInt(customers_deposits[index][dep_id].deposit_date) + p_min_lock_time)){
+
+        	return false;
+        } else {
+         	return true;
+        }
+}
+
+async function depositsStat(profile_id, customers_deposits){    
+        let tot_amount = new BN(0);
+        let tot_extr_amount = new BN(0);
+        let tot_reward = new BN(0);
+        let tot_extr_reward = new BN(0);
+
+        let dep_profiles_contract = await new window.web3js_reader.eth.Contract(profiles_register_abi, window.depprofiles_register_contract_address); 
+		//let profiles_len = await dep_profiles_contract.methods.depositProfilesLength().call({from:userObject.account});
+	
+        
+        let res  = await dep_profiles_contract.methods.getDepositProfileById(profile_id).call({from:userObject.account});
+       
+        for (let j=0; j < customers_deposits.length;j++){
+            for(let i=0; i < customers_deposits[j].length; i++){
+                //Deposit memory dep = customers_deposits[j].deposits[i];
+                if (parseInt(customers_deposits[j][i].deposit_profile_id) == profile_id){
+                    tot_amount = tot_amount.add( new BN(customers_deposits[j][i].deposit_amount) );
+                    let d_rew = await window.staking_smartcontract_reader.methods.depositReward(j,i).call({from: userObject.account});
+                    //console.log('d_rew=',d_rew);
+                    tot_reward = tot_reward.add( new BN(d_rew) );
+                    if ( depositIsExtractable(j,i, customers_deposits, parseInt(res[7]) ) ){
+                        tot_extr_amount = tot_extr_amount.add( new BN(customers_deposits[j][i].deposit_amount));
+                        tot_extr_reward = tot_extr_reward.add( new BN(d_rew));
+                    }
+                     
+                }
+            }
+        }
+        return [tot_amount, tot_extr_amount, tot_reward, tot_extr_reward];
+
+}
+
+async function buildPortfolioTable(){
+
+		await initStakingContractReader();
+		await initCreditContractReader();
+		await initLiqLevContractReader();
+			
 		
-		let liqlevContractInstance;
-		await initLiqLevContract((contract) => {
-			liqlevContractInstance = contract;
-		});
+		depositContractInstance = window.staking_smartcontract_reader;
+		
+		
+		creditContractInstance = window.credit_smartcontract_reader;
+		
+	
+		liqlevContractInstance = window.liqlev_smartcontract_reader;
+		
 		
 		if (!userObject.deposit_profiles){
 			userObject.deposit_profiles = await getAllProfiles();;
 		} else {
 			//
 		}
+
+
+		/*
+
+			uint256 cdl = prevContract.getCustomersDepositsLength();
+          
+        for (uint256 i=0; i < cdl; i++){
+            (address cust, uint256 dn) = prevContract.getCustomersDepositsItem(i);
+            for (uint32 j=0; j < dn; j++){
+                //(uint32 deposit_profile_id, uint256 deposit_amount, uint256 tokens_number, uint256 deposit_date, uint256 votes, uint32 famer_id) = prevContract.viewCustomerDepositByIndex(i,j);
+                
+                Deposit memory dep = getPrevContractDeposit(prevContract,i,j);//Deposit(deposit_profile_id, deposit_amount, tokens_number, deposit_date, votes, famer_id);
+                uint256[] memory token_ids = new uint256[](dep.tokens_number);
+                for (uint256 k=0; k < dep.tokens_number; k++){
+                    
+                    uint256 t_id =  prevContract.viewCustomerDepositTokenByIndex(i, j, k);
+                    token_ids[k] = t_id;
+                    
+                }
+                addDeposit(cust, dep,  token_ids);  
+               
+            }
+        }
+		*/
 		
+			let customers = new Array();
+
+
+			let cdl = await depositContractInstance.methods.getCustomersDepositsLength().call({from: userObject.account});
+			
+			for (let i=0; i < cdl; i++){
+				infoMsg('collecting customers data '+(i+1).toString()+' out of '+cdl.toString());
+				cust_data = await depositContractInstance.methods.getCustomersDepositsItem(i).call({from: userObject.account});
+				//console.log(cust_data);
+				
+				let cust = cust_data[0];
+				let dn = cust_data[1];
+				let deposits = new Array();
+           		for (let j=0; j < parseInt(dn); j++){
+	                //(uint32 deposit_profile_id, uint256 deposit_amount, uint256 tokens_number, uint256 deposit_date, uint256 votes, uint32 famer_id) = 
+	                let cust_dep_data =  await depositContractInstance.methods.viewCustomerDepositByIndex(i,j).call({from: userObject.account});
+	               // console.log(cust_dep_data);
+	                deposits.push(cust_dep_data);
+               }
+               customers.push(deposits);
+			}
+			//console.log(customers);
+			
+			window.customers_deposits = customers;
+
 
 			let html = 
 									'<table class="table" style="font-size: 0.75em; color: black">'+
@@ -4837,6 +5305,8 @@ async function buildPortfolioTable(){
 		
 		
 		for (let i = 0; i < profiles.length; i++){		
+			infoMsg('run analysis for profile '+(i+1).toString()+' out of '+profiles.length.toString());
+
 			if (parseInt(profiles[i]['p_dep_type']) == UNISWAP_PAIR){
 				asset_column.push('<th scope="row" style="background-color: grey">'+profiles[i]['p_name']+'</th>');
 
@@ -4844,17 +5314,22 @@ async function buildPortfolioTable(){
 				asset_column.push('<th scope="row">'+profiles[i]['p_name']+'</th>');
 			}
 			
-			let dep_stat = await depositContractInstance.methods.depositsStat(parseInt(profiles[i]['p_id'])).call({from:userObject.account});
+			let dep_stat =  await depositsStat(parseInt(profiles[i]['p_id']), customers );//await depositContractInstance.methods.depositsStat(parseInt(profiles[i]['p_id'])).call({from:userObject.account});
+			//console.log('dep_stat =', dep_stat);
+			
+			
 			let dep_total = dep_stat[0];
 			if (parseInt(profiles[i]['p_dep_type']) != ERC721_TOKEN)
 			 	dep_total = window.web3js_reader.utils.fromWei(dep_total, 'ether');
 			let dep_total_str = ((parseFloat(dep_total)).toFixed(3)).toString();  
+			//console.log(dep_total_str);
 
 			dep_column.push('<td>'+dep_total_str+'</td>');
 			dep_column_val.push(parseFloat(dep_total));
 
 			if (parseInt(profiles[i]['p_dep_type']) != ERC721_TOKEN){
-				let am =  await calcUSDValueByProfileNonNFT(dep_stat[0],parseInt(profiles[i]['p_id']));
+				let am =  await calcUSDValueByProfileNonNFT(dep_stat[0].toString(),parseInt(profiles[i]['p_id']));
+				//console.log('am usd=',am);
 				dep_column_usd.push('<td>'+am+'</td>');
 			} else {
 				dep_column_usd.push('<td>-</td>');
@@ -4868,9 +5343,10 @@ async function buildPortfolioTable(){
 			extractable_dep_col.push('<td>'+extr_dep_total_str+'</td>');
 
 			let rew_total = window.web3js_reader.utils.fromWei(dep_stat[2], 'ether');
-			let rew_total_str = ((parseFloat(rew_total)).toFixed(3)).toString();  
+			let rew_total_str = ((parseFloat(rew_total)).toFixed(3)).toString(); 
+			//console.log('rew_total_str=',rew_total_str);  
 
-			 if (parseInt(profiles[i]['p_dep_type']) == UNISWAP_PAIR || parseInt(profiles[i]['p_dep_type']) == ERC721_TOKEN ) rew_total_str += '<br>CYTR';
+			if (parseInt(profiles[i]['p_dep_type']) == UNISWAP_PAIR || parseInt(profiles[i]['p_dep_type']) == ERC721_TOKEN ) rew_total_str += '<br>ETNA';
 			reward_col.push('<td>'+rew_total_str+'</td>');
 			reward_col_val.push(parseFloat(rew_total));
 
@@ -5007,7 +5483,7 @@ async function buildPortfolioTable(){
 
 		for (let i = 0; i < profiles.length; i++){
 		
-			if (profiles[i].p_name == 'CYTR') {
+			if (profiles[i].p_name == 'ETNA') {
 				balance1_col_val[i] -= cytr_rew_nft_and_pairs;
 				balance2_col_val[i] -= cytr_rew_nft_and_pairs;
 			}
@@ -5066,8 +5542,8 @@ async function buildPortfolioTable(){
             	i++;
     	}
 		
-		console.log('remove_rows_array=',remove_rows_array);
-		console.log('base_rows_array=',base_rows_array);
+		//console.log('remove_rows_array=',remove_rows_array);
+		//console.log('base_rows_array=',base_rows_array);
 		/*
 		for (let i=0; i < base_rows_array.length; i ++){
 			asset_column[base_rows_array[i].base] = '<th scope="row" style="background-color: grey">'+profiles[base_rows_array[i].base]['p_name'].slice(0,-3)+'</th>';
@@ -5124,7 +5600,7 @@ async function buildPortfolioTable(){
 
 	 
 	    safeSetInnerHTMLById('portfolio_table', html);
-	   
+	    resetMsg();
 
 
 }
@@ -5155,12 +5631,17 @@ async function adjustLiquidity(){
 async function processLiquidationForCreditClick(cust_id, cred_id, cust_wallet){
 	//console.log(cust_id, cred_id, cust_wallet); return;
 
-	let liqlevContractInstance;
-	await initLiqLevContract((contract) => {
-		liqlevContractInstance = contract;
-	});
+	let liqlevContractInstance = window.liqlev_smartcontract; //write instance
 
-	liqlevContractInstance.methods.processLiquidationForCredit(cust_id, cred_id, cust_wallet).send({ from:userObject.account});
+	let need_to_liquidate, coll_am_to_liq, credit_am_to_liq, empty;
+
+	[need_to_liquidate, coll_am_to_liq, credit_am_to_liq, empty] = await analyzeLiquidationForCredit(cust_id, cred_id, cust_wallet);
+
+	console.log('cust_wallet=',cust_wallet, 'cust_id=',cust_id, 'cred_id=',cred_id, 'coll_am_liq=',coll_am_to_liq.toString(), 'credit_am_liq=',credit_am_to_liq.toString());
+	//return;
+	if (need_to_liquidate){
+		await liqlevContractInstance.methods.liquidate(cust_wallet, cust_id, cred_id, coll_am_to_liq.toString(), credit_am_to_liq.toString()).send({ from:userObject.account});
+	}
 }
 
 async function processLiquidationForCreditNFTClick(cust_id, cred_id, cust_wallet){
