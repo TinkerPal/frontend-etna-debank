@@ -149,18 +149,14 @@ const nftAssetsSelect = new Choices('#nftAssetsSelect', {
         const value = `${data.value.text}[${data.value.t_id}]`;
 
         return template(`
-            <div class="${classNames.item} ${
-          data.highlighted
+            <div class="${classNames.item} ${data.highlighted
             ? classNames.highlightedState
             : classNames.itemSelectable
-        } ${
-          data.placeholder ? classNames.placeholder : ''
-        }" data-item data-id="${data.id}" data-value="${value}" ${
-          data.active ? 'aria-selected="true"' : ''
-        } ${data.disabled ? 'aria-disabled="true"' : ''} data-deletable>
-              <span class="choices__item-img"><img src="${
-                data.value.imageSrc
-              }"></span> ${value} - $${data.value.price}
+          } ${data.placeholder ? classNames.placeholder : ''
+          }" data-item data-id="${data.id}" data-value="${value}" ${data.active ? 'aria-selected="true"' : ''
+          } ${data.disabled ? 'aria-disabled="true"' : ''} data-deletable>
+              <span class="choices__item-img"><img src="${data.value.imageSrc
+          }"></span> ${value} - $${data.value.price}
               <button type="button" class="choices__button" aria-label="Remove item: '${value}'" data-button="">Remove item</button>
             </div>
           `);
@@ -169,18 +165,14 @@ const nftAssetsSelect = new Choices('#nftAssetsSelect', {
         const value = `${data.value.text}[${data.value.t_id}]`;
 
         return template(`
-            <div class="${classNames.item} ${classNames.itemChoice} ${
-          data.disabled ? classNames.itemDisabled : classNames.itemSelectable
-        }" data-select-text="${this.config.itemSelectText}" data-choice ${
-          data.disabled
+            <div class="${classNames.item} ${classNames.itemChoice} ${data.disabled ? classNames.itemDisabled : classNames.itemSelectable
+          }" data-select-text="${this.config.itemSelectText}" data-choice ${data.disabled
             ? 'data-choice-disabled aria-disabled="true"'
             : 'data-choice-selectable'
-        } data-id="${data.id}" data-value="${value}" ${
-          data.groupId > 0 ? 'role="treeitem"' : 'role="option"'
-        }>
-              <span class="choices__item-img"><img src="${
-                data.value.imageSrc
-              }"></span> ${data.label} - $${data.value.price}
+          } data-id="${data.id}" data-value="${value}" ${data.groupId > 0 ? 'role="treeitem"' : 'role="option"'
+          }>
+              <span class="choices__item-img"><img src="${data.value.imageSrc
+          }"></span> ${data.label} - $${data.value.price}
             </div>
           `);
       },
@@ -800,6 +792,12 @@ async function deposit() {
   resetMsg();
 
   initStakingContract(async (stakingContractInstance) => {
+
+    if (amount === '0' || !amount) {
+      errorMsg('Amount of asset must be greater than 0');
+      return modal_add_deposit.isLoadedAfterConfirm(false);
+    }
+
     stakingContractInstance.methods
       .deposit(amount, token_ids, dep_profile_id, window.famer)
       .send(
@@ -1023,6 +1021,11 @@ async function approveTokenMove(token_address, amount_wei, toAddress, modal) {
     erc20TokenContractAbi,
     token_address
   );
+
+  if (calculatedApproveValue === '0' || !calculatedApproveValue) {
+    errorMsg('Amount of asset must be greater than 0');
+    return modal.isLoadedAfterApprove(false);
+  }
 
   await token_contract.methods
     .approve(toAddress, calculatedApproveValue)
@@ -1561,7 +1564,7 @@ function checkAdminButton(token) {
         }
       }
     })
-    .catch((error) => {});
+    .catch((error) => {new Error(error);});
 }
 
 function setWalletPref(pref) {
@@ -1743,7 +1746,7 @@ async function getBackendParameter(var_name, callback = null) {
         errorMsg('API error');
       }
     })
-    .catch((error) => {});
+    .catch((error) => { new Error(error); });
 }
 
 async function initFamersRegisterContract(callback = null) {
@@ -3553,7 +3556,7 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
 }
 
 async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
-  if (dep_id === 9999999) return;
+  if (dep_id === '9999999') return;
 
   const { am_arr } = userObject.deposits;
 
