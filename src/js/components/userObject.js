@@ -765,7 +765,7 @@ const userObject = {
                       from: userObject.account,
                     });
 
-                if (coll_usd_val * 0.9 < credit_usd_val) {
+                if (credit_usd_val * 0.9 > coll_usd_val) {
                   isCollateralCheaperThenCredit = true;
                 }
               }
