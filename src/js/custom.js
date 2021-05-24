@@ -327,7 +327,7 @@ window.addEventListener('DOMContentLoaded', async function () {
 });
 
 async function postWalletCallback() {
-  if (window.location.pathname === '/' || window.location.pathname === '/our-dashboard.html') {
+  if (window.location.pathname === '/' || window.location.pathname === '/our-dashboard.html' || window.location.pathname === '/our-dashboard') {
     await getWalletPref();
     openTab(
       {
@@ -425,7 +425,7 @@ async function getAccount() {
 
     setLdBar(25);
 
-    if (window.location.pathname === '/' || window.location.pathname === '/our-dashboard.html') {
+    if (window.location.pathname === '/' || window.location.pathname === '/our-dashboard.html' || window.location.pathname === '/our-dashboard') {
       setNetInfo();
 
       await updateData();
@@ -478,7 +478,7 @@ async function getAccountWalletConnect() {
 
     setLdBar(25);
 
-    if (window.location.pathname === '/' || window.location.pathname === '/our-dashboard.html') {
+    if (window.location.pathname === '/' || window.location.pathname === '/our-dashboard.html' || window.location.pathname === '/our-dashboard') {
       setNetInfo();
 
       await updateData();
