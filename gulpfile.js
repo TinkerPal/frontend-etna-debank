@@ -27,7 +27,7 @@ const postcss = require('gulp-postcss'),
 
 var hashedJS;
 var hashedCSS;
-var noop = function() {};
+var noop = function () {};
 const js = [
   './src/js/utils.js',
   './src/js/constants/env.js',
@@ -42,8 +42,8 @@ const js = [
 ];
 
 function foo(folder, enconding) {
-  return new Promise(function(resolve, reject) {
-    fs.readdir(folder, enconding, function(err, filenames) {
+  return new Promise(function (resolve, reject) {
+    fs.readdir(folder, enconding, function (err, filenames) {
       if (err) reject(err);
       else resolve(filenames);
     });
@@ -72,37 +72,39 @@ const getJsPath = async () => {
 };
 
 function jsTask(envs) {
-  return src(js)
-    .pipe(plumber())
-    .pipe(env({ vars: { NODE_ENV: envs } }))
-    // .pipe(sourcemaps.init())
-    .pipe(
-      babel({
-        // presets: [ '@babel/preset-env' ],
-        plugins: [ 'transform-inline-environment-variables' ],
-      })
-    )
-    // .pipe(envs === 'production' ? uglify() : tap(noop))
-    .pipe(concat('common.js'))
-    .pipe(
-      hash({
-        format: '{name}-{hash:8}{ext}',
-      })
-    )
-    .pipe(
-      rename(function(path) {
-        path.basename += '.min';
-        hashedJS = '/js/' + path.basename + '.js';
-      })
-    )
-    // .pipe(sourcemaps.write('maps'))
-    .pipe(gulp.dest('./public/js/'))
-    .pipe(copyLibs())
-    .pipe(browserSync.stream());
+  return (
+    src(js)
+      .pipe(plumber())
+      .pipe(env({ vars: { NODE_ENV: envs } }))
+      // .pipe(sourcemaps.init())
+      .pipe(
+        babel({
+          // presets: [ '@babel/preset-env' ],
+          plugins: ['transform-inline-environment-variables'],
+        })
+      )
+      // .pipe(envs === 'production' ? uglify() : tap(noop))
+      .pipe(concat('common.js'))
+      .pipe(
+        hash({
+          format: '{name}-{hash:8}{ext}',
+        })
+      )
+      .pipe(
+        rename(function (path) {
+          path.basename += '.min';
+          hashedJS = '/js/' + path.basename + '.js';
+        })
+      )
+      // .pipe(sourcemaps.write('maps'))
+      .pipe(gulp.dest('./public/js/'))
+      .pipe(copyLibs())
+      .pipe(browserSync.stream())
+  );
 }
 
 function htmlTask() {
-  return src([ './src/*.html' ])
+  return src(['./src/*.html'])
     .pipe(
       fileinclude({
         prefix: '@@',
@@ -146,7 +148,7 @@ function cssTask() {
       })
     )
     .pipe(
-      rename(function(path) {
+      rename(function (path) {
         path.basename += '.min';
         hashedCSS = '/css/' + path.basename + '.css';
       })
@@ -205,13 +207,13 @@ function browsersyncReload(cb) {
 // Чистим директорию назначения и делаем ребилд, чтобы удаленные из проекта файлы не остались
 function cleanOldCss() {
   return gulp
-    .src([ './public/css' ], { read: false, allowEmpty: true })
+    .src(['./public/css'], { read: false, allowEmpty: true })
     .pipe(clean());
 }
 
 function cleanOldJs() {
   return gulp
-    .src([ './public/js' ], { read: false, allowEmpty: true })
+    .src(['./public/js'], { read: false, allowEmpty: true })
     .pipe(clean());
 }
 
@@ -219,21 +221,44 @@ function cleanOldJs() {
 function watchTask(envs) {
   watch(
     './src/**/*.html',
-    series(htmlTask, cleanOldCss, cssTask, htmlTask,htmlTask, cssLibsTask, browsersyncReload)
+    series(
+      htmlTask,
+      cleanOldCss,
+      cssTask,
+      htmlTask,
+      htmlTask,
+      cssLibsTask,
+      browsersyncReload
+    )
   );
   watch(
-    [ './src/css/**/*' ],
-    series(htmlTask, cleanOldCss, cssTask, htmlTask,htmlTask, cssLibsTask, browsersyncReload)
+    ['./src/css/**/*'],
+    series(
+      htmlTask,
+      cleanOldCss,
+      cssTask,
+      htmlTask,
+      htmlTask,
+      cssLibsTask,
+      browsersyncReload
+    )
   );
   watch(
-    [ './src/js/**/*.js' ],
-    series(cleanOldJs, () => jsTask(envs), htmlTask, htmlTask, browsersyncReload)
+    ['./src/js/**/*.js'],
+    series(
+      cleanOldJs,
+      () => jsTask(envs),
+      htmlTask,
+      htmlTask,
+      browsersyncReload
+    )
   );
-  watch([ './src/images/**/*' ], series(imageminTask, browsersyncReload));
+  watch(['./src/images/**/*'], series(imageminTask, browsersyncReload));
   watch(
-    [ 'tailwind.config.js' ],
+    ['tailwind.config.js'],
     series(htmlTask, cleanOldCss, cssTask, htmlTask, browsersyncReload)
   );
+  watch(['./static/**/*'], series(copyStatic, browsersyncReload));
 }
 
 function build(envs) {

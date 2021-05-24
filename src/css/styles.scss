@@ -407,14 +407,16 @@
 }
 
 .our-info {
-  .number_degrease:before, .number_increase:before {
+  .number_degrease:before,
+  .number_increase:before {
     width: 12px;
     height: 8px;
     top: calc(50% - 4px);
     left: 0px;
   }
   .crypto-amount {
-    .number_degrease:before, .number_increase:before {
+    .number_degrease:before,
+    .number_increase:before {
       left: 4px;
     }
   }
@@ -1480,7 +1482,7 @@ button:disabled {
   padding-bottom: 110px;
 
   &#total-dashboard-tab {
-    padding-bottom: 80px;
+    padding-bottom: 100px;
   }
 }
 

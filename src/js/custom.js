@@ -327,7 +327,11 @@ window.addEventListener('DOMContentLoaded', async function () {
 });
 
 async function postWalletCallback() {
-  if (window.location.pathname === '/' || window.location.pathname === '/our-dashboard.html' || window.location.pathname === '/our-dashboard') {
+  if (
+    window.location.pathname === '/' ||
+    window.location.pathname === '/our-dashboard.html' ||
+    window.location.pathname === '/our-dashboard'
+  ) {
     await getWalletPref();
     openTab(
       {
@@ -425,7 +429,11 @@ async function getAccount() {
 
     setLdBar(25);
 
-    if (window.location.pathname === '/' || window.location.pathname === '/our-dashboard.html' || window.location.pathname === '/our-dashboard') {
+    if (
+      window.location.pathname === '/' ||
+      window.location.pathname === '/our-dashboard.html' ||
+      window.location.pathname === '/our-dashboard'
+    ) {
       setNetInfo();
 
       await updateData();
@@ -478,7 +486,11 @@ async function getAccountWalletConnect() {
 
     setLdBar(25);
 
-    if (window.location.pathname === '/' || window.location.pathname === '/our-dashboard.html' || window.location.pathname === '/our-dashboard') {
+    if (
+      window.location.pathname === '/' ||
+      window.location.pathname === '/our-dashboard.html' ||
+      window.location.pathname === '/our-dashboard'
+    ) {
       setNetInfo();
 
       await updateData();
@@ -3208,6 +3220,12 @@ async function getLiquidityDashboard(callback = null) {
 // getDepositsDashboard
 
 async function getCapDashbord(callback = null) {
+  if (
+    window.location.pathname === '/our-dashboard.html' ||
+    window.location.pathname === '/our-dashboard'
+  ) {
+    return;
+  }
   const data = await fetch(
     'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&price_change_percentage=24h,30d'
   )

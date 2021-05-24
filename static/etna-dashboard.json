@@ -1,0 +1,50 @@
+{
+  "tokensStatistic": [
+    {
+      "name": "etna",
+      "total": "333333.333",
+      "amount": "22"
+    },
+    {
+      "name": "BNB",
+      "total": "333333.333",
+      "amount": "22"
+    },
+    {
+      "name": "USDT",
+      "total": "333333.333",
+      "amount": "22"
+    },
+    {
+      "name": "DAI",
+      "total": "333333.333",
+      "amount": "22"
+    },
+    {
+      "name": "ETH",
+      "total": "333333.333",
+      "amount": "22"
+    },
+    {
+      "name": "BTCB",
+      "total": "333333.333",
+      "amount": "22"
+    },
+    {
+      "name": "NFT",
+      "total": "333333.333",
+      "amount": "22"
+    },
+    {
+      "name": "BUSD",
+      "total": "333333.333",
+      "amount": "22"
+    }
+  ],
+  "totalUsers": "2312344",
+  "totalCredits": "2323232323",
+  "totalAssetsValue": "123234523432423",
+  "prevTotalAssetsValue": "4444444",
+  "totalBorrow": "123124124",
+  "totalDeposits": "123124124"
+}
