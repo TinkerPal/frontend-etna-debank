@@ -149,14 +149,18 @@ const nftAssetsSelect = new Choices('#nftAssetsSelect', {
         const value = `${data.value.text}[${data.value.t_id}]`;
 
         return template(`
-            <div class="${classNames.item} ${data.highlighted
+            <div class="${classNames.item} ${
+          data.highlighted
             ? classNames.highlightedState
             : classNames.itemSelectable
-          } ${data.placeholder ? classNames.placeholder : ''
-          }" data-item data-id="${data.id}" data-value="${value}" ${data.active ? 'aria-selected="true"' : ''
-          } ${data.disabled ? 'aria-disabled="true"' : ''} data-deletable>
-              <span class="choices__item-img"><img src="${data.value.imageSrc
-          }"></span> ${value} - $${data.value.price}
+        } ${
+          data.placeholder ? classNames.placeholder : ''
+        }" data-item data-id="${data.id}" data-value="${value}" ${
+          data.active ? 'aria-selected="true"' : ''
+        } ${data.disabled ? 'aria-disabled="true"' : ''} data-deletable>
+              <span class="choices__item-img"><img src="${
+                data.value.imageSrc
+              }"></span> ${value} - $${data.value.price}
               <button type="button" class="choices__button" aria-label="Remove item: '${value}'" data-button="">Remove item</button>
             </div>
           `);
@@ -165,14 +169,18 @@ const nftAssetsSelect = new Choices('#nftAssetsSelect', {
         const value = `${data.value.text}[${data.value.t_id}]`;
 
         return template(`
-            <div class="${classNames.item} ${classNames.itemChoice} ${data.disabled ? classNames.itemDisabled : classNames.itemSelectable
-          }" data-select-text="${this.config.itemSelectText}" data-choice ${data.disabled
+            <div class="${classNames.item} ${classNames.itemChoice} ${
+          data.disabled ? classNames.itemDisabled : classNames.itemSelectable
+        }" data-select-text="${this.config.itemSelectText}" data-choice ${
+          data.disabled
             ? 'data-choice-disabled aria-disabled="true"'
             : 'data-choice-selectable'
-          } data-id="${data.id}" data-value="${value}" ${data.groupId > 0 ? 'role="treeitem"' : 'role="option"'
-          }>
-              <span class="choices__item-img"><img src="${data.value.imageSrc
-          }"></span> ${data.label} - $${data.value.price}
+        } data-id="${data.id}" data-value="${value}" ${
+          data.groupId > 0 ? 'role="treeitem"' : 'role="option"'
+        }>
+              <span class="choices__item-img"><img src="${
+                data.value.imageSrc
+              }"></span> ${data.label} - $${data.value.price}
             </div>
           `);
       },
@@ -732,7 +740,10 @@ async function deposit() {
     amount = safeFloatToWei(
       document.getElementById('tokens_amount').value
     ).toString(); // wei
-    if (parseInt(userObject.state.selected_depprofile_type, 10) === NATIVE_ETHEREUM) {
+    if (
+      parseInt(userObject.state.selected_depprofile_type, 10) ===
+      NATIVE_ETHEREUM
+    ) {
       wei_val = amount;
 
       // let wb_bn = new BN(await (web3jsReadersList.get()).eth.getBalance(userObject.account));
@@ -792,7 +803,6 @@ async function deposit() {
   resetMsg();
 
   initStakingContract(async (stakingContractInstance) => {
-
     if (amount === '0' || !amount) {
       errorMsg('Amount of asset must be greater than 0');
       return modal_add_deposit.isLoadedAfterConfirm(false);
@@ -994,7 +1004,10 @@ async function approve_deposit() {
         });
     }
   } else {
-    if (parseInt(userObject.state.selected_depprofile_type, 10) === NATIVE_ETHEREUM) {
+    if (
+      parseInt(userObject.state.selected_depprofile_type, 10) ===
+      NATIVE_ETHEREUM
+    ) {
       return; // no need..
     }
 
@@ -1564,7 +1577,9 @@ function checkAdminButton(token) {
         }
       }
     })
-    .catch((error) => {new Error(error);});
+    .catch((error) => {
+      new Error(error);
+    });
 }
 
 function setWalletPref(pref) {
@@ -1746,7 +1761,9 @@ async function getBackendParameter(var_name, callback = null) {
         errorMsg('API error');
       }
     })
-    .catch((error) => { new Error(error); });
+    .catch((error) => {
+      new Error(error);
+    });
 }
 
 async function initFamersRegisterContract(callback = null) {
@@ -3485,7 +3502,9 @@ async function getNftPrice(contract, vc_contract, token_ids) {
 async function updUSDValue(tokens_amount_elem, usd_val_elem) {
   const contract = window.data_provider_smartcontract_reader;
 
-  if (parseInt(userObject.state.selected_depprofile_type, 10) === NATIVE_ETHEREUM) {
+  if (
+    parseInt(userObject.state.selected_depprofile_type, 10) === NATIVE_ETHEREUM
+  ) {
     const tokens_amount = document.getElementById(tokens_amount_elem).value;
     const { BN } = window;
     const wei_amount = safeFloatToWei(tokens_amount); // BN
@@ -3508,7 +3527,9 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
       window.web3js_reader.utils.fromWei(usd_adj, 'ether')
     );
     safeSetValueById(usd_val_elem, usd_float.toFixed(3), 'inline');
-  } else if (parseInt(userObject.state.selected_depprofile_type, 10) === ERC721_TOKEN) {
+  } else if (
+    parseInt(userObject.state.selected_depprofile_type, 10) === ERC721_TOKEN
+  ) {
     let vc_contract;
     await initVotesCalcContractReader(async (c) => {
       vc_contract = c;
@@ -3813,8 +3834,10 @@ function return_fee(cred_id) {
   submitBtn.onclick = () => return_fee_confirm(cred_id);
 
   if (
-    parseInt(depTypeByProfileId(userObject.credits.cred_arr[0][cred_id]), 10) ===
-    NATIVE_ETHEREUM
+    parseInt(
+      depTypeByProfileId(userObject.credits.cred_arr[0][cred_id]),
+      10
+    ) === NATIVE_ETHEREUM
   ) {
     submitTokensBtn.disabled = true;
     submitTokensBtn.classList.add('btn-done');
