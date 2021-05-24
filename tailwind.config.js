@@ -70,7 +70,8 @@ module.exports = {
       'green-3': '#6FCF97',
       'grey-200': '#C5C5CC',
       red: '#EB5757',
-      yellow: '#FBBF24'
+      yellow: '#FBBF24',
+      'violet-100': '#9292C1'
     }),
     borderColor: theme => ({
       ...theme('colors'),

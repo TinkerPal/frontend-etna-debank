@@ -3265,6 +3265,9 @@ async function getCapDashbord(callback = null) {
   const marketTopFiveList = document.querySelector('#market-top-five-list');
   marketTopFiveList.innerHTML = '';
 
+  const ourTopFiveList = document.querySelector('#our-top-five-list');
+  // ourTopFiveList.innerHTML = '';
+
   let marketCap = 0;
   let marketCapChange = 0;
   const marketTopFiveCurrency = [];

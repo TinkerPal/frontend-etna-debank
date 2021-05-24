@@ -366,6 +366,10 @@
   .nft-btn {
     @apply w-full mt-2 max-w-full text-center items-center justify-center hover: bg-medium-grey;
   }
+
+  .row-name {
+    @apply text-sm tracking-wider;
+  }
 }
 
 .empty-access,
@@ -399,6 +403,20 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+  }
+}
+
+.our-info {
+  .number_degrease:before, .number_increase:before {
+    width: 12px;
+    height: 8px;
+    top: calc(50% - 4px);
+    left: 0px;
+  }
+  .crypto-amount {
+    .number_degrease:before, .number_increase:before {
+      left: 4px;
+    }
   }
 }
 
