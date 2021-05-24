@@ -732,7 +732,7 @@ async function deposit() {
     amount = safeFloatToWei(
       document.getElementById('tokens_amount').value
     ).toString(); // wei
-    if (userObject.state.selected_depprofile_type === NATIVE_ETHEREUM) {
+    if (parseInt(userObject.state.selected_depprofile_type, 10) === NATIVE_ETHEREUM) {
       wei_val = amount;
 
       // let wb_bn = new BN(await (web3jsReadersList.get()).eth.getBalance(userObject.account));
@@ -994,7 +994,7 @@ async function approve_deposit() {
         });
     }
   } else {
-    if (userObject.state.selected_depprofile_type === NATIVE_ETHEREUM) {
+    if (parseInt(userObject.state.selected_depprofile_type, 10) === NATIVE_ETHEREUM) {
       return; // no need..
     }
 
@@ -1955,7 +1955,7 @@ async function getCreditProfilesListCredit() {
     } */
   // all except NFT, we do not give credits in NFT
   for (let i = 0; i < full_list.length; i++) {
-    if (full_list[i].c_type === ERC721_TOKEN) continue;
+    if (parseInt(full_list[i].c_type, 10) === ERC721_TOKEN) continue;
     plist.push(full_list[i]);
   }
   return plist;
@@ -1998,7 +1998,7 @@ async function depositModalRebuild() {
     selected_depprofile_token_address: currentDepProfile.d_tok_addr,
   });
 
-  if (currentDepProfile.d_type === NATIVE_ETHEREUM) {
+  if (parseInt(currentDepProfile.d_type, 10) === NATIVE_ETHEREUM) {
     modal_add_deposit.approve.classList.add('btn-done');
     modal_add_deposit.approve.disabled = true;
     modal_add_deposit.confirm.disabled = false;
@@ -3485,7 +3485,7 @@ async function getNftPrice(contract, vc_contract, token_ids) {
 async function updUSDValue(tokens_amount_elem, usd_val_elem) {
   const contract = window.data_provider_smartcontract_reader;
 
-  if (userObject.state.selected_depprofile_type === NATIVE_ETHEREUM) {
+  if (parseInt(userObject.state.selected_depprofile_type, 10) === NATIVE_ETHEREUM) {
     const tokens_amount = document.getElementById(tokens_amount_elem).value;
     const { BN } = window;
     const wei_amount = safeFloatToWei(tokens_amount); // BN
@@ -3508,7 +3508,7 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
       window.web3js_reader.utils.fromWei(usd_adj, 'ether')
     );
     safeSetValueById(usd_val_elem, usd_float.toFixed(3), 'inline');
-  } else if (userObject.state.selected_depprofile_type === ERC721_TOKEN) {
+  } else if (parseInt(userObject.state.selected_depprofile_type, 10) === ERC721_TOKEN) {
     let vc_contract;
     await initVotesCalcContractReader(async (c) => {
       vc_contract = c;
@@ -3523,8 +3523,8 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
 
     safeSetValueById(usd_val_elem, nftPrice, 'inline');
   } else if (
-    userObject.state.selected_depprofile_type === ERC20_TOKEN ||
-    userObject.state.selected_depprofile_type === UNISWAP_PAIR
+    parseInt(userObject.state.selected_depprofile_type, 10) === ERC20_TOKEN ||
+    parseInt(userObject.state.selected_depprofile_type, 10) === UNISWAP_PAIR
   ) {
     const tokens_amount = document.getElementById(tokens_amount_elem).value;
     const { BN } = window;
@@ -3556,7 +3556,7 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
 }
 
 async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
-  if (dep_id === '9999999') return;
+  if (parseInt(dep_id, 10) === 9999999) return;
 
   const { am_arr } = userObject.deposits;
 
@@ -3813,7 +3813,7 @@ function return_fee(cred_id) {
   submitBtn.onclick = () => return_fee_confirm(cred_id);
 
   if (
-    depTypeByProfileId(userObject.credits.cred_arr[0][cred_id]) ===
+    parseInt(depTypeByProfileId(userObject.credits.cred_arr[0][cred_id]), 10) ===
     NATIVE_ETHEREUM
   ) {
     submitTokensBtn.disabled = true;
@@ -3865,7 +3865,7 @@ function depAmountByProfileId(profile_id) {
     for (let i = 0; i < userObject.deposits.am_arr[0].length; i++) {
       if (userObject.deposits.am_arr[0][i] === profile_id) {
         let am = userObject.deposits.am_arr[1][i];
-        if (depTypeByProfileId(profile_id) !== ERC721_TOKEN) {
+        if (parseInt(depTypeByProfileId(profile_id), 10) !== ERC721_TOKEN) {
           am = window.web3js_reader.utils.fromWei(am, 'ether');
         }
         return [i, am];
@@ -4027,10 +4027,10 @@ async function return_credit_confirm(cred_id) {
   );
 
   let return_val = 0;
-  if (returned_asset_type === NATIVE_ETHEREUM) {
+  if (parseInt(returned_asset_type, 10) === NATIVE_ETHEREUM) {
     return_val = return_amount;
     // do nothing
-  } else if (returned_asset_type === ERC721_TOKEN) {
+  } else if (parseInt(returned_asset_type, 10) === ERC721_TOKEN) {
     modal_return_credit.isLoadedAfterConfirm(false);
     errorMsg('error: ERC721 is not possible type for credit');
     return;
@@ -4127,10 +4127,10 @@ async function return_fee_confirm(cred_id) {
   );
   let return_val = 0;
 
-  if (returned_asset_type === NATIVE_ETHEREUM) {
+  if (parseInt(returned_asset_type, 10) === NATIVE_ETHEREUM) {
     return_val = return_amount;
     // do nothing
-  } else if (returned_asset_type === ERC721_TOKEN) {
+  } else if (parseInt(returned_asset_type, 10) === ERC721_TOKEN) {
     modal_return_fee.isLoadedAfterConfirm(false);
     errorMsg('error: ERC721 is not possible type for credit');
     return;

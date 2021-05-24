@@ -377,7 +377,7 @@ const userObject = {
       const current_timestamp = Date.now();
       if (
         current_timestamp >
-          this.getExtractableRewardCol_last_call + CACHE_TIME ||
+        this.getExtractableRewardCol_last_call + CACHE_TIME ||
         flag
       ) {
         this.getExtractableRewardCol_last_call = current_timestamp;
@@ -585,7 +585,7 @@ const userObject = {
 
         for (let i = 0; i < cred_arr[0].length; i++) {
           let txt = '';
-          if (depTypeByProfileId(cred_arr[0][i]) === ERC721_TOKEN) {
+          if (parseInt(depTypeByProfileId(cred_arr[0][i]), 10) === ERC721_TOKEN) {
             const token_count =
               await window.cyclops_nft_smartcontract_reader.methods
                 .balanceOf(userObject.account)
@@ -595,8 +595,8 @@ const userObject = {
 
             txt = `<td class="rounded-l-lg table-cell">${token_count}</td>`;
           } else if (
-            depTypeByProfileId(cred_arr[0][i]) === ERC20_TOKEN ||
-            depTypeByProfileId(cred_arr[0][i]) === UNISWAP_PAIR
+            parseInt(depTypeByProfileId(cred_arr[0][i]), 10) === ERC20_TOKEN ||
+            parseInt(depTypeByProfileId(cred_arr[0][i]), 10) === UNISWAP_PAIR
           ) {
             const erc20contract = await new window.web3js_reader.eth.Contract(
               erc20TokenContractAbi,
@@ -615,7 +615,7 @@ const userObject = {
             txt = `<td class="rounded-l-lg table-cell">${adj_count_str}</td>`;
 
             // html += '<span class="small-text-block">'+token_name+': '+adj_count_str+'</span>';
-          } else if (depTypeByProfileId(cred_arr[0][i]) === NATIVE_ETHEREUM) {
+          } else if (parseInt(depTypeByProfileId(cred_arr[0][i]), 10) === NATIVE_ETHEREUM) {
             const wb = await window.web3js_reader.eth.getBalance(
               userObject.account
             );
@@ -645,7 +645,7 @@ const userObject = {
           for (let i = 0; i < am_arr[0].length; i++) {
             if (am_arr[0][i] === cred_arr[0][j]) {
               // found
-              if (depTypeByProfileId(cred_arr[0][j]) === ERC721_TOKEN) {
+              if (parseInt(depTypeByProfileId(cred_arr[0][j]), 10) === ERC721_TOKEN) {
                 // amount
                 txt = `<td class="table-cell">${am_arr[1][i]}</td>`;
               } else {
@@ -677,7 +677,7 @@ const userObject = {
           if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) {
             // credit or fee unpaid
             // found
-            if (depTypeByProfileId(cred_arr[0][i]) === ERC721_TOKEN) {
+            if (parseInt(depTypeByProfileId(cred_arr[0][i]), 10) === ERC721_TOKEN) {
               // amount
               txt = `<td class="table-cell">${cred_arr[1][i]}</td>`;
             } else {
@@ -708,7 +708,7 @@ const userObject = {
           if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) {
             // credit or fee unpaid
             // found
-            if (depTypeByProfileId(cred_arr[0][i]) === ERC721_TOKEN) {
+            if (parseInt(depTypeByProfileId(cred_arr[0][i]), 10) === ERC721_TOKEN) {
               // amount
               txt = `<td class="table-cell">${cred_arr[4][i]}</td>`;
             } else {
@@ -760,12 +760,10 @@ const userObject = {
               }
               tdtxt = tdtxt.toUpperCase();
               tdtxt += `: ${adj_am}`;
-              txt = `<td class="table-cell ${
-                isCollateralCheaperThenCredit && 'attention-cell'
-              }" ${
-                isCollateralCheaperThenCredit &&
+              txt = `<td class="table-cell ${isCollateralCheaperThenCredit && 'attention-cell'
+                }" ${isCollateralCheaperThenCredit &&
                 'title="Your collateral doesn’t cover credit value, please be aware that bank can liquidate your collateral partially or fully at any moment. To prevent that - please return your credit fully or partially."'
-              }><span>${tdtxt}</span></td>`;
+                }><span>${tdtxt}</span></td>`;
             }
           }
           if (!txt) txt = '<td class="table-cell">-</td>';
@@ -1005,7 +1003,7 @@ const userObject = {
       const current_timestamp = Date.now();
       if (
         current_timestamp >
-          this.getIconAssetLockupCols_last_call + CACHE_TIME ||
+        this.getIconAssetLockupCols_last_call + CACHE_TIME ||
         flag
       ) {
         this.getIconAssetLockupCols_last_call = current_timestamp;
@@ -1020,7 +1018,7 @@ const userObject = {
 
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) === UNISWAP_PAIR) {
+          if (parseInt((await unswDepTypeByProfileId(am_arr[0][i])), 10) === UNISWAP_PAIR) {
             this.icon_column.push(
               `<td class="table-cell">${createCellWithIcon(
                 await unswProfileNameByProfileId(am_arr[0][i])
@@ -1058,7 +1056,7 @@ const userObject = {
 
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) === UNISWAP_PAIR) {
+          if (parseInt((await unswDepTypeByProfileId(am_arr[0][i])), 10) === UNISWAP_PAIR) {
             // let apy = await window.usage_calc_smartcontract_reader.methods.calcDepApy(am_arr[0][i]).call({ from: userObject.account});
             const apy = await getAPY(am_arr[0][i]);
             const apy_adj = (apy / apy_scale) * 100;
@@ -1087,7 +1085,7 @@ const userObject = {
 
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) === UNISWAP_PAIR) {
+          if (parseInt((await unswDepTypeByProfileId(am_arr[0][i])), 10) === UNISWAP_PAIR) {
             let txt = '';
             if (am_arr[1][i] > 0) {
               // let am = window.web3js_reader.utils.fromWei(am_arr[1][i], 'ether');
@@ -1123,7 +1121,7 @@ const userObject = {
         let index = 0;
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) === UNISWAP_PAIR) {
+          if (parseInt((await unswDepTypeByProfileId(am_arr[0][i])), 10) === UNISWAP_PAIR) {
             let txt = '';
             if (am_arr[1][i] > 0) {
               const am = await calcUSDValueOfDeposit(am_arr[1][i], i);
@@ -1166,7 +1164,7 @@ const userObject = {
 
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) === UNISWAP_PAIR) {
+          if (parseInt((await unswDepTypeByProfileId(am_arr[0][i])), 10) === UNISWAP_PAIR) {
             let txt = '';
             let txt_unl = '';
 
@@ -1222,7 +1220,7 @@ const userObject = {
 
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) === UNISWAP_PAIR) {
+          if (parseInt((await unswDepTypeByProfileId(am_arr[0][i])), 10) === UNISWAP_PAIR) {
             let txt = '';
 
             if (am_arr[2][i] > 0) {
@@ -1257,7 +1255,7 @@ const userObject = {
 
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) === UNISWAP_PAIR) {
+          if (parseInt((await unswDepTypeByProfileId(am_arr[0][i])), 10) === UNISWAP_PAIR) {
             let txt = '';
 
             if (am_arr[2][i] > 0) {
@@ -1283,7 +1281,7 @@ const userObject = {
       const current_timestamp = Date.now();
       if (
         current_timestamp >
-          this.getWithdrawDepInputsCol_last_call + CACHE_TIME ||
+        this.getWithdrawDepInputsCol_last_call + CACHE_TIME ||
         flag
       ) {
         this.getWithdrawDepInputsCol_last_call = current_timestamp;
@@ -1295,7 +1293,7 @@ const userObject = {
 
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) === UNISWAP_PAIR) {
+          if (parseInt((await unswDepTypeByProfileId(am_arr[0][i])), 10) === UNISWAP_PAIR) {
             let txt = '';
 
             if (am_arr[2][i] > 0) {
@@ -1346,7 +1344,7 @@ const userObject = {
 
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) === UNISWAP_PAIR) {
+          if (parseInt((await unswDepTypeByProfileId(am_arr[0][i])), 10) === UNISWAP_PAIR) {
             let txt = '';
 
             if (rew_arr[1][i] > 0) {
@@ -1370,7 +1368,7 @@ const userObject = {
       const current_timestamp = Date.now();
       if (
         current_timestamp >
-          this.getExtractableRewardCol_last_call + CACHE_TIME ||
+        this.getExtractableRewardCol_last_call + CACHE_TIME ||
         flag
       ) {
         this.getExtractableRewardCol_last_call = current_timestamp;
@@ -1381,7 +1379,7 @@ const userObject = {
 
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) === UNISWAP_PAIR) {
+          if (parseInt((await unswDepTypeByProfileId(am_arr[0][i])), 10) === UNISWAP_PAIR) {
             let txt = '';
 
             if (rew_arr[2][i] > 0) {
@@ -1416,7 +1414,7 @@ const userObject = {
 
         for (let i = 0; i < am_arr[0].length; i++) {
           if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
-          if ((await unswDepTypeByProfileId(am_arr[0][i])) === UNISWAP_PAIR) {
+          if (parseInt((await unswDepTypeByProfileId(am_arr[0][i])), 10) === UNISWAP_PAIR) {
             let txt = '';
 
             if (rew_arr[2][i] > 0) {
