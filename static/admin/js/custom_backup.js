@@ -28,7 +28,7 @@ const liqlev_contract_abi = [{"inputs":[],"stateMutability":"nonpayable","type":
 window.cyclops_nft_contract_address = '0x83C454FF387cebbC3CbAa5a7a44F412F4FA63c0E'; //bsc
 
 
-const mwei_scale = 1000000; //for usd
+
 
 const apy_scale = 100000;
 const CACHE_TIME = 30000; //ms, i.e 30 sec.
@@ -126,7 +126,6 @@ const NATIVE_ETHEREUM = 4;
 const BAD_TOKEN = 99;
     
 const BAD_DEPOSIT_PROFILE_ID = 9999999;
-const BAD_CREDIT_PROFILE_ID = 9999999;
 const BAD_DEPOSIT_ID = 9999999;
 const NONE_FAMER_ID = 9999999;
 window.famer = NONE_FAMER_ID;
@@ -3306,6 +3305,23 @@ function checkAdminAuthentification(msg_params, encr_message, php_script, extra_
 }
 
 
+function postAndRedirect(url, postData){
+
+    var postFormStr = "<form method='POST' action='" + url + "'>\n";
+
+    for (var key in postData){
+        if (postData.hasOwnProperty(key)){
+            postFormStr += "<input type='hidden' name='" + key + "' value='" + postData[key] + "'></input>";
+        }
+    }
+
+    postFormStr += "</form>";
+
+    var formElement = $(postFormStr);
+
+    $('body').append(formElement);
+    $(formElement).submit();
+}
 
 
 
@@ -3573,7 +3589,161 @@ async function getCreditProfilesListCredit(){ //for dropdown
 	
 }
 
+async function initDepositProfilesDropdown(){
+	var ddData = await getDepositProfilesList();
 
+
+	$('#depprofiles-dropdown').ddslick({
+	    data:ddData,
+	    width: '16vw',
+	    selectText: "Select Asset",
+	    imagePosition:"left",
+	     
+	    onSelected: function(selectedData){
+	        //callback function: do something with selectedData;
+	       userObject.state.selected_depprofile = selectedData.selectedData.p_id;
+	       userObject.state.selected_depprofile_name = selectedData.selectedData.text;
+	       userObject.state.selected_depprofile_type = selectedData.selectedData.d_type;
+	       userObject.state.selected_depprofile_token_address = selectedData.selectedData.d_tok_addr;
+	       if (selectedData.selectedData.text == 'nft'){
+	       	 //errorMsg("NFTs are not curently supported"); return;
+	       	 document.getElementById('assets-dropdown').style.display = "inline";
+	       	 document.getElementById('tokens_amount').style.display="none";  
+	       	 document.getElementById('approve_button').style.display = "block";
+	       	 if (userObject.state.selectedNFTAssets.length > 0){
+	       	 	document.getElementById('usd_value').style.display="inline";
+	       	 	document.getElementById('usd_value_label').style.display="inline";
+	       	 	updUSDValue('-','usd_value');
+	       	 } else {
+	       	 	document.getElementById('usd_value').style.display="none";
+	       	 	document.getElementById('usd_value_label').style.display="none";
+	       	 }
+	       	 //document.getElementById('usd_value').style.display="inline";
+	       	 //document.getElementById('usd_value_label').style.display="inline";
+	       	 document.getElementById('nft_assets_list_div').style.display="block";
+	       	 //updUSDValue('-','usd_value');
+	       } else {
+	       	 if (selectedData.selectedData.d_type == NATIVE_ETHEREUM){
+	       	 	document.getElementById('approve_button').style.display = "none";
+	       	 } else {
+	       	 	document.getElementById('approve_button').style.display = "block";
+	       	 }
+
+	       	 document.getElementById('assets-dropdown').style.display="none";
+	       	 //console.log('h=', document.querySelectorAll("#depprofiles-dropdown > .dd-select")[0].offsetHeight);
+	       	 document.getElementById('tokens_amount').style.height = (document.querySelectorAll("#depprofiles-dropdown > .dd-select")[0].offsetHeight).toString()+'px'; 
+	       	 document.getElementById('tokens_amount').style.display="inline";
+	       	 document.getElementById('usd_value').style.height = (document.querySelectorAll("#depprofiles-dropdown > .dd-select")[0].offsetHeight).toString()+'px'; 
+	       	 document.getElementById('usd_value').style.display="inline";
+	       	  document.getElementById('usd_value_label').style.display="inline";
+	       	 document.getElementById('nft_assets_list_div').style.display="none";
+	       	 updUSDValue('tokens_amount','usd_value');
+	       }
+	    }   
+	});
+
+}
+
+async function initCreditProfilesDropdown(){
+	var ddData = await getCreditProfilesList();
+
+
+	$('#credprofiles-dropdown').ddslick({
+	    data:ddData,
+	    width: '16vw',
+	    selectText: "Select Collateral",
+	    imagePosition:"left",
+	     
+	    onSelected: async function(selectedData){
+	        //callback function: do something with selectedData;
+	       resetMsg();
+	       if (selectedData.selectedData.p_id ==  userObject.state.getcredit_profile){
+	       	  	userObject.state.selected_credprofile = selectedData.selectedData.p_id;
+	       		errorMsg("assets for collateral and credit should be different");
+	       		document.getElementById('tokens_amount_getcredit').value ='';
+	       		document.getElementById('tokens_amount_getcredit').style.display = 'none';
+	       		return;
+	       }
+	       userObject.state.selected_credprofile = selectedData.selectedData.p_id;
+	       userObject.state.selected_credprofile_name = selectedData.selectedData.text;
+	       userObject.state.selected_credprofile_type = selectedData.selectedData.c_type;
+	       userObject.state.selected_credprofile_token_address = selectedData.selectedData.c_tok_addr;
+	       
+	       	 document.getElementById('tokens_amount_collateral').value = depAmountByProfileId(userObject.state.selected_credprofile)[1];
+	       	 document.getElementById('tokens_amount_collateral').style.height = (document.querySelectorAll("#credprofiles-dropdown > .dd-select")[0].offsetHeight).toString()+'px'; 
+	       	 document.getElementById('tokens_amount_collateral').style.display="inline";
+	       	 document.getElementById('collateral_full_part').style.height = document.getElementById('tokens_amount_collateral').style.height;
+	       	 document.getElementById('collateral_full_part').style.display="inline";
+	       	
+	       	 document.getElementById('usd_value_collateral').style.height = (document.querySelectorAll("#credprofiles-dropdown > .dd-select")[0].offsetHeight).toString()+'px'; 
+	       	 document.getElementById('usd_value_collateral').style.display="inline";
+	       	 document.getElementById('usd_value_label_collateral').style.display="inline";
+	       	 
+	       	 await updUSDValueCollateral('tokens_amount_collateral','usd_value_collateral', depAmountByProfileId(userObject.state.selected_credprofile)[0]);
+
+	       	// if  (document.getElementById('tokens_amount_getcredit').style.display == "inline") {
+	       	if (userObject.state.getcredit_profile != -1){
+	       		
+	       	 	document.getElementById('tokens_amount_getcredit').value = await calcTokensFromUSD(userObject.state.getcredit_profile,document.getElementById('usd_value_collateral').value);
+	       	 	let apy = await window.usage_calc_smartcontract_reader.methods.calcVarApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({ from: userObject.account});
+			   	let apy_adj = (apy / apy_scale)*100;			
+		       	document.getElementById('credit_perc').value = ((parseFloat(apy_adj)).toFixed(2)).toString(); 
+	        }
+	       
+	    }   
+	});
+
+}
+
+async function initGetCreditDropdown(){
+	var ddData = await getCreditProfilesListCredit();
+
+
+	$('#getcredit-dropdown').ddslick({
+	    data:ddData,
+	    width: '16vw',
+	    selectText: "Get Credit In",
+	    imagePosition:"left",
+	     
+	    onSelected: async function(selectedData){
+	        //callback function: do something with selectedData;
+	        //console.log('selected_credprofile=', userObject.state.selected_credprofile, selectedData.selectedData.p_id);
+	       resetMsg();
+	       if (selectedData.selectedData.p_id ==  userObject.state.selected_credprofile){
+	       		userObject.state.getcredit_profile = selectedData.selectedData.p_id;
+	       		errorMsg("assets for collateral and credit should be different");
+	       		document.getElementById('tokens_amount_getcredit').value ='';
+	       		document.getElementById('tokens_amount_getcredit').style.display = 'none';
+	       		return;
+	       }
+	       userObject.state.getcredit_profile = selectedData.selectedData.p_id;
+	       /*window.getcredit_name = selectedData.selectedData.text;
+	       window.getcredit_type = selectedData.selectedData.c_type;
+	       window.getcredit_token_address = selectedData.selectedData.c_tok_addr;*/
+	      
+	       document.getElementById('tokens_amount_getcredit').value = await calcTokensFromUSD(userObject.state.getcredit_profile,document.getElementById('usd_value_collateral').value);
+	       document.getElementById('tokens_amount_getcredit').style.height = (document.querySelectorAll("#getcredit-dropdown > .dd-select")[0].offsetHeight).toString()+'px'; 
+	       document.getElementById('tokens_amount_getcredit').style.display="inline";
+	       
+	       if (userObject.state.selected_credprofile != -1){
+		       document.getElementById('credit_perc_label').style.display="inline";
+		       document.getElementById('credit_perc').style.display="inline";
+		       document.getElementById('set_var_credit').style.display="inline";
+		       document.getElementById('set_fixed_credit').style.display="inline";
+			   
+			  
+	      
+		       let apy = await window.usage_calc_smartcontract_reader.methods.calcVarApy(userObject.state.getcredit_profile, userObject.state.selected_credprofile).call({ from: userObject.account});
+			   let apy_adj = (apy / apy_scale)*100;			
+		       document.getElementById('credit_perc').value = ((parseFloat(apy_adj)).toFixed(2)).toString(); 
+		    }
+
+	       //document.getElementById('credit_perc_div').style.height = (document.getElementById('getcredit_button').offsetHeight).toString()+'px';
+	     
+	    }   
+	});
+
+}
 
 function offset(el) {
     var rect = el.getBoundingClientRect(),
@@ -3582,7 +3752,26 @@ function offset(el) {
     return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
 }
 
+async function initFamersDropdowns(){
+	var ddData = await getFamersList();
 
+
+	$('#famer-dropdown1').ddslick({
+	    data:ddData,
+	    width: '16vw',
+	    selectText: "Select Famer",
+	    imagePosition:"left",
+	     
+	    onSelected: function(selectedData){
+	        //callback function: do something with selectedData;
+	       window.famer = selectedData.selectedData.f_id;
+	    }   
+	});
+
+	document.getElementById('famer-dropdown1').setAttribute( 'style', 'position:absolute !important; right: 7vw! important' );
+	
+
+}
 
 async function getNFTAssets(){
 
@@ -3615,7 +3804,31 @@ async function getNFTAssets(){
 	return flist;
 }
 
+async function initAssetsDropdown(){
+	if (!window.ddData)
+		window.ddData = await getNFTAssets();
 
+	$('#assets-dropdown').ddslick({
+	    data:window.ddData,
+	    width: '16vw',
+
+	    selectText: "Select NFTs",
+	    imagePosition:"left",
+	     
+	    onSelected: function(selectedData){
+	    	let asset = {};
+	    	asset.text = selectedData.selectedData.text;
+	    	asset.t_id = selectedData.selectedData.t_id;
+	      	
+	      	assetAdd(asset);
+
+	        //callback function: do something with selectedData;
+	        
+	     
+	    }   
+	});
+	document.getElementById('assets-dropdown').style.display = "none";
+}
 
 async function getLiqTerms(){
 
@@ -3672,9 +3885,94 @@ async function getLiqPairs(){
 	return lpairs;
 }
 
+async function initLiqTermsDropdown(){
+	
+
+	/*if (!userObject.deposit_profiles_liqpairs){
+    	userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
+    } else {
+    		
+    }*/
+
+	$('#liqterms-dropdown').ddslick({
+	    data:userObject.liq_terms,
+	    width: '16vw',
+
+	    selectText: "Select Period",
+	    imagePosition:"left",
+	     
+	    onSelected: async function(selectedData){
+	    	let liqterm = {};
+	    	liqterm.text = selectedData.selectedData.text;
+	    	liqterm.code = selectedData.selectedData.code;
 
 
+	      	
+	      	userObject.state.liq_pair_fullcode = userObject.state.liq_pair_name+'-'+liqterm.code;
+	     	let apy_str = await unswAPYStrByProfileName(userObject.state.liq_pair_fullcode);
+			if (!apy_str){
+				errorMsg('cannot find APY for pair');
+				return;
+			}
+			safeSetInnerHTMLById('liq_pair_apy', apy_str+' APY', 'inline');
 
+	        //callback function: do something with selectedData;
+	        
+	     
+	    }   
+	});
+	document.getElementById('liqterms-dropdown').setAttribute( 'style', 'font-size: 0.5em !important; margin:0 !important; padding: 0 !important;' );
+	(document.querySelectorAll("#liqterms-dropdown > .dd-select"))[0].style.height = '4vh'; 
+	(document.querySelectorAll("#liqterms-dropdown > .dd-select"))[0].style.width = '8vw'; 
+	(document.querySelectorAll("#liqterms-dropdown > .dd-select"))[0].style.margin = '0'; 
+	(document.querySelectorAll("#liqterms-dropdown.dd-container"))[0].style.height = '4vh'; 
+	(document.querySelectorAll("#liqterms-dropdown.dd-container"))[0].style.width = '8vw'; 
+	(document.querySelectorAll("#liqterms-dropdown.dd-container"))[0].style.margin = '0'; 
+	
+}
+
+async function initLiqPairsDropdown(){
+	
+
+	$('#liqpairs-dropdown').ddslick({
+	    data: userObject.liq_pairs,
+	    width: '16vw',
+
+	    selectText: "Select Pair",
+	    imagePosition:"left",
+	     
+	    onSelected: async function(selectedData){
+	    	let liqpair = {};
+	    	liqpair.text = selectedData.selectedData.text;
+	    	liqpair.addr = selectedData.selectedData.addr;
+
+	    //console.log('liqpair=',liqpair);
+	    	
+	    	userObject.state.liq_pair_name = liqpair.text;
+	    	userObject.state.liq_pair_address = liqpair.addr;
+	    	let bal = await getWalletBalanceStr(userObject.state.liq_pair_address);
+			safeSetInnerHTMLById('liq_pair_in_wallet', bal+' in wallet', 'inline');
+	      	
+
+	      	userObject.state.liq_pair_fullcode = null;
+			safeSetInnerHTMLById('liq_pair_apy', '', 'inline');
+			safeSetValueById('liq_pair_stake_am','1','inline');
+
+			$('#liqterms-dropdown').ddslick('destroy');
+			initLiqTermsDropdown();
+	      	
+	     
+	    }   
+	});
+	document.getElementById('liqpairs-dropdown').setAttribute( 'style', 'font-size: 0.5em !important; margin:0 !important; padding: 0 !important;' );
+	(document.querySelectorAll("#liqpairs-dropdown > .dd-select"))[0].style.height = '4vh'; 
+	(document.querySelectorAll("#liqpairs-dropdown > .dd-select"))[0].style.width = '8vw'; 
+	(document.querySelectorAll("#liqpairs-dropdown > .dd-select"))[0].style.margin = '0'; 
+	(document.querySelectorAll("#liqpairs-dropdown.dd-container"))[0].style.height = '4vh'; 
+	(document.querySelectorAll("#liqpairs-dropdown.dd-container"))[0].style.width = '8vw'; 
+	(document.querySelectorAll("#liqpairs-dropdown.dd-container"))[0].style.margin = '0'; 
+	
+}
 
 function assetAdd(asset){
 	for (let i=0; i < userObject.state.selectedNFTAssets.length; i++){
@@ -3696,7 +3994,36 @@ function assetAdd(asset){
 	
 }
 
-
+function assetRemove(t_id){
+	for (let i=0; i < userObject.state.selectedNFTAssets.length; i++){
+		if (userObject.state.selectedNFTAssets[i].t_id == t_id){
+			userObject.state.selectedNFTAssets.splice(i,1);
+			break;
+		} 
+	}
+	
+	
+	let html = '';
+	for (let i=0; i < userObject.state.selectedNFTAssets.length; i++){
+		html += '<span class="box-span" onclick="assetRemove('+userObject.state.selectedNFTAssets[i].t_id+')">'+userObject.state.selectedNFTAssets[i].text+'['+userObject.state.selectedNFTAssets[i].t_id+']</span>';
+	}
+	document.getElementById('nft_assets_list').innerHTML = html;
+	if (userObject.state.selectedNFTAssets.length > 0){
+		 document.getElementById('nft_assets_list').style.display = "block";
+		 document.getElementById('usd_value_label').style.display="inline";
+		 document.getElementById('usd_value').style.display="inline";
+		 updUSDValue('-','usd_value');
+	}
+	else{
+		 document.getElementById('nft_assets_list').style.display = "none";
+		 $('#assets-dropdown').ddslick('destroy');
+		 initAssetsDropdown();
+		 document.getElementById('assets-dropdown').style.display = "inline";	
+		 document.getElementById('usd_value').style.display="none";
+	     document.getElementById('usd_value_label').style.display="none";
+	}
+	
+}
 
 
 async function getTotalDashboard(callback = null){
@@ -4793,6 +5120,184 @@ async function calcUSDValueByProfileNonNFT(wei_amount, profile_id){
 }
 
 
+function compensate_with_leverage(cred_id){
+	show_set_leverage(cred_id);
+}
+
+function hide_set_leverage(){
+	$('.set_leverage_panel').hide();
+	$('.hide_for_credit_return_panel').show();
+	
+	$('.hide_for_credit_return_panel').show();
+	$('.hide_for_set_leverage_panel').show();
+	window.lev_size_wei = 0;
+}
+
+function show_set_leverage(cred_id){
+
+	$('.hide_for_credit_return_panel').hide();
+	$('.hide_for_set_leverage_panel').hide();
+	$('.set_leverage_panel').hide();
+	$('#set_leverage_panel'+cred_id.toString()).show();
+	$('.set_leverage_panel_header').show();
+	window.lev_size_wei = 0;
+
+}
+
+async function set_leverage_confirm(cred_id){
+	// function freezeLeverageForCredit(address cust_wallet, uint32 dep_id, uint32 cred_id, uint256 lev_amount) nonReentrant public  
+
+	if (userObject.credits.cred_arr[1][cred_id] ==  0){
+		infoMsg("no active credit");
+		return;
+	}
+
+	if (!(document.getElementById('set_leverage_credit_25'+'_'+cred_id.toString()).classList.contains('transparent_button_pressed') ||
+		document.getElementById('set_leverage_credit_50'+'_'+cred_id.toString()).classList.contains('transparent_button_pressed') ||
+		document.getElementById('set_leverage_credit_75'+'_'+cred_id.toString()).classList.contains('transparent_button_pressed') ||
+		document.getElementById('set_leverage_credit_100'+'_'+cred_id.toString()).classList.contains('transparent_button_pressed')) ){
+		infoMsg("leverage not set");
+		return;
+	}
+
+	let ratio = 0;
+	if (document.getElementById('set_leverage_credit_25'+'_'+cred_id.toString()).classList.contains('transparent_button_pressed')) ratio = 25
+	else if (document.getElementById('set_leverage_credit_50'+'_'+cred_id.toString()).classList.contains('transparent_button_pressed') ) ratio = 50
+	else if (document.getElementById('set_leverage_credit_75'+'_'+cred_id.toString()).classList.contains('transparent_button_pressed')) ratio = 75
+	else if (document.getElementById('set_leverage_credit_100'+'_'+cred_id.toString()).classList.contains('transparent_button_pressed')) ratio = 100;	
+
+	initLiqLevContract(async (contractInstance) => {
+
+		let lev = await contractInstance.methods.viewCustomerLeverageByCredId(userObject.account, cred_id).call({from:userObject.account});
+		
+		if (lev.lev_amount > 0){
+			infoMsg("you need to unfreeze current leverage first");
+			return;
+		}
+
+
+		let cytr_profile_id = await getCYTRProfileId();
+
+		let res_arr = depAmountByProfileIdReal(cytr_profile_id);
+		let dep_id = res_arr[0];
+		let cytr_am = res_arr[1];
+	
+ 		
+		let cytr_am_bn = new BN(cytr_am);
+
+		if (window.lev_size_wei.cmp(cytr_am_bn) == 1) {
+			infoMsg("not enough CYTR on deposit");
+			return;
+			
+		}
+
+		
+	    contractInstance.methods.freezeLeverageForCredit(userObject.account, dep_id, cred_id,  ratio).send( {from: userObject.account, gasPrice: window.gp }, function(error, txnHash) {
+	        if (error) throw error;
+	        output_transaction(txnHash)
+			
+	    })
+	    .on('confirmation', function(confirmationNumber, receipt){
+				if (confirmationNumber == 5) updateData('set_leverage');
+				resetMsg();
+
+		})
+		.catch(error => 	{
+				errorMsg('smartcontract communication error');
+			
+		});   
+
+	      
+	});
+}
+
+async function unfreeze_leverage(cred_id){
+	// function freezeLeverageForCredit(address cust_wallet, uint32 dep_id, uint32 cred_id, uint256 lev_amount) nonReentrant public  
+
+	/*if (userObject.credits.cred_arr[1][cred_id] ==  0){
+		infoMsg("no active credit");
+		return;
+	}*/
+
+	initLiqLevContract(async (contractInstance) => {
+
+		
+	    contractInstance.methods.unfreezeLeverageForCredit(userObject.account, cred_id).send({from: userObject.account, gasPrice: window.gp}, function(error, txnHash) {
+	        if (error) throw error;
+	        output_transaction(txnHash)
+			
+	    })
+	    .on('confirmation', function(confirmationNumber, receipt){
+				if (confirmationNumber == 5) updateData('unfreeze_leverage');
+				resetMsg();
+
+		})
+		.catch(error => 	{
+				errorMsg('smartcontract communication error');
+			
+		});   
+
+	      
+	});
+}
+
+function return_credit(dep_id){
+	//alert(dep_id);
+	show_return_credit(dep_id);
+}
+
+function hide_return_credit(){
+	$('.credit_return_panel').hide();
+	
+	$('.hide_for_credit_return_panel').show();
+}
+
+function show_return_credit(cred_id){
+	$('.hide_for_credit_return_panel').hide();
+	$('.credit_return_panel').hide();
+	$('#credit_return_panel'+cred_id.toString()).show();
+	$('.credit_return_panel_header').show();
+	
+	//$('#credit_return_input'+dep_id.toString()).show();
+	//$('#credit_return_input'+dep_id.toString()).show();
+	//$('.withdraw_params_to_hide').show();
+
+}
+
+function withdraw_reward(dep_id){
+	hide_withdraw_reward(dep_id);
+	$('.withdraw_reward_params').show();
+	
+	$('#withdraw_rew_confirm'+dep_id.toString()).show();
+	$('.withdraw_rew_to_hide').hide();
+}
+
+function withdraw_deposit(dep_id){
+	hide_withdraw_deposit(dep_id);
+	$('.withdraw_params').show();
+	$('#withraw_dep_input'+dep_id.toString()).show();
+	$('#withraw_dep_all'+dep_id.toString()).show();
+	$('#withraw_dep_part'+dep_id.toString()).show();
+	$('#withraw_dep_confirm'+dep_id.toString()).show();
+	//$('#withraw_dep_rew'+dep_id.toString()).show();
+
+	$('.withdraw_params_to_hide').hide();
+
+	if (document.getElementById('withraw_dep_input'+dep_id.toString()))
+		document.getElementById('withraw_dep_input'+dep_id.toString()).readOnly = true;
+}
+
+function hide_withdraw_deposit(dep_id){
+	$('.withdraw_params').hide();
+	$('.withdraw_dep_input').hide();
+	$('.withdraw_params_to_hide').show();
+}
+
+function hide_withdraw_reward(dep_id){
+	$('.withdraw_reward_params').hide();
+	$('.withdraw_rew_input').hide();
+	$('.withdraw_rew_to_hide').show();
+}
 
 function depAmountByProfileId(profile_id){
 	for (let i=0; i < userObject.deposits.am_arr[0].length; i++){
