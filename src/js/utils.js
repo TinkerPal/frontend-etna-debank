@@ -41,6 +41,32 @@ const setLdBar = (value, part = 'null') => {
   }
 };
 
+function openTab(event, tabid) {
+  safeRemoveClassBySelector('.nav-link', 'active');
+  safeAddClassBySelector('.page', 'hide');
+
+  event.srcElement.classList.add('active');
+
+  document.getElementById(tabid).classList.remove('hide');
+  userObject.state.current_page_id = tabid;
+}
+
+const setOptionsToSelect = (data, select) => {
+  data.forEach((asset) => {
+    const option = document.createElement('option');
+    option.value = asset.text;
+    option.innerHTML = asset.text;
+    select.appendChild(option);
+  });
+};
+
+const setState = (state) => {
+  userObject.state = {
+    ...userObject.state,
+    ...state,
+  };
+};
+
 const safeSetTableData = (id, value, className) => {
   const el = document.getElementById(id);
   if (el) {
@@ -53,6 +79,7 @@ const safeSetTableData = (id, value, className) => {
     }
   }
 };
+
 const getDepositByTokenId = (p_id) => {
   if (userObject.deposits.am_arr.length === 0) return;
 
@@ -72,3 +99,41 @@ const isMetaMaskInstalled = () => {
     return Boolean(window.ethereum && window.ethereum.isMetaMask);
   }
 };
+
+function depAmountByProfileId(profile_id) {
+  if (profile_id !== -1) {
+    for (let i = 0; i < userObject.deposits.am_arr[0].length; i++) {
+      if (userObject.deposits.am_arr[0][i] === profile_id) {
+        let am = userObject.deposits.am_arr[1][i];
+        if (parseInt(depTypeByProfileId(profile_id), 10) !== ERC721_TOKEN) {
+          am = window.web3js_reader.utils.fromWei(am, 'ether');
+        }
+        return [i, am];
+      }
+    }
+  }
+  return [BAD_DEPOSIT_ID, 0];
+}
+
+function depAmountByProfileIdReal(profile_id) {
+  for (let i = 0; i < userObject.deposits.am_arr[0].length; i++) {
+    if (userObject.deposits.am_arr[0][i] === profile_id) {
+      const am = userObject.deposits.am_arr[1][i];
+
+      return [i, am];
+    }
+  }
+  return [BAD_DEPOSIT_ID, 0];
+}
+
+function toTokens(wei_am, digs) {
+  const n_tokens = floorDecimals(
+    window.web3js_reader.utils.fromWei(wei_am, 'ether'),
+    digs
+  );
+  return parseFloat(n_tokens).toFixed(digs).toString();
+}
+
+function floorDecimals(value, decimals) {
+  return Number(`${Math.floor(`${value}e${decimals}`)}e-${decimals}`);
+}

@@ -29,6 +29,8 @@ var hashedJS;
 var hashedCSS;
 var noop = function () {};
 const js = [
+  './src/js/libs/*',
+
   './src/js/utils.js',
   './src/js/constants/env.js',
   './src/js/constants/constant.js',
@@ -115,7 +117,10 @@ function htmlTask() {
     .pipe(
       htmlreplace({
         css: hashedCSS ? hashedCSS : getCssPath(),
-        js: hashedJS ? hashedJS : getJsPath(),
+        js: {
+          src: [hashedJS ? hashedJS : getJsPath()],
+          tpl: '<script defer src="%s"></script>',
+        },
       })
     )
     .pipe(gulp.dest('./public/'))

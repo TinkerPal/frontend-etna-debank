@@ -7,6 +7,13 @@
   Sentry.init({
   dsn: "https://ef64a3c1aef64e878bfdc7a13add1daf@o639119.ingest.sentry.io/5756522",
   integrations: [new Sentry.Integrations.BrowserTracing()],
+  ignoreErrors: [
+    'ResizeObserver loop limit exceeded', // not an important error in the resize observer
+    'MetaMask Tx Signature', // Vendor error
+    'TrustWeb3Provider', // Vendor error
+    'ResizeObserver loop completed with undelivered notifications', // not an important error in the resize observer
+    'NetworkError when attempting to fetch resource' // addBlocker is active
+  ], 
   denyUrls: [
 
     /extensions\//i,

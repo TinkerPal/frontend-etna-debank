@@ -320,9 +320,6 @@ window.addEventListener('DOMContentLoaded', async function () {
     initUsageCalcContractReader(),
     initCyclopsNFTContractReader(),
   ]);
-  // await initDataProviderContractReader();
-  // await initVotesCalcContractReader();
-  // await initUsageCalcContractReader();
 
   if (isMetaMaskInstalled()) {
     window.ethereum.autoRefreshOnNetworkChange = false;
@@ -1517,52 +1514,6 @@ function loginAdmin() {
     });
 }
 
-function updTotalsTable() {
-  const msgParams = [
-    {
-      type: 'string',
-      name: 'Authorization',
-      value: 'Sign to confirm your access to admin wallet',
-    },
-    {
-      type: 'string',
-      name: 'Timestamp',
-      value: Math.floor(Date.now() / 100000).toString(),
-    },
-    {
-      type: 'uint32',
-      name: 'Randon number for extra security',
-      value: Math.floor(Math.random() * 100000000),
-    },
-  ];
-
-  window.ethereum
-    .request({
-      method: 'eth_signTypedData',
-      params: [msgParams, userObject.account],
-    })
-    .then(async (result) => {
-      encr_message = result;
-      safeSetInnerHTMLById(
-        'total_tokens_balance',
-        'Updating, please stay on page..'
-      );
-      const new_totals_tab = await buildTotalDashboard();
-
-      checkAdminAuthentification(msgParams, encr_message, 'upd_totals.php', {
-        var_name: 'totals_tab',
-        var_value: new_totals_tab,
-      });
-    })
-    .catch((error) => {
-      if (error.code === 4001) {
-        errorMsg('we need you to sign message to get admin access');
-      } else {
-        // console.error(error);
-      }
-    });
-}
-
 function checkAdminButton(token) {
   // admin functions work only with MM
   if (!isMetaMaskInstalled()) return;
@@ -1600,13 +1551,6 @@ function checkAdminButton(token) {
           document
             .getElementById('net_txt')
             .addEventListener('click', loginAdminTst);
-        }
-
-        if (document.getElementById('upd_totals')) {
-          document.getElementById('upd_totals').style.display = 'block';
-          document
-            .getElementById('upd_totals')
-            .addEventListener('click', updTotalsTable);
         }
       }
     })
@@ -1799,137 +1743,22 @@ async function getBackendParameter(var_name, callback = null) {
     });
 }
 
-async function initFamersRegisterContract(callback = null) {
-  if (!window.famers_register_smartcontract) {
-    if (window.web3js) {
-      window.famers_register_smartcontract =
-        await new window.web3js.eth.Contract(
-          famers_register_abi,
-          window.famers_register_contract_address
-        );
-      if (callback) callback(window.famers_register_smartcontract);
-    }
-  } else if (callback) callback(window.famers_register_smartcontract);
-}
-
-async function initFamersRegisterContractReader(callback = null) {
-  if (!window.famers_register_smartcontract_reader) {
-    // if (window.web3js_reader){
-    const reader = web3jsReadersList.get();
-    window.famers_register_smartcontract_reader = await new reader.eth.Contract(
-      famers_register_abi,
-      window.famers_register_contract_address
-    );
-    if (callback) callback(window.famers_register_smartcontract_reader);
-    // }
-  } else if (callback) callback(window.famers_register_smartcontract_reader);
-}
-
 async function initDataProviderContractReader(callback = null) {
   if (!window.data_provider_smartcontract_reader) {
     // if (window.web3js_reader){
-    window.data_provider_smartcontract_reader =
-      await new (web3jsReadersList.get().eth.Contract)(
-        data_provider_abi,
-        window.data_provider_contract_address
-      );
+    const reader = web3jsReadersList.get();
+    window.data_provider_smartcontract_reader = await new reader.eth.Contract(
+      data_provider_abi,
+      window.data_provider_contract_address
+    );
     // window.data_provider_smartcontract_reader = await new window.web3js_reader.eth.Contract(data_provider_abi, window.data_provider_contract_address);
     if (callback) callback(window.data_provider_smartcontract_reader);
     // }
   } else if (callback) callback(window.data_provider_smartcontract_reader);
 }
 
-function getSmartContractFamerProfile(
-  getProfileIdCallback,
-  setDetailsCallback
-) {
-  if (getProfileIdCallback() === 0) {
-    infoMsg('please select profile');
-    return;
-  }
-
-  getSmartcontractFamerProfileDetails(getProfileIdCallback, setDetailsCallback);
-}
-
-async function getSmartcontractFamerProfileDetails(
-  getProfileIdCallback,
-  setDetailsCallback
-) {
-  const profile_id = getProfileIdCallback() - 1;
-
-  initFamersRegisterContract(async (famersContractInstance) => {
-    const prof_details = await famersContractInstance.methods
-      .famers(profile_id)
-      .call({
-        from: userObject.account,
-      });
-
-    const json_details = {};
-    json_details.famer_token_address = prof_details[0];
-    json_details.sold = rev_to_bool[prof_details[1]];
-    json_details.sold_for = prof_details[2];
-
-    setDetailsCallback(json_details);
-  });
-}
-
-async function getFamersList() {
-  const flist = [];
-
-  const profiles_len = await window.famers_register_smartcontract_reader.methods
-    .famersLength()
-    .call({
-      from: userObject.account,
-    });
-
-  for (let i = 0; i < profiles_len; i++) {
-    const option = {};
-    option.text = await window.famers_register_smartcontract_reader.methods
-      .getFamerName(i)
-      .call({
-        from: userObject.account,
-      });
-
-    const json_path = await window.famers_register_smartcontract_reader.methods
-      .getFamerUri(i)
-      .call({
-        from: userObject.account,
-      });
-    const response = await fetch(
-      `https://cors-proxy.etna.network/?url=${json_path}`
-    );
-    const json_content = await response.json();
-
-    option.value = i + 1;
-    option.selected = false;
-    option.f_id = i;
-    option.description = json_content.description;
-    option.imageSrc = json_content.image;
-
-    flist.push(option);
-  }
-
-  window.famers = flist;
-
-  return flist;
-}
-
 async function getDepositProfilesList() {
-  // for dropdown
-
-  /*	
-    if (!userObject.deposit_profiles){
-        userObject.deposit_profiles = await getAllProfiles();
-      } else {
-        	
-      } */
   const plist = [];
-
-  //
-  // ({ p_id: p_id, p_name: p_name, p_dep_type: p_dep_type,
-  //	 p_tok_addr: p_tok_addr, init_apy: init_apy, rate: rate,
-  //	 reward_per_day: reward_per_day, min_lock_time: min_lock_time });
-  //
 
   for (let i = 0; i < userObject.deposit_profiles.length; i++) {
     const option = {};
@@ -1960,8 +1789,6 @@ async function getDepositProfilesList() {
 }
 
 async function getCreditProfilesList() {
-  // for dropdown
-
   const plist = [];
 
   for (let i = 0; i < userObject.credit_profiles.length; i++) {
@@ -2010,12 +1837,7 @@ async function getCreditProfilesListCredit() {
   }
   return plist;
 }
-const setState = (state) => {
-  userObject.state = {
-    ...userObject.state,
-    ...state,
-  };
-};
+
 async function depositModalUpdateNftDropdown() {
   const nftAssetsDropdownRow =
     modal_add_deposit.modal.querySelector('#assets-dropdown');
@@ -2042,9 +1864,12 @@ async function depositModalRebuild() {
   const assetsAmountRow =
     modal_add_deposit.modal.querySelector('#tokens_amount').parentNode;
   const depositSelectedAsset = depprofilesDropdown.value;
+
   const currentDepProfile = ddData.find(
-    (item) => item.text === depositSelectedAsset
+    (item) => item.text.toLowerCase() === depositSelectedAsset.toLowerCase()
   );
+
+  if (!currentDepProfile) return;
 
   setState({
     selected_depprofile: currentDepProfile.p_id,
@@ -2073,15 +1898,6 @@ async function depositModalRebuild() {
     updUSDValue('tokens_amount', 'usd_value');
   }
 }
-
-const setOptionsToSelect = (data, select) => {
-  data.forEach((asset) => {
-    const option = document.createElement('option');
-    option.value = asset.text;
-    option.innerHTML = asset.text;
-    select.appendChild(option);
-  });
-};
 
 async function initDepositProfilesDropdown() {
   const ddData = await getDepositProfilesList();
@@ -2317,39 +2133,6 @@ async function initGetCreditDropdown() {
   };
 }
 
-function offset(el) {
-  const rect = el.getBoundingClientRect();
-  const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  return {
-    top: rect.top + scrollTop,
-    left: rect.left + scrollLeft,
-  };
-}
-
-async function initFamersDropdowns() {
-  const ddData = await getFamersList();
-
-  $('#famer-dropdown1').ddslick({
-    data: ddData,
-    width: '16vw',
-    selectText: 'Select Famer',
-    imagePosition: 'left',
-
-    onSelected(selectedData) {
-      // callback function: do something with selectedData;
-      window.famer = selectedData.selectedData.f_id;
-    },
-  });
-
-  document
-    .getElementById('famer-dropdown1')
-    .setAttribute(
-      'style',
-      'position:absolute !important; right: 7vw! important'
-    );
-}
-
 async function getNFTAssets() {
   const contract = window.data_provider_smartcontract_reader;
 
@@ -2580,273 +2363,12 @@ async function liqModalBuild() {
   modal_add_lliquidity.confirm.disabled = true;
 }
 
-async function getTotalDashboard(callback = null) {
-  let html;
-  await getBackendParameter('totals_tab', (content) => {
-    html = content;
-  });
-
-  safeSetInnerHTMLById('total_tokens_balance', html);
-
-  if (callback) callback();
-}
-
-// buildTotalDashboard
-
-async function buildTotalDashboard() {
-  let stakingContractInstance;
-  await initStakingContract((contract) => {
-    stakingContractInstance = contract;
-  });
-
-  let creditContractInstance;
-  await initCreditContract((contract) => {
-    creditContractInstance = contract;
-  });
-
-  let html =
-    '<table class="min-w-full">' +
-    '<thead>' +
-    '<tr>' +
-    '<th class="table-title" colspan = "2" scope = "colgroup">Assets</th>' +
-    '<th class="table-title">Total Deposits</th>' +
-    '<th class="table-title">Total Borrowed</th>' +
-    '<th class="table-title">Deposit APY<sup>*</sup></th>' +
-    '<th class="table-title">Variable Borrow APR<sup>*</sup></th>' +
-    '<th class="table-title">Fixed Borrow APR<sup>*</sup></th>' +
-    '</tr>' +
-    '</thead>' +
-    '<tbody>';
-
-  const profiles = userObject.deposit_profiles;
-  const cred_profiles = userObject.credit_profiles;
-
-  const icon_column = [];
-  const asset_column = [];
-  const dep_column = [];
-  // let extractable_dep_col = [];
-  // let reward_col = [];
-  // let extractable_reward_col = [];
-  const cred_column = [];
-  // let fee_column = [];
-
-  for (let i = 0; i < profiles.length; i++) {
-    icon_column.push(
-      `<td class="table-cell">${createCellWithIcon(profiles[i].p_name)}</td>`
-    );
-    asset_column.push(`<td class="table-cell">${profiles[i].p_name}</td>`);
-    const dep_stat = await stakingContractInstance.methods
-      .depositsStat(parseInt(profiles[i].p_id, 10))
-      .call({
-        from: userObject.account,
-      });
-    let dep_total = dep_stat[0];
-    if (parseInt(profiles[i].p_dep_type, 10) !== ERC721_TOKEN)
-      dep_total = window.web3js_reader.utils.fromWei(dep_total, 'ether');
-    const dep_total_str = parseFloat(dep_total).toFixed(3).toString();
-
-    dep_column.push(`<td class="table-cell">${dep_total_str}</td>`);
-    /*
-    let extr_dep_total = dep_stat[1];
-    if (parseInt(profiles[i]['p_dep_type']) !== ERC721_TOKEN)
-        extr_dep_total = window.web3js_reader.utils.fromWei(extr_dep_total, 'ether');
-
-    let extr_dep_total_str = ((parseFloat(extr_dep_total)).toFixed(3)).toString();  
-    extractable_dep_col.push('<td class="table-cell">'+extr_dep_total_str+'</td>');
-
-    let rew_total = window.web3js_reader.utils.fromWei(dep_stat[2], 'ether');
-    let rew_total_str = ((parseFloat(rew_total)).toFixed(3)).toString();  
-    reward_col.push('<td class="table-cell">'+rew_total_str+'</td>');
-
-    let extr_rew_total = window.web3js_reader.utils.fromWei(dep_stat[3], 'ether');
-    let extr_rew_total_str = ((parseFloat(extr_rew_total)).toFixed(3)).toString();  
-    extractable_reward_col.push('<td class="table-cell">'+extr_rew_total_str+'</td>');
-    */
-    const cred_stat = await creditContractInstance.methods
-      .creditsStat(parseInt(profiles[i].p_id, 10))
-      .call({
-        from: userObject.account,
-      });
-    let cred_total = cred_stat[0];
-    // let fee_total = cred_stat[1];
-    if (parseInt(profiles[i].p_dep_type, 10) !== ERC721_TOKEN)
-      cred_total = window.web3js_reader.utils.fromWei(cred_total, 'ether');
-    const cred_total_str = parseFloat(cred_total).toFixed(3).toString();
-    cred_column.push(`<td class="table-cell">${cred_total_str}</td>`);
-
-    /* fee_total = window.web3js_reader.utils.fromWei(fee_total, 'ether'); 
-    let fee_total_str = ((parseFloat(fee_total)).toFixed(3)).toString(); 
-    fee_column.push('<td class="table-cell">'+fee_total_str+'</td>'); */
-  }
-
-  let usage_contract;
-  await initUsageCalcContractReader((contract) => {
-    usage_contract = contract;
-  });
-
-  const apy_column = [];
-  for (let j = 0; j < profiles.length; j++) {
-    const apy = parseInt(profiles[j].init_apy, 10);
-    const rate = parseInt(profiles[j].rate, 10);
-    const rate_real = rate / apy_scale;
-    let apy_real = apy / apy_scale;
-    const usage = await usage_contract.methods
-      .getAssetUsage(profiles[j].p_id)
-      .call({
-        from: userObject.account,
-      });
-    const usage_real = usage / apy_scale;
-    apy_real += rate_real * usage_real;
-
-    const apy_str = `${(apy_real * 100).toFixed(3).toString()}%`;
-
-    apy_column.push(`<td class="table-cell">${apy_str}</td>`);
-  }
-
-  const apr_column = [];
-  for (let i = 0; i < profiles.length; i++) {
-    let max_apr = 0.0;
-    let min_apr = 999.0;
-    for (let j = 0; j < profiles.length; j++) {
-      const apr = await window.usage_calc_smartcontract_reader.methods
-        .calcVarApy(profiles[i].p_id, profiles[j].p_id)
-        .call({
-          from: userObject.account,
-        });
-      const apr_adj = (apr / apy_scale) * 100;
-      if (max_apr < apr_adj) max_apr = apr_adj;
-      if (min_apr > apr_adj) min_apr = apr_adj;
-    }
-    apr_column.push(
-      `<td class="table-cell">${parseFloat(max_apr).toFixed(2).toString()}</td>`
-    );
-  }
-
-  const apr_fix_column = [];
-  for (let i = 0; i < profiles.length; i++) {
-    let max_apr = 0.0;
-    let min_apr = 999.0;
-    for (let j = 0; j < profiles.length; j++) {
-      const apr = await window.usage_calc_smartcontract_reader.methods
-        .calcFixedApy(profiles[i].p_id, profiles[j].p_id)
-        .call({
-          from: userObject.account,
-        });
-      const apr_adj = (apr / apy_scale) * 100;
-      if (max_apr < apr_adj) max_apr = apr_adj;
-      if (min_apr > apr_adj) min_apr = apr_adj;
-    }
-
-    apr_fix_column.push(
-      `<td class="table-cell"">${parseFloat(max_apr)
-        .toFixed(2)
-        .toString()}</td>`
-    );
-  }
-
-  for (let i = 0; i < profiles.length; i++) {
-    // 0 means max amount for ERC20 compatible and ignored for ERC721
-    html += '<tr class="table-row">';
-
-    html += icon_column[i];
-
-    html += asset_column[i];
-
-    html += dep_column[i];
-
-    html += cred_column[i];
-
-    // html += extractable_dep_col[i];
-
-    // html += reward_col[i];
-
-    // html += extractable_reward_col[i];
-
-    html += apy_column[i];
-
-    html += apr_column[i];
-
-    html += apr_fix_column[i];
-    // html += earned_column[i];
-
-    // html += fee_column[i];
-
-    html += '</tr>';
-  }
-
-  html += '</tbody>' + '</table>';
-
-  html +=
-    '<span style="inline; font-size: 50%; "><sup>*</sup> Expected value, based on current system state shown: effective APY depends also on asset usage data, effective APR depends on collateral and credit asset and asset usage data.</span>';
-
-  return html;
-}
-
-// FamersDashboard
-
-async function getFamersDashboard() {
-  await getFamersList();
-
-  //* * need to work here with votes calc contract
-  initStakingContract(async (stakingContractInstance) => {
-    let html =
-      '<table class="min-w-full">' +
-      '<thead>' +
-      '<tr>' +
-      '<th class="table-title">Famer</th>' +
-      '<th class="table-title">Votes</th>' +
-      '</tr>' +
-      '</thead>' +
-      '<tbody>';
-
-    const famers_table = new Array(window.famers.length);
-
-    for (let i = 0; i < window.famers.length; i++) {
-      famers_table[i] = {};
-      famers_table[
-        i
-      ].name = `<td class="table-cell">${window.famers[i].text}</td>`;
-    }
-
-    for (let i = 0; i < window.famers.length; i++) {
-      const v = await stakingContractInstance.methods
-        .getFamerVoteByFamer(i)
-        .call({
-          from: userObject.account,
-        });
-      famers_table[i].dig_v = v;
-      famers_table[i].vote = `<td class="table-cell">${v.toString()}</td>`;
-    }
-
-    famers_table.reverse((a, b) => {
-      if (a.dig_v < b.dig_v) return -1;
-      if (a.div_v === b.dig_v) return 0;
-      return 1;
-    });
-
-    for (let i = 0; i < window.famers.length; i++) {
-      // 0 means max amount for ERC20 compatible and ignored for ERC721
-      html += '<tr style="text-align: left; font-size: 0.75em">';
-
-      html += famers_table[i].name;
-
-      html += famers_table[i].vote;
-
-      html += '</tr>';
-    }
-
-    html += '</tbody>' + '</table>';
-
-    safeSetInnerHTMLById('famers_votes', html);
-  });
-}
-
 async function getAllProfiles() {
   let profiles;
   await getBackendParameter('DEPPROFILES_UI_LIST', (profiles_s) => {
     profiles = JSON.parse(profiles_s);
   });
-  return profiles;
+  return profiles || [];
 }
 
 async function getAllProfilesWithUniswap() {
@@ -2854,7 +2376,7 @@ async function getAllProfilesWithUniswap() {
   await getBackendParameter('ASSETS_UI_FULL_LIST', (profiles_s) => {
     profiles = JSON.parse(profiles_s);
   });
-  return profiles;
+  return profiles || [];
 }
 
 async function getAllProfilesUniswap() {
@@ -2862,56 +2384,15 @@ async function getAllProfilesUniswap() {
   await getBackendParameter('ASSETS_UI_LIQ_PAIRS', (profiles_s) => {
     profiles = JSON.parse(profiles_s);
   });
-  return profiles;
+  return profiles || [];
 }
 
 async function getAllCreditProfiles() {
-  // for dropdown
-  /*
-     struct CreditProfile {
-        uint32 id;
-        string name; // === data label for data provider
-        uint8  _type; 
-        address _token_address; //0x0 if ethereum
-        uint256 valuation_percent; //scale = 100000;  i.e. 1% === 1000, 0.1% === 100
-        uint256 init_apy; //APY = Initial APY + Rate * Usage, Usage = ration of borrowed/deposited; scale = 100000; i.e. 1% === 1000, 0.1% === 100
-        uint256 rate;
-      }
-
-  */
-
   let profiles;
   await getBackendParameter('CREDIT_PROFILES_UI_LIST', (profiles_s) => {
     profiles = JSON.parse(profiles_s);
   });
-  return profiles;
-
-  /*
-  let plist = [];
-
-  let cred_profiles_contract = await new window.web3js_reader.eth.Contract(credit_profiles_register_abi, window.credit_profiles_register_contract_address); 
-  let profiles_len = await cred_profiles_contract.methods.creditProfilesLength().call({from:userObject.account});
-  
-
-  
-  for(let i=0; i< profiles_len; i++){
-    let option = {};
-    let prof_details = await cred_profiles_contract.methods.creditProfiles(i).call({from:userObject.account});
-  	
-  	
-  
-    option['id'] = prof_details[0];
-    option['name'] = prof_details[1];
-    option['_type'] = prof_details[2];
-    option['_token_address'] = prof_details[3];
-    option['valuation_percent'] = prof_details[4];
-    option['init_apy'] = prof_details[5];
-    option['rate'] = prof_details[6];
-  
-
-    plist.push(option);
-  }
-  return plist; */
+  return profiles || [];
 }
 
 function depTypeByProfileId(profile_id) {
@@ -3502,16 +2983,6 @@ async function getDepositsDashboard(callback = null) {
   if (callback) callback();
 }
 
-function openTab(event, tabid) {
-  safeRemoveClassBySelector('.nav-link', 'active');
-  safeAddClassBySelector('.page', 'hide');
-
-  event.srcElement.classList.add('active');
-
-  document.getElementById(tabid).classList.remove('hide');
-  userObject.state.current_page_id = tabid;
-}
-
 async function getNftPrice(contract, vc_contract, token_ids) {
   const { BN } = window;
 
@@ -3720,10 +3191,6 @@ function show_modal_unfreeze(cread_id) {
   modal_unfreeze.show();
 }
 
-function compensate_with_leverage(cred_id) {
-  show_set_leverage(cred_id);
-}
-
 async function set_leverage_confirm(ratio, cred_id) {
   // function freezeLeverageForCredit(address cust_wallet, uint32 dep_id, uint32 cred_id, uint256 lev_amount) nonReentrant public
   modal_add_leverage.isLoadingAfterConfirm();
@@ -3925,32 +3392,6 @@ function withdraw_deposit(dep_id) {
     withdraw_deposit_confirm(dep_id);
 
   modal_withdraw_deposit.show();
-}
-
-function depAmountByProfileId(profile_id) {
-  if (profile_id !== -1) {
-    for (let i = 0; i < userObject.deposits.am_arr[0].length; i++) {
-      if (userObject.deposits.am_arr[0][i] === profile_id) {
-        let am = userObject.deposits.am_arr[1][i];
-        if (parseInt(depTypeByProfileId(profile_id), 10) !== ERC721_TOKEN) {
-          am = window.web3js_reader.utils.fromWei(am, 'ether');
-        }
-        return [i, am];
-      }
-    }
-  }
-  return [BAD_DEPOSIT_ID, 0];
-}
-
-function depAmountByProfileIdReal(profile_id) {
-  for (let i = 0; i < userObject.deposits.am_arr[0].length; i++) {
-    if (userObject.deposits.am_arr[0][i] === profile_id) {
-      const am = userObject.deposits.am_arr[1][i];
-
-      return [i, am];
-    }
-  }
-  return [BAD_DEPOSIT_ID, 0];
 }
 
 async function calcTokensFromUSD(cred_profile_id, amount_usd) {
@@ -4366,11 +3807,6 @@ function withdraw_deposit_part_btn() {
   withdrawInput.readOnly = false;
 }
 
-function reorder_divs(id1, id2) {
-  document.getElementById(id1).style.order = '1';
-  document.getElementById(id2).style.order = '2';
-}
-
 async function set_fixed_credit() {
   document
     .getElementById('set_fixed_credit')
@@ -4511,27 +3947,6 @@ async function getCYTRProfileId() {
   return window.cytr_profile_id;
 }
 
-function toTokens(wei_am, digs) {
-  const n_tokens = floorDecimals(
-    window.web3js_reader.utils.fromWei(wei_am, 'ether'),
-    digs
-  );
-  return parseFloat(n_tokens).toFixed(digs).toString();
-}
-
-async function openExernalPool(
-  token1,
-  token2,
-  liq_pair_name,
-  liq_pair_address
-) {
-  window.open('https://pancakeswap.finance');
-  safeRemoveClassBySelector('.unsw-menu', 'transparent_button_pressed');
-  document
-    .getElementById(liq_pair_name)
-    .classList.add('transparent_button_pressed');
-}
-
 async function getWalletBalanceStr(token_address) {
   const erc20contract = await new window.web3js_reader.eth.Contract(
     erc20TokenContractAbi,
@@ -4571,16 +3986,9 @@ async function getWalletBalance(token_address) {
   return n_tokens;
 }
 
-function floorDecimals(value, decimals) {
-  return Number(`${Math.floor(`${value}e${decimals}`)}e-${decimals}`);
-}
-
 async function getAPY(profile_id) {
-  let profiles;
   if (!userObject.deposit_profiles) {
     userObject.deposit_profiles = await getAllProfiles();
-  } else {
-    //
   }
 
   if (!window.dep_apys) {
