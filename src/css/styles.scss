@@ -1268,6 +1268,18 @@ button:disabled {
   + input {
     display: none;
   }
+
+  .loading & {
+    &:after {
+      content: 'Assets Loading ...';
+      color: #c5c5cc;
+    }
+  }
+}
+
+.loading .choices {
+  pointer-events: none;
+  cursor: not-allowed;
 }
 
 .choices .choices__list.choices__list--multiple:empty {

@@ -58,6 +58,7 @@ function choiseOnInitNft(choice) {
   });
 
   const rebuildScroll = () => {
+    const currentChoices = choice._currentState.choices;
     list && list.unMount();
     list = new SimpleBar(choice.choiceList.element, {
       autoHide: false,
@@ -66,6 +67,26 @@ function choiseOnInitNft(choice) {
     inner = new SimpleBar(choice.containerInner.element, {
       autoHide: false,
     });
+
+    if (currentChoices) {
+      const isEmpty = currentChoices.every((item) => item.selected === false);
+      const isFull = currentChoices.every((item) => item.selected === true);
+
+      if (isEmpty) {
+        selectAllBtn.style.display = 'flex';
+        unSelectAllBtn.style.display = 'none';
+      }
+
+      if (!isEmpty && !isFull) {
+        selectAllBtn.style.display = 'flex';
+        unSelectAllBtn.style.display = 'flex';
+      }
+
+      if (isFull) {
+        selectAllBtn.style.display = 'none';
+        unSelectAllBtn.style.display = 'flex';
+      }
+    }
   };
 
   const nftButtonsWrapper = document.createElement('div');
@@ -1996,12 +2017,17 @@ const setState = (state) => {
   };
 };
 async function depositModalUpdateNftDropdown() {
+  const nftAssetsDropdownRow =
+    modal_add_deposit.modal.querySelector('#assets-dropdown');
+
+  nftAssetsDropdownRow.classList.add('loading');
   const nftData = await getNFTAssets();
-  updateAssetsDropdown(nftData);
+  await updateAssetsDropdown(nftData);
 
   if (userObject.state.selected_depprofile_name === 'nft') {
-    updUSDValue('-', 'usd_value');
+    await updUSDValue('-', 'usd_value');
   }
+  nftAssetsDropdownRow.classList.remove('loading');
 }
 
 async function depositModalRebuild() {
