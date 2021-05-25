@@ -82,7 +82,7 @@ async function getOurDashbord(callback = null) {
   cryptoNumb4.innerHTML = numeral(data.totalCredits).format('($0.00 a)');
 
   cryptoNumbAll5.forEach((el) => {
-    el.innerHTML = numeral(data.totalUsers).format('($0.00 a)');
+    el.innerHTML = numeral(data.totalUsers).format('(0.00 a)');
   });
 
   percentIncreaseTotal.innerHTML = numeral(data.totalAssetsValue / data.prevTotalAssetsValue).format('0.0%');
