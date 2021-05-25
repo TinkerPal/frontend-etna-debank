@@ -17,12 +17,13 @@
         Total assets
       </div>
       <div class="flex items-center">
-        <div class="text-2xl lg:font-semibold leading-normal">
-          12,748,120 <span class="number_increase">2%</span>
+        <div class="text-2xl lg:font-semibold leading-normal flex items-center">
+          <span class="total-sum-1 mr-2 uppercase" id="total-sum"></span>
+          <span class="number_increase" id="percent-increase">2%</span>
         </div>
       </div>
       <div class="text-xs text-opacity-50 text-white tracking-wider flex items-center">
-        Compared to <span class="last-mounth-amount-info mx-1">$121,504</span> last mounth
+        Compared to <span class="last-month mx-1" id="total-compared"></span> last mounth
       </div>
     </div>
     <div class="assets-diagram__block flex flex-col w-full mt-10">
@@ -30,10 +31,10 @@
         <div class="w-1/3 row-name">
           Borrow
         </div>
-        <div class="w-3/12 text-right text-opacity-50 text-white tracking-wider text-sm">
-          862
+        <div class="w-4/12 text-right text-opacity-50 text-white tracking-wider text-sm borrow-sum-2">
+          
         </div>
-        <div class="w-5/12 flex items-center justify-end h-5 w-auto">
+        <div class="w-4/12 flex items-center justify-end h-5 w-auto">
           <img src="./images/graph-pink.svg" alt="#">
         </div>
       </div>
@@ -41,21 +42,21 @@
         <div class="w-1/3 row-name">
           Deposits
         </div>
-        <div class="w-3/12 text-right text-opacity-50 text-white tracking-wider text-sm">
-          753
+        <div class="w-4/12 text-right text-opacity-50 text-white tracking-wider text-sm deposits-sum-3">
+          
         </div>
-        <div class="w-5/12 flex items-center justify-end h-5 w-auto">
+        <div class="w-4/12 flex items-center justify-end h-5 w-auto">
           <img src="./images/graph-green.svg" alt="#">
         </div>
       </div>
-      <div class="assets-diagram__row w-full flex items-center">
+      <div class="assets-diagram__row w-full flex sm:items-center">
         <div class="w-1/3 row-name">
-          Borrow
+          Users
         </div>
-        <div class="w-3/12 text-right text-opacity-50 text-white tracking-wider text-sm">
-          862
+        <div class="w-4/12 text-right text-opacity-50 text-white tracking-wider text-sm users-sum-5" >
+          
         </div>
-        <div class="w-5/12 flex items-center justify-end h-5 w-auto">
+        <div class="w-4/12 flex items-center justify-end h-5 w-auto">
           <img src="./images/graph-yellow.svg" alt="#">
         </div>
       </div>
@@ -63,112 +64,7 @@
   </div>
   <!-- here need to add data-simplebar -->
   <div class="bg-blueish-black xl:w-full w-1/2 rounded-lg py-5 px-7 mb-2"
-    id="our-top-five-list">
-    <div class="flex flex-col">
-      <div class="crypto-row flex w-full items-center mb-4">
-        <div class="w-1/3 row-name uppercase">
-          ST1
-        </div>
-        <div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">
-          862
-        </div>
-        <div class="w-5/12 flex items-center justify-end h-5 w-auto">
-          <div class="crypto-amount row-name">
-            2,540 <span class="number_increase ml-2"></span>
-          </div>
-        </div>
-      </div>
-      <div class="crypto-row flex w-full items-center mb-4">
-        <div class="w-1/3 row-name uppercase">
-          ST1
-        </div>
-        <div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">
-          862
-        </div>
-        <div class="w-5/12 flex items-center justify-end h-5 w-auto">
-          <div class="crypto-amount row-name">
-            2,540 <span class="number_increase ml-2"></span>
-          </div>
-        </div>
-      </div>
-      <div class="crypto-row flex w-full items-center mb-4">
-        <div class="w-1/3 row-name uppercase">
-          ST1
-        </div>
-        <div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">
-          862
-        </div>
-        <div class="w-5/12 flex items-center justify-end h-5 w-auto">
-          <div class="crypto-amount row-name">
-            2,540 <span class="number_increase ml-2"></span>
-          </div>
-        </div>
-      </div>
-      <div class="crypto-row flex w-full items-center mb-4">
-        <div class="w-1/3 row-name uppercase">
-          ST1
-        </div>
-        <div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">
-          862
-        </div>
-        <div class="w-5/12 flex items-center justify-end h-5 w-auto">
-          <div class="crypto-amount row-name">
-            2,540 <span class="number_increase ml-2"></span>
-          </div>
-        </div>
-      </div>
-      <div class="crypto-row flex w-full items-center mb-4">
-        <div class="w-1/3 row-name uppercase">
-          ST1
-        </div>
-        <div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">
-          862
-        </div>
-        <div class="w-5/12 flex items-center justify-end h-5 w-auto">
-          <div class="crypto-amount row-name">
-            2,540 <span class="number_increase ml-2"></span>
-          </div>
-        </div>
-      </div>
-      <div class="crypto-row flex w-full items-center mb-4">
-        <div class="w-1/3 row-name uppercase">
-          ST1
-        </div>
-        <div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">
-          862
-        </div>
-        <div class="w-5/12 flex items-center justify-end h-5 w-auto">
-          <div class="crypto-amount row-name">
-            2,540 <span class="number_increase ml-2"></span>
-          </div>
-        </div>
-      </div>
-      <div class="crypto-row flex w-full items-center mb-4">
-        <div class="w-1/3 row-name uppercase">
-          ST1
-        </div>
-        <div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">
-          862
-        </div>
-        <div class="w-5/12 flex items-center justify-end h-5 w-auto">
-          <div class="crypto-amount row-name">
-            2,540 <span class="number_increase ml-2"></span>
-          </div>
-        </div>
-      </div>
-      <div class="crypto-row flex w-full items-center">
-        <div class="w-1/3 row-name uppercase">
-          ST1
-        </div>
-        <div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">
-          862
-        </div>
-        <div class="w-5/12 flex items-center justify-end h-5 w-auto">
-          <div class="crypto-amount row-name">
-            2,540 <span class="number_increase ml-2"></span>
-          </div>
-        </div>
-      </div>
-    </div>
+    id="our-crypto-list">
+
   </div>
 </div>

@@ -370,6 +370,18 @@
   .row-name {
     @apply text-sm tracking-wider;
   }
+  .crypto-amount {
+    @apply flex items-center;
+  }
+  .crypto-row {
+    @apply flex w-full items-center mb-4;
+  }
+}
+
+#our-crypto-list {
+  .crypto-row:last-child {
+    margin-bottom: 0px;
+  }
 }
 
 .empty-access,
