@@ -85,9 +85,6 @@ async function getOurDashbord(callback = null) {
     el.innerHTML = numeral(data.totalUsers).format('($0.00 a)');
   });
 
-  // data.totalAssetsValue
-  // data.prevTotalAssetsValue
-
   percentIncreaseTotal.innerHTML = numeral(data.totalAssetsValue / data.prevTotalAssetsValue).format('0.0%');
 
   if (callback) callback();
