@@ -117,7 +117,7 @@
   }
 
   .attention-cell {
-    @apply border-l-4 pl-4 border-red bg-error;
+    @apply border pl-6 border-yellow-400 relative;
   }
 
   .table-row {
@@ -388,6 +388,21 @@
 .empty-metamask {
   top: 66px;
   height: calc(100% - 60px);
+}
+
+.attention-cell {
+  &::before {
+    position: absolute;
+    content: '';
+    left: 4px;
+    background-image: url('../images/warning-icon.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    width: 16px;
+    height: 14px;
+    top: calc(50% - 7px);
+  }
 }
 
 .number_increase {
