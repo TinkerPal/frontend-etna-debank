@@ -1196,7 +1196,7 @@ const userObject = {
             let txt = '';
             let txt_unl = '';
 
-            if (am_arr[1][i] > 0 && am_arr[2][i] === 0) {
+            if (am_arr[1][i] > 0 && am_arr[2][i] > 0) {
               const days = await window.staking_smartcontract.methods
                 .depositDays(userObject.account, i)
                 .call({
