@@ -376,6 +376,15 @@
   .crypto-row {
     @apply flex w-full items-center mb-4;
   }
+  .copyright {
+    @apply mt-auto w-full bg-blueish-black py-4 md:px-9 px-4;
+    &-text {
+      @apply tracking-wide text-faux-purple text-xs font-bold;
+    }
+  }
+  .socials-row {
+    @apply flex md:flex-row flex-col items-center px-6 pb-4 bg-black pt-2 mx-auto;
+  }
 }
 
 #our-crypto-list {
@@ -755,12 +764,16 @@
   width: 100%;
   height: calc(100vh - 125px);
   margin-top: -80px;
-}
-
-@media (max-width: 991px) {
-  .parallax-main {
+  @media (max-width: 1278px) {
     height: 620px;
-    margin-top: 0px;
+    margin-top: 20px;
+  }
+  @media (max-width: 768px) {
+    height: 500px;
+    padding-bottom: 50px;
+  }
+  @media (max-width: 576px) {
+    height: 380px;
   }
 }
 
