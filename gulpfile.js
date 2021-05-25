@@ -85,14 +85,14 @@ function jsTask(envs) {
       )
       // .pipe(envs === 'production' ? uglify() : tap(noop))
       .pipe(concat('common.js'))
-      .pipe(
-        hash({
-          format: '{name}-{hash:8}{ext}',
-        })
-      )
+      // .pipe(
+      //   hash({
+      //     format: '{name}-{hash:8}{ext}',
+      //   })
+      // )
       .pipe(
         rename(function (path) {
-          path.basename += '.min';
+          path.basename += '';
           hashedJS = '/js/' + path.basename + '.js';
         })
       )
@@ -124,37 +124,39 @@ function htmlTask() {
 
 // Task for compiling our CSS files using PostCSS
 function cssTask() {
-  return src('./src/css/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    .pipe(replace('hover: ', 'hover:'))
-    .pipe(replace('focus: ', 'focus:'))
-    .pipe(replace('disabled: ', 'disabled:'))
-    .pipe(
-      postcss([
-        tailwindcss('./tailwind.config.js'),
-        require('autoprefixer'),
-        require('tailwindcss'),
-      ])
-    )
-    .pipe(
-      autoprefixer({
-        cascade: false,
-      })
-    )
-    .pipe(minifyCSS())
-    .pipe(
-      hash({
-        format: '{name}-{hash:8}{ext}',
-      })
-    )
-    .pipe(
-      rename(function (path) {
-        path.basename += '.min';
-        hashedCSS = '/css/' + path.basename + '.css';
-      })
-    )
-    .pipe(gulp.dest('./public/css/'))
-    .pipe(browserSync.stream());
+  return (
+    src('./src/css/*.scss')
+      .pipe(sass().on('error', sass.logError))
+      .pipe(replace('hover: ', 'hover:'))
+      .pipe(replace('focus: ', 'focus:'))
+      .pipe(replace('disabled: ', 'disabled:'))
+      .pipe(
+        postcss([
+          tailwindcss('./tailwind.config.js'),
+          require('autoprefixer'),
+          require('tailwindcss'),
+        ])
+      )
+      .pipe(
+        autoprefixer({
+          cascade: false,
+        })
+      )
+      .pipe(minifyCSS())
+      // .pipe(
+      //   hash({
+      //     format: '{name}-{hash:8}{ext}',
+      //   })
+      // )
+      .pipe(
+        rename(function (path) {
+          path.basename += '';
+          hashedCSS = '/css/' + path.basename + '.css';
+        })
+      )
+      .pipe(gulp.dest('./public/css/'))
+      .pipe(browserSync.stream())
+  );
 }
 
 function cssLibsTask() {
