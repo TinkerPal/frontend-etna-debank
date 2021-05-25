@@ -2,3 +2,4 @@ src/**/*.min.js
 src/js/constants/token.js
 src/**/*.min.css
 static
+gulpfile.js

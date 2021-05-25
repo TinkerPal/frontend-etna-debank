@@ -12,7 +12,8 @@ async function getOurDashbord(callback = null) {
       document.getElementById('total-dashboard-tab-menu').remove();
 
       if (userObject.state.current_page_id === 'total-dashboard-tab') {
-        openTab({
+        openTab(
+          {
             srcElement: document.getElementById('dashboard-tab-menu'),
           },
           'dashboard-tab'
@@ -51,9 +52,11 @@ async function getOurDashbord(callback = null) {
     ourCryptoList.innerHTML += listOurCryptoTemplate(
       item.name,
       item.amount,
-      item.total,
+      item.total
     );
   });
+
+  new SimpleBar(ourCryptoList, { autoHide: false });
 
   const cryptoNumbAll1 = document.querySelectorAll('.total-sum-1');
   const cryptoNumbAll2 = document.querySelectorAll('.borrow-sum-2');
@@ -77,7 +80,7 @@ async function getOurDashbord(callback = null) {
 
   cryptoNumbAll3.forEach((elem) => {
     elem.innerHTML = numeral(data.totalDeposits).format('($0.00 a)');
-  })
+  });
 
   cryptoNumb4.innerHTML = numeral(data.totalCredits).format('($0.00 a)');
 
@@ -85,7 +88,9 @@ async function getOurDashbord(callback = null) {
     el.innerHTML = numeral(data.totalUsers).format('(0.00 a)');
   });
 
-  percentIncreaseTotal.innerHTML = numeral(data.totalAssetsValue / data.prevTotalAssetsValue).format('0.0%');
+  percentIncreaseTotal.innerHTML = numeral(
+    data.totalAssetsValue / data.prevTotalAssetsValue
+  ).format('0.0%');
 
   if (callback) callback();
 }

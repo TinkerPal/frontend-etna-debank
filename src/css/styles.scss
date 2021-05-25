@@ -388,6 +388,8 @@
 }
 
 #our-crypto-list {
+  max-height: calc(100vh - 740px);
+  overflow: auto;
   .crypto-row:last-child {
     margin-bottom: 0px;
   }
@@ -762,7 +764,7 @@
 
 .parallax-main {
   width: 100%;
-  height: calc(100vh - 125px);
+  height: calc(100vh - 130px);
   margin-top: -80px;
   @media (max-width: 1278px) {
     height: 620px;
