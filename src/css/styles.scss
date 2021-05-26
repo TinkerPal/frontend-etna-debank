@@ -413,6 +413,10 @@
   }
 }
 
+input:-internal-autofill-selected  {
+  background-color: transparent!important;
+}
+
 .empty-access,
 .empty-metamask {
   top: 66px;

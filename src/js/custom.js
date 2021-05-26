@@ -197,7 +197,7 @@ const nftAssetsSelect = new Choices('#nftAssetsSelect', {
             ? 'data-choice-disabled aria-disabled="true"'
             : 'data-choice-selectable'
         } data-id="${data.id}" data-value="${value}" ${
-          data.groupId > 0 ? 'role="treeitem"' : 'role="option"'
+          toNumber(data.groupId) > 0 ? 'role="treeitem"' : 'role="option"'
         }>
               <span class="choices__item-img"><img src="${
                 data.value.imageSrc
@@ -352,8 +352,7 @@ async function postWalletCallback() {
     window.location.pathname === '/our-dashboard'
   ) {
     await getWalletPref();
-    openTab(
-      {
+    openTab({
         srcElement: document.getElementById(
           `${userObject.state.current_page_id}-menu`
         ),
@@ -405,21 +404,18 @@ async function getAccount() {
 
     const response = await fetch('/whitelisted.json');
 
-    const { whitelisted_wallets } = await response.json();
+    const {
+      whitelisted_wallets
+    } = await response.json();
 
     const isWhitelistedAccount = whitelisted_wallets.some(
       (whitelistedWallet) =>
-        whitelistedWallet.toUpperCase() === userObject.account.toUpperCase()
+      whitelistedWallet.toUpperCase() === userObject.account.toUpperCase()
     );
 
     if (!isWhitelistedAccount) {
       window.location.replace('/by-invitation.html');
     }
-
-    /*
-    if (userObject.account === '0xddc58f7839a71787eb94211bc922e0ae2bfb5501'){}
-    else if( userObject.account === '0xc358a60bccec7d0efe5c5e0d9f3862bba6cb5cd8'){}
-    else {window.location.replace('https://fame.cyclops.game/upgrade.html')} */
 
     setLdBar(10);
 
@@ -653,7 +649,7 @@ async function getCredit() {
   modal_add_credit.isLoadingAfterConfirm();
 
   if (
-    userObject.state.selected_credprofile === -1 ||
+    toNumber(userObject.state.selected_credprofile) === -1 ||
     !userObject.state.selected_credprofile
   ) {
     modal_add_credit.isLoadedAfterConfirm(false);
@@ -662,7 +658,7 @@ async function getCredit() {
   }
 
   if (
-    userObject.state.getcredit_profile === -1 ||
+    toNumber(userObject.state.getcredit_profile) === -1 ||
     !userObject.state.getcredit_profile
   ) {
     modal_add_credit.isLoadedAfterConfirm(false);
@@ -671,7 +667,7 @@ async function getCredit() {
   }
 
   if (
-    userObject.state.getcredit_profile === userObject.state.selected_credprofile
+    toNumber(userObject.state.getcredit_profile) === toNumber(userObject.state.selected_credprofile)
   ) {
     modal_add_credit.isLoadedAfterConfirm(false);
     errorMsg('assets for collateral and credit should be different');
@@ -700,8 +696,7 @@ async function getCredit() {
         isFullCallateral,
         is_fixed_credit
       )
-      .send(
-        {
+      .send({
           from: userObject.account,
           gasPrice: window.gp,
         },
@@ -714,7 +709,7 @@ async function getCredit() {
         }
       )
       .on('confirmation', async function (confirmationNumber, receipt) {
-        if (confirmationNumber === 5) {
+        if (toNumber(confirmationNumber) === 5) {
           await updateData('get_credit');
           modal_add_credit.isLoadedAfterConfirm();
         }
@@ -730,7 +725,7 @@ async function getCredit() {
 async function deposit() {
   modal_add_deposit.isLoadingAfterConfirm();
 
-  if (userObject.state.selected_depprofile === -1) {
+  if (toNumber(userObject.state.selected_depprofile) === -1) {
     modal_add_deposit.isLoadedAfterConfirm(false);
     errorMsg('you need to select asset');
     return;
@@ -765,14 +760,14 @@ async function deposit() {
 
     amount = userObject.state.selectedNFTAssets.length;
     for (let i = 0; i < userObject.state.selectedNFTAssets.length; i++) {
-      token_ids.push(parseInt(userObject.state.selectedNFTAssets[i].t_id, 10));
+      token_ids.push(toNumber(userObject.state.selectedNFTAssets[i].t_id));
     }
   } else {
     amount = safeFloatToWei(
       document.getElementById('tokens_amount').value
     ).toString(); // wei
     if (
-      parseInt(userObject.state.selected_depprofile_type, 10) ===
+      toNumber(userObject.state.selected_depprofile_type) ===
       NATIVE_ETHEREUM
     ) {
       wei_val = amount;
@@ -783,7 +778,7 @@ async function deposit() {
       );
       const amount_bn = new BN(amount);
 
-      if (wb_bn.cmp(amount_bn) === -1) {
+      if (toNumber(wb_bn.cmp(amount_bn)) === -1) {
         modal_add_deposit.isLoadedAfterConfirm(false);
         errorMsg('you do not have enough BNB in your wallet');
         return;
@@ -797,10 +792,10 @@ async function deposit() {
       );
       const allow = new BN(
         await token_contract.methods
-          .allowance(userObject.account, window.staking_contract_address)
-          .call({
-            from: userObject.account,
-          })
+        .allowance(userObject.account, window.staking_contract_address)
+        .call({
+          from: userObject.account,
+        })
       );
 
       const tokenAmountToApprove = new BN(amount);
@@ -823,7 +818,7 @@ async function deposit() {
       const erc20_count_bn = new BN(erc20_count);
       const amount_bn = new BN(amount);
 
-      if (erc20_count_bn.cmp(amount_bn) === -1) {
+      if (toNumber(erc20_count_bn.cmp(amount_bn)) === -1) {
         modal_add_deposit.isLoadedAfterConfirm(false);
         errorMsg('you do not have enough tokens in your wallet');
         return;
@@ -841,8 +836,7 @@ async function deposit() {
 
     stakingContractInstance.methods
       .deposit(amount, token_ids, dep_profile_id, window.famer)
-      .send(
-        {
+      .send({
           from: userObject.account,
           value: wei_val,
           gasPrice: window.gp,
@@ -856,7 +850,7 @@ async function deposit() {
         }
       )
       .on('confirmation', async function (confirmationNumber, receipt) {
-        if (confirmationNumber === 5) {
+        if (toNumber(confirmationNumber) === 5) {
           await updateData('make_deposit');
           modal_add_deposit.isLoadedAfterConfirm();
         }
@@ -920,10 +914,10 @@ async function stake_liq() {
   );
   const allow = new BN(
     await token_contract.methods
-      .allowance(userObject.account, window.staking_contract_address)
-      .call({
-        from: userObject.account,
-      })
+    .allowance(userObject.account, window.staking_contract_address)
+    .call({
+      from: userObject.account,
+    })
   );
 
   const tokenAmountToApprove = new BN(amount);
@@ -947,7 +941,7 @@ async function stake_liq() {
   const erc20_count_bn = new BN(erc20_count);
   const amount_bn = new BN(amount);
 
-  if (erc20_count_bn.cmp(amount_bn) === -1) {
+  if (toNumber(erc20_count_bn.cmp(amount_bn)) === -1) {
     modal_add_lliquidity.isLoadedAfterConfirm(false, false);
     errorMsg('you do not have enough tokens in your wallet');
     return;
@@ -958,8 +952,7 @@ async function stake_liq() {
   initStakingContract(async (stakingContractInstance) => {
     stakingContractInstance.methods
       .deposit(amount, token_ids, dep_profile_id, NONE_FAMER_ID)
-      .send(
-        {
+      .send({
           from: userObject.account,
           value: wei_val,
           gasPrice: window.gp,
@@ -973,7 +966,7 @@ async function stake_liq() {
         }
       )
       .on('confirmation', async function (confirmationNumber, receipt) {
-        if (confirmationNumber === 5) {
+        if (toNumber(confirmationNumber) === 5) {
           await updateData('stake_liq');
           modal_add_lliquidity.isLoadedAfterConfirm();
         }
@@ -989,7 +982,7 @@ async function stake_liq() {
 async function approve_deposit() {
   modal_add_deposit.isLoadingAfterApprove();
 
-  if (userObject.state.selected_depprofile === -1) {
+  if (toNumber(userObject.state.selected_depprofile) === -1) {
     modal_add_deposit.isLoadedAfterApprove(false);
     errorMsg('you need to select asset');
     return;
@@ -1010,8 +1003,7 @@ async function approve_deposit() {
       // solidity: function setApprovalForAll(address _operator,bool _approved) external{}
       window.cyclops_nft_smartcontract.methods
         .setApprovalForAll(window.staking_contract_address, true)
-        .send(
-          {
+        .send({
             from: userObject.account,
             gasPrice: window.gp,
           },
@@ -1024,7 +1016,7 @@ async function approve_deposit() {
           }
         )
         .on('confirmation', function (confirmationNumber, receipt) {
-          if (confirmationNumber === 5) {
+          if (toNumber(confirmationNumber) === 5) {
             successMsg('NFT move approved');
             modal_add_deposit.isLoadedAfterApprove();
           }
@@ -1036,7 +1028,7 @@ async function approve_deposit() {
     }
   } else {
     if (
-      parseInt(userObject.state.selected_depprofile_type, 10) ===
+      toNumber(userObject.state.selected_depprofile_type) ===
       NATIVE_ETHEREUM
     ) {
       return; // no need..
@@ -1055,7 +1047,9 @@ async function approve_deposit() {
 }
 
 async function approveTokenMove(token_address, amount_wei, toAddress, modal) {
-  const { BN } = window.web3js_reader.utils;
+  const {
+    BN
+  } = window.web3js_reader.utils;
 
   // Calculate contract compatible value for approve with proper decimal points using BigNumber
   const tokenAmountToApprove = new BN(amount_wei);
@@ -1073,8 +1067,7 @@ async function approveTokenMove(token_address, amount_wei, toAddress, modal) {
 
   await token_contract.methods
     .approve(toAddress, calculatedApproveValue)
-    .send(
-      {
+    .send({
         from: userObject.account,
         gasPrice: window.gp,
       },
@@ -1087,7 +1080,7 @@ async function approveTokenMove(token_address, amount_wei, toAddress, modal) {
       }
     )
     .on('confirmation', function (confirmationNumber, receipt) {
-      if (confirmationNumber === 5) {
+      if (toNumber(confirmationNumber) === 5) {
         successMsg('Tokens move approved');
         modal.isLoadedAfterApprove();
       }
@@ -1214,7 +1207,7 @@ function safeFloatToWei(num) {
   // float as integer in string form
   num_s = num_s.substr(n + 1);
   if (num >= 1) {
-    num_s = parseInt(num, 10).toString() + num_s;
+    num_s = toNumber(num).toString() + num_s;
   }
 
   // divide adj constant on 10**[num digits after dot]
@@ -1478,8 +1471,7 @@ async function updateData(action = null) {
 }
 
 function loginAdmin() {
-  const msgParams = [
-    {
+  const msgParams = [{
       type: 'string',
       name: 'Authorization',
       value: 'Sign to confirm your access to admin wallet',
@@ -1586,7 +1578,9 @@ function setWalletPref(pref) {
       }
     })
     .then((respJson) => {
-      const { type } = respJson;
+      const {
+        type
+      } = respJson;
 
       if (type === 'success') {
         //
@@ -1623,7 +1617,9 @@ async function getWalletPref() {
       }
     })
     .then((respJson) => {
-      const { type } = respJson;
+      const {
+        type
+      } = respJson;
 
       if (type === 'success') {
         if (!respJson.value.page_id) {
@@ -1833,7 +1829,7 @@ async function getCreditProfilesListCredit() {
     } */
   // all except NFT, we do not give credits in NFT
   for (let i = 0; i < full_list.length; i++) {
-    if (parseInt(full_list[i].c_type, 10) === ERC721_TOKEN) continue;
+    if (toNumber(full_list[i].c_type) === ERC721_TOKEN) continue;
     plist.push(full_list[i]);
   }
   return plist;
@@ -1879,7 +1875,7 @@ async function depositModalRebuild() {
     selected_depprofile_token_address: currentDepProfile.d_tok_addr,
   });
 
-  if (parseInt(currentDepProfile.d_type, 10) === NATIVE_ETHEREUM) {
+  if (toNumber(currentDepProfile.d_type) === NATIVE_ETHEREUM) {
     modal_add_deposit.approve.classList.add('btn-done');
     modal_add_deposit.approve.disabled = true;
     modal_add_deposit.confirm.disabled = false;
@@ -1935,7 +1931,7 @@ const getCollateralAvailableTokens = async () => {
     .map((item) => {
       const deposit = getDepositByTokenId(item.p_id);
 
-      if (deposit > 0) {
+      if (toNumber(deposit) > 0) {
         return {
           ...item,
         };
@@ -1973,7 +1969,7 @@ async function creditProfilesDropdownBuild() {
   });
 
   if (
-    userObject.state.selected_credprofile === userObject.state.getcredit_profile
+    toNumber(userObject.state.selected_credprofile) === toNumber(userObject.state.getcredit_profile)
   ) {
     errorMsg('assets for collateral and credit should be different');
     getCreditButton.disabled = true;
@@ -2013,72 +2009,74 @@ async function initCreditProfilesDropdown() {
   dropdown.addEventListener(
     'change',
     async function (e) {
-      const ddData = await getCollateralAvailableTokens();
+        const ddData = await getCollateralAvailableTokens();
 
-      const { value } = e.target;
-      const selectedData = ddData.find((item) => item.text === value);
-      if (value === 'nft') {
-        fullCollateral.checked = true;
-        partCollateral.parentNode.classList.add('hidden');
-      } else {
-        partCollateral.parentNode.classList.remove('hidden');
-      }
+        const {
+          value
+        } = e.target;
+        const selectedData = ddData.find((item) => item.text === value);
+        if (value === 'nft') {
+          fullCollateral.checked = true;
+          partCollateral.parentNode.classList.add('hidden');
+        } else {
+          partCollateral.parentNode.classList.remove('hidden');
+        }
 
-      resetMsg();
+        resetMsg();
 
-      setState({
-        selected_credprofile: selectedData.p_id,
-      });
+        setState({
+          selected_credprofile: selectedData.p_id,
+        });
 
-      if (selectedData.p_id === userObject.state.getcredit_profile) {
-        errorMsg('assets for collateral and credit should be different');
-        getCreditButton.disabled = true;
-      } else {
-        getCreditButton.disabled = false;
-      }
+        if (toNumber(selectedData.p_id) === toNumber(userObject.state.getcredit_profile)) {
+          errorMsg('assets for collateral and credit should be different');
+          getCreditButton.disabled = true;
+        } else {
+          getCreditButton.disabled = false;
+        }
 
-      setState({
-        selected_credprofile_name: selectedData.text,
-        selected_credprofile_type: selectedData.c_type,
-        selected_credprofile_token_address: selectedData.c_tok_addr,
-      });
+        setState({
+          selected_credprofile_name: selectedData.text,
+          selected_credprofile_type: selectedData.c_type,
+          selected_credprofile_token_address: selectedData.c_tok_addr,
+        });
 
-      tokensAmmountCollateral.value = depAmountByProfileId(
-        userObject.state.selected_credprofile
-      )[1];
+        tokensAmmountCollateral.value = depAmountByProfileId(
+          userObject.state.selected_credprofile
+        )[1];
 
-      await updUSDValueCollateral(
-        'tokens_amount_collateral',
-        'usd_value_collateral',
-        depAmountByProfileId(userObject.state.selected_credprofile)[0]
-      );
-
-      if (userObject.state.getcredit_profile !== -1) {
-        tokensAmmountGetCredit.innerText = await calcTokensFromUSD(
-          userObject.state.getcredit_profile,
-          usdValueCollateral.value
+        await updUSDValueCollateral(
+          'tokens_amount_collateral',
+          'usd_value_collateral',
+          depAmountByProfileId(userObject.state.selected_credprofile)[0]
         );
-        const apy = await window.usage_calc_smartcontract_reader.methods
-          .calcVarApy(
-            userObject.state.getcredit_profile,
-            userObject.state.selected_credprofile
-          )
-          .call({
-            from: userObject.account,
-          });
 
-        const apy_adj = (apy / apy_scale) * 100;
-        creditPerc.value = parseFloat(apy_adj).toFixed(2).toString();
-      }
-    },
-    false
+        if (toNumber(userObject.state.getcredit_profile) !== -1) {
+          tokensAmmountGetCredit.innerText = await calcTokensFromUSD(
+            userObject.state.getcredit_profile,
+            usdValueCollateral.value
+          );
+          const apy = await window.usage_calc_smartcontract_reader.methods
+            .calcVarApy(
+              userObject.state.getcredit_profile,
+              userObject.state.selected_credprofile
+            )
+            .call({
+              from: userObject.account,
+            });
+
+          const apy_adj = (apy / apy_scale) * 100;
+          creditPerc.value = parseFloat(apy_adj).toFixed(2).toString();
+        }
+      },
+      false
   );
 }
 
 async function initGetCreditDropdown() {
   const ddData = await getCreditProfilesListCredit();
 
-  if (!ddData.length === 0) return;
+  if (ddData.length === 0) return;
 
   const dropdown = modal_add_credit.modal.querySelector('#getcredit-dropdown');
   const tokensAmmountGetCredit = modal_add_credit.modal.querySelector(
@@ -2098,7 +2096,9 @@ async function initGetCreditDropdown() {
   });
 
   dropdown.onchange = async (e) => {
-    const { value } = e.target;
+    const {
+      value
+    } = e.target;
     const selectedData = ddData.find((item) => item.text === value);
 
     resetMsg();
@@ -2107,7 +2107,7 @@ async function initGetCreditDropdown() {
       getcredit_profile: selectedData.p_id,
     });
 
-    if (selectedData.p_id === userObject.state.selected_credprofile) {
+    if (toNumber(selectedData.p_id) === toNumber(userObject.state.selected_credprofile)) {
       errorMsg('assets for collateral and credit should be different');
       getCreditButton.disabled = true;
     } else {
@@ -2119,7 +2119,7 @@ async function initGetCreditDropdown() {
       usdValueCollateral.value
     );
 
-    if (userObject.state.selected_credprofile !== -1) {
+    if (toNumber(userObject.state.selected_credprofile) !== -1) {
       const apy = await window.usage_calc_smartcontract_reader.methods
         .calcVarApy(
           userObject.state.getcredit_profile,
@@ -2211,8 +2211,7 @@ function updateAssetsDropdown(data) {
 async function getLiqTerms() {
   const lterms = [];
 
-  const terms = [
-    {
+  const terms = [{
       text: '1 week',
       code: '1W',
     },
@@ -2295,7 +2294,9 @@ async function initLiqTermsDropdown() {
   setApyStr(liqTermsData[0]);
 
   liqTermsSelect.onchange = (e) => {
-    const { value } = e.target;
+    const {
+      value
+    } = e.target;
     const currentOption = liqTermsData.find((item) => item.text === value);
     setApyStr(currentOption);
   };
@@ -2326,7 +2327,9 @@ async function initLiqPairsDropdown() {
   setBal(liqPairsAssetsOptions[0]);
 
   liqPairsAssets.onchange = (e) => {
-    const { value } = e.target;
+    const {
+      value
+    } = e.target;
     const currentOption = liqPairsAssetsOptions.find(
       (item) => item.text === value
     );
@@ -2398,8 +2401,8 @@ async function getAllCreditProfiles() {
 
 function depTypeByProfileId(profile_id) {
   for (let i = 0; i < userObject.deposit_profiles.length; i++) {
-    if (userObject.deposit_profiles[i].p_id === profile_id) {
-      return parseInt(userObject.deposit_profiles[i].p_dep_type, 10);
+    if (toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)) {
+      return toNumber(userObject.deposit_profiles[i].p_dep_type);
     }
   }
   return BAD_DEPOSIT_PROFILE_ID;
@@ -2407,7 +2410,7 @@ function depTypeByProfileId(profile_id) {
 
 function tokenAddressByProfileId(profile_id) {
   for (let i = 0; i < userObject.deposit_profiles.length; i++) {
-    if (userObject.deposit_profiles[i].p_id === profile_id) {
+    if (toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)) {
       return userObject.deposit_profiles[i].p_tok_addr;
     }
   }
@@ -2416,7 +2419,7 @@ function tokenAddressByProfileId(profile_id) {
 
 function profileNameByProfileId(profile_id) {
   for (let i = 0; i < userObject.deposit_profiles.length; i++) {
-    if (userObject.deposit_profiles[i].p_id === profile_id) {
+    if (toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)) {
       return userObject.deposit_profiles[i].p_name;
     }
   }
@@ -2430,9 +2433,8 @@ async function unswAPYStrByProfileName(profile_name) {
 
   for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
     if (userObject.deposit_profiles_liqpairs[i].p_name === profile_name) {
-      const apy = parseInt(
-        userObject.deposit_profiles_liqpairs[i].init_apy,
-        10
+      const apy = toNumber(
+        userObject.deposit_profiles_liqpairs[i].init_apy
       );
       const apy_real = apy / apy_scale;
       const apy_str = `${(apy_real * 100).toFixed(1).toString()}%`;
@@ -2449,7 +2451,7 @@ async function unswIDByProfileName(profile_name) {
 
   for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
     if (userObject.deposit_profiles_liqpairs[i].p_name === profile_name) {
-      return parseInt(userObject.deposit_profiles_liqpairs[i].p_id, 10);
+      return toNumber(userObject.deposit_profiles_liqpairs[i].p_id);
     }
   }
   return null;
@@ -2461,7 +2463,7 @@ async function unswProfileNameByProfileId(profile_id) {
   }
 
   for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
-    if (userObject.deposit_profiles_liqpairs[i].p_id === profile_id) {
+    if (toNumber(userObject.deposit_profiles_liqpairs[i].p_id) === toNumber(profile_id)) {
       return userObject.deposit_profiles_liqpairs[i].p_name;
     }
   }
@@ -2474,8 +2476,8 @@ async function unswDepTypeByProfileId(profile_id) {
   }
 
   for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
-    if (userObject.deposit_profiles_liqpairs[i].p_id === profile_id) {
-      return parseInt(userObject.deposit_profiles_liqpairs[i].p_dep_type, 10);
+    if (toNumber(userObject.deposit_profiles_liqpairs[i].p_id) === toNumber(profile_id)) {
+      return toNumber(userObject.deposit_profiles_liqpairs[i].p_dep_type);
     }
   }
   return BAD_DEPOSIT_PROFILE_ID;
@@ -2547,7 +2549,7 @@ async function getCreditsDashboard(callback = null) {
   for (let i = 0; i < cred_arr[0].length; i++) {
     // i === credit id
 
-    if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0 || lev_arr[i] > 0) {
+    if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0 || toNumber(lev_arr[i]) > 0) {
       html += '<tr class="table-row">';
 
       html += icon_column[i];
@@ -2660,7 +2662,7 @@ async function getLiquidityDashboard(callback = null) {
   const extractable_reward_col_s = new Array(icon_column.length);
   const withdraw_rew_col_s = new Array(icon_column.length);
 
-  usd_val_only_col.sort((a, b) => parseInt(b.val, 10) - parseInt(a.val, 10));
+  usd_val_only_col.sort((a, b) => toNumber(b.val) - toNumber(a.val));
 
   for (let i = 0; i < icon_column.length; i++) {
     const old_index = usd_val_only_col[i].ori_index;
@@ -2735,8 +2737,8 @@ async function getCapDashbord(callback = null) {
     return;
   }
   const data = await fetch(
-    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&price_change_percentage=24h,30d'
-  )
+      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&price_change_percentage=24h,30d'
+    )
     .then((response) => {
       if (response.status !== 200) {
         throw new Error(response.status);
@@ -2749,8 +2751,7 @@ async function getCapDashbord(callback = null) {
       document.getElementById('total-dashboard-tab-menu').remove();
 
       if (userObject.state.current_page_id === 'total-dashboard-tab') {
-        openTab(
-          {
+        openTab({
             srcElement: document.getElementById('dashboard-tab-menu'),
           },
           'dashboard-tab'
@@ -2927,7 +2928,7 @@ async function getDepositsDashboard(callback = null) {
   const extractable_reward_col_s = new Array(profiles.length);
   const withdraw_rew_col_s = new Array(profiles.length);
 
-  usd_val_only_col.sort((a, b) => parseInt(b.val, 10) - parseInt(a.val, 10));
+  usd_val_only_col.sort((a, b) => toNumber(b.val) - toNumber(a.val));
 
   for (let i = 0; i < profiles.length; i++) {
     const old_index = usd_val_only_col[i].ori_index;
@@ -2985,7 +2986,9 @@ async function getDepositsDashboard(callback = null) {
 }
 
 async function getNftPrice(contract, vc_contract, token_ids) {
-  const { BN } = window;
+  const {
+    BN
+  } = window;
 
   const wei_am = await vc_contract.methods.calcNFTTokensValue(token_ids).call({
     from: userObject.account,
@@ -3019,10 +3022,12 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
   const contract = window.data_provider_smartcontract_reader;
 
   if (
-    parseInt(userObject.state.selected_depprofile_type, 10) === NATIVE_ETHEREUM
+    toNumber(userObject.state.selected_depprofile_type) === NATIVE_ETHEREUM
   ) {
     const tokens_amount = document.getElementById(tokens_amount_elem).value;
-    const { BN } = window;
+    const {
+      BN
+    } = window;
     const wei_amount = safeFloatToWei(tokens_amount); // BN
     const [data, dec] = await Promise.all([
       contract.methods.getData('BNBUSD').call({
@@ -3044,7 +3049,7 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
     );
     safeSetValueById(usd_val_elem, usd_float.toFixed(3), 'inline');
   } else if (
-    parseInt(userObject.state.selected_depprofile_type, 10) === ERC721_TOKEN
+    toNumber(userObject.state.selected_depprofile_type) === ERC721_TOKEN
   ) {
     let vc_contract;
     await initVotesCalcContractReader(async (c) => {
@@ -3053,18 +3058,20 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
 
     const token_ids = [];
     for (let i = 0; i < userObject.state.selectedNFTAssets.length; i++) {
-      token_ids.push(parseInt(userObject.state.selectedNFTAssets[i].t_id, 10));
+      token_ids.push(toNumber(userObject.state.selectedNFTAssets[i].t_id));
     }
 
     const nftPrice = await getNftPrice(contract, vc_contract, token_ids);
 
     safeSetValueById(usd_val_elem, nftPrice, 'inline');
   } else if (
-    parseInt(userObject.state.selected_depprofile_type, 10) === ERC20_TOKEN ||
-    parseInt(userObject.state.selected_depprofile_type, 10) === UNISWAP_PAIR
+    toNumber(userObject.state.selected_depprofile_type) === ERC20_TOKEN ||
+    toNumber(userObject.state.selected_depprofile_type) === UNISWAP_PAIR
   ) {
     const tokens_amount = document.getElementById(tokens_amount_elem).value;
-    const { BN } = window;
+    const {
+      BN
+    } = window;
     const wei_amount = safeFloatToWei(tokens_amount); // BN
 
     const [data, dec] = await Promise.all([
@@ -3072,10 +3079,10 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
         from: userObject.account,
       }),
       contract.methods
-        .getDecimals(userObject.state.selected_depprofile_name)
-        .call({
-          from: userObject.account,
-        }),
+      .getDecimals(userObject.state.selected_depprofile_name)
+      .call({
+        from: userObject.account,
+      }),
     ]);
     // let data = await contract.methods.getData(userObject.state.selected_depprofile_name).call({from:userObject.account});
     // let dec = await contract.methods.getDecimals(userObject.state.selected_depprofile_name).call({from:userObject.account});
@@ -3093,16 +3100,20 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
 }
 
 async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
-  if (parseInt(dep_id, 10) === 9999999) return;
+  if (toNumber(dep_id) === 9999999) return;
 
-  const { am_arr } = userObject.deposits;
+  const {
+    am_arr
+  } = userObject.deposits;
 
   const tokens_amount = document.getElementById(tokens_amount_elem).value;
 
-  const { BN } = window;
+  const {
+    BN
+  } = window;
   let wei_amount = 0;
   if (
-    parseInt(userObject.state.selected_credprofile_type, 10) !== ERC721_TOKEN
+    toNumber(userObject.state.selected_credprofile_type) !== ERC721_TOKEN
   ) {
     wei_amount = safeFloatToWei(tokens_amount); // BN
   } else {
@@ -3111,10 +3122,10 @@ async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
 
   const dep_am = new BN(am_arr[1][dep_id]);
 
-  if (wei_amount.cmp(dep_am) === 1) {
+  if (toNumber(wei_amount.cmp(dep_am)) === 1) {
     let tok_float = 0;
     if (
-      parseInt(userObject.state.selected_credprofile_type, 10) !== ERC721_TOKEN
+      toNumber(userObject.state.selected_credprofile_type) !== ERC721_TOKEN
     ) {
       tok_float = parseFloat(
         window.web3js_reader.utils.fromWei(am_arr[1][dep_id], 'ether')
@@ -3142,7 +3153,7 @@ async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
 
   safeSetValueById(usd_val_elem, usd_val, 'inline');
 
-  if (userObject.state.getcredit_profile !== -1) {
+  if (toNumber(userObject.state.getcredit_profile) !== -1) {
     document.getElementById('tokens_amount_getcredit').innerText =
       await calcTokensFromUSD(
         userObject.state.getcredit_profile,
@@ -3172,7 +3183,9 @@ async function calcUSDValueByProfileNonNFT(wei_amount, profile_id) {
 }
 
 function show_modal_leverage(cread_id) {
-  const { confirm } = modal_add_leverage;
+  const {
+    confirm
+  } = modal_add_leverage;
   const leveragePercentSelect =
     modal_add_leverage.modal.querySelector('#select-leverage');
   set_leverage(leveragePercentSelect.value, cread_id);
@@ -3186,7 +3199,9 @@ function show_modal_leverage(cread_id) {
 }
 
 function show_modal_unfreeze(cread_id) {
-  const { confirm } = modal_unfreeze;
+  const {
+    confirm
+  } = modal_unfreeze;
   confirm.onclick = () => unfreeze_leverage(cread_id);
 
   modal_unfreeze.show();
@@ -3195,7 +3210,7 @@ function show_modal_unfreeze(cread_id) {
 async function set_leverage_confirm(ratio, cred_id) {
   // function freezeLeverageForCredit(address cust_wallet, uint32 dep_id, uint32 cred_id, uint256 lev_amount) nonReentrant public
   modal_add_leverage.isLoadingAfterConfirm();
-  if (userObject.credits.cred_arr[1][cred_id] === 0) {
+  if (toNumber(userObject.credits.cred_arr[1][cred_id]) === 0) {
     modal_add_leverage.isLoadedAfterConfirm(false);
     infoMsg('no active credit');
     return;
@@ -3208,21 +3223,20 @@ async function set_leverage_confirm(ratio, cred_id) {
         from: userObject.account,
       });
 
-    if (lev.lev_amount > 0) {
+    if (toNumber(lev.lev_amount) > 0) {
       modal_add_leverage.isLoadedAfterConfirm(false);
       infoMsg('you need to unfreeze current leverage first');
       return;
     }
 
     const cytr_profile_id = await getCYTRProfileId();
-
     const res_arr = depAmountByProfileIdReal(cytr_profile_id);
     const dep_id = res_arr[0];
     const cytr_am = res_arr[1];
 
     const cytr_am_bn = new BN(cytr_am);
 
-    if (window.lev_size_wei.cmp(cytr_am_bn) === 1) {
+    if (toNumber(window.lev_size_wei.cmp(cytr_am_bn)) === 1) {
       modal_add_leverage.isLoadedAfterConfirm(false);
       infoMsg('not enough ETNA on deposit');
       return;
@@ -3230,8 +3244,7 @@ async function set_leverage_confirm(ratio, cred_id) {
 
     contractInstance.methods
       .freezeLeverageForCredit(userObject.account, dep_id, cred_id, ratio)
-      .send(
-        {
+      .send({
           from: userObject.account,
           gasPrice: window.gp,
         },
@@ -3244,7 +3257,7 @@ async function set_leverage_confirm(ratio, cred_id) {
         }
       )
       .on('confirmation', async function (confirmationNumber, receipt) {
-        if (confirmationNumber === 5) {
+        if (toNumber(confirmationNumber) === 5) {
           await updateData('set_leverage');
           modal_add_leverage.isLoadedAfterConfirm();
         }
@@ -3258,18 +3271,11 @@ async function set_leverage_confirm(ratio, cred_id) {
 }
 
 async function unfreeze_leverage(cred_id) {
-  // function freezeLeverageForCredit(address cust_wallet, uint32 dep_id, uint32 cred_id, uint256 lev_amount) nonReentrant public
-
-  /* if (userObject.credits.cred_arr[1][cred_id] ===  0){
-    infoMsg("no active credit");
-    return;
-  } */
   modal_unfreeze.isLoadingAfterConfirm();
   initLiqLevContract(async (contractInstance) => {
     contractInstance.methods
       .unfreezeLeverageForCredit(userObject.account, cred_id)
-      .send(
-        {
+      .send({
           from: userObject.account,
           gasPrice: window.gp,
         },
@@ -3282,7 +3288,7 @@ async function unfreeze_leverage(cred_id) {
         }
       )
       .on('confirmation', async function (confirmationNumber, receipt) {
-        if (confirmationNumber === 5) {
+        if (toNumber(confirmationNumber) === 5) {
           await updateData('unfreeze_leverage');
           modal_unfreeze.isLoadedAfterConfirm();
         }
@@ -3346,10 +3352,7 @@ function return_fee(cred_id) {
   submitBtn.onclick = () => return_fee_confirm(cred_id);
 
   if (
-    parseInt(
-      depTypeByProfileId(userObject.credits.cred_arr[0][cred_id]),
-      10
-    ) === NATIVE_ETHEREUM
+    toNumber(depTypeByProfileId(userObject.credits.cred_arr[0][cred_id])) === NATIVE_ETHEREUM
   ) {
     submitTokensBtn.disabled = true;
     submitTokensBtn.classList.add('btn-done');
@@ -3381,9 +3384,9 @@ function withdraw_deposit(dep_id) {
 
   const adj_am = isToken(dep_id) ? deposit : toTokens(deposit, 4);
 
-  isToken(dep_id)
-    ? partDepositsBtn.parentElement.classList.add('hidden')
-    : partDepositsBtn.parentElement.classList.remove('hidden');
+  isToken(dep_id) ?
+    partDepositsBtn.parentElement.classList.add('hidden') :
+    partDepositsBtn.parentElement.classList.remove('hidden');
 
   withdrawInput.value = adj_am;
   allDepositsBtn.checked = true;
@@ -3408,7 +3411,7 @@ async function calcTokensFromUSD(cred_profile_id, amount_usd) {
 }
 
 function withdraw_deposit_confirm(dep_id) {
-  if (userObject.deposits.am_arr[2][dep_id] === 0) {
+  if (toNumber(userObject.deposits.am_arr[2][dep_id]) === 0) {
     infoMsg('deposit is not currently exractable');
     return;
   }
@@ -3417,9 +3420,9 @@ function withdraw_deposit_confirm(dep_id) {
     document.getElementById('withraw_dep_all').checked;
   const depositValue = document.getElementById('withraw_dep_input').value;
 
-  const withdraw_amount = isWithdrawAllDeposit
-    ? 0
-    : safeFloatToWei(depositValue);
+  const withdraw_amount = isWithdrawAllDeposit ?
+    0 :
+    safeFloatToWei(depositValue);
 
   modal_withdraw_deposit.isLoadingAfterConfirm();
 
@@ -3431,8 +3434,7 @@ function withdraw_deposit_confirm(dep_id) {
         withdraw_amount,
         isWithdrawAllDeposit
       )
-      .send(
-        {
+      .send({
           from: userObject.account,
           gasPrice: window.gp,
         },
@@ -3445,7 +3447,7 @@ function withdraw_deposit_confirm(dep_id) {
         }
       )
       .on('confirmation', async function (confirmationNumber, receipt) {
-        if (confirmationNumber === 5) {
+        if (toNumber(confirmationNumber) === 5) {
           await updateData('withdraw_deposit');
           modal_withdraw_deposit.isLoadedAfterConfirm();
         }
@@ -3460,7 +3462,7 @@ function withdraw_deposit_confirm(dep_id) {
 
 async function return_credit_mvtokens(cred_id) {
   modal_return_credit.isLoadingAfterApprove();
-  if (userObject.credits.cred_arr[1][cred_id] === 0) {
+  if (toNumber(userObject.credits.cred_arr[1][cred_id]) === 0) {
     modal_return_credit.isLoadedAfterApprove(false);
     infoMsg('no active credit');
     return;
@@ -3472,9 +3474,9 @@ async function return_credit_mvtokens(cred_id) {
     'credit_return_input'
   ).value;
 
-  const return_amount = isReturnAllCredit
-    ? userObject.credits.cred_arr[1][cred_id]
-    : safeFloatToWei(returnCreditValue);
+  const return_amount = isReturnAllCredit ?
+    userObject.credits.cred_arr[1][cred_id] :
+    safeFloatToWei(returnCreditValue);
 
   const returned_asset_token_address = tokenAddressByProfileId(
     userObject.credits.cred_arr[0][cred_id]
@@ -3490,7 +3492,7 @@ async function return_credit_mvtokens(cred_id) {
 async function return_fee_mvtokens(cred_id) {
   modal_return_fee.isLoadingAfterApprove();
 
-  if (userObject.credits.cred_arr[2][cred_id] === 0) {
+  if (toNumber(userObject.credits.cred_arr[2][cred_id]) === 0) {
     modal_return_fee.isLoadedAfterApprove(false);
     infoMsg('no active credit');
     return;
@@ -3511,7 +3513,7 @@ async function return_fee_mvtokens(cred_id) {
 
 async function return_credit_confirm(cred_id) {
   modal_return_credit.isLoadingAfterConfirm();
-  if (userObject.credits.cred_arr[1][cred_id] === 0) {
+  if (toNumber(userObject.credits.cred_arr[1][cred_id]) === 0) {
     modal_return_credit.isLoadedAfterConfirm(false);
     infoMsg('no active credit');
     return;
@@ -3523,9 +3525,9 @@ async function return_credit_confirm(cred_id) {
     'credit_return_input'
   ).value;
 
-  const return_amount = isReturnAllCredit
-    ? userObject.credits.cred_arr[1][cred_id]
-    : safeFloatToWei(returnCreditValue);
+  const return_amount = isReturnAllCredit ?
+    userObject.credits.cred_arr[1][cred_id] :
+    safeFloatToWei(returnCreditValue);
 
   // alert(return_amount); return;
   const returned_asset_type = depTypeByProfileId(
@@ -3536,10 +3538,10 @@ async function return_credit_confirm(cred_id) {
   );
 
   let return_val = 0;
-  if (parseInt(returned_asset_type, 10) === NATIVE_ETHEREUM) {
+  if (toNumber(returned_asset_type) === NATIVE_ETHEREUM) {
     return_val = return_amount;
     // do nothing
-  } else if (parseInt(returned_asset_type, 10) === ERC721_TOKEN) {
+  } else if (toNumber(returned_asset_type) === ERC721_TOKEN) {
     modal_return_credit.isLoadedAfterConfirm(false);
     errorMsg('error: ERC721 is not possible type for credit');
     return;
@@ -3552,10 +3554,10 @@ async function return_credit_confirm(cred_id) {
     );
     const allow = new BN(
       await token_contract.methods
-        .allowance(userObject.account, window.credit_contract_address)
-        .call({
-          from: userObject.account,
-        })
+      .allowance(userObject.account, window.credit_contract_address)
+      .call({
+        from: userObject.account,
+      })
     );
 
     const tokenAmountToApprove = new BN(return_amount);
@@ -3579,7 +3581,7 @@ async function return_credit_confirm(cred_id) {
     const erc20_count_bn = new BN(erc20_count);
     const return_amount_bn = new BN(return_amount);
 
-    if (erc20_count_bn.cmp(return_amount_bn) === -1) {
+    if (toNumber(erc20_count_bn.cmp(return_amount_bn)) === -1) {
       modal_return_credit.isLoadedAfterConfirm(false);
       errorMsg('you do not have enough tokens in your wallet');
       return;
@@ -3589,8 +3591,7 @@ async function return_credit_confirm(cred_id) {
   initCreditContract(async (creditContractInstance) => {
     creditContractInstance.methods
       .returnCredit(userObject.account, cred_id, return_amount)
-      .send(
-        {
+      .send({
           from: userObject.account,
           value: return_val,
           gasPrice: window.gp,
@@ -3604,7 +3605,7 @@ async function return_credit_confirm(cred_id) {
         }
       )
       .on('confirmation', async function (confirmationNumber, receipt) {
-        if (confirmationNumber === 5) {
+        if (toNumber(confirmationNumber) === 5) {
           await updateData('return_credit');
           modal_return_credit.isLoadedAfterConfirm();
         }
@@ -3619,7 +3620,7 @@ async function return_credit_confirm(cred_id) {
 
 async function return_fee_confirm(cred_id) {
   modal_return_fee.isLoadingAfterConfirm();
-  if (userObject.credits.cred_arr[2][cred_id] === 0) {
+  if (toNumber(userObject.credits.cred_arr[2][cred_id]) === 0) {
     modal_return_fee.isLoadedAfterConfirm(false);
     infoMsg('no active credit');
     return;
@@ -3636,10 +3637,10 @@ async function return_fee_confirm(cred_id) {
   );
   let return_val = 0;
 
-  if (parseInt(returned_asset_type, 10) === NATIVE_ETHEREUM) {
+  if (toNumber(returned_asset_type) === NATIVE_ETHEREUM) {
     return_val = return_amount;
     // do nothing
-  } else if (parseInt(returned_asset_type, 10) === ERC721_TOKEN) {
+  } else if (toNumber(returned_asset_type) === ERC721_TOKEN) {
     modal_return_fee.isLoadedAfterConfirm(false);
     errorMsg('error: ERC721 is not possible type for credit');
     return;
@@ -3652,10 +3653,10 @@ async function return_fee_confirm(cred_id) {
     );
     const allow = new BN(
       await token_contract.methods
-        .allowance(userObject.account, window.credit_contract_address)
-        .call({
-          from: userObject.account,
-        })
+      .allowance(userObject.account, window.credit_contract_address)
+      .call({
+        from: userObject.account,
+      })
     );
 
     const tokenAmountToApprove = new BN(return_amount);
@@ -3679,7 +3680,7 @@ async function return_fee_confirm(cred_id) {
     const erc20_count_bn = new BN(erc20_count);
     const return_amount_bn = new BN(return_amount);
 
-    if (erc20_count_bn.cmp(return_amount_bn) === -1) {
+    if (toNumber(erc20_count_bn.cmp(return_amount_bn)) === -1) {
       modal_return_fee.isLoadedAfterConfirm(false);
       errorMsg('you do not have enough tokens in your wallet');
       return;
@@ -3689,8 +3690,7 @@ async function return_fee_confirm(cred_id) {
   initCreditContract(async (creditContractInstance) => {
     creditContractInstance.methods
       .returnFee(userObject.account, cred_id, return_amount)
-      .send(
-        {
+      .send({
           from: userObject.account,
           value: return_val,
           gasPrice: window.gp,
@@ -3704,7 +3704,7 @@ async function return_fee_confirm(cred_id) {
         }
       )
       .on('confirmation', async function (confirmationNumber, receipt) {
-        if (confirmationNumber === 5) {
+        if (toNumber(confirmationNumber) === 5) {
           await updateData('return_fee');
           modal_return_fee.isLoadedAfterConfirm();
         }
@@ -3720,7 +3720,7 @@ async function return_fee_confirm(cred_id) {
 function withdraw_reward_confirm(dep_id) {
   modal_withdraw_yield.isLoadingAfterConfirm();
   // alert(dep_id); return;
-  if (userObject.deposits.rew_arr[2][dep_id] === 0) {
+  if (toNumber(userObject.deposits.rew_arr[2][dep_id]) === 0) {
     modal_withdraw_yield.isLoadedAfterConfirm(false);
     infoMsg('reward is not currently exractable');
     return;
@@ -3729,8 +3729,7 @@ function withdraw_reward_confirm(dep_id) {
   initStakingContract(async (stakingContractInstance) => {
     stakingContractInstance.methods
       .withdrawDepositRewardById(userObject.account, dep_id)
-      .send(
-        {
+      .send({
           from: userObject.account,
           gasPrice: window.gp,
         },
@@ -3743,7 +3742,7 @@ function withdraw_reward_confirm(dep_id) {
         }
       )
       .on('confirmation', async function (confirmationNumber, receipt) {
-        if (confirmationNumber === 5) {
+        if (toNumber(confirmationNumber) === 5) {
           await updateData('withdraw_deposit_reward');
           modal_withdraw_yield.isLoadedAfterConfirm();
         }
@@ -3817,8 +3816,8 @@ async function set_fixed_credit() {
     .classList.remove('transparent_button_pressed');
 
   if (
-    userObject.state.getcredit_profile === -1 ||
-    userObject.state.selected_credprofile === -1
+    toNumber(userObject.state.getcredit_profile) === -1 ||
+    toNumber(userObject.state.selected_credprofile) === -1
   ) {
     return (document.getElementById('credit_perc').value = '');
   }
@@ -3846,8 +3845,8 @@ async function set_var_credit() {
     .classList.add('transparent_button_pressed');
 
   if (
-    userObject.state.getcredit_profile === -1 ||
-    userObject.state.selected_credprofile === -1
+    toNumber(userObject.state.getcredit_profile) === -1 ||
+    toNumber(userObject.state.selected_credprofile) === -1
   ) {
     return (document.getElementById('credit_perc').value = '');
   }
@@ -3868,6 +3867,8 @@ async function set_var_credit() {
 
 async function set_leverage(ratio, cred_id) {
   // 100 - 100%
+  ratio = toNumber(ratio);
+
   if (!(ratio === 25 || ratio === 50 || ratio === 75 || ratio === 100)) return;
 
   // function calcNeededLeverageByCreditSize(    uint32 credit_profile_id, uint32 lev_asset_profile_id,
@@ -3880,17 +3881,19 @@ async function set_leverage(ratio, cred_id) {
     .call({
       from: userObject.account,
     });
-  const cc_index = parseInt(cc.index, 10);
+  const cc_index = toNumber(cc.index);
   const x = await window.credit_smartcontract.methods
     .viewCustomerCreditExtraDataByIndex(cc_index, cred_id)
     .call({
       from: userObject.account,
     });
 
-  const { is_fixed_apy } = x;
+  const {
+    is_fixed_apy
+  } = x;
 
   const clt_id = userObject.credits.cred_arr[4][cred_id];
-  const clt_profile_id = userObject.credits.clt_arr[0][parseInt(clt_id, 10)];
+  const clt_profile_id = userObject.credits.clt_arr[0][toNumber(clt_id)];
 
   const lns = await window.usage_calc_smartcontract_reader.methods
     .calcNeededLeverageByCreditSize(
@@ -3904,8 +3907,7 @@ async function set_leverage(ratio, cred_id) {
       from: userObject.account,
     });
   let lev_needed_size = new BN(lns);
-
-  if (ratio > 100 || ratio < 0) ratio = 100;
+  if (ratio, 10 > 100 || ratio < 0) ratio = 100;
   if (ratio !== 100) {
     const r = new BN(ratio);
     lev_needed_size = lev_needed_size.mul(r);
@@ -3926,16 +3928,14 @@ async function set_leverage(ratio, cred_id) {
 async function getCYTRProfileId() {
   if (!userObject.deposit_profiles) {
     userObject.deposit_profiles = await getAllProfiles();
-  } else {
-    //
   }
 
   if (!window.cytr_profile_id) {
     for (let i = 0; i < userObject.deposit_profiles.length; i++) {
+
       if (userObject.deposit_profiles[i].p_name === LEVERAGE_TOKEN) {
-        window.cytr_profile_id = parseInt(
-          userObject.deposit_profiles[i].p_id,
-          10
+        window.cytr_profile_id = toNumber(
+          userObject.deposit_profiles[i].p_id
         );
         return window.cytr_profile_id;
       }
@@ -3943,7 +3943,6 @@ async function getCYTRProfileId() {
     window.cytr_profile_id = BAD_DEPOSIT_PROFILE_ID;
     return window.cytr_profile_id;
   }
-  //
 
   return window.cytr_profile_id;
 }
@@ -3995,7 +3994,7 @@ async function getAPY(profile_id) {
   if (!window.dep_apys) {
     window.dep_apys = [];
     for (let i = 0; i < userObject.deposit_profiles.length; i++) {
-      window.dep_apys[parseInt(userObject.deposit_profiles[i].p_id, 10)] = null;
+      window.dep_apys[toNumber(userObject.deposit_profiles[i].p_id)] = null;
     }
   }
 

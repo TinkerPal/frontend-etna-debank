@@ -9,7 +9,7 @@ const isToken = (
 ) => {
   const assetPID = userObject[table][collumnName][0][dep_id];
   const asset = userObject[profiles].find(
-    (profile) => profile[keyId_InTableArray] === assetPID
+    (profile) => toNumber(profile[keyId_InTableArray]) === toNumber(assetPID)
   );
 
   if (!asset) return;
@@ -20,6 +20,7 @@ const isToken = (
 const isEmptyTable = (idContainer) => {
   return document.querySelector(`#${idContainer} table tbody`).innerHTML === '';
 };
+
 const setLdBar = (value, part = 'null') => {
   const { ldBar } = document.getElementById('debank_load_bar');
   const ldBarWrapper = document.getElementById('load_bar_cover');
@@ -87,7 +88,7 @@ const getDepositByTokenId = (p_id) => {
   if (userObject.deposits.am_arr.length === 0) return;
 
   const index = userObject.deposits.am_arr[0].findIndex(
-    (item) => item === p_id
+    (item) => toNumber(item) === toNumber(p_id)
   );
 
   if (index === -1) return;
@@ -104,11 +105,11 @@ const isMetaMaskInstalled = () => {
 };
 
 function depAmountByProfileId(profile_id) {
-  if (profile_id !== -1) {
+  if (toNumber(profile_id) !== -1) {
     for (let i = 0; i < userObject.deposits.am_arr[0].length; i++) {
-      if (userObject.deposits.am_arr[0][i] === profile_id) {
+      if (toNumber(userObject.deposits.am_arr[0][i]) === toNumber(profile_id)) {
         let am = userObject.deposits.am_arr[1][i];
-        if (parseInt(depTypeByProfileId(profile_id), 10) !== ERC721_TOKEN) {
+        if (toNumber(depTypeByProfileId(profile_id)) !== ERC721_TOKEN) {
           am = window.web3js_reader.utils.fromWei(am, 'ether');
         }
         return [i, am];
@@ -118,9 +119,13 @@ function depAmountByProfileId(profile_id) {
   return [BAD_DEPOSIT_ID, 0];
 }
 
+function toNumber(number) {
+  return parseInt(number, 10);
+}
+
 function depAmountByProfileIdReal(profile_id) {
   for (let i = 0; i < userObject.deposits.am_arr[0].length; i++) {
-    if (userObject.deposits.am_arr[0][i] === profile_id) {
+    if (toNumber(userObject.deposits.am_arr[0][i]) === toNumber(profile_id)) {
       const am = userObject.deposits.am_arr[1][i];
 
       return [i, am];

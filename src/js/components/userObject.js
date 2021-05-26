@@ -107,7 +107,7 @@ const userObject = {
 
         for (let i = 0; i < profiles.length; i++) {
           let txt = '';
-          if (parseInt(profiles[i].p_dep_type, 10) === ERC721_TOKEN) {
+          if (toNumber(profiles[i].p_dep_type) === ERC721_TOKEN) {
             const token_count =
               await window.cyclops_nft_smartcontract_reader.methods
                 .balanceOf(userObject.account)
@@ -117,8 +117,8 @@ const userObject = {
 
             txt = `<td class="table-cell">${token_count}</td>`;
           } else if (
-            parseInt(profiles[i].p_dep_type, 10) === ERC20_TOKEN ||
-            parseInt(profiles[i].p_dep_type, 10) === UNISWAP_PAIR
+            toNumber(profiles[i].p_dep_type) === ERC20_TOKEN ||
+            toNumber(profiles[i].p_dep_type) === UNISWAP_PAIR
           ) {
             const erc20contract = await new window.web3js_reader.eth.Contract(
               erc20TokenContractAbi,
@@ -132,7 +132,7 @@ const userObject = {
             // let adj_count = floorDecimals( window.web3js_reader.utils.fromWei(erc20_count, 'ether'), 4);
             const adj_count_str = toTokens(erc20_count, 4); // ((parseFloat(adj_count)).toFixed(4)).toString();
             txt = `<td class="table-cell">${adj_count_str}</td>`;
-          } else if (parseInt(profiles[i].p_dep_type, 10) === NATIVE_ETHEREUM) {
+          } else if (toNumber(profiles[i].p_dep_type) === NATIVE_ETHEREUM) {
             const wb = await window.web3js_reader.eth.getBalance(
               userObject.account
             );
@@ -161,9 +161,9 @@ const userObject = {
         for (let j = 0; j < profiles.length; j++) {
           let txt = '';
           for (let i = 0; i < am_arr[0].length; i++) {
-            if (am_arr[0][i] === profiles[j].p_id) {
+            if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id)) {
               // found
-              if (parseInt(profiles[j].p_dep_type, 10) === ERC721_TOKEN) {
+              if (toNumber(profiles[j].p_dep_type) === ERC721_TOKEN) {
                 // amount
                 txt = `<td class="table-cell">${am_arr[1][i]}</td>`;
               } else {
@@ -201,7 +201,7 @@ const userObject = {
         for (let j = 0; j < profiles.length; j++) {
           let txt = '';
           for (let i = 0; i < am_arr[0].length; i++) {
-            if (am_arr[0][i] === profiles[j].p_id) {
+            if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id)) {
               // found
               const am = await calcUSDValueOfDeposit(am_arr[1][i], i);
               this.usd_val_only_col.push({
@@ -244,8 +244,8 @@ const userObject = {
         for (let j = 0; j < profiles.length; j++) {
           let txt = '';
           for (let i = 0; i < am_arr[0].length; i++) {
-            if (am_arr[0][i] === profiles[j].p_id) {
-              if (am_arr[1][i] === 0) {
+            if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id)) {
+              if (toNumber(am_arr[1][i]) === 0) {
                 txt = '<td class="table-cell">-</td>';
               } else {
                 const days = await window.staking_smartcontract.methods
@@ -282,9 +282,9 @@ const userObject = {
         for (let j = 0; j < profiles.length; j++) {
           let txt = '';
           for (let i = 0; i < am_arr[0].length; i++) {
-            if (am_arr[0][i] === profiles[j].p_id) {
+            if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id)) {
               // found
-              if (parseInt(profiles[j].p_dep_type, 10) === ERC721_TOKEN) {
+              if (toNumber(profiles[j].p_dep_type) === ERC721_TOKEN) {
                 // amount
                 txt = `<td class="table-cell">${am_arr[2][i]}</td>`;
               } else {
@@ -319,11 +319,8 @@ const userObject = {
         for (let j = 0; j < profiles.length; j++) {
           let txt = '';
           for (let i = 0; i < am_arr[0].length; i++) {
-            // i === deposit id
-            if (am_arr[0][i] === profiles[j].p_id && am_arr[2][i] > 0) {
-              let lbl = '';
-              if (parseInt(profiles[j].p_dep_type, 10) === ERC721_TOKEN)
-                lbl = '<span>&nbspNFTs</span>';
+            
+            if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id) && toNumber(am_arr[2][i]) > 0) {
               txt = `<td class="table-cell">${createTableBtnWithIcon(
                 'withdraw',
                 'Withdraw deposit',
@@ -356,7 +353,7 @@ const userObject = {
         for (let j = 0; j < profiles.length; j++) {
           let txt = '';
           for (let i = 0; i < rew_arr[0].length; i++) {
-            if (rew_arr[0][i] === profiles[j].p_id) {
+            if (toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id)) {
               // found
               // let adj = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');
               const adj_str = toTokens(rew_arr[1][i], 4); // ((parseFloat(adj)).toFixed(4)).toString();
@@ -389,10 +386,8 @@ const userObject = {
         for (let j = 0; j < profiles.length; j++) {
           let txt = '';
           for (let i = 0; i < rew_arr[0].length; i++) {
-            if (rew_arr[0][i] === profiles[j].p_id) {
-              // found
-              // let adj = window.web3js_reader.utils.fromWei(rew_arr[2][i], 'ether');
-              const adj_str = toTokens(rew_arr[2][i], 4); // ((parseFloat(adj)).toFixed(4)).toString();
+            if (toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id)) {
+              const adj_str = toTokens(rew_arr[2][i], 4);
               txt = `<td class="table-cell">${adj_str}</td>`;
               break;
             }
@@ -421,10 +416,8 @@ const userObject = {
         for (let j = 0; j < profiles.length; j++) {
           let txt = '';
           for (let i = 0; i < rew_arr[0].length; i++) {
-            if (rew_arr[0][i] === profiles[j].p_id && rew_arr[2][i] > 0) {
-              let lbl = '';
-              if (parseInt(profiles[j].p_dep_type, 10) === ERC721_TOKEN)
-                lbl = '&nbsp;ETNA</span>';
+            if (toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id) && toNumber(rew_arr[2][i]) > 0) {
+              if (toNumber(profiles[j].p_dep_type) === ERC721_TOKEN) 
               txt = `<td class="table-cell">${createTableBtnWithIcon(
                 'withdraw',
                 'Withdraw yield',
@@ -532,14 +525,14 @@ const userObject = {
         const { clt_arr } = this;
         for (let i = 0; i < cred_arr[0].length; i++) {
           const clt_id = cred_arr[4][i];
-          const clt_profile_id = clt_arr[0][parseInt(clt_id, 10)];
+          const clt_profile_id = clt_arr[0][toNumber(clt_id)];
 
           const cc = await window.credit_smartcontract.methods
             .viewCustomerCredit(userObject.account, 0)
             .call({
               from: userObject.account,
             });
-          const cc_index = parseInt(cc.index, 10);
+          const cc_index = toNumber(cc.index);
           const x = await window.credit_smartcontract.methods
             .viewCustomerCreditExtraDataByIndex(cc_index, i)
             .call({
@@ -586,7 +579,7 @@ const userObject = {
         for (let i = 0; i < cred_arr[0].length; i++) {
           let txt = '';
           if (
-            parseInt(depTypeByProfileId(cred_arr[0][i]), 10) === ERC721_TOKEN
+            toNumber(depTypeByProfileId(cred_arr[0][i])) === ERC721_TOKEN
           ) {
             const token_count =
               await window.cyclops_nft_smartcontract_reader.methods
@@ -597,8 +590,8 @@ const userObject = {
 
             txt = `<td class="rounded-l-lg table-cell">${token_count}</td>`;
           } else if (
-            parseInt(depTypeByProfileId(cred_arr[0][i]), 10) === ERC20_TOKEN ||
-            parseInt(depTypeByProfileId(cred_arr[0][i]), 10) === UNISWAP_PAIR
+            toNumber(depTypeByProfileId(cred_arr[0][i])) === ERC20_TOKEN ||
+            toNumber(depTypeByProfileId(cred_arr[0][i])) === UNISWAP_PAIR
           ) {
             const erc20contract = await new window.web3js_reader.eth.Contract(
               erc20TokenContractAbi,
@@ -618,7 +611,7 @@ const userObject = {
 
             // html += '<span class="small-text-block">'+token_name+': '+adj_count_str+'</span>';
           } else if (
-            parseInt(depTypeByProfileId(cred_arr[0][i]), 10) === NATIVE_ETHEREUM
+            toNumber(depTypeByProfileId(cred_arr[0][i])) === NATIVE_ETHEREUM
           ) {
             const wb = await window.web3js_reader.eth.getBalance(
               userObject.account
@@ -647,10 +640,10 @@ const userObject = {
         for (let j = 0; j < cred_arr[0].length; j++) {
           let txt = '';
           for (let i = 0; i < am_arr[0].length; i++) {
-            if (am_arr[0][i] === cred_arr[0][j]) {
+            if (toNumber(am_arr[0][i]) === toNumber(cred_arr[0][j])) {
               // found
               if (
-                parseInt(depTypeByProfileId(cred_arr[0][j]), 10) ===
+                toNumber(depTypeByProfileId(cred_arr[0][j])) ===
                 ERC721_TOKEN
               ) {
                 // amount
@@ -681,11 +674,11 @@ const userObject = {
         for (let i = 0; i < cred_arr[0].length; i++) {
           let txt = '';
 
-          if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) {
+          if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0) {
             // credit or fee unpaid
             // found
             if (
-              parseInt(depTypeByProfileId(cred_arr[0][i]), 10) === ERC721_TOKEN
+              toNumber(depTypeByProfileId(cred_arr[0][i])) === ERC721_TOKEN
             ) {
               // amount
               txt = `<td class="table-cell">${cred_arr[1][i]}</td>`;
@@ -714,19 +707,19 @@ const userObject = {
         const { clt_arr } = this;
         for (let i = 0; i < cred_arr[0].length; i++) {
           let txt = '';
-          if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) {
+          if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0) {
             // credit or fee unpaid
             // found
             if (
-              parseInt(depTypeByProfileId(cred_arr[0][i]), 10) === ERC721_TOKEN
+              toNumber(depTypeByProfileId(cred_arr[0][i])) === ERC721_TOKEN
             ) {
               // amount
               txt = `<td class="table-cell">${cred_arr[4][i]}</td>`;
             } else {
               let isCollateralCheaperThenCredit = false;
               const clt_id = cred_arr[4][i];
-              const clt_profile_id = clt_arr[0][parseInt(clt_id, 10)];
-              const clt_amount = clt_arr[1][parseInt(clt_id, 10)];
+              const clt_profile_id = clt_arr[0][toNumber(clt_id)];
+              const clt_amount = clt_arr[1][toNumber(clt_id)];
               let tdtxt = profileNameByProfileId(clt_profile_id);
               let adj_am;
               if (tdtxt === 'nft') {
@@ -738,7 +731,7 @@ const userObject = {
                   .call({
                     from: userObject.account,
                   });
-                const cc_index = parseInt(cc.index, 10);
+                const cc_index = toNumber(cc.index);
                 const credit = await window.credit_smartcontract.methods
                   .viewCustomerCreditByIndex(cc_index, i)
                   .call({
@@ -757,9 +750,9 @@ const userObject = {
                   await window.usage_calc_smartcontract_reader.methods
                     .calcUSDValueCollateral(
                       userObject.account,
-                      parseInt(credit.linked_dep_id, 10),
+                      toNumber(credit.linked_dep_id),
                       coll.deposit_amount,
-                      parseInt(credit.profile_id, 10)
+                      toNumber(credit.profile_id)
                     )
                     .call({
                       from: userObject.account,
@@ -801,7 +794,7 @@ const userObject = {
         for (let i = 0; i < cred_arr[0].length; i++) {
           let txt = '';
 
-          if (cred_arr[1][i] > 0) {
+          if (toNumber(cred_arr[1][i]) > 0) {
             // credit unpaid
             // found
             const am = await calcUSDValueByProfileNonNFT(
@@ -835,9 +828,9 @@ const userObject = {
         for (let i = 0; i < cred_arr[0].length; i++) {
           let txt = '';
 
-          if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) {
+          if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0) {
             // credit or fee unpaid
-            if (cred_arr[3][i] === 0) {
+            if (toNumber(cred_arr[3][i]) === 0) {
               txt = '<td class="table-cell">-</td>';
             } else {
               txt = `<td class="table-cell">${cred_arr[3][i].toString()}</td>`;
@@ -864,7 +857,7 @@ const userObject = {
         for (let i = 0; i < cred_arr[0].length; i++) {
           let txt = '';
 
-          if (cred_arr[2][i] === 0) {
+          if (toNumber(cred_arr[2][i]) === 0) {
             txt = '<td class="table-cell">-</td>';
           } else {
             // let am = window.web3js_reader.utils.fromWei(cred_arr[2][i], 'ether');
@@ -892,19 +885,13 @@ const userObject = {
         const { lev_ratio_arr } = this;
 
         for (let i = 0; i < cred_arr[0].length; i++) {
-          // i === credit id
+          
           let txt = '';
 
-          const lbl = '';
-          // let res = await window.liqlev_smartcontract.methods.viewCustomerLeverageByCredId(userObject.account,i).call({from: userObject.account});
-          if (lev_arr[i] > 0) {
-            // let am = window.web3js_reader.utils.fromWei(lev_arr[i], 'ether');
-
-            const adj_am = toTokens(lev_arr[i], 4); // ((parseFloat(am)).toFixed(4)).toString();
+          if (toNumber(lev_arr[i]) > 0) {
+            const adj_am = toTokens(lev_arr[i], 4);
             txt = `<td class="table-cell">${lev_ratio_arr[i]}% (${adj_am})</td>`;
           }
-
-          //	}
 
           if (!txt) txt = '<td class="table-cell">-</td>';
           this.leverage_column.push(txt);
@@ -928,18 +915,18 @@ const userObject = {
         const { lev_arr } = this;
 
         for (let i = 0; i < cred_arr[0].length; i++) {
-          // i === credit id
+          
           let txt = '';
 
-          if (cred_arr[1][i] > 0 && lev_arr[i] === 0) {
-            const lbl = '';
-
+          if (toNumber(cred_arr[1][i]) > 0 && toNumber(lev_arr[i]) === 0) {
+            
             txt = `<td class="table-cell w-12">${createTableBtnWithIcon(
               'price-tag',
               'Leverage',
               `show_modal_leverage(${i.toString()})`
             )}</td>`;
-          } else if (lev_arr[i] > 0) {
+          } else if (toNumber(lev_arr[i]) > 0) {
+
             txt = `<td class="table-cell w-12">${createTableBtnWithIcon(
               'discount',
               'Unfreeze',
@@ -983,8 +970,8 @@ const userObject = {
           // i === deposit id
           let txt = '';
 
-          if (cred_arr[1][i] > 0 || cred_arr[2][i] > 0) {
-            if (cred_arr[1][i] > 0) {
+          if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0) {
+            if (toNumber(cred_arr[1][i]) > 0) {
               // credit or fee unpaid
               txt = `<td class="table-cell pl-0 rounded-r-lg" onclick="modal_return_credit.show()">${createTableBtnWithIcon(
                 'money',
@@ -1030,9 +1017,9 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
           if (
-            parseInt(await unswDepTypeByProfileId(am_arr[0][i]), 10) ===
+            toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
           ) {
             this.icon_column.push(
@@ -1071,9 +1058,9 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
           if (
-            parseInt(await unswDepTypeByProfileId(am_arr[0][i]), 10) ===
+            toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
           ) {
             // let apy = await window.usage_calc_smartcontract_reader.methods.calcDepApy(am_arr[0][i]).call({ from: userObject.account});
@@ -1103,13 +1090,13 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
           if (
-            parseInt(await unswDepTypeByProfileId(am_arr[0][i]), 10) ===
+            toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
           ) {
             let txt = '';
-            if (am_arr[1][i] > 0) {
+            if (toNumber(am_arr[1][i]) > 0) {
               // let am = window.web3js_reader.utils.fromWei(am_arr[1][i], 'ether');
               const adj_am = toTokens(am_arr[1][i], 4); // ((parseFloat(am)).toFixed(4)).toString();
               txt = `<td class="table-cell table-cell">${adj_am}</td>`;
@@ -1142,13 +1129,13 @@ const userObject = {
 
         let index = 0;
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
           if (
-            parseInt(await unswDepTypeByProfileId(am_arr[0][i]), 10) ===
+            toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
           ) {
             let txt = '';
-            if (am_arr[1][i] > 0) {
+            if (toNumber(am_arr[1][i]) > 0) {
               const am = await calcUSDValueOfDeposit(am_arr[1][i], i);
               this.usd_val_only_col.push({
                 val: am,
@@ -1188,21 +1175,22 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
           if (
-            parseInt(await unswDepTypeByProfileId(am_arr[0][i]), 10) ===
+            toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
           ) {
             let txt = '';
             let txt_unl = '';
-
-            if (am_arr[1][i] > 0 && am_arr[2][i] > 0) {
+            
+            if (toNumber(am_arr[1][i]) > 0) {
               const days = await window.staking_smartcontract.methods
                 .depositDays(userObject.account, i)
                 .call({
                   from: userObject.account,
                 }); // duration
-              txt = `<td class="table-cell">${days.toString()}</td>`;
+                
+              txt = `<td class="table-cell">${!!toNumber(days) ? days : '-'}</td>`;
 
               const period_code = (
                 await unswProfileNameByProfileId(am_arr[0][i])
@@ -1211,7 +1199,7 @@ const userObject = {
               const unl_period =
                 period_len_from_code[period_code] - days.toString();
               let unl_period_txt;
-              if (unl_period > 0) {
+              if (toNumber(unl_period) > 0) {
                 unl_period_txt = unl_period.toString();
               } else {
                 unl_period_txt = '-';
@@ -1247,14 +1235,14 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
           if (
-            parseInt(await unswDepTypeByProfileId(am_arr[0][i]), 10) ===
+            toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
           ) {
             let txt = '';
 
-            if (am_arr[2][i] > 0) {
+            if (toNumber(am_arr[2][i]) > 0) {
               // let am = window.web3js_reader.utils.fromWei(am_arr[2][i], 'ether');
               const adj_am = toTokens(am_arr[2][i], 4); // ((parseFloat(am)).toFixed(4)).toString();
               txt = `<td class="table-cell">${adj_am}</td>`;
@@ -1285,14 +1273,14 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
           if (
-            parseInt(await unswDepTypeByProfileId(am_arr[0][i]), 10) ===
+            toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
           ) {
             let txt = '';
 
-            if (am_arr[2][i] > 0) {
+            if (toNumber(am_arr[2][i]) > 0) {
               txt = `<td class="table-cell">${createTableBtnWithIcon(
                 'withdraw',
                 'Withdraw deposit',
@@ -1326,14 +1314,14 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
           if (
-            parseInt(await unswDepTypeByProfileId(am_arr[0][i]), 10) ===
+            toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
           ) {
             let txt = '';
 
-            if (am_arr[2][i] > 0) {
+            if (toNumber(am_arr[2][i]) > 0) {
               // let am = window.web3js_reader.utils.fromWei(am_arr[2][i], 'ether');
               const adj_am = toTokens(am_arr[2][i], 4); // ((parseFloat(am)).toFixed(4)).toString();
 
@@ -1380,14 +1368,14 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
           if (
-            parseInt(await unswDepTypeByProfileId(am_arr[0][i]), 10) ===
+            toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
           ) {
             let txt = '';
 
-            if (rew_arr[1][i] > 0) {
+            if (toNumber(rew_arr[1][i]) > 0) {
               // let adj = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');
               const adj_str = toTokens(rew_arr[1][i], 4); // ((parseFloat(adj)).toFixed(4)).toString();
               txt = `<td class="table-cell">${adj_str}</td>`;
@@ -1418,14 +1406,14 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
           if (
-            parseInt(await unswDepTypeByProfileId(am_arr[0][i]), 10) ===
+            toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
           ) {
             let txt = '';
 
-            if (rew_arr[2][i] > 0) {
+            if (toNumber(rew_arr[2][i]) > 0) {
               // let adj = window.web3js_reader.utils.fromWei(rew_arr[2][i], 'ether');
               const adj_str = toTokens(rew_arr[2][i], 4); // ((parseFloat(adj)).toFixed(4)).toString();
               txt = `<td class="table-cell">${adj_str}</td>`;
@@ -1456,14 +1444,14 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (am_arr[1][i] === 0 && rew_arr[1][i] === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
           if (
-            parseInt(await unswDepTypeByProfileId(am_arr[0][i]), 10) ===
+            toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
           ) {
             let txt = '';
 
-            if (rew_arr[2][i] > 0) {
+            if (toNumber(rew_arr[2][i]) > 0) {
               txt = `<td class="table-cell">${createTableBtnWithIcon(
                 'withdraw',
                 'Withdraw yield',
