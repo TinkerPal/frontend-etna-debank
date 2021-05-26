@@ -192,7 +192,7 @@ const nftAssetsSelect = new Choices('#nftAssetsSelect', {
         return template(`
             <div class="${classNames.item} ${classNames.itemChoice} ${
           data.disabled ? classNames.itemDisabled : classNames.itemSelectable
-        }" data-select-text="${this.config.itemSelectText}" data-choice ${
+        }" data-choice ${
           data.disabled
             ? 'data-choice-disabled aria-disabled="true"'
             : 'data-choice-selectable'
@@ -215,6 +215,7 @@ const collateralDropdown = new Choices('#credprofiles-dropdown', {
   },
   searchEnabled: false,
   shouldSort: false,
+  itemSelectText: ''
 });
 
 const walletButton = document.getElementById('enableEthereumButton');

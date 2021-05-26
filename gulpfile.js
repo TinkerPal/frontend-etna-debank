@@ -135,6 +135,9 @@ function cssTask() {
       .pipe(replace('hover: ', 'hover:'))
       .pipe(replace('focus: ', 'focus:'))
       .pipe(replace('disabled: ', 'disabled:'))
+      .pipe(replace('xl: ', 'xl:'))
+      .pipe(replace('lg: ', 'lg:'))
+      .pipe(replace('md: ', 'md:'))
       .pipe(
         postcss([
           tailwindcss('./tailwind.config.js'),
