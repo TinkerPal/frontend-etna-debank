@@ -390,6 +390,18 @@
   .socials-row {
     @apply flex md: flex-row flex-col items-center px-6 pb-4 bg-black pt-2 mx-auto;
   }
+  .load-bar-cover {
+    @apply fixed top-0 left-0 w-full h-full z-40 bg-black;
+  }
+  .body {
+    @apply font-body bg-black text-white h-full min-h-screen relative w-screen flex flex-col relative;
+  }
+}
+
+.page-loading {
+  nav {
+    pointer-events: none;
+  }
 }
 
 #our-crypto-list {
