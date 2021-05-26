@@ -262,7 +262,7 @@
     }
 
     &.info_pane_error {
-      @apply border-red bg-error flex;
+      @apply border-red bg-pane-error flex;
 
       .text-color {
         @apply text-red;
@@ -283,7 +283,7 @@
     }
 
     &.info_pane_success {
-      @apply bg-green-success border-green-3 flex;
+      @apply bg-pane-success border-green-3 flex;
 
       .text-color {
         @apply text-green-3;
@@ -304,7 +304,7 @@
     }
 
     &.info_pane_info {
-      @apply border-yellow-400 bg-warning flex;
+      @apply border-yellow-400 bg-pane-info flex;
 
       .text-color {
         @apply text-yellow;

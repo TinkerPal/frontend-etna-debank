@@ -54,6 +54,9 @@ module.exports = {
       'green-success': 'rgba(39, 174, 96, 0.2)',
       'warning': 'rgba(255, 235, 153, 0.25)',
       'error': 'rgba(255, 70, 70, 0.15)',
+      'pane-error': 'rgb(43, 5, 5)',
+      'pane-success': 'rgb(3, 37, 15)',
+      'pane-info': 'rgb(73, 66, 40)',
       violet: '#5A5A89',
       'green-400': '#68D391'
     }),
