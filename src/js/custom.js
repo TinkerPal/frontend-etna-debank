@@ -215,7 +215,7 @@ const collateralDropdown = new Choices('#credprofiles-dropdown', {
   },
   searchEnabled: false,
   shouldSort: false,
-  itemSelectText: ''
+  itemSelectText: '',
 });
 
 const walletButton = document.getElementById('enableEthereumButton');
@@ -352,7 +352,8 @@ async function postWalletCallback() {
     window.location.pathname === '/our-dashboard'
   ) {
     await getWalletPref();
-    openTab({
+    openTab(
+      {
         srcElement: document.getElementById(
           `${userObject.state.current_page_id}-menu`
         ),
@@ -404,13 +405,11 @@ async function getAccount() {
 
     const response = await fetch('/whitelisted.json');
 
-    const {
-      whitelisted_wallets
-    } = await response.json();
+    const { whitelisted_wallets } = await response.json();
 
     const isWhitelistedAccount = whitelisted_wallets.some(
       (whitelistedWallet) =>
-      whitelistedWallet.toUpperCase() === userObject.account.toUpperCase()
+        whitelistedWallet.toUpperCase() === userObject.account.toUpperCase()
     );
 
     if (!isWhitelistedAccount) {
@@ -667,7 +666,8 @@ async function getCredit() {
   }
 
   if (
-    toNumber(userObject.state.getcredit_profile) === toNumber(userObject.state.selected_credprofile)
+    toNumber(userObject.state.getcredit_profile) ===
+    toNumber(userObject.state.selected_credprofile)
   ) {
     modal_add_credit.isLoadedAfterConfirm(false);
     errorMsg('assets for collateral and credit should be different');
@@ -696,7 +696,8 @@ async function getCredit() {
         isFullCallateral,
         is_fixed_credit
       )
-      .send({
+      .send(
+        {
           from: userObject.account,
           gasPrice: window.gp,
         },
@@ -767,8 +768,7 @@ async function deposit() {
       document.getElementById('tokens_amount').value
     ).toString(); // wei
     if (
-      toNumber(userObject.state.selected_depprofile_type) ===
-      NATIVE_ETHEREUM
+      toNumber(userObject.state.selected_depprofile_type) === NATIVE_ETHEREUM
     ) {
       wei_val = amount;
 
@@ -792,10 +792,10 @@ async function deposit() {
       );
       const allow = new BN(
         await token_contract.methods
-        .allowance(userObject.account, window.staking_contract_address)
-        .call({
-          from: userObject.account,
-        })
+          .allowance(userObject.account, window.staking_contract_address)
+          .call({
+            from: userObject.account,
+          })
       );
 
       const tokenAmountToApprove = new BN(amount);
@@ -836,7 +836,8 @@ async function deposit() {
 
     stakingContractInstance.methods
       .deposit(amount, token_ids, dep_profile_id, window.famer)
-      .send({
+      .send(
+        {
           from: userObject.account,
           value: wei_val,
           gasPrice: window.gp,
@@ -914,10 +915,10 @@ async function stake_liq() {
   );
   const allow = new BN(
     await token_contract.methods
-    .allowance(userObject.account, window.staking_contract_address)
-    .call({
-      from: userObject.account,
-    })
+      .allowance(userObject.account, window.staking_contract_address)
+      .call({
+        from: userObject.account,
+      })
   );
 
   const tokenAmountToApprove = new BN(amount);
@@ -952,7 +953,8 @@ async function stake_liq() {
   initStakingContract(async (stakingContractInstance) => {
     stakingContractInstance.methods
       .deposit(amount, token_ids, dep_profile_id, NONE_FAMER_ID)
-      .send({
+      .send(
+        {
           from: userObject.account,
           value: wei_val,
           gasPrice: window.gp,
@@ -1003,7 +1005,8 @@ async function approve_deposit() {
       // solidity: function setApprovalForAll(address _operator,bool _approved) external{}
       window.cyclops_nft_smartcontract.methods
         .setApprovalForAll(window.staking_contract_address, true)
-        .send({
+        .send(
+          {
             from: userObject.account,
             gasPrice: window.gp,
           },
@@ -1028,8 +1031,7 @@ async function approve_deposit() {
     }
   } else {
     if (
-      toNumber(userObject.state.selected_depprofile_type) ===
-      NATIVE_ETHEREUM
+      toNumber(userObject.state.selected_depprofile_type) === NATIVE_ETHEREUM
     ) {
       return; // no need..
     }
@@ -1047,9 +1049,7 @@ async function approve_deposit() {
 }
 
 async function approveTokenMove(token_address, amount_wei, toAddress, modal) {
-  const {
-    BN
-  } = window.web3js_reader.utils;
+  const { BN } = window.web3js_reader.utils;
 
   // Calculate contract compatible value for approve with proper decimal points using BigNumber
   const tokenAmountToApprove = new BN(amount_wei);
@@ -1067,7 +1067,8 @@ async function approveTokenMove(token_address, amount_wei, toAddress, modal) {
 
   await token_contract.methods
     .approve(toAddress, calculatedApproveValue)
-    .send({
+    .send(
+      {
         from: userObject.account,
         gasPrice: window.gp,
       },
@@ -1471,7 +1472,8 @@ async function updateData(action = null) {
 }
 
 function loginAdmin() {
-  const msgParams = [{
+  const msgParams = [
+    {
       type: 'string',
       name: 'Authorization',
       value: 'Sign to confirm your access to admin wallet',
@@ -1578,9 +1580,7 @@ function setWalletPref(pref) {
       }
     })
     .then((respJson) => {
-      const {
-        type
-      } = respJson;
+      const { type } = respJson;
 
       if (type === 'success') {
         //
@@ -1617,9 +1617,7 @@ async function getWalletPref() {
       }
     })
     .then((respJson) => {
-      const {
-        type
-      } = respJson;
+      const { type } = respJson;
 
       if (type === 'success') {
         if (!respJson.value.page_id) {
@@ -1969,7 +1967,8 @@ async function creditProfilesDropdownBuild() {
   });
 
   if (
-    toNumber(userObject.state.selected_credprofile) === toNumber(userObject.state.getcredit_profile)
+    toNumber(userObject.state.selected_credprofile) ===
+    toNumber(userObject.state.getcredit_profile)
   ) {
     errorMsg('assets for collateral and credit should be different');
     getCreditButton.disabled = true;
@@ -2009,67 +2008,68 @@ async function initCreditProfilesDropdown() {
   dropdown.addEventListener(
     'change',
     async function (e) {
-        const ddData = await getCollateralAvailableTokens();
+      const ddData = await getCollateralAvailableTokens();
 
-        const {
-          value
-        } = e.target;
-        const selectedData = ddData.find((item) => item.text === value);
-        if (value === 'nft') {
-          fullCollateral.checked = true;
-          partCollateral.parentNode.classList.add('hidden');
-        } else {
-          partCollateral.parentNode.classList.remove('hidden');
-        }
+      const { value } = e.target;
+      const selectedData = ddData.find((item) => item.text === value);
+      if (value === 'nft') {
+        fullCollateral.checked = true;
+        partCollateral.parentNode.classList.add('hidden');
+      } else {
+        partCollateral.parentNode.classList.remove('hidden');
+      }
 
-        resetMsg();
+      resetMsg();
 
-        setState({
-          selected_credprofile: selectedData.p_id,
-        });
+      setState({
+        selected_credprofile: selectedData.p_id,
+      });
 
-        if (toNumber(selectedData.p_id) === toNumber(userObject.state.getcredit_profile)) {
-          errorMsg('assets for collateral and credit should be different');
-          getCreditButton.disabled = true;
-        } else {
-          getCreditButton.disabled = false;
-        }
+      if (
+        toNumber(selectedData.p_id) ===
+        toNumber(userObject.state.getcredit_profile)
+      ) {
+        errorMsg('assets for collateral and credit should be different');
+        getCreditButton.disabled = true;
+      } else {
+        getCreditButton.disabled = false;
+      }
 
-        setState({
-          selected_credprofile_name: selectedData.text,
-          selected_credprofile_type: selectedData.c_type,
-          selected_credprofile_token_address: selectedData.c_tok_addr,
-        });
+      setState({
+        selected_credprofile_name: selectedData.text,
+        selected_credprofile_type: selectedData.c_type,
+        selected_credprofile_token_address: selectedData.c_tok_addr,
+      });
 
-        tokensAmmountCollateral.value = depAmountByProfileId(
-          userObject.state.selected_credprofile
-        )[1];
+      tokensAmmountCollateral.value = depAmountByProfileId(
+        userObject.state.selected_credprofile
+      )[1];
 
-        await updUSDValueCollateral(
-          'tokens_amount_collateral',
-          'usd_value_collateral',
-          depAmountByProfileId(userObject.state.selected_credprofile)[0]
+      await updUSDValueCollateral(
+        'tokens_amount_collateral',
+        'usd_value_collateral',
+        depAmountByProfileId(userObject.state.selected_credprofile)[0]
+      );
+
+      if (toNumber(userObject.state.getcredit_profile) !== -1) {
+        tokensAmmountGetCredit.innerText = await calcTokensFromUSD(
+          userObject.state.getcredit_profile,
+          usdValueCollateral.value
         );
-
-        if (toNumber(userObject.state.getcredit_profile) !== -1) {
-          tokensAmmountGetCredit.innerText = await calcTokensFromUSD(
+        const apy = await window.usage_calc_smartcontract_reader.methods
+          .calcVarApy(
             userObject.state.getcredit_profile,
-            usdValueCollateral.value
-          );
-          const apy = await window.usage_calc_smartcontract_reader.methods
-            .calcVarApy(
-              userObject.state.getcredit_profile,
-              userObject.state.selected_credprofile
-            )
-            .call({
-              from: userObject.account,
-            });
+            userObject.state.selected_credprofile
+          )
+          .call({
+            from: userObject.account,
+          });
 
-          const apy_adj = (apy / apy_scale) * 100;
-          creditPerc.value = parseFloat(apy_adj).toFixed(2).toString();
-        }
-      },
-      false
+        const apy_adj = (apy / apy_scale) * 100;
+        creditPerc.value = parseFloat(apy_adj).toFixed(2).toString();
+      }
+    },
+    false
   );
 }
 
@@ -2096,9 +2096,7 @@ async function initGetCreditDropdown() {
   });
 
   dropdown.onchange = async (e) => {
-    const {
-      value
-    } = e.target;
+    const { value } = e.target;
     const selectedData = ddData.find((item) => item.text === value);
 
     resetMsg();
@@ -2107,7 +2105,10 @@ async function initGetCreditDropdown() {
       getcredit_profile: selectedData.p_id,
     });
 
-    if (toNumber(selectedData.p_id) === toNumber(userObject.state.selected_credprofile)) {
+    if (
+      toNumber(selectedData.p_id) ===
+      toNumber(userObject.state.selected_credprofile)
+    ) {
       errorMsg('assets for collateral and credit should be different');
       getCreditButton.disabled = true;
     } else {
@@ -2211,7 +2212,8 @@ function updateAssetsDropdown(data) {
 async function getLiqTerms() {
   const lterms = [];
 
-  const terms = [{
+  const terms = [
+    {
       text: '1 week',
       code: '1W',
     },
@@ -2294,9 +2296,7 @@ async function initLiqTermsDropdown() {
   setApyStr(liqTermsData[0]);
 
   liqTermsSelect.onchange = (e) => {
-    const {
-      value
-    } = e.target;
+    const { value } = e.target;
     const currentOption = liqTermsData.find((item) => item.text === value);
     setApyStr(currentOption);
   };
@@ -2327,9 +2327,7 @@ async function initLiqPairsDropdown() {
   setBal(liqPairsAssetsOptions[0]);
 
   liqPairsAssets.onchange = (e) => {
-    const {
-      value
-    } = e.target;
+    const { value } = e.target;
     const currentOption = liqPairsAssetsOptions.find(
       (item) => item.text === value
     );
@@ -2401,7 +2399,9 @@ async function getAllCreditProfiles() {
 
 function depTypeByProfileId(profile_id) {
   for (let i = 0; i < userObject.deposit_profiles.length; i++) {
-    if (toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)) {
+    if (
+      toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)
+    ) {
       return toNumber(userObject.deposit_profiles[i].p_dep_type);
     }
   }
@@ -2410,7 +2410,9 @@ function depTypeByProfileId(profile_id) {
 
 function tokenAddressByProfileId(profile_id) {
   for (let i = 0; i < userObject.deposit_profiles.length; i++) {
-    if (toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)) {
+    if (
+      toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)
+    ) {
       return userObject.deposit_profiles[i].p_tok_addr;
     }
   }
@@ -2419,7 +2421,9 @@ function tokenAddressByProfileId(profile_id) {
 
 function profileNameByProfileId(profile_id) {
   for (let i = 0; i < userObject.deposit_profiles.length; i++) {
-    if (toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)) {
+    if (
+      toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)
+    ) {
       return userObject.deposit_profiles[i].p_name;
     }
   }
@@ -2433,9 +2437,7 @@ async function unswAPYStrByProfileName(profile_name) {
 
   for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
     if (userObject.deposit_profiles_liqpairs[i].p_name === profile_name) {
-      const apy = toNumber(
-        userObject.deposit_profiles_liqpairs[i].init_apy
-      );
+      const apy = toNumber(userObject.deposit_profiles_liqpairs[i].init_apy);
       const apy_real = apy / apy_scale;
       const apy_str = `${(apy_real * 100).toFixed(1).toString()}%`;
       return apy_str;
@@ -2463,7 +2465,10 @@ async function unswProfileNameByProfileId(profile_id) {
   }
 
   for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
-    if (toNumber(userObject.deposit_profiles_liqpairs[i].p_id) === toNumber(profile_id)) {
+    if (
+      toNumber(userObject.deposit_profiles_liqpairs[i].p_id) ===
+      toNumber(profile_id)
+    ) {
       return userObject.deposit_profiles_liqpairs[i].p_name;
     }
   }
@@ -2476,7 +2481,10 @@ async function unswDepTypeByProfileId(profile_id) {
   }
 
   for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
-    if (toNumber(userObject.deposit_profiles_liqpairs[i].p_id) === toNumber(profile_id)) {
+    if (
+      toNumber(userObject.deposit_profiles_liqpairs[i].p_id) ===
+      toNumber(profile_id)
+    ) {
       return toNumber(userObject.deposit_profiles_liqpairs[i].p_dep_type);
     }
   }
@@ -2486,26 +2494,6 @@ async function unswDepTypeByProfileId(profile_id) {
 // getCreditsDashboard
 
 async function getCreditsDashboard(callback = null) {
-  let html =
-    '<table class="min-w-full">' +
-    '<thead>' +
-    '<tr>' +
-    '<th class="table-title" colspan = "2" scope = "colgroup">Asset</th>' +
-    '<th class="table-title">Borrowed amount</th>' +
-    '<th class="table-title">USD value</th>' +
-    '<th class="table-title">Collateral</th>' +
-    '<th class="table-title">Duration days</th>' +
-    '<th class="table-title">Curent APR<sup>*</sup></th>' +
-    '<th class="table-title">Fee</th>' +
-    '<th class="table-title table-title-right">Leverage Level</th>' +
-    '<th class="table-title" colspan = "2" scope = "colgroup">Cover Fees with ETNA Leverage</th>' +
-    '<th class="table-title table-title-empty"></th>' +
-    '<th class="table-title">In wallet</th>' +
-    '<th class="table-title">Deposit</th>' +
-    '</tr>' +
-    '</thead>' +
-    '<tbody>';
-
   // let profiles = userObject.deposit_profiles;
 
   const [am_arr, cred_arr, clt_arr] = await Promise.all([
@@ -2530,6 +2518,7 @@ async function getCreditsDashboard(callback = null) {
     set_leverage_column,
     return_credit_col,
     return_empty_col,
+    return_leverage_visible,
   ] = await Promise.all([
     userObject.credits.getIconAssetsCols(),
     userObject.credits.getAPRCol(),
@@ -2544,12 +2533,45 @@ async function getCreditsDashboard(callback = null) {
     userObject.credits.getSetLevCol(),
     userObject.credits.getReturnCreditCol(),
     userObject.credits.getReturnEmptyCol(),
+    userObject.credits.returnLeverageVisible(),
   ]);
+
+  let html = `
+  <table class="min-w-full">
+  <thead>
+  <tr>
+  <th class="table-title" colspan = "2" scope = "colgroup">Asset</th> 
+  <th class="table-title">Borrowed amount</th> 
+  <th class="table-title">USD value</th> 
+  <th class="table-title">Collateral</th> 
+  <th class="table-title">Duration days</th> 
+  <th class="table-title">Curent APR<sup>*</sup></th> 
+  <th class="table-title">Fee</th> 
+  ${
+    return_leverage_visible
+      ? `
+    <th class="table-title table-title-right">Leverage Level</th> 
+    <th class="table-title" colspan = "2" scope = "colgroup">Cover Fees with ETNA Leverage</th>
+    <th class="table-title table-title-empty"></th>
+    `
+      : `
+    <th class="table-title table-title-empty" colspan = "2" scope = "colgroup"></th>
+    `
+  }
+  <th class="table-title">In wallet</th> 
+  <th class="table-title">Deposit</th> 
+  </tr> 
+  </thead> 
+  <tbody>`;
 
   for (let i = 0; i < cred_arr[0].length; i++) {
     // i === credit id
 
-    if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0 || toNumber(lev_arr[i]) > 0) {
+    if (
+      toNumber(cred_arr[1][i]) > 0 ||
+      toNumber(cred_arr[2][i]) > 0 ||
+      toNumber(lev_arr[i]) > 0
+    ) {
       html += '<tr class="table-row">';
 
       html += icon_column[i];
@@ -2568,9 +2590,9 @@ async function getCreditsDashboard(callback = null) {
 
       html += fee_col[i];
 
-      html += leverage_column[i];
+      html += return_leverage_visible ? leverage_column[i] : '';
 
-      html += set_leverage_column[i];
+      html += return_leverage_visible ? set_leverage_column[i] : '';
 
       html += return_credit_col[i];
 
@@ -2737,8 +2759,8 @@ async function getCapDashbord(callback = null) {
     return;
   }
   const data = await fetch(
-      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&price_change_percentage=24h,30d'
-    )
+    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&price_change_percentage=24h,30d'
+  )
     .then((response) => {
       if (response.status !== 200) {
         throw new Error(response.status);
@@ -2751,7 +2773,8 @@ async function getCapDashbord(callback = null) {
       document.getElementById('total-dashboard-tab-menu').remove();
 
       if (userObject.state.current_page_id === 'total-dashboard-tab') {
-        openTab({
+        openTab(
+          {
             srcElement: document.getElementById('dashboard-tab-menu'),
           },
           'dashboard-tab'
@@ -2986,9 +3009,7 @@ async function getDepositsDashboard(callback = null) {
 }
 
 async function getNftPrice(contract, vc_contract, token_ids) {
-  const {
-    BN
-  } = window;
+  const { BN } = window;
 
   const wei_am = await vc_contract.methods.calcNFTTokensValue(token_ids).call({
     from: userObject.account,
@@ -3021,13 +3042,9 @@ async function getNftPrice(contract, vc_contract, token_ids) {
 async function updUSDValue(tokens_amount_elem, usd_val_elem) {
   const contract = window.data_provider_smartcontract_reader;
 
-  if (
-    toNumber(userObject.state.selected_depprofile_type) === NATIVE_ETHEREUM
-  ) {
+  if (toNumber(userObject.state.selected_depprofile_type) === NATIVE_ETHEREUM) {
     const tokens_amount = document.getElementById(tokens_amount_elem).value;
-    const {
-      BN
-    } = window;
+    const { BN } = window;
     const wei_amount = safeFloatToWei(tokens_amount); // BN
     const [data, dec] = await Promise.all([
       contract.methods.getData('BNBUSD').call({
@@ -3069,9 +3086,7 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
     toNumber(userObject.state.selected_depprofile_type) === UNISWAP_PAIR
   ) {
     const tokens_amount = document.getElementById(tokens_amount_elem).value;
-    const {
-      BN
-    } = window;
+    const { BN } = window;
     const wei_amount = safeFloatToWei(tokens_amount); // BN
 
     const [data, dec] = await Promise.all([
@@ -3079,10 +3094,10 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
         from: userObject.account,
       }),
       contract.methods
-      .getDecimals(userObject.state.selected_depprofile_name)
-      .call({
-        from: userObject.account,
-      }),
+        .getDecimals(userObject.state.selected_depprofile_name)
+        .call({
+          from: userObject.account,
+        }),
     ]);
     // let data = await contract.methods.getData(userObject.state.selected_depprofile_name).call({from:userObject.account});
     // let dec = await contract.methods.getDecimals(userObject.state.selected_depprofile_name).call({from:userObject.account});
@@ -3102,19 +3117,13 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
 async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
   if (toNumber(dep_id) === 9999999) return;
 
-  const {
-    am_arr
-  } = userObject.deposits;
+  const { am_arr } = userObject.deposits;
 
   const tokens_amount = document.getElementById(tokens_amount_elem).value;
 
-  const {
-    BN
-  } = window;
+  const { BN } = window;
   let wei_amount = 0;
-  if (
-    toNumber(userObject.state.selected_credprofile_type) !== ERC721_TOKEN
-  ) {
+  if (toNumber(userObject.state.selected_credprofile_type) !== ERC721_TOKEN) {
     wei_amount = safeFloatToWei(tokens_amount); // BN
   } else {
     wei_amount = new BN(tokens_amount);
@@ -3124,9 +3133,7 @@ async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
 
   if (toNumber(wei_amount.cmp(dep_am)) === 1) {
     let tok_float = 0;
-    if (
-      toNumber(userObject.state.selected_credprofile_type) !== ERC721_TOKEN
-    ) {
+    if (toNumber(userObject.state.selected_credprofile_type) !== ERC721_TOKEN) {
       tok_float = parseFloat(
         window.web3js_reader.utils.fromWei(am_arr[1][dep_id], 'ether')
       );
@@ -3183,9 +3190,7 @@ async function calcUSDValueByProfileNonNFT(wei_amount, profile_id) {
 }
 
 function show_modal_leverage(cread_id) {
-  const {
-    confirm
-  } = modal_add_leverage;
+  const { confirm } = modal_add_leverage;
   const leveragePercentSelect =
     modal_add_leverage.modal.querySelector('#select-leverage');
   set_leverage(leveragePercentSelect.value, cread_id);
@@ -3199,9 +3204,7 @@ function show_modal_leverage(cread_id) {
 }
 
 function show_modal_unfreeze(cread_id) {
-  const {
-    confirm
-  } = modal_unfreeze;
+  const { confirm } = modal_unfreeze;
   confirm.onclick = () => unfreeze_leverage(cread_id);
 
   modal_unfreeze.show();
@@ -3244,7 +3247,8 @@ async function set_leverage_confirm(ratio, cred_id) {
 
     contractInstance.methods
       .freezeLeverageForCredit(userObject.account, dep_id, cred_id, ratio)
-      .send({
+      .send(
+        {
           from: userObject.account,
           gasPrice: window.gp,
         },
@@ -3275,7 +3279,8 @@ async function unfreeze_leverage(cred_id) {
   initLiqLevContract(async (contractInstance) => {
     contractInstance.methods
       .unfreezeLeverageForCredit(userObject.account, cred_id)
-      .send({
+      .send(
+        {
           from: userObject.account,
           gasPrice: window.gp,
         },
@@ -3352,7 +3357,8 @@ function return_fee(cred_id) {
   submitBtn.onclick = () => return_fee_confirm(cred_id);
 
   if (
-    toNumber(depTypeByProfileId(userObject.credits.cred_arr[0][cred_id])) === NATIVE_ETHEREUM
+    toNumber(depTypeByProfileId(userObject.credits.cred_arr[0][cred_id])) ===
+    NATIVE_ETHEREUM
   ) {
     submitTokensBtn.disabled = true;
     submitTokensBtn.classList.add('btn-done');
@@ -3384,9 +3390,9 @@ function withdraw_deposit(dep_id) {
 
   const adj_am = isToken(dep_id) ? deposit : toTokens(deposit, 4);
 
-  isToken(dep_id) ?
-    partDepositsBtn.parentElement.classList.add('hidden') :
-    partDepositsBtn.parentElement.classList.remove('hidden');
+  isToken(dep_id)
+    ? partDepositsBtn.parentElement.classList.add('hidden')
+    : partDepositsBtn.parentElement.classList.remove('hidden');
 
   withdrawInput.value = adj_am;
   allDepositsBtn.checked = true;
@@ -3420,9 +3426,9 @@ function withdraw_deposit_confirm(dep_id) {
     document.getElementById('withraw_dep_all').checked;
   const depositValue = document.getElementById('withraw_dep_input').value;
 
-  const withdraw_amount = isWithdrawAllDeposit ?
-    0 :
-    safeFloatToWei(depositValue);
+  const withdraw_amount = isWithdrawAllDeposit
+    ? 0
+    : safeFloatToWei(depositValue);
 
   modal_withdraw_deposit.isLoadingAfterConfirm();
 
@@ -3434,7 +3440,8 @@ function withdraw_deposit_confirm(dep_id) {
         withdraw_amount,
         isWithdrawAllDeposit
       )
-      .send({
+      .send(
+        {
           from: userObject.account,
           gasPrice: window.gp,
         },
@@ -3474,9 +3481,9 @@ async function return_credit_mvtokens(cred_id) {
     'credit_return_input'
   ).value;
 
-  const return_amount = isReturnAllCredit ?
-    userObject.credits.cred_arr[1][cred_id] :
-    safeFloatToWei(returnCreditValue);
+  const return_amount = isReturnAllCredit
+    ? userObject.credits.cred_arr[1][cred_id]
+    : safeFloatToWei(returnCreditValue);
 
   const returned_asset_token_address = tokenAddressByProfileId(
     userObject.credits.cred_arr[0][cred_id]
@@ -3525,9 +3532,9 @@ async function return_credit_confirm(cred_id) {
     'credit_return_input'
   ).value;
 
-  const return_amount = isReturnAllCredit ?
-    userObject.credits.cred_arr[1][cred_id] :
-    safeFloatToWei(returnCreditValue);
+  const return_amount = isReturnAllCredit
+    ? userObject.credits.cred_arr[1][cred_id]
+    : safeFloatToWei(returnCreditValue);
 
   // alert(return_amount); return;
   const returned_asset_type = depTypeByProfileId(
@@ -3554,10 +3561,10 @@ async function return_credit_confirm(cred_id) {
     );
     const allow = new BN(
       await token_contract.methods
-      .allowance(userObject.account, window.credit_contract_address)
-      .call({
-        from: userObject.account,
-      })
+        .allowance(userObject.account, window.credit_contract_address)
+        .call({
+          from: userObject.account,
+        })
     );
 
     const tokenAmountToApprove = new BN(return_amount);
@@ -3591,7 +3598,8 @@ async function return_credit_confirm(cred_id) {
   initCreditContract(async (creditContractInstance) => {
     creditContractInstance.methods
       .returnCredit(userObject.account, cred_id, return_amount)
-      .send({
+      .send(
+        {
           from: userObject.account,
           value: return_val,
           gasPrice: window.gp,
@@ -3653,10 +3661,10 @@ async function return_fee_confirm(cred_id) {
     );
     const allow = new BN(
       await token_contract.methods
-      .allowance(userObject.account, window.credit_contract_address)
-      .call({
-        from: userObject.account,
-      })
+        .allowance(userObject.account, window.credit_contract_address)
+        .call({
+          from: userObject.account,
+        })
     );
 
     const tokenAmountToApprove = new BN(return_amount);
@@ -3690,7 +3698,8 @@ async function return_fee_confirm(cred_id) {
   initCreditContract(async (creditContractInstance) => {
     creditContractInstance.methods
       .returnFee(userObject.account, cred_id, return_amount)
-      .send({
+      .send(
+        {
           from: userObject.account,
           value: return_val,
           gasPrice: window.gp,
@@ -3729,7 +3738,8 @@ function withdraw_reward_confirm(dep_id) {
   initStakingContract(async (stakingContractInstance) => {
     stakingContractInstance.methods
       .withdrawDepositRewardById(userObject.account, dep_id)
-      .send({
+      .send(
+        {
           from: userObject.account,
           gasPrice: window.gp,
         },
@@ -3888,9 +3898,7 @@ async function set_leverage(ratio, cred_id) {
       from: userObject.account,
     });
 
-  const {
-    is_fixed_apy
-  } = x;
+  const { is_fixed_apy } = x;
 
   const clt_id = userObject.credits.cred_arr[4][cred_id];
   const clt_profile_id = userObject.credits.clt_arr[0][toNumber(clt_id)];
@@ -3907,7 +3915,7 @@ async function set_leverage(ratio, cred_id) {
       from: userObject.account,
     });
   let lev_needed_size = new BN(lns);
-  if (ratio, 10 > 100 || ratio < 0) ratio = 100;
+  if ((ratio, 10 > 100 || ratio < 0)) ratio = 100;
   if (ratio !== 100) {
     const r = new BN(ratio);
     lev_needed_size = lev_needed_size.mul(r);
@@ -3932,11 +3940,8 @@ async function getCYTRProfileId() {
 
   if (!window.cytr_profile_id) {
     for (let i = 0; i < userObject.deposit_profiles.length; i++) {
-
       if (userObject.deposit_profiles[i].p_name === LEVERAGE_TOKEN) {
-        window.cytr_profile_id = toNumber(
-          userObject.deposit_profiles[i].p_id
-        );
+        window.cytr_profile_id = toNumber(userObject.deposit_profiles[i].p_id);
         return window.cytr_profile_id;
       }
     }

@@ -319,8 +319,10 @@ const userObject = {
         for (let j = 0; j < profiles.length; j++) {
           let txt = '';
           for (let i = 0; i < am_arr[0].length; i++) {
-            
-            if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id) && toNumber(am_arr[2][i]) > 0) {
+            if (
+              toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id) &&
+              toNumber(am_arr[2][i]) > 0
+            ) {
               txt = `<td class="table-cell">${createTableBtnWithIcon(
                 'withdraw',
                 'Withdraw deposit',
@@ -416,13 +418,16 @@ const userObject = {
         for (let j = 0; j < profiles.length; j++) {
           let txt = '';
           for (let i = 0; i < rew_arr[0].length; i++) {
-            if (toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id) && toNumber(rew_arr[2][i]) > 0) {
-              if (toNumber(profiles[j].p_dep_type) === ERC721_TOKEN) 
-              txt = `<td class="table-cell">${createTableBtnWithIcon(
-                'withdraw',
-                'Withdraw yield',
-                `withdraw_reward(${i.toString()})`
-              )}</td>`;
+            if (
+              toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id) &&
+              toNumber(rew_arr[2][i]) > 0
+            ) {
+              if (toNumber(profiles[j].p_dep_type) === ERC721_TOKEN)
+                txt = `<td class="table-cell">${createTableBtnWithIcon(
+                  'withdraw',
+                  'Withdraw yield',
+                  `withdraw_reward(${i.toString()})`
+                )}</td>`;
               break;
             }
           }
@@ -578,9 +583,7 @@ const userObject = {
 
         for (let i = 0; i < cred_arr[0].length; i++) {
           let txt = '';
-          if (
-            toNumber(depTypeByProfileId(cred_arr[0][i])) === ERC721_TOKEN
-          ) {
+          if (toNumber(depTypeByProfileId(cred_arr[0][i])) === ERC721_TOKEN) {
             const token_count =
               await window.cyclops_nft_smartcontract_reader.methods
                 .balanceOf(userObject.account)
@@ -643,8 +646,7 @@ const userObject = {
             if (toNumber(am_arr[0][i]) === toNumber(cred_arr[0][j])) {
               // found
               if (
-                toNumber(depTypeByProfileId(cred_arr[0][j])) ===
-                ERC721_TOKEN
+                toNumber(depTypeByProfileId(cred_arr[0][j])) === ERC721_TOKEN
               ) {
                 // amount
                 txt = `<td class="table-cell">${am_arr[1][i]}</td>`;
@@ -677,9 +679,7 @@ const userObject = {
           if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0) {
             // credit or fee unpaid
             // found
-            if (
-              toNumber(depTypeByProfileId(cred_arr[0][i])) === ERC721_TOKEN
-            ) {
+            if (toNumber(depTypeByProfileId(cred_arr[0][i])) === ERC721_TOKEN) {
               // amount
               txt = `<td class="table-cell">${cred_arr[1][i]}</td>`;
             } else {
@@ -710,9 +710,7 @@ const userObject = {
           if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0) {
             // credit or fee unpaid
             // found
-            if (
-              toNumber(depTypeByProfileId(cred_arr[0][i])) === ERC721_TOKEN
-            ) {
+            if (toNumber(depTypeByProfileId(cred_arr[0][i])) === ERC721_TOKEN) {
               // amount
               txt = `<td class="table-cell">${cred_arr[4][i]}</td>`;
             } else {
@@ -885,7 +883,6 @@ const userObject = {
         const { lev_ratio_arr } = this;
 
         for (let i = 0; i < cred_arr[0].length; i++) {
-          
           let txt = '';
 
           if (toNumber(lev_arr[i]) > 0) {
@@ -915,18 +912,17 @@ const userObject = {
         const { lev_arr } = this;
 
         for (let i = 0; i < cred_arr[0].length; i++) {
-          
           let txt = '';
 
-          if (toNumber(cred_arr[1][i]) > 0 && toNumber(lev_arr[i]) === 0) {
-            
-            txt = `<td class="table-cell w-12">${createTableBtnWithIcon(
-              'price-tag',
-              'Leverage',
-              `show_modal_leverage(${i.toString()})`
-            )}</td>`;
-          } else if (toNumber(lev_arr[i]) > 0) {
+          // if (toNumber(cred_arr[1][i]) > 0 && toNumber(lev_arr[i]) === 0) {
+          //   txt = `<td class="table-cell w-12">${createTableBtnWithIcon(
+          //     'price-tag',
+          //     'Leverage',
+          //     `show_modal_leverage(${i.toString()})`
+          //   )}</td>`;
+          // }
 
+          if (toNumber(lev_arr[i]) > 0) {
             txt = `<td class="table-cell w-12">${createTableBtnWithIcon(
               'discount',
               'Unfreeze',
@@ -939,6 +935,26 @@ const userObject = {
         }
       }
       return this.set_leverage_column;
+    },
+
+    return_leverage_visible: false,
+    getReturn_leverage_visible: 0,
+    async returnLeverageVisible(flag = false) {
+      const current_timestamp = Date.now();
+      if (
+        current_timestamp > this.getReturn_leverage_visible + CACHE_TIME ||
+        flag
+      ) {
+        this.getReturn_leverage_visible = current_timestamp;
+
+        const { cred_arr } = this;
+        const { lev_arr } = this;
+
+        this.return_leverage_visible = cred_arr[0].some(
+          (value, index) => toNumber(lev_arr[index]) > 0
+        );
+      }
+      return this.return_leverage_visible;
     },
 
     return_empty_col: [],
@@ -1017,7 +1033,8 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
+            continue;
           if (
             toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
@@ -1058,7 +1075,8 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
+            continue;
           if (
             toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
@@ -1090,7 +1108,8 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
+            continue;
           if (
             toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
@@ -1129,7 +1148,8 @@ const userObject = {
 
         let index = 0;
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
+            continue;
           if (
             toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
@@ -1175,22 +1195,25 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
+            continue;
           if (
             toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
           ) {
             let txt = '';
             let txt_unl = '';
-            
+
             if (toNumber(am_arr[1][i]) > 0) {
               const days = await window.staking_smartcontract.methods
                 .depositDays(userObject.account, i)
                 .call({
                   from: userObject.account,
                 }); // duration
-                
-              txt = `<td class="table-cell">${!!toNumber(days) ? days : '-'}</td>`;
+
+              txt = `<td class="table-cell">${
+                !toNumber(days) ? '-' : days
+              }</td>`;
 
               const period_code = (
                 await unswProfileNameByProfileId(am_arr[0][i])
@@ -1235,7 +1258,8 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
+            continue;
           if (
             toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
@@ -1273,7 +1297,8 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
+            continue;
           if (
             toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
@@ -1314,7 +1339,8 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
+            continue;
           if (
             toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
@@ -1368,7 +1394,8 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
+            continue;
           if (
             toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
@@ -1406,7 +1433,8 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
+            continue;
           if (
             toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
@@ -1444,7 +1472,8 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0].length; i++) {
-          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0) continue;
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
+            continue;
           if (
             toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
