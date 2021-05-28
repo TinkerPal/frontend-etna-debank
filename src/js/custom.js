@@ -230,16 +230,18 @@ const createTableBtnWithIcon = (icon, text, callback) => {
 };
 
 const createCellWithIcon = (iconSrc) => {
-  const iconName = iconSrc.toLowerCase();
-  const iconObj = CRYPTO_ICONS.find((icon) => iconName === icon.name);
-
-  if (iconObj) {
-    iconSrc = iconObj.icon ? iconObj.icon : iconObj.name;
-  } else {
-    iconSrc = 'b';
+  if (iconSrc) {
+    const iconName = iconSrc.toLowerCase();
+    const iconObj = CRYPTO_ICONS.find((icon) => iconName === icon.name);
+    if (iconObj) {
+      iconSrc = iconObj.icon ? iconObj.icon : iconObj.name;
+    } else {
+      iconSrc = 'b';
+    }
+    return `<span class="crypto-icon-no-spaces"><img src="/images/crypto-icons/icon-${iconSrc}.svg"></span>`;
   }
 
-  return `<span class="crypto-icon-no-spaces"><img src="/images/crypto-icons/icon-${iconSrc}.svg"></span>`;
+  return `<span class="crypto-icon-no-spaces"><img src="/images/crypto-icons/icon-b.svg"></span>`;
 };
 
 const contractsObject = {
@@ -2555,7 +2557,8 @@ async function getCreditsDashboard(callback = null) {
     <th class="table-title table-title-empty"></th>
     `
       : `
-    <th class="table-title table-title-empty" colspan = "2" scope = "colgroup"></th>
+    <th class="table-title pl-0">Repay</th> 
+    <th class="table-title table-title-empty"></th>
     `
   }
   <th class="table-title">In wallet</th> 
