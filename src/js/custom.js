@@ -1951,10 +1951,12 @@ async function creditProfilesDropdownBuild() {
 
   if (ddData.length === 0) return;
 
-  const collateralDropdownOptions = ddData.map((item) => ({
-    value: item.text,
-    label: item.text,
-  }));
+  const collateralDropdownOptions = ddData
+    .map((item) => ({
+      value: item.text,
+      label: item.text,
+    }))
+    .filter((item) => item.label !== 'nft');
 
   collateralDropdownOptions[0].selected = true;
   collateralDropdown.setChoices(
