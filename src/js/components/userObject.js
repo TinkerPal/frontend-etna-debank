@@ -422,12 +422,11 @@ const userObject = {
               toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id) &&
               toNumber(rew_arr[2][i]) > 0
             ) {
-              if (toNumber(profiles[j].p_dep_type) === ERC721_TOKEN)
-                txt = `<td class="table-cell">${createTableBtnWithIcon(
-                  'withdraw',
-                  'Withdraw yield',
-                  `withdraw_reward(${i.toString()})`
-                )}</td>`;
+              txt = `<td class="table-cell">${createTableBtnWithIcon(
+                'withdraw',
+                'Withdraw yield',
+                `withdraw_reward(${i.toString()})`
+              )}</td>`;
               break;
             }
           }
