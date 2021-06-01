@@ -746,7 +746,6 @@ async function deposit() {
     errorMsg('you need to select asset');
     return;
   }
-
   const dep_profile_id = userObject.state.selected_depprofile;
   let amount;
   let wei_val = 0;
@@ -760,6 +759,22 @@ async function deposit() {
       modal_add_deposit.isLoadedAfterConfirm(false);
       errorMsg('you need to select tokens');
       return;
+    }
+
+    try {
+      const isNFTCollateralExists = await window.staking_smartcontract.methods
+        .isNFTCollateralExists(userObject.account)
+        .call({ from: userObject.account });
+
+      if (isNFTCollateralExists) {
+        modal_add_deposit.isLoadedAfterConfirm(false);
+        errorMsg(
+          'You have NFT as collateral, please return credit to unfreeze it and you will be able to open new NFT deposit'
+        );
+        return;
+      }
+    } catch (error) {
+      console.warn(error);
     }
 
     const isApproved = await window.cyclops_nft_smartcontract.methods
