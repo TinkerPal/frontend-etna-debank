@@ -2,11 +2,15 @@ const modal_withdraw_deposit = new Modal('modal-withdraw-deposit');
 const modal_withdraw_yield = new Modal('modal-withdraw-reward');
 const modal_add_credit = new Modal(
   'modal-open-new-credit',
-  () => {
-    initCreditProfilesDropdown();
-    initGetCreditDropdown();
+  async () => {
+    await initCollateralDropdown();
+    await initCreditDropdown();
   },
-  creditProfilesDropdownBuild
+  async () => {
+    await collateralDropdownBuild();
+    await creditDropdownBuild();
+    await creditModalDataUpdate();
+  }
 );
 const modal_return_fee = new Modal('modal-return-fee');
 const modal_return_credit = new Modal('modal-return-credit');
@@ -212,6 +216,15 @@ const nftAssetsSelect = new Choices('#nftAssetsSelect', {
 const collateralDropdown = new Choices('#credprofiles-dropdown', {
   classNames: {
     containerOuter: 'choices choices-collateral',
+  },
+  searchEnabled: false,
+  shouldSort: false,
+  itemSelectText: '',
+});
+
+const creditDropdown = new Choices('#getcredit-dropdown', {
+  classNames: {
+    containerOuter: 'choices choices-credit',
   },
   searchEnabled: false,
   shouldSort: false,
@@ -1941,24 +1954,26 @@ const getCollateralAvailableTokens = async () => {
     .filter((item) => !!item);
 };
 
-async function creditProfilesDropdownBuild() {
-  const getCreditButton =
-    modal_add_credit.modal.querySelector('#getcredit_button');
+async function collateralDropdownBuild(clear = true) {
   const fullCollateral =
     modal_add_credit.modal.querySelector('#full_collateral');
 
-  const ddData = await getCollateralAvailableTokens();
+  let ddData = await getCollateralAvailableTokens();
 
   if (ddData.length === 0) return;
 
-  const collateralDropdownOptions = ddData
-    .map((item) => ({
-      value: item.text,
-      label: item.text,
-    }))
-    .filter((item) => item.label !== 'nft');
+  ddData = ddData.filter(
+    (item) => item.p_id !== userObject.state.getcredit_profile
+  );
 
-  collateralDropdownOptions[0].selected = true;
+  const collateralDropdownOptions = ddData.map((item) => ({
+    value: item.text,
+    label: item.text,
+    p_id: item.p_id,
+  }));
+
+  const selectedChoise = collateralDropdown.getValue();
+  collateralDropdown.removeActiveItems();
   collateralDropdown.setChoices(
     collateralDropdownOptions,
     'value',
@@ -1966,30 +1981,95 @@ async function creditProfilesDropdownBuild() {
     true
   );
 
-  setState({
-    selected_credprofile: ddData[0].p_id,
-  });
+  if (clear) {
+    setState({
+      selected_credprofile: ddData[0].p_id,
+      selected_credprofile_name: ddData[0].text,
+      selected_credprofile_type: ddData[0].c_type,
+      selected_credprofile_token_address: ddData[0].c_tok_addr,
+    });
+    collateralDropdown.setChoiceByValue(ddData[0].text);
 
-  if (
-    toNumber(userObject.state.selected_credprofile) ===
-    toNumber(userObject.state.getcredit_profile)
-  ) {
-    errorMsg('assets for collateral and credit should be different');
-    getCreditButton.disabled = true;
+    fullCollateral.checked = true;
+    full_collateral_btn(
+      depAmountByProfileId(userObject.state.selected_credprofile)[0]
+    );
   } else {
-    getCreditButton.disabled = false;
+    collateralDropdown.setChoiceByValue(selectedChoise.value);
   }
-
-  fullCollateral.checked = true;
-  full_collateral_btn(
-    depAmountByProfileId(userObject.state.selected_credprofile)[0]
-  );
 }
 
-async function initCreditProfilesDropdown() {
+async function creditDropdownBuild(clear = true) {
+  let ddData = await getCreditProfilesListCredit();
+
+  if (ddData.length === 0) return;
+
+  ddData = ddData.filter(
+    (item) => item.p_id !== userObject.state.selected_credprofile
+  );
+
+  const creditDropdownOptions = ddData.map((item) => ({
+    value: item.text,
+    label: item.text,
+    p_id: item.p_id,
+  }));
+
+  const selectedChoise = creditDropdown.getValue();
+  creditDropdown.removeActiveItems();
+  creditDropdown.setChoices(creditDropdownOptions, 'value', 'label', true);
+
+  if (clear) {
+    setState({
+      getcredit_profile: ddData[0].p_id,
+    });
+    creditDropdown.setChoiceByValue(ddData[0].text);
+  } else {
+    creditDropdown.setChoiceByValue(selectedChoise.value);
+  }
+}
+
+async function initCollateralDropdown() {
   const dropdown = modal_add_credit.modal.querySelector(
     '#credprofiles-dropdown'
   );
+
+  const fullCollateral =
+    modal_add_credit.modal.querySelector('#full_collateral');
+  const partCollateral =
+    modal_add_credit.modal.querySelector('#part_collateral');
+
+  await collateralDropdownBuild();
+
+  dropdown.addEventListener(
+    'change',
+    async function (e) {
+      const ddData = await getCollateralAvailableTokens();
+
+      const { value } = e.target;
+      const selectedData = ddData.find((item) => item.text === value);
+
+      if (value === 'nft') {
+        fullCollateral.checked = true;
+        partCollateral.parentNode.classList.add('hidden');
+      } else {
+        partCollateral.parentNode.classList.remove('hidden');
+      }
+
+      setState({
+        selected_credprofile: selectedData.p_id,
+        selected_credprofile_name: selectedData.text,
+        selected_credprofile_type: selectedData.c_type,
+        selected_credprofile_token_address: selectedData.c_tok_addr,
+      });
+
+      await creditDropdownBuild(false);
+      await creditModalDataUpdate();
+    },
+    false
+  );
+}
+
+async function creditModalDataUpdate() {
   const tokensAmmountCollateral = modal_add_credit.modal.querySelector(
     '#tokens_amount_collateral'
   );
@@ -2000,143 +2080,61 @@ async function initCreditProfilesDropdown() {
     '#usd_value_collateral'
   );
   const creditPerc = modal_add_credit.modal.querySelector('#credit_perc');
-  const fullCollateral =
-    modal_add_credit.modal.querySelector('#full_collateral');
-  const partCollateral =
-    modal_add_credit.modal.querySelector('#part_collateral');
-  const getCreditButton =
-    modal_add_credit.modal.querySelector('#getcredit_button');
 
-  await creditProfilesDropdownBuild();
+  tokensAmmountCollateral.value = depAmountByProfileId(
+    userObject.state.selected_credprofile
+  )[1];
 
-  dropdown.addEventListener(
-    'change',
-    async function (e) {
-      const ddData = await getCollateralAvailableTokens();
-
-      const { value } = e.target;
-      const selectedData = ddData.find((item) => item.text === value);
-      if (value === 'nft') {
-        fullCollateral.checked = true;
-        partCollateral.parentNode.classList.add('hidden');
-      } else {
-        partCollateral.parentNode.classList.remove('hidden');
-      }
-
-      resetMsg();
-
-      setState({
-        selected_credprofile: selectedData.p_id,
-      });
-
-      if (
-        toNumber(selectedData.p_id) ===
-        toNumber(userObject.state.getcredit_profile)
-      ) {
-        errorMsg('assets for collateral and credit should be different');
-        getCreditButton.disabled = true;
-      } else {
-        getCreditButton.disabled = false;
-      }
-
-      setState({
-        selected_credprofile_name: selectedData.text,
-        selected_credprofile_type: selectedData.c_type,
-        selected_credprofile_token_address: selectedData.c_tok_addr,
-      });
-
-      tokensAmmountCollateral.value = depAmountByProfileId(
-        userObject.state.selected_credprofile
-      )[1];
-
-      await updUSDValueCollateral(
-        'tokens_amount_collateral',
-        'usd_value_collateral',
-        depAmountByProfileId(userObject.state.selected_credprofile)[0]
-      );
-
-      if (toNumber(userObject.state.getcredit_profile) !== -1) {
-        tokensAmmountGetCredit.innerText = await calcTokensFromUSD(
-          userObject.state.getcredit_profile,
-          usdValueCollateral.value
-        );
-        const apy = await window.usage_calc_smartcontract_reader.methods
-          .calcVarApy(
-            userObject.state.getcredit_profile,
-            userObject.state.selected_credprofile
-          )
-          .call({
-            from: userObject.account,
-          });
-
-        const apy_adj = (apy / apy_scale) * 100;
-        creditPerc.value = parseFloat(apy_adj).toFixed(2).toString();
-      }
-    },
-    false
+  await updUSDValueCollateral(
+    'tokens_amount_collateral',
+    'usd_value_collateral',
+    depAmountByProfileId(userObject.state.selected_credprofile)[0]
   );
+
+  tokensAmmountGetCredit.innerText = await calcTokensFromUSD(
+    userObject.state.getcredit_profile,
+    usdValueCollateral.value
+  );
+
+  const apy = await window.usage_calc_smartcontract_reader.methods
+    .calcVarApy(
+      userObject.state.getcredit_profile,
+      userObject.state.selected_credprofile
+    )
+    .call({
+      from: userObject.account,
+    });
+  const apy_adj = (apy / apy_scale) * 100;
+  creditPerc.value = parseFloat(apy_adj).toFixed(2).toString();
 }
 
-async function initGetCreditDropdown() {
+async function initCreditDropdown() {
   const ddData = await getCreditProfilesListCredit();
 
   if (ddData.length === 0) return;
 
   const dropdown = modal_add_credit.modal.querySelector('#getcredit-dropdown');
-  const tokensAmmountGetCredit = modal_add_credit.modal.querySelector(
-    '#tokens_amount_getcredit'
+
+  await creditDropdownBuild();
+  await creditModalDataUpdate();
+
+  dropdown.addEventListener(
+    'change',
+    async function (e) {
+      const ddData = await getCreditProfilesListCredit();
+
+      const { value } = e.target;
+      const selectedData = ddData.find((item) => item.text === value);
+
+      setState({
+        getcredit_profile: selectedData.p_id,
+      });
+
+      await collateralDropdownBuild(false);
+      await creditModalDataUpdate();
+    },
+    false
   );
-  const usdValueCollateral = modal_add_credit.modal.querySelector(
-    '#usd_value_collateral'
-  );
-  const creditPerc = modal_add_credit.modal.querySelector('#credit_perc');
-  const getCreditButton =
-    modal_add_credit.modal.querySelector('#getcredit_button');
-
-  setOptionsToSelect(ddData, dropdown);
-
-  new CustomSelect({
-    elem: dropdown,
-  });
-
-  dropdown.onchange = async (e) => {
-    const { value } = e.target;
-    const selectedData = ddData.find((item) => item.text === value);
-
-    resetMsg();
-
-    setState({
-      getcredit_profile: selectedData.p_id,
-    });
-
-    if (
-      toNumber(selectedData.p_id) ===
-      toNumber(userObject.state.selected_credprofile)
-    ) {
-      errorMsg('assets for collateral and credit should be different');
-      getCreditButton.disabled = true;
-    } else {
-      getCreditButton.disabled = false;
-    }
-
-    tokensAmmountGetCredit.innerText = await calcTokensFromUSD(
-      userObject.state.getcredit_profile,
-      usdValueCollateral.value
-    );
-
-    if (toNumber(userObject.state.selected_credprofile) !== -1) {
-      const apy = await window.usage_calc_smartcontract_reader.methods
-        .calcVarApy(
-          userObject.state.getcredit_profile,
-          userObject.state.selected_credprofile
-        )
-        .call({
-          from: userObject.account,
-        });
-      const apy_adj = (apy / apy_scale) * 100;
-      creditPerc.value = parseFloat(apy_adj).toFixed(2).toString();
-    }
-  };
 }
 
 async function getNFTAssets() {
