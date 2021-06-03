@@ -796,7 +796,7 @@ async function deposit() {
       .amountsPerDeposits(userObject.account)
       .call({ from: userObject.account });
     const nftIndex = amounTsPerDeposits[0].findIndex(
-      (tokenId) => tokenId === '7'
+      (tokenId) => tokenId === NFT_TOKEN_ID
     );
     const amountNftInDeposit =
       nftIndex === -1 ? 0 : amounTsPerDeposits[1][nftIndex];
