@@ -127,7 +127,7 @@ function choiseOnInitNft(choice) {
 
   unSelectAllBtn.onclick = () => {
     nftAssetsSelect.removeActiveItems();
-    userObject.state.selectedNFTAssets = {};
+    userObject.state.selectedNFTAssets = [];
     depositModalRebuild();
     rebuildScroll();
     nftAssetsSelect.hideDropdown();
@@ -790,6 +790,27 @@ async function deposit() {
     }
 
     amount = userObject.state.selectedNFTAssets.length;
+
+    const MAX_AMOUNT_OF_NFT = 50;
+    const amounTsPerDeposits = await window.staking_smartcontract.methods
+      .amountsPerDeposits(userObject.account)
+      .call({ from: userObject.account });
+    const nftIndex = amounTsPerDeposits[0].findIndex(
+      (tokenId) => tokenId === '7'
+    );
+    const amountNftInDeposit =
+      nftIndex === -1 ? 0 : amounTsPerDeposits[1][nftIndex];
+
+    if (amountNftInDeposit + amount > MAX_AMOUNT_OF_NFT) {
+      modal_add_deposit.isLoadedAfterConfirm(false);
+      errorMsg(
+        `You have ${amountNftInDeposit} tokens on you NFT deposit now. You are adding ${amount} tokens. Total is ${
+          amountNftInDeposit + amount
+        }. You cannot create NFT deposit with token number above ${MAX_AMOUNT_OF_NFT} tokens.`
+      );
+      return;
+    }
+
     for (let i = 0; i < userObject.state.selectedNFTAssets.length; i++) {
       token_ids.push(toNumber(userObject.state.selectedNFTAssets[i].t_id));
     }
@@ -2222,7 +2243,7 @@ function updateAssetsDropdown(data) {
   }));
 
   nftAssetsSelect.removeActiveItems();
-  userObject.state.selectedNFTAssets = {};
+  userObject.state.selectedNFTAssets = [];
   nftAssetsSelect.setChoices(assetSelectOptions, 'value', 'label', true);
 }
 
