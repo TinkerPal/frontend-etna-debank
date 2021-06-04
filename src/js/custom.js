@@ -667,7 +667,7 @@ async function getCredit() {
     !userObject.state.selected_credprofile
   ) {
     modal_add_credit.isLoadedAfterConfirm(false);
-    errorMsg('you need to select collateral asset');
+    errorMsg('You need to select collateral asset');
     return;
   }
 
@@ -676,7 +676,7 @@ async function getCredit() {
     !userObject.state.getcredit_profile
   ) {
     modal_add_credit.isLoadedAfterConfirm(false);
-    errorMsg('you need to select credit asset');
+    errorMsg('You need to select credit asset');
     return;
   }
 
@@ -685,7 +685,7 @@ async function getCredit() {
     toNumber(userObject.state.selected_credprofile)
   ) {
     modal_add_credit.isLoadedAfterConfirm(false);
-    errorMsg('assets for collateral and credit should be different');
+    errorMsg('Assets for collateral and credit should be different');
     return;
   }
 
@@ -733,7 +733,7 @@ async function getCredit() {
       })
       .catch((error) => {
         modal_add_credit.isLoadedAfterConfirm(false);
-        errorMsg('smartcontract communication error');
+        errorMsg('Smartcontract communication error');
       });
   });
 }
@@ -743,7 +743,7 @@ async function deposit() {
 
   if (toNumber(userObject.state.selected_depprofile) === -1) {
     modal_add_deposit.isLoadedAfterConfirm(false);
-    errorMsg('you need to select asset');
+    errorMsg('You need to select asset');
     return;
   }
   const dep_profile_id = userObject.state.selected_depprofile;
@@ -757,7 +757,7 @@ async function deposit() {
 
     if (userObject.state.selectedNFTAssets.length === 0) {
       modal_add_deposit.isLoadedAfterConfirm(false);
-      errorMsg('you need to select tokens');
+      errorMsg('You need to select tokens');
       return;
     }
 
@@ -785,7 +785,7 @@ async function deposit() {
 
     if (!isApproved) {
       modal_add_deposit.isLoadedAfterConfirm(false, false);
-      errorMsg('you need to approve tokens move first');
+      errorMsg('You need to approve tokens move first');
       return;
     }
 
@@ -831,7 +831,7 @@ async function deposit() {
 
       if (toNumber(wb_bn.cmp(amount_bn)) === -1) {
         modal_add_deposit.isLoadedAfterConfirm(false);
-        errorMsg('you do not have enough BNB in your wallet');
+        errorMsg('You do not have enough BNB in your wallet');
         return;
       }
     } else {
@@ -856,7 +856,7 @@ async function deposit() {
       if (allow < calculatedApproveValue) {
         modal_add_deposit.isLoadedAfterConfirm(false);
         errorMsg(
-          'please approve tokens move / wait for approval transaction to finish'
+          'Please approve tokens move / wait for approval transaction to finish'
         );
         return;
       }
@@ -871,7 +871,7 @@ async function deposit() {
 
       if (toNumber(erc20_count_bn.cmp(amount_bn)) === -1) {
         modal_add_deposit.isLoadedAfterConfirm(false);
-        errorMsg('you do not have enough tokens in your wallet');
+        errorMsg('You do not have enough tokens in your wallet');
         return;
       }
     }
@@ -910,7 +910,7 @@ async function deposit() {
       })
       .catch((error) => {
         modal_add_deposit.isLoadedAfterConfirm(false);
-        errorMsg('smartcontract communication error');
+        errorMsg('Smartcontract communication error');
       });
   });
 }
@@ -940,13 +940,13 @@ async function stake_liq() {
 
   if (!userObject.state.liq_pair_name) {
     modal_add_lliquidity.isLoadedAfterConfirm(false, false);
-    errorMsg('you need to select liquidity pair');
+    errorMsg('You need to select liquidity pair');
     return;
   }
 
   if (!userObject.state.liq_pair_fullcode) {
     modal_add_lliquidity.isLoadedAfterConfirm(false, false);
-    errorMsg('you need to select term');
+    errorMsg('You need to select term');
     return;
   }
 
@@ -980,7 +980,7 @@ async function stake_liq() {
   if (allow < calculatedApproveValue) {
     modal_add_lliquidity.isLoadedAfterConfirm(false, false);
     errorMsg(
-      'please approve tokens move / wait for approval transaction to finish'
+      'Please approve tokens move / wait for approval transaction to finish'
     );
     return;
   }
@@ -995,7 +995,7 @@ async function stake_liq() {
 
   if (toNumber(erc20_count_bn.cmp(amount_bn)) === -1) {
     modal_add_lliquidity.isLoadedAfterConfirm(false, false);
-    errorMsg('you do not have enough tokens in your wallet');
+    errorMsg('You do not have enough tokens in your wallet');
     return;
   }
 
@@ -1027,7 +1027,7 @@ async function stake_liq() {
       })
       .catch((error) => {
         modal_add_lliquidity.isLoadedAfterConfirm(false);
-        errorMsg('smartcontract communication error');
+        errorMsg('Smartcontract communication error');
       });
   });
 }
@@ -1037,7 +1037,7 @@ async function approve_deposit() {
 
   if (toNumber(userObject.state.selected_depprofile) === -1) {
     modal_add_deposit.isLoadedAfterApprove(false);
-    errorMsg('you need to select asset');
+    errorMsg('You need to select asset');
     return;
   }
   const dep_profile_id = userObject.state.selected_depprofile;
@@ -1051,7 +1051,7 @@ async function approve_deposit() {
 
     if (isApproved) {
       modal_add_deposit.isLoadedAfterApprove();
-      successMsg('already approved');
+      successMsg('Already approved');
     } else {
       // solidity: function setApprovalForAll(address _operator,bool _approved) external{}
       window.cyclops_nft_smartcontract.methods
@@ -1076,7 +1076,7 @@ async function approve_deposit() {
           }
         })
         .catch((error) => {
-          errorMsg('smartcontract communication error');
+          errorMsg('Smartcontract communication error');
           modal_add_deposit.isLoadedAfterApprove(false);
         });
     }
@@ -1139,7 +1139,7 @@ async function approveTokenMove(token_address, amount_wei, toAddress, modal) {
     })
     .catch((error) => {
       modal.isLoadedAfterApprove(false);
-      errorMsg('smartcontract communication error');
+      errorMsg('Smartcontract communication error');
     });
 }
 
@@ -1553,7 +1553,7 @@ function loginAdmin() {
     })
     .catch((error) => {
       if (error.code === 4001) {
-        errorMsg('we need you to sign message to get admin access');
+        errorMsg('We need you to sign message to get admin access');
       } else {
         // console.error(error);
       }
@@ -1636,11 +1636,11 @@ function setWalletPref(pref) {
       if (type === 'success') {
         //
       } else {
-        errorMsg('setting wallet preferences error');
+        errorMsg('Setting wallet preferences error');
       }
     })
     .catch((error) => {
-      errorMsg('set wallet preferences error');
+      errorMsg('Set wallet preferences error');
     });
 }
 
@@ -2312,7 +2312,7 @@ const setApyStr = async (asset) => {
   );
 
   if (!apy_str) {
-    errorMsg('cannot find APY for pair');
+    errorMsg('Cannot find APY for pair');
     return;
   }
   safeHtmlById('liq_pair_apy', `${apy_str} APY`);
@@ -3254,7 +3254,7 @@ async function set_leverage_confirm(ratio, cred_id) {
   modal_add_leverage.isLoadingAfterConfirm();
   if (toNumber(userObject.credits.cred_arr[1][cred_id]) === 0) {
     modal_add_leverage.isLoadedAfterConfirm(false);
-    infoMsg('no active credit');
+    infoMsg('No active credit');
     return;
   }
 
@@ -3267,7 +3267,7 @@ async function set_leverage_confirm(ratio, cred_id) {
 
     if (toNumber(lev.lev_amount) > 0) {
       modal_add_leverage.isLoadedAfterConfirm(false);
-      infoMsg('you need to unfreeze current leverage first');
+      infoMsg('You need to unfreeze current leverage first');
       return;
     }
 
@@ -3280,7 +3280,7 @@ async function set_leverage_confirm(ratio, cred_id) {
 
     if (toNumber(window.lev_size_wei.cmp(cytr_am_bn)) === 1) {
       modal_add_leverage.isLoadedAfterConfirm(false);
-      infoMsg('not enough ETNA on deposit');
+      infoMsg('Not enough ETNA on deposit');
       return;
     }
 
@@ -3307,7 +3307,7 @@ async function set_leverage_confirm(ratio, cred_id) {
         resetMsg();
       })
       .catch((error) => {
-        errorMsg('smartcontract communication error');
+        errorMsg('Smartcontract communication error');
         modal_add_leverage.isLoadedAfterConfirm(false);
       });
   });
@@ -3339,7 +3339,7 @@ async function unfreeze_leverage(cred_id) {
         resetMsg();
       })
       .catch((error) => {
-        errorMsg('smartcontract communication error');
+        errorMsg('Smartcontract communication error');
         modal_unfreeze.isLoadedAfterConfirm(false);
       });
   });
@@ -3457,7 +3457,7 @@ async function calcTokensFromUSD(cred_profile_id, amount_usd) {
 
 function withdraw_deposit_confirm(dep_id) {
   if (toNumber(userObject.deposits.am_arr[2][dep_id]) === 0) {
-    infoMsg('deposit is not currently exractable');
+    infoMsg('Deposit is not currently exractable');
     return;
   }
 
@@ -3501,7 +3501,7 @@ function withdraw_deposit_confirm(dep_id) {
       })
       .catch((error) => {
         modal_withdraw_deposit.isLoadedAfterConfirm(false);
-        errorMsg('smartcontract communication error');
+        errorMsg('Smartcontract communication error');
       });
   });
 }
@@ -3510,7 +3510,7 @@ async function return_credit_mvtokens(cred_id) {
   modal_return_credit.isLoadingAfterApprove();
   if (toNumber(userObject.credits.cred_arr[1][cred_id]) === 0) {
     modal_return_credit.isLoadedAfterApprove(false);
-    infoMsg('no active credit');
+    infoMsg('No active credit');
     return;
   }
 
@@ -3540,7 +3540,7 @@ async function return_fee_mvtokens(cred_id) {
 
   if (toNumber(userObject.credits.cred_arr[2][cred_id]) === 0) {
     modal_return_fee.isLoadedAfterApprove(false);
-    infoMsg('no active credit');
+    infoMsg('No active credit');
     return;
   }
 
@@ -3561,7 +3561,7 @@ async function return_credit_confirm(cred_id) {
   modal_return_credit.isLoadingAfterConfirm();
   if (toNumber(userObject.credits.cred_arr[1][cred_id]) === 0) {
     modal_return_credit.isLoadedAfterConfirm(false);
-    infoMsg('no active credit');
+    infoMsg('No active credit');
     return;
   }
 
@@ -3589,7 +3589,7 @@ async function return_credit_confirm(cred_id) {
     // do nothing
   } else if (toNumber(returned_asset_type) === ERC721_TOKEN) {
     modal_return_credit.isLoadedAfterConfirm(false);
-    errorMsg('error: ERC721 is not possible type for credit');
+    errorMsg('Error: ERC721 is not possible type for credit');
     return;
   } else {
     // ERC20 - check approval
@@ -3614,7 +3614,7 @@ async function return_credit_confirm(cred_id) {
     if (allow < calculatedApproveValue) {
       modal_return_credit.isLoadedAfterConfirm(false, false);
       errorMsg(
-        'please approve tokens move / wait for approval transaction to finish'
+        'Please approve tokens move / wait for approval transaction to finish'
       );
       return;
     }
@@ -3629,7 +3629,7 @@ async function return_credit_confirm(cred_id) {
 
     if (toNumber(erc20_count_bn.cmp(return_amount_bn)) === -1) {
       modal_return_credit.isLoadedAfterConfirm(false);
-      errorMsg('you do not have enough tokens in your wallet');
+      errorMsg('You do not have enough tokens in your wallet');
       return;
     }
   }
@@ -3660,7 +3660,7 @@ async function return_credit_confirm(cred_id) {
       })
       .catch((error) => {
         modal_return_credit.isLoadedAfterConfirm(false);
-        errorMsg('smartcontract communication error');
+        errorMsg('Smartcontract communication error');
       });
   });
 }
@@ -3669,7 +3669,7 @@ async function return_fee_confirm(cred_id) {
   modal_return_fee.isLoadingAfterConfirm();
   if (toNumber(userObject.credits.cred_arr[2][cred_id]) === 0) {
     modal_return_fee.isLoadedAfterConfirm(false);
-    infoMsg('no active credit');
+    infoMsg('No active credit');
     return;
   }
 
@@ -3689,7 +3689,7 @@ async function return_fee_confirm(cred_id) {
     // do nothing
   } else if (toNumber(returned_asset_type) === ERC721_TOKEN) {
     modal_return_fee.isLoadedAfterConfirm(false);
-    errorMsg('error: ERC721 is not possible type for credit');
+    errorMsg('Error: ERC721 is not possible type for credit');
     return;
   } else {
     // ERC20 - check approval
@@ -3714,7 +3714,7 @@ async function return_fee_confirm(cred_id) {
     if (allow < calculatedApproveValue) {
       modal_return_fee.isLoadedAfterConfirm(false, false);
       errorMsg(
-        'please approve tokens move / wait for approval transaction to finish'
+        'Please approve tokens move / wait for approval transaction to finish'
       );
       return;
     }
@@ -3729,7 +3729,7 @@ async function return_fee_confirm(cred_id) {
 
     if (toNumber(erc20_count_bn.cmp(return_amount_bn)) === -1) {
       modal_return_fee.isLoadedAfterConfirm(false);
-      errorMsg('you do not have enough tokens in your wallet');
+      errorMsg('You do not have enough tokens in your wallet');
       return;
     }
   }
@@ -3760,7 +3760,7 @@ async function return_fee_confirm(cred_id) {
       })
       .catch((error) => {
         modal_return_fee.isLoadedAfterConfirm(false);
-        errorMsg('smartcontract communication error');
+        errorMsg('Smartcontract communication error');
       });
   });
 }
@@ -3770,7 +3770,7 @@ function withdraw_reward_confirm(dep_id) {
   // alert(dep_id); return;
   if (toNumber(userObject.deposits.rew_arr[2][dep_id]) === 0) {
     modal_withdraw_yield.isLoadedAfterConfirm(false);
-    infoMsg('reward is not currently exractable');
+    infoMsg('Reward is not currently exractable');
     return;
   }
 
@@ -3799,7 +3799,7 @@ function withdraw_reward_confirm(dep_id) {
       })
       .catch((error) => {
         modal_withdraw_yield.isLoadedAfterConfirm(false);
-        errorMsg('smartcontract communication error');
+        errorMsg('Smartcontract communication error');
       });
   });
 }

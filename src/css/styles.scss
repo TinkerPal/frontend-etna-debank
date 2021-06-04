@@ -150,7 +150,7 @@
     @apply border-medium-grey border text-sm rounded-lg w-full h-10 bg-blueish-black focus: outline-none py-3 px-4;
   }
 
-  input:checked+label {
+  input:checked + label {
     @apply rounded-md bg-green bg-opacity-10 text-green;
   }
 
@@ -413,8 +413,8 @@
   }
 }
 
-input:-internal-autofill-selected  {
-  background-color: transparent!important;
+input:-internal-autofill-selected {
+  background-color: transparent !important;
 }
 
 .empty-access,
@@ -467,7 +467,6 @@ input:-internal-autofill-selected  {
 }
 
 .our-info {
-
   .number_degrease:before,
   .number_increase:before {
     width: 12px;
@@ -477,7 +476,6 @@ input:-internal-autofill-selected  {
   }
 
   .crypto-amount {
-
     .number_degrease:before,
     .number_increase:before {
       left: 4px;
@@ -540,7 +538,7 @@ input:-internal-autofill-selected  {
   display: none;
 }
 
-#borrow-tab:not(.hide)~footer {
+#borrow-tab:not(.hide) ~ footer {
   .copyright-common {
     display: none;
   }
@@ -846,7 +844,7 @@ input {
     display: none;
   }
 
-  &>div {
+  & > div {
     position: relative;
     z-index: 2;
     min-height: 40px;
@@ -1033,7 +1031,7 @@ input {
     }
   }
 
-  &>ul {
+  & > ul {
     position: absolute;
     z-index: 1;
     z-index: 1;
@@ -1139,7 +1137,7 @@ input {
   }
 
   &.open {
-    &>div {
+    & > div {
       box-shadow: 0 4px 20px -1px rgba(#162a5a, 0.12);
 
       .arrow {
@@ -1153,7 +1151,7 @@ input {
       }
     }
 
-    &>ul {
+    & > ul {
       transform: translate(0, 12px) scale(1);
       opacity: 1;
       filter: drop-shadow(0 16px 24px rgba(#162a5a, 0.16));
@@ -1208,7 +1206,7 @@ button:disabled {
   position: relative;
 }
 
-.ldBar.label-center>.ldBar-label {
+.ldBar.label-center > .ldBar-label {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1293,7 +1291,7 @@ button:disabled {
     pointer-events: none;
   }
 
-  +input {
+  + input {
     display: none;
   }
 
@@ -1311,7 +1309,7 @@ button:disabled {
 }
 
 .choices .choices__list.choices__list--multiple:empty {
-  +input {
+  + input {
     padding: 0;
     line-height: 24px;
   }
@@ -1443,7 +1441,8 @@ button:disabled {
   border-left: 0px;
 }
 
-.choices-collateral {
+.choices-collateral,
+.choices-credit {
   width: 100%;
   border: 0px;
 
@@ -1479,10 +1478,6 @@ button:disabled {
       display: flex;
       align-items: center;
     }
-  }
-
-  .choices__item--choice {
-    min-height: 36px;
   }
 
   .choices__inner {
@@ -1642,7 +1637,6 @@ button:disabled {
 }
 
 #custom-getcredit-dropdown {
-
   li,
   .dropdown-text {
     text-transform: uppercase;
@@ -1661,4 +1655,18 @@ button:disabled {
   z-index: 0 !important;
   cursor: default;
   pointer-events: all;
+}
+
+.choices-credit {
+  .choices__inner {
+    border: 0px;
+    text-transform: uppercase;
+  }
+  .choices__list {
+    text-transform: uppercase;
+  }
+}
+
+.choices__item--choice {
+  min-height: 36px;
 }
