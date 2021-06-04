@@ -380,7 +380,7 @@
   }
 
   .copyright {
-    @apply mt-auto w-full bg-blueish-black py-4 md:px-9 px-4;
+    @apply mt-auto w-full bg-blueish-black py-4 md: px-9 px-4;
 
     &-text {
       @apply tracking-wide text-faux-purple text-xs font-bold;
@@ -390,11 +390,25 @@
   .socials-row {
     @apply flex md: flex-row flex-col items-center px-6 pb-4 bg-black pt-2 mx-auto;
   }
+
   .load-bar-cover {
     @apply fixed top-0 left-0 w-full h-full z-40 bg-black;
   }
+
   .body {
     @apply font-body bg-black text-white h-full min-h-screen relative w-screen flex flex-col relative;
+  }
+
+  .step {
+    @apply w-6 h-6 rounded-full mr-2 flex items-center justify-center;
+
+    span {
+      @apply w-3 h-3 bg-violet-100 rounded-full;
+    }
+
+    &.active {
+      @apply bg-violet-100 bg-opacity-25;
+    }
   }
 }
 
@@ -1353,6 +1367,7 @@ button:disabled {
       opacity: 1;
     }
   }
+
   &.is-highlighted {
     background-color: transparent;
   }
@@ -1662,6 +1677,7 @@ button:disabled {
     border: 0px;
     text-transform: uppercase;
   }
+
   .choices__list {
     text-transform: uppercase;
   }
