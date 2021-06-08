@@ -799,7 +799,7 @@ async function deposit() {
       (tokenId) => tokenId === '7'
     );
     const amountNftInDeposit =
-      nftIndex === -1 ? 0 : amounTsPerDeposits[1][nftIndex];
+      nftIndex === -1 ? 0 : toNumber(amounTsPerDeposits[1][nftIndex]);
 
     if (amountNftInDeposit + amount > MAX_AMOUNT_OF_NFT) {
       modal_add_deposit.isLoadedAfterConfirm(false);
