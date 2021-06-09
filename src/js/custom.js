@@ -49,7 +49,9 @@ const modals = [
 
 function closeAllModals() {
   modals.forEach((modal) => {
-    modal.hideModal();
+    if (modal.modal) {
+      modal.hideModal();
+    }
   });
 }
 
@@ -163,73 +165,82 @@ function choiseOnInitNft(choice) {
   });
 }
 
-const nftAssetsSelect = new Choices('#nftAssetsSelect', {
-  removeItemButton: true,
-  callbackOnInit() {
-    choiseOnInitNft(this);
-  },
-  callbackOnCreateTemplates(template) {
-    return {
-      item: (classNames, data) => {
-        const value = `${data.value.text}[${data.value.t_id}]`;
+const nftSelectElement = document.querySelector('#nftAssetsSelect');
+const nftAssetsSelect =
+  nftSelectElement &&
+  new Choices(nftSelectElement, {
+    removeItemButton: true,
+    callbackOnInit() {
+      choiseOnInitNft(this);
+    },
+    callbackOnCreateTemplates(template) {
+      return {
+        item: (classNames, data) => {
+          const value = `${data.value.text}[${data.value.t_id}]`;
 
-        return template(`
-            <div class="${classNames.item} ${
-          data.highlighted
-            ? classNames.highlightedState
-            : classNames.itemSelectable
-        } ${
-          data.placeholder ? classNames.placeholder : ''
-        }" data-item data-id="${data.id}" data-value="${value}" ${
-          data.active ? 'aria-selected="true"' : ''
-        } ${data.disabled ? 'aria-disabled="true"' : ''} data-deletable>
-              <span class="choices__item-img"><img src="${
-                data.value.imageSrc
-              }"></span> ${value} - $${data.value.price}
-              <button type="button" class="choices__button" aria-label="Remove item: '${value}'" data-button="">Remove item</button>
-            </div>
-          `);
-      },
-      choice: (classNames, data) => {
-        const value = `${data.value.text}[${data.value.t_id}]`;
+          return template(`
+              <div class="${classNames.item} ${
+            data.highlighted
+              ? classNames.highlightedState
+              : classNames.itemSelectable
+          } ${
+            data.placeholder ? classNames.placeholder : ''
+          }" data-item data-id="${data.id}" data-value="${value}" ${
+            data.active ? 'aria-selected="true"' : ''
+          } ${data.disabled ? 'aria-disabled="true"' : ''} data-deletable>
+                <span class="choices__item-img"><img src="${
+                  data.value.imageSrc
+                }"></span> ${value} - $${data.value.price}
+                <button type="button" class="choices__button" aria-label="Remove item: '${value}'" data-button="">Remove item</button>
+              </div>
+            `);
+        },
+        choice: (classNames, data) => {
+          const value = `${data.value.text}[${data.value.t_id}]`;
 
-        return template(`
-            <div class="${classNames.item} ${classNames.itemChoice} ${
-          data.disabled ? classNames.itemDisabled : classNames.itemSelectable
-        }" data-choice ${
-          data.disabled
-            ? 'data-choice-disabled aria-disabled="true"'
-            : 'data-choice-selectable'
-        } data-id="${data.id}" data-value="${value}" ${
-          toNumber(data.groupId) > 0 ? 'role="treeitem"' : 'role="option"'
-        }>
-              <span class="choices__item-img"><img src="${
-                data.value.imageSrc
-              }"></span> ${data.label} - $${data.value.price}
-            </div>
-          `);
-      },
-    };
-  },
-});
+          return template(`
+              <div class="${classNames.item} ${classNames.itemChoice} ${
+            data.disabled ? classNames.itemDisabled : classNames.itemSelectable
+          }" data-choice ${
+            data.disabled
+              ? 'data-choice-disabled aria-disabled="true"'
+              : 'data-choice-selectable'
+          } data-id="${data.id}" data-value="${value}" ${
+            toNumber(data.groupId) > 0 ? 'role="treeitem"' : 'role="option"'
+          }>
+                <span class="choices__item-img"><img src="${
+                  data.value.imageSrc
+                }"></span> ${data.label} - $${data.value.price}
+              </div>
+            `);
+        },
+      };
+    },
+  });
 
-const collateralDropdown = new Choices('#credprofiles-dropdown', {
-  classNames: {
-    containerOuter: 'choices choices-collateral',
-  },
-  searchEnabled: false,
-  shouldSort: false,
-  itemSelectText: '',
-});
+const creditSelectElement = document.querySelector('#credprofiles-dropdown');
+const collateralDropdown =
+  creditSelectElement &&
+  new Choices(creditSelectElement, {
+    classNames: {
+      containerOuter: 'choices choices-collateral',
+    },
+    searchEnabled: false,
+    shouldSort: false,
+    itemSelectText: '',
+  });
 
-const creditDropdown = new Choices('#getcredit-dropdown', {
-  classNames: {
-    containerOuter: 'choices choices-credit',
-  },
-  searchEnabled: false,
-  shouldSort: false,
-  itemSelectText: '',
-});
+const getCreditSelectElement = document.querySelector('#getcredit-dropdown');
+const creditDropdown =
+  getCreditSelectElement &&
+  new Choices(getCreditSelectElement, {
+    classNames: {
+      containerOuter: 'choices choices-credit',
+    },
+    searchEnabled: false,
+    shouldSort: false,
+    itemSelectText: '',
+  });
 
 const walletButton = document.getElementById('enableEthereumButton');
 
@@ -376,9 +387,9 @@ async function postWalletCallback() {
       userObject.state.current_page_id
     );
 
-    modal_add_credit.onInitCallback();
-    modal_add_lliquidity.onInitCallback();
-    modal_add_deposit.onInitCallback();
+    modal_add_credit.modal && modal_add_credit.onInitCallback();
+    modal_add_lliquidity.modal && modal_add_lliquidity.onInitCallback();
+    modal_add_deposit.modal && modal_add_deposit.onInitCallback();
   }
 }
 
@@ -538,22 +549,26 @@ async function setNetInfo() {
   const chanId = await window.web3js.eth.getChainId();
   const chainIdHex = chanId && `0x${chanId.toString(16)}`;
 
-  if (chainIdHex === undefined) {
-    document.getElementById('net_name').innerHTML = 'unknown net';
-    document.getElementById('net_info').style.display = 'flex';
-    document.getElementById('net_icon').style.color = 'red';
-    document.getElementById('net_txt').innerHTML =
-      ' wrong network, connect to BSC';
-  } else if (chainIdHex !== window.chainId) {
-    document.getElementById('net_name').innerHTML = chains[window.chainId];
-    document.getElementById('net_info').style.display = 'flex';
-    document.getElementById('net_icon').style.color = 'red';
-    document.getElementById('net_txt').innerHTML =
-      ' wrong network, connect to BSC';
-  } else {
-    document.getElementById('net_icon').style.color = '#48A68E';
-    document.getElementById('net_info').style.display = 'flex';
-    document.getElementById('net_name').innerHTML = ' BSC';
+  const netName = document.getElementById('net_name');
+  const netInfo = document.getElementById('net_info');
+  const netIcon = document.getElementById('net_icon');
+  const netTxt = document.getElementById('net_txt');
+  if (netName && netInfo && netIcon && netTxt) {
+    if (chainIdHex === undefined) {
+      netName.innerHTML = 'unknown net';
+      netInfo.style.display = 'flex';
+      netIcon.style.color = 'red';
+      netTxt.innerHTML = ' wrong network, connect to BSC';
+    } else if (chainIdHex !== window.chainId) {
+      netName.innerHTML = chains[window.chainId];
+      netInfo.style.display = 'flex';
+      netIcon.style.color = 'red';
+      netTxt.innerHTML = ' wrong network, connect to BSC';
+    } else {
+      netIcon.style.color = '#48A68E';
+      netInfo.style.display = 'flex';
+      netName.innerHTML = ' BSC';
+    }
   }
 }
 
@@ -799,7 +814,7 @@ async function deposit() {
       (tokenId) => tokenId === NFT_TOKEN_ID
     );
     const amountNftInDeposit =
-      nftIndex === -1 ? 0 : amounTsPerDeposits[1][nftIndex];
+      nftIndex === -1 ? 0 : toNumber(amounTsPerDeposits[1][nftIndex]);
 
     if (amountNftInDeposit + amount > MAX_AMOUNT_OF_NFT) {
       modal_add_deposit.isLoadedAfterConfirm(false);
@@ -1295,29 +1310,45 @@ function infoMsg(msg) {
 
 function errorMsg(msg) {
   safeSetInnerHTMLById('info_pane_message', msg);
-  document
-    .getElementById('info_pane')
-    .classList.remove('info_pane_error', 'info_pane_info', 'info_pane_success');
-  document.getElementById('info_pane').classList.add('info_pane_error');
+  document.getElementById('info_pane') &&
+    document
+      .getElementById('info_pane')
+      .classList.remove(
+        'info_pane_error',
+        'info_pane_info',
+        'info_pane_success'
+      );
+  document.getElementById('info_pane') &&
+    document.getElementById('info_pane').classList.add('info_pane_error');
 }
 
 function errorEmptyMsg(msg) {
   safeSetInnerHTMLById('empty-error__msg', msg);
-  document.querySelector('.empty-access').classList.remove('hidden');
+
+  document.querySelector('.empty-access') &&
+    document.querySelector('.empty-access').classList.remove('hidden');
 }
 
 function errorEmptyMetamaskMsg(state = true) {
   if (state) {
-    document.querySelector('.empty-metamask').classList.remove('hidden');
+    document.querySelector('.empty-metamask') &&
+      document.querySelector('.empty-metamask').classList.remove('hidden');
   } else {
-    document.querySelector('.empty-metamask').classList.add('hidden');
+    document.querySelector('.empty-metamask') &&
+      document.querySelector('.empty-metamask').classList.add('hidden');
   }
 }
 
 function resetMsg() {
-  document
-    .getElementById('info_pane')
-    .classList.remove('info_pane_error', 'info_pane_info', 'info_pane_success');
+  const infoPane = document.getElementById('info_pane');
+  if (infoPane) {
+    infoPane.classList.remove(
+      'info_pane_error',
+      'info_pane_info',
+      'info_pane_success'
+    );
+  }
+
   safeSetInnerHTMLById('info_pane_message', '');
 }
 
@@ -1491,7 +1522,14 @@ async function updateData(action = null) {
       setLdBar(null, '25');
     });
 
-    getCapDashbord();
+    if (
+      window.location.pathname === '/our-dashboard.html' ||
+      window.location.pathname === '/our-dashboard'
+    ) {
+      getOurDashbord();
+    } else {
+      getCapDashbord();
+    }
 
     // getFamersDashboard();
   } else if (action === 'make_deposit') {
@@ -2791,12 +2829,6 @@ async function getLiquidityDashboard(callback = null) {
 // getDepositsDashboard
 
 async function getCapDashbord(callback = null) {
-  if (
-    window.location.pathname === '/our-dashboard.html' ||
-    window.location.pathname === '/our-dashboard'
-  ) {
-    return;
-  }
   const data = await fetch(
     'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&price_change_percentage=24h,30d'
   )
@@ -2919,6 +2951,154 @@ async function getCapDashbord(callback = null) {
   marketCapCompared.innerHTML = numeral(marketCapPercentChange).format('0.0%');
   marketCapCompared.classList.add(getClassForNumber(marketCapPercentChange));
 
+  if (callback) callback();
+}
+
+async function getOurDashbord(callback = null) {
+  const depositsAmountArrayForPromise = [];
+  userObject.deposit_profiles.forEach((item) => {
+    depositsAmountArrayForPromise.push(
+      window.staking_smartcontract.methods
+        .depositsTotAmount(item.p_id)
+        .call({ from: userObject.account })
+    );
+  });
+  const depositAmountData = await Promise.all(depositsAmountArrayForPromise);
+
+  const depositsTotalArrayForPromise = [];
+  userObject.deposit_profiles.forEach((dep, index) => {
+    const dep_id = userObject.deposits.am_arr[0].findIndex(
+      (item) => toNumber(item) === toNumber(dep.p_id)
+    );
+    depositsTotalArrayForPromise.push(
+      calcUSDValueOfDeposit(depositAmountData[index], dep_id)
+    );
+  });
+  const depositsTotal = await Promise.all(depositsTotalArrayForPromise);
+
+  const tokensStatistic = depositAmountData.map((amount, index) => ({
+    name: userObject.deposit_profiles[index].p_name,
+    total: depositsTotal[index],
+    amount:
+      userObject.deposit_profiles[index].p_id !== NFT_TOKEN_ID
+        ? toTokens(amount, 1)
+        : amount,
+  }));
+
+  const nft = tokensStatistic.find((item) => item.name === 'nft');
+
+  const totalAssets = tokensStatistic.reduce(
+    (prev, cur) => toNumber(prev) + toNumber(cur.total),
+    0
+  );
+
+  let users = 0;
+  try {
+    users = await window.staking_smartcontract.methods
+      .getCustomersDepositsLength()
+      .call({ from: userObject.account });
+  } catch {
+    users = 0;
+  }
+
+  const creditsAmountArrayForPromise = [];
+  userObject.deposit_profiles.forEach((item) => {
+    creditsAmountArrayForPromise.push(
+      window.credit_smartcontract.methods
+        .creditsTotAmount(item.p_id)
+        .call({ from: userObject.account })
+    );
+  });
+  const creditsAmountArray = await Promise.all(creditsAmountArrayForPromise);
+
+  const creditsTotalArrayForPromise = [];
+  userObject.deposit_profiles.forEach((dep, index) => {
+    const dep_id = userObject.deposits.am_arr[0].findIndex(
+      (item) => toNumber(item) === toNumber(dep.p_id)
+    );
+    creditsTotalArrayForPromise.push(
+      calcUSDValueOfDeposit(creditsAmountArray[index], dep_id)
+    );
+  });
+  const creditsTotalArray = await Promise.all(creditsTotalArrayForPromise);
+  const creditsTotal = creditsTotalArray.reduce(
+    (prev, cur) => toNumber(prev) + toNumber(cur),
+    0
+  );
+
+  const data = {
+    tokensStatistic,
+    totalUsers: users,
+    totalCredits: creditsTotal,
+    totalAssetsValue: totalAssets,
+    totalNft: nft.total,
+    totalDeposits: totalAssets,
+  };
+
+  if (data.length === 0) {
+    return;
+  }
+
+  const listOurCryptoTemplate = (name, amount, total) => {
+    const assetName = `<div class="w-3/12 row-name uppercase">${name}</div>`;
+    const assetAmount = `<div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">${amount}</div>`;
+    const assetTotal = `${numeral(total).format('($ 0.00 a)')}`;
+
+    return `
+        <div class="crypto-row">
+          ${assetName}
+          ${assetAmount}
+          <div class="w-6/12 flex items-center justify-end h-5 w-auto">
+            <div class="crypto-amount row-name">
+              ${assetTotal} <span class="number_increase ml-2"></span>
+            </div>
+          </div>
+        </div>
+      `;
+  };
+
+  const ourCryptoList = document.querySelector('#our-crypto-list');
+  ourCryptoList.innerHTML = '';
+
+  data.tokensStatistic.forEach((item) => {
+    ourCryptoList.innerHTML += listOurCryptoTemplate(
+      item.name,
+      item.amount,
+      item.total
+    );
+  });
+
+  new SimpleBar(ourCryptoList, { autoHide: false });
+
+  const cryptoNumbAll1 = document.querySelectorAll('.total-sum-1');
+  const cryptoNumbAll2 = document.querySelectorAll('.borrow-sum-2');
+  const cryptoNumbAll3 = document.querySelectorAll('.deposits-sum-3');
+  const cryptoNumb4 = document.querySelector('#credit-sum-4');
+  const cryptoNumbAll5 = document.querySelectorAll('.users-sum-5');
+  const comparedLastMonths = document.querySelectorAll('.last-month');
+
+  comparedLastMonths.forEach((elem) => {
+    elem.innerHTML = numeral(data.prevTotalAssetsValue).format('($0.00 a)');
+  });
+
+  cryptoNumbAll1.forEach((each) => {
+    each.innerHTML = numeral(data.totalAssetsValue).format('($0.0000 a)');
+  });
+
+  cryptoNumbAll2.forEach((item) => {
+    item.innerHTML = numeral(data.totalNft).format('($0.00 a)');
+  });
+
+  cryptoNumbAll3.forEach((elem) => {
+    elem.innerHTML = numeral(data.totalDeposits).format('($0.00 a)');
+  });
+
+  cryptoNumb4.innerHTML = numeral(data.totalCredits).format('($0.00 a)');
+
+  cryptoNumbAll5.forEach((el) => {
+    el.innerHTML = numeral(data.totalUsers).format('(0.00 a)');
+  });
+  setLdBar(100);
   if (callback) callback();
 }
 

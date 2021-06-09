@@ -203,6 +203,7 @@ const userObject = {
           for (let i = 0; i < am_arr[0].length; i++) {
             if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id)) {
               // found
+
               const am = await calcUSDValueOfDeposit(am_arr[1][i], i);
               this.usd_val_only_col.push({
                 val: am,

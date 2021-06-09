@@ -49,10 +49,18 @@ function openTab(event, tabid) {
   safeRemoveClassBySelector('.nav-link', 'active');
   safeAddClassBySelector('.page', 'hide');
 
-  event.srcElement.classList.add('active');
-
-  document.getElementById(tabid).classList.remove('hide');
-  userObject.state.current_page_id = tabid;
+  if (event.srcElement) {
+    event.srcElement.classList.add('active');
+    document.getElementById(tabid).classList.remove('hide');
+    userObject.state.current_page_id = tabid;
+  } else {
+    openTab(
+      {
+        srcElement: document.getElementById('total-dashboard-tab-menu'),
+      },
+      'total-dashboard-tab'
+    );
+  }
 }
 
 const setOptionsToSelect = (data, select) => {

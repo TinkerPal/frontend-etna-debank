@@ -6,6 +6,7 @@ function Modal(
   onHideCallback
 ) {
   this.modal = document.getElementById(modalId);
+  if (!this.modal) return;
   this.data = {};
   this.approve = this.modal.querySelector('[data-id="approve"]');
   this.confirm = this.modal.querySelector('[data-id="confirm"]');
