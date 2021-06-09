@@ -3030,8 +3030,8 @@ async function getOurDashbord(callback = null) {
     tokensStatistic,
     totalUsers: users,
     totalCredits: creditsTotal,
-    totalAssetsValue: totalAssets,
-    totalNft: nft.total,
+    totalAssetsValue: totalAssets + creditsTotal,
+    totalNft: nft.amount,
     totalDeposits: totalAssets,
   };
 
@@ -3082,11 +3082,11 @@ async function getOurDashbord(callback = null) {
   });
 
   cryptoNumbAll1.forEach((each) => {
-    each.innerHTML = numeral(data.totalAssetsValue).format('($0.0000 a)');
+    each.innerHTML = numeral(data.totalAssetsValue).format('($0.00 a)');
   });
 
   cryptoNumbAll2.forEach((item) => {
-    item.innerHTML = numeral(data.totalNft).format('($0.00 a)');
+    item.innerHTML = numeral(data.totalNft).format('(0 a)');
   });
 
   cryptoNumbAll3.forEach((elem) => {
@@ -3096,7 +3096,7 @@ async function getOurDashbord(callback = null) {
   cryptoNumb4.innerHTML = numeral(data.totalCredits).format('($0.00 a)');
 
   cryptoNumbAll5.forEach((el) => {
-    el.innerHTML = numeral(data.totalUsers).format('(0.00 a)');
+    el.innerHTML = numeral(data.totalUsers).format('(0 a)');
   });
   setLdBar(100);
   if (callback) callback();
