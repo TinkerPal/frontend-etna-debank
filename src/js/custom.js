@@ -2141,6 +2141,12 @@ async function creditModalDataUpdate() {
   );
   const creditPerc = modal_add_credit.modal.querySelector('#credit_perc');
 
+  if (
+    toNumber(userObject.state.selected_credprofile) === -1 ||
+    toNumber(userObject.state.getcredit_profile) === -1
+  )
+    return;
+
   tokensAmmountCollateral.value = depAmountByProfileId(
     userObject.state.selected_credprofile
   )[1];
