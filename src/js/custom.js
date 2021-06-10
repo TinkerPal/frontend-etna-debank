@@ -458,6 +458,7 @@ async function getAccount() {
 
     await Promise.all([
       initStakingContract(),
+      initStakingContractReader(),
       initCreditContract(),
       initLiqLevContract(),
       initCyclopsNFTContract(),
@@ -582,6 +583,17 @@ async function initStakingContract(callback = null) {
       if (callback) callback(window.staking_smartcontract);
     }
   } else if (callback) callback(window.staking_smartcontract);
+}
+
+async function initStakingContractReader(callback = null) {
+  if (!window.staking_smartcontract_reader) {
+    const reader = web3jsReadersList.get();
+    window.staking_smartcontract_reader = await new reader.eth.Contract(
+      staking_contract_abi,
+      window.staking_contract_address
+    );
+    if (callback) callback(window.staking_smartcontract_reader);
+  } else if (callback) callback(window.staking_smartcontract_reader);
 }
 
 async function initCreditContract(callback = null) {
@@ -2957,16 +2969,17 @@ async function getOurDashbord(callback = null) {
     const depositAmountData = await Promise.all(depositsAmountArrayForPromise);
 
     const depositsTotalArrayForPromise = [];
-    userObject.deposit_profiles.forEach((dep, index) => {
-      const dep_id = userObject.deposits.am_arr[0].findIndex(
-        (item) => toNumber(item) === toNumber(dep.p_id)
-      );
+    userObject.deposit_profiles.forEach((item, index) => {
       depositsTotalArrayForPromise.push(
-        calcUSDValueOfDeposit(depositAmountData[index], dep_id)
+        getPriceOfTokens(
+          toTokens(depositAmountData[index], 10),
+          item.p_name,
+          item.p_dep_type
+        )
       );
     });
-    const depositsTotal = await Promise.all(depositsTotalArrayForPromise);
 
+    const depositsTotal = await Promise.all(depositsTotalArrayForPromise);
     const tokensStatistic = depositAmountData.map((amount, index) => ({
       name: userObject.deposit_profiles[index].p_name,
       total: depositsTotal[index],
@@ -2983,14 +2996,9 @@ async function getOurDashbord(callback = null) {
       0
     );
 
-    let users = 0;
-    try {
-      users = await window.staking_smartcontract.methods
-        .getCustomersDepositsLength()
-        .call({ from: userObject.account });
-    } catch {
-      users = 0;
-    }
+    const users = await window.staking_smartcontract_reader.methods
+      .getCustomersDepositsLength()
+      .call({ from: userObject.account });
 
     const creditsAmountArrayForPromise = [];
     userObject.deposit_profiles.forEach((item) => {
@@ -3003,12 +3011,13 @@ async function getOurDashbord(callback = null) {
     const creditsAmountArray = await Promise.all(creditsAmountArrayForPromise);
 
     const creditsTotalArrayForPromise = [];
-    userObject.deposit_profiles.forEach((dep, index) => {
-      const dep_id = userObject.deposits.am_arr[0].findIndex(
-        (item) => toNumber(item) === toNumber(dep.p_id)
-      );
+    userObject.deposit_profiles.forEach((item, index) => {
       creditsTotalArrayForPromise.push(
-        calcUSDValueOfDeposit(creditsAmountArray[index], dep_id)
+        getPriceOfTokens(
+          toTokens(creditsAmountArray[index], 4),
+          item.p_name,
+          item.p_dep_type
+        )
       );
     });
     const creditsTotalArray = await Promise.all(creditsTotalArrayForPromise);
@@ -3019,7 +3028,7 @@ async function getOurDashbord(callback = null) {
 
     const data = {
       tokensStatistic,
-      totalUsers: users,
+      totalUsers: toNumber(users),
       totalCredits: creditsTotal,
       totalAssetsValue: totalAssets + creditsTotal,
       totalNft: nft.amount,
@@ -3091,7 +3100,7 @@ async function getOurDashbord(callback = null) {
     });
     setLdBar(100);
   } catch (e) {
-    console.warn(e);
+    console.error(e);
   }
   if (callback) callback();
 }
@@ -3252,35 +3261,35 @@ async function getNftPrice(contract, vc_contract, token_ids) {
   return usd_float.toFixed(3);
 }
 
+async function getPriceOfTokens(tokenAmount, tokenName, tokenType) {
+  const contract = window.data_provider_smartcontract_reader;
+  const token = toNumber(tokenType) === NATIVE_ETHEREUM ? 'BNBUSD' : tokenName;
+
+  const { BN } = window;
+  const wei_amount = safeFloatToWei(tokenAmount); // BN
+
+  const [data, dec] = await Promise.all([
+    contract.methods.getData(token).call({
+      from: userObject.account,
+    }),
+    contract.methods.getDecimals(token).call({
+      from: userObject.account,
+    }),
+  ]);
+
+  const usd_bn = new BN(wei_amount.mul(new BN(data)));
+
+  const base = new BN(10);
+  const div_dec = new BN(base.pow(new BN(dec)));
+  const usd_adj = new BN(usd_bn.div(div_dec));
+
+  return parseFloat(window.web3js_reader.utils.fromWei(usd_adj, 'ether'));
+}
+
 async function updUSDValue(tokens_amount_elem, usd_val_elem) {
   const contract = window.data_provider_smartcontract_reader;
 
-  if (toNumber(userObject.state.selected_depprofile_type) === NATIVE_ETHEREUM) {
-    const tokens_amount = document.getElementById(tokens_amount_elem).value;
-    const { BN } = window;
-    const wei_amount = safeFloatToWei(tokens_amount); // BN
-    const [data, dec] = await Promise.all([
-      contract.methods.getData('BNBUSD').call({
-        from: userObject.account,
-      }),
-      contract.methods.getDecimals('BNBUSD').call({
-        from: userObject.account,
-      }),
-    ]);
-
-    const usd_bn = new BN(wei_amount.mul(new BN(data)));
-
-    const base = new BN(10);
-    const div_dec = new BN(base.pow(new BN(dec)));
-    const usd_adj = new BN(usd_bn.div(div_dec));
-
-    const usd_float = parseFloat(
-      window.web3js_reader.utils.fromWei(usd_adj, 'ether')
-    );
-    safeSetValueById(usd_val_elem, usd_float.toFixed(3), 'inline');
-  } else if (
-    toNumber(userObject.state.selected_depprofile_type) === ERC721_TOKEN
-  ) {
+  if (toNumber(userObject.state.selected_depprofile_type) === ERC721_TOKEN) {
     let vc_contract;
     await initVotesCalcContractReader(async (c) => {
       vc_contract = c;
@@ -3293,38 +3302,16 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
 
     const nftPrice = await getNftPrice(contract, vc_contract, token_ids);
 
-    safeSetValueById(usd_val_elem, nftPrice, 'inline');
-  } else if (
-    toNumber(userObject.state.selected_depprofile_type) === ERC20_TOKEN ||
-    toNumber(userObject.state.selected_depprofile_type) === UNISWAP_PAIR
-  ) {
-    const tokens_amount = document.getElementById(tokens_amount_elem).value;
-    const { BN } = window;
-    const wei_amount = safeFloatToWei(tokens_amount); // BN
-
-    const [data, dec] = await Promise.all([
-      contract.methods.getData(userObject.state.selected_depprofile_name).call({
-        from: userObject.account,
-      }),
-      contract.methods
-        .getDecimals(userObject.state.selected_depprofile_name)
-        .call({
-          from: userObject.account,
-        }),
-    ]);
-    // let data = await contract.methods.getData(userObject.state.selected_depprofile_name).call({from:userObject.account});
-    // let dec = await contract.methods.getDecimals(userObject.state.selected_depprofile_name).call({from:userObject.account});
-    const usd_bn = new BN(wei_amount.mul(new BN(data)));
-
-    const base = new BN(10);
-    const div_dec = new BN(base.pow(new BN(dec)));
-    const usd_adj = new BN(usd_bn.div(div_dec));
-
-    const usd_float = parseFloat(
-      window.web3js_reader.utils.fromWei(usd_adj, 'ether')
-    );
-    safeSetValueById(usd_val_elem, usd_float.toFixed(3), 'inline');
+    return safeSetValueById(usd_val_elem, nftPrice, 'inline');
   }
+
+  const tokens_amount = document.getElementById(tokens_amount_elem).value;
+  const usd_float = await getPriceOfTokens(
+    tokens_amount,
+    userObject.state.selected_depprofile_name,
+    userObject.state.selected_depprofile_type
+  );
+  safeSetValueById(usd_val_elem, usd_float.toFixed(3), 'inline');
 }
 
 async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
