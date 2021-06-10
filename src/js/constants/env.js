@@ -35,6 +35,7 @@ const GLOBAL_VARIABLES = {
     ],
     LEVERAGE_TOKEN: 'ETNA',
     TRANSACTION_LINK: 'bscscan.com',
+    NFT_TOKEN_ID: '7',
   },
   development: {
     WALLETS_API_URL: 'https://bsc-debank-wallet-api.etna.network',
@@ -64,18 +65,21 @@ const GLOBAL_VARIABLES = {
     ],
     LEVERAGE_TOKEN: 'CYTR',
     TRANSACTION_LINK: 'testnet.bscscan.com',
+    NFT_TOKEN_ID: '6',
   },
 };
 
 const env = process.env.NODE_ENV;
 
-const { TRANSACTION_LINK } = GLOBAL_VARIABLES[env];
-const { LEVERAGE_TOKEN } = GLOBAL_VARIABLES[env];
 const { WEB3_MODAL_NETWORK } = GLOBAL_VARIABLES[env];
 const { WALLETS_API_URL } = GLOBAL_VARIABLES[env];
 const { WALLET_OPTION_RPC } = GLOBAL_VARIABLES[env];
 const { RPC_LIST } = GLOBAL_VARIABLES[env];
 const { LIQ_PAIRS } = GLOBAL_VARIABLES[env];
+const { LEVERAGE_TOKEN } = GLOBAL_VARIABLES[env];
+const { TRANSACTION_LINK } = GLOBAL_VARIABLES[env];
+const { NFT_TOKEN_ID } = GLOBAL_VARIABLES[env];
+
 window.cyclops_nft_contract_address =
   GLOBAL_VARIABLES[env].cyclops_nft_contract_address;
 window.chainId = GLOBAL_VARIABLES[env].chainId;

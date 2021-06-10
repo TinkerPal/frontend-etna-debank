@@ -21,6 +21,17 @@ const isEmptyTable = (idContainer) => {
   return document.querySelector(`#${idContainer} table tbody`).innerHTML === '';
 };
 
+/**
+ * @param {String} HTML representing a single element
+ * @return {Element}
+ */
+function htmlToElement(html) {
+  const template = document.createElement('template');
+  html = html.trim(); // Never return a text node of whitespace as the result
+  template.innerHTML = html;
+  return template.content.firstChild;
+}
+
 const setLdBar = (value, part = 'null') => {
   const { ldBar } = document.getElementById('debank_load_bar');
   const ldBarWrapper = document.getElementById('load_bar_cover');
@@ -49,10 +60,18 @@ function openTab(event, tabid) {
   safeRemoveClassBySelector('.nav-link', 'active');
   safeAddClassBySelector('.page', 'hide');
 
-  event.srcElement.classList.add('active');
-
-  document.getElementById(tabid).classList.remove('hide');
-  userObject.state.current_page_id = tabid;
+  if (event.srcElement) {
+    event.srcElement.classList.add('active');
+    document.getElementById(tabid).classList.remove('hide');
+    userObject.state.current_page_id = tabid;
+  } else {
+    openTab(
+      {
+        srcElement: document.getElementById('total-dashboard-tab-menu'),
+      },
+      'total-dashboard-tab'
+    );
+  }
 }
 
 const setOptionsToSelect = (data, select) => {

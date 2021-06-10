@@ -11,19 +11,20 @@ document.addEventListener('DOMContentLoaded', function (event) {
   // notification popup
 
   const notifBlock = document.querySelector('.notif-block');
-  const notifIcon = document.querySelector('.notif');
-  const notifCloseBtns = notifBlock.querySelectorAll('.modal-close');
+  if (notifBlock) {
+    const notifIcon = document.querySelector('.notif');
+    const notifCloseBtns = notifBlock.querySelectorAll('.modal-close');
 
-  notifCloseBtns.forEach((item) => {
-    item.addEventListener('click', () => {
-      notifBlock.classList.add('hidden');
+    notifCloseBtns.forEach((item) => {
+      item.addEventListener('click', () => {
+        notifBlock.classList.add('hidden');
+      });
     });
-  });
 
-  notifIcon.addEventListener('click', () => {
-    notifBlock.classList.remove('hidden');
-  });
-
+    notifIcon.addEventListener('click', () => {
+      notifBlock.classList.remove('hidden');
+    });
+  }
   const allInfo = document.querySelectorAll('[data-id="infoPopup"]');
 
   const mustBeCut = (field) => {

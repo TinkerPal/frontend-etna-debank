@@ -6,9 +6,25 @@ function Modal(
   onHideCallback
 ) {
   this.modal = document.getElementById(modalId);
+  if (!this.modal) return;
   this.data = {};
   this.approve = this.modal.querySelector('[data-id="approve"]');
   this.confirm = this.modal.querySelector('[data-id="confirm"]');
+
+  this.stepsStructure = htmlToElement(`
+  <div class="flex steps flex-col" data-id="steps">
+        <div class="flex items-center mb-5 justify-center">
+          <div class="text-sm leading-4 font-medium text-grey-100 mr-7">Step <span data-id="currentStep" class="current-step"></span> of <span class="all-steps" data-id="allStep"></span></div>
+          <div class="steps-dots flex items-center">
+            <div data-step="1" class="step active">
+              <span></span>
+            </div>
+            <div data-step="2" class="step">
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </div>`);
 
   this.onInitCallback = onInitCallback;
   this.onShowCallback = onShowCallback;
@@ -34,29 +50,46 @@ function Modal(
     this.modal.classList.remove('modal-loading');
 
     if (success) {
-      this.approve.disabled = true;
-      this.approve.classList.remove('btn-load');
-      this.approve.classList.add('btn-done');
-
-      if (this.confirm) {
-        this.confirm.disabled = false;
-      } else {
-        this.timerToCloseModal = setTimeout(
-          () => this.hide(),
-          this.closeModalTimer
-        );
-      }
+      this.nextStep();
 
       return;
     }
 
-    if (this.confirm) {
+    this.approve.disabled = false;
+    this.approve.classList.remove('btn-load');
+  };
+
+  this.nextStep = () => {
+    this.currentStep.innerHTML = 2;
+    this.steps[0].classList.remove('active');
+    this.steps[1].classList.add('active');
+
+    this.approve.disabled = true;
+    this.approve.style.display = 'none';
+    this.approve.classList.remove('btn-load');
+    this.approve.classList.add('btn-done');
+    this.confirm.disabled = false;
+    this.confirm.style.display = 'flex';
+    this.confirm.classList.remove('btn-load', 'btn-done');
+  };
+
+  this.prevStep = () => {
+    if (this.approve) {
+      this.currentStep.innerHTML = 1;
+      this.steps[0].classList.add('active');
+      this.steps[1].classList.remove('active');
+
       this.approve.disabled = false;
-      this.approve.classList.remove('btn-load');
-      return;
+      this.approve.style.display = 'flex';
+      this.approve.classList.remove('btn-load', 'btn-done');
+      this.confirm.disabled = true;
+      this.confirm.style.display = 'none';
+      this.confirm.classList.remove('btn-load', 'btn-done');
+    } else {
+      this.confirm.disabled = false;
+      this.confirm.style.display = 'flex';
+      this.confirm.classList.remove('btn-load', 'btn-done');
     }
-
-    this.hide();
   };
 
   this.isLoadingAfterConfirm = () => {
@@ -83,10 +116,7 @@ function Modal(
     }
 
     if (!isApproved) {
-      this.approve.disabled = false;
-      this.approve.classList.remove('btn-done');
-      this.confirm.disabled = true;
-      this.confirm.classList.remove('btn-load');
+      this.prevStep();
 
       return;
     }
@@ -123,19 +153,7 @@ function Modal(
     if (this.isLoading) return;
 
     setTimeout(() => {
-      if (this.approve) {
-        this.approve.disabled = false;
-        this.approve.classList.remove('btn-load', 'btn-done');
-      }
-
-      if (this.confirm) {
-        if (this.approve && !this.onShowCallback) {
-          this.confirm.disabled = true;
-        } else {
-          this.confirm.disabled = false;
-        }
-        this.confirm.classList.remove('btn-load', 'btn-done');
-      }
+      this.prevStep();
     }, 300);
 
     this.onHideCallback && this.onHideCallback();
@@ -151,7 +169,22 @@ function Modal(
     exits.forEach((exit) => {
       exit.addEventListener('click', this.hide);
     });
-  };
 
+    if (this.approve) {
+      const parentElementForSteps = this.modal.querySelector('.top-divider');
+      parentElementForSteps.insertBefore(
+        this.stepsStructure,
+        parentElementForSteps.lastChild
+      );
+
+      this.stepsParrent = this.modal.querySelector('[data-id="steps"]');
+      this.currentStep = this.modal.querySelector('[data-id="currentStep"]');
+      this.allStep = this.modal.querySelector('[data-id="allStep"]');
+      this.steps = this.modal.querySelectorAll('[data-step]');
+
+      this.currentStep.innerHTML = 1;
+      this.allStep.innerHTML = this.steps.length;
+    }
+  };
   this.init();
 }

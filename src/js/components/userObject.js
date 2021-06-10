@@ -203,6 +203,7 @@ const userObject = {
           for (let i = 0; i < am_arr[0].length; i++) {
             if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id)) {
               // found
+
               const am = await calcUSDValueOfDeposit(am_arr[1][i], i);
               this.usd_val_only_col.push({
                 val: am,
@@ -988,13 +989,13 @@ const userObject = {
           if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0) {
             if (toNumber(cred_arr[1][i]) > 0) {
               // credit or fee unpaid
-              txt = `<td class="table-cell pl-0 rounded-r-lg" onclick="modal_return_credit.show()">${createTableBtnWithIcon(
+              txt = `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon(
                 'money',
                 'Repay borrow',
                 `return_credit(${i.toString()})`
               )}</td>`;
             } else {
-              txt = `<td class="table-cell pl-0 rounded-r-lg" onclick="modal_return_fee.show()">${createTableBtnWithIcon(
+              txt = `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon(
                 'money',
                 'Repay fee',
                 `return_fee(${i.toString()})`

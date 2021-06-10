@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', async function (event) {
 
   let notifItem = '';
   const notifCommon = document.querySelector('.notif-block');
-
-  data.notificationsArr.forEach((i) => {
-    notifItem = `
+  if (notifCommon) {
+    data.notificationsArr.forEach((i) => {
+      notifItem = `
     <div class="flex w-full notif-block__item" data-id="${[i]}">
       <div class="w-1/12 flex justify-start h-full">
         <div class="nofif-icon w-4 h-5">
@@ -40,37 +40,38 @@ document.addEventListener('DOMContentLoaded', async function (event) {
       </div>
     </div>
   `;
-    notifCommon.innerHTML += notifItem;
-  });
-
-  let sumItems = data.notificationsArr.length;
-  const notifAmount = document.querySelector('.notif-amount');
-  const deleteBtns = document.querySelectorAll('.delete-btn');
-  const notifCommonCloseBtns = notifCommon.querySelectorAll('.modal-exit');
-
-  notifCommonCloseBtns.forEach((item) => {
-    item.addEventListener('click', () => {
-      notifCommon.classList.add('hidden');
+      notifCommon.innerHTML += notifItem;
     });
-  });
 
-  notifAmount.innerHTML = sumItems;
+    let sumItems = data.notificationsArr.length;
+    const notifAmount = document.querySelector('.notif-amount');
+    const deleteBtns = document.querySelectorAll('.delete-btn');
+    const notifCommonCloseBtns = notifCommon.querySelectorAll('.modal-exit');
 
-  if (sumItems < 1) {
-    notifAmount.remove();
-    notifCommon.remove();
+    notifCommonCloseBtns.forEach((item) => {
+      item.addEventListener('click', () => {
+        notifCommon.classList.add('hidden');
+      });
+    });
+
+    notifAmount.innerHTML = sumItems;
+
+    if (sumItems < 1) {
+      notifAmount.remove();
+      notifCommon.remove();
+    }
+
+    deleteBtns.forEach((item) => {
+      item.addEventListener('click', () => {
+        item.parentElement.closest('.notif-block__item').remove();
+        sumItems -= 1;
+        notifAmount.innerHTML = sumItems;
+
+        if (sumItems < 1) {
+          notifAmount.remove();
+          notifCommon.remove();
+        }
+      });
+    });
   }
-
-  deleteBtns.forEach((item) => {
-    item.addEventListener('click', () => {
-      item.parentElement.closest('.notif-block__item').remove();
-      sumItems -= 1;
-      notifAmount.innerHTML = sumItems;
-
-      if (sumItems < 1) {
-        notifAmount.remove();
-        notifCommon.remove();
-      }
-    });
-  });
 });
