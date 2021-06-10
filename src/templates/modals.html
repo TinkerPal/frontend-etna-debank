@@ -43,7 +43,7 @@
         </div>
       </div>
       <div class="flex flex-col">
-        <button type="submit" class="btn w-full mb-4" onclick="approve_stake_liq()" data-id="approve"
+        <button type="submit" class="btn w-full" onclick="approve_stake_liq()" data-id="approve"
           id="approve_liq_confirm">Approve tokens move</button>
         <button disabled class="btn w-full" data-id="confirm" onclick="stake_liq()"
           id="stake_liq_confirm">Confirm</button>
@@ -118,7 +118,7 @@
           placeholder="18.5000">
       </div>
       <div class="flex flex-col">
-        <button type="submit" class="btn w-full mb-4" data-id="approve" id="return_credit_mvtokens">Approve tokens
+        <button type="submit" class="btn w-full" data-id="approve" id="return_credit_mvtokens">Approve tokens
           move</button>
         <button disabled class="btn w-full" data-id="confirm" id="return_credit_confirm">Repay
           borrow</button>
@@ -258,21 +258,8 @@
         <label for="usd_value" class="name-field ">USD value</label>
         <input type="number" name="usd_value" id="usd_value" class="input-type" value="0" readonly>
       </div>
-      <div class="flex steps flex-col">
-        <div class="flex items-center mb-5 justify-center">
-          <div class="text-sm leading-4 font-medium text-grey-100 mr-7">Step <span class="current-step">1</span> of <span class="all-steps">2</span></div>
-          <div class="steps-dots flex items-center">
-            <div class="step active">
-              <span></span>
-            </div>
-            <div class="step">
-              <span></span>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="flex flex-col">
-        <button type="submit" class="btn w-full mb-4" data-id="approve" onclick="approve_deposit()"
+        <button type="submit" class="btn w-full" data-id="approve" onclick="approve_deposit()"
           id="approve_button">Approve tokens move</button>
         <button type="submit" disabled class="btn w-full" data-id="confirm" onclick="deposit()"
           id="deposit_button">Deposit tokens</button>
@@ -357,7 +344,7 @@
         <div class="name-field">Do you confirm to return all fee?</div>
       </div>
       <div class="flex flex-col">
-        <button type="submit" id="return_fee_approve" data-id="approve" class="btn w-full mb-4">Approve tokens
+        <button type="submit" id="return_fee_approve" data-id="approve" class="btn w-full">Approve tokens
           move</button>
         <button type="submit" id="return_fee_confirm" data-id="confirm" class="btn w-full">Confirm</button>
       </div>

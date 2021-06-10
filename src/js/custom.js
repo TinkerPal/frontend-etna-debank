@@ -572,16 +572,6 @@ async function setNetInfo() {
   }
 }
 
-function temporaryDisableCurrentButton(element_id = null) {
-  let elem;
-  if (element_id) elem = document.getElementById(element_id);
-  else elem = event.srcElement;
-  elem.disabled = true;
-  setTimeout(() => {
-    elem.disabled = false;
-  }, 10000);
-}
-
 async function initStakingContract(callback = null) {
   if (!window.staking_smartcontract) {
     if (window.web3js) {
@@ -1963,13 +1953,9 @@ async function depositModalRebuild() {
   });
 
   if (toNumber(currentDepProfile.d_type) === NATIVE_ETHEREUM) {
-    modal_add_deposit.approve.classList.add('btn-done');
-    modal_add_deposit.approve.disabled = true;
-    modal_add_deposit.confirm.disabled = false;
+    modal_add_deposit.nextStep();
   } else {
-    modal_add_deposit.approve.classList.remove('btn-done');
-    modal_add_deposit.approve.disabled = false;
-    modal_add_deposit.confirm.disabled = true;
+    modal_add_deposit.prevStep();
   }
 
   if (currentDepProfile.text === 'nft') {
@@ -2436,9 +2422,7 @@ async function liqModalBuild() {
 
   setBal(liqPairsAssetsOptions[0]);
 
-  modal_add_lliquidity.approve.classList.remove('btn-done');
-  modal_add_lliquidity.approve.disabled = false;
-  modal_add_lliquidity.confirm.disabled = true;
+  modal_add_lliquidity.prevStep();
 }
 
 async function getAllProfiles() {
@@ -3526,17 +3510,17 @@ async function unfreeze_leverage(cred_id) {
 }
 
 function return_credit(cred_id) {
+  modal_return_credit.show();
+  if (modal_return_credit.isLoading) return;
   const modalElement = modal_return_credit.modal;
   const allCreditReturnBtn = modalElement.querySelector('#return_credit_all');
   const partCreditReturnBtn = modalElement.querySelector('#return_credit_part');
-  const submitTokensBtn = modalElement.querySelector('#return_credit_mvtokens');
-  const submitBtn = modalElement.querySelector('#return_credit_confirm');
   const creditReturnInput = modalElement.querySelector('#credit_return_input');
 
   allCreditReturnBtn.onchange = () => return_credit_all_btn(cred_id);
   partCreditReturnBtn.onchange = () => return_credit_part_btn(cred_id);
-  submitTokensBtn.onclick = () => return_credit_mvtokens(cred_id);
-  submitBtn.onclick = () => return_credit_confirm(cred_id);
+  modal_return_credit.approve.onclick = () => return_credit_mvtokens(cred_id);
+  modal_return_credit.confirm.onclick = () => return_credit_confirm(cred_id);
 
   allCreditReturnBtn.checked = true;
   creditReturnInput.value = toTokens(
@@ -3555,49 +3539,32 @@ function return_credit(cred_id) {
       'name'
     )
   ) {
-    submitTokensBtn.disabled = true;
-    submitTokensBtn.classList.add('btn-done');
-    submitBtn.disabled = false;
+    modal_return_credit.nextStep();
   } else {
-    submitTokensBtn.disabled = false;
-    submitTokensBtn.classList.remove('btn-done');
-    submitBtn.disabled = true;
+    modal_return_credit.prevStep();
   }
-
-  modal_return_credit.show();
 }
 
 function return_fee(cred_id) {
-  const modalElement = modal_return_fee.modal;
-  const submitTokensBtn = modalElement.querySelector('#return_fee_approve');
-  const submitBtn = modalElement.querySelector('#return_fee_confirm');
+  modal_return_fee.show();
+  if (modal_return_fee.isLoading) return;
 
-  submitTokensBtn.onclick = () => return_fee_mvtokens(cred_id);
-  submitBtn.onclick = () => return_fee_confirm(cred_id);
+  modal_return_fee.approve.onclick = () => return_fee_mvtokens(cred_id);
+  modal_return_fee.confirm.onclick = () => return_fee_confirm(cred_id);
 
   if (
     toNumber(depTypeByProfileId(userObject.credits.cred_arr[0][cred_id])) ===
     NATIVE_ETHEREUM
   ) {
-    submitTokensBtn.disabled = true;
-    submitTokensBtn.classList.add('btn-done');
-    submitBtn.disabled = false;
+    modal_return_fee.nextStep();
   } else {
-    submitTokensBtn.disabled = false;
-    submitTokensBtn.classList.remove('btn-done');
-    submitBtn.disabled = true;
+    modal_return_fee.prevStep();
   }
-
-  modal_return_fee.show();
 }
 
 function withdraw_reward(dep_id) {
-  const modalElement = modal_withdraw_yield.modal;
-  const submitBtn = modalElement.querySelector('#withraw_rew_confirm');
-
-  submitBtn.onclick = () => withdraw_reward_confirm(dep_id);
-
   modal_withdraw_yield.show();
+  modal_withdraw_yield.confirm.onclick = () => withdraw_reward_confirm(dep_id);
 }
 
 function withdraw_deposit(dep_id) {
