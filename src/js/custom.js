@@ -2939,96 +2939,97 @@ async function getCapDashbord(callback = null) {
 }
 
 async function getOurDashbord(callback = null) {
-  const depositsAmountArrayForPromise = [];
-  userObject.deposit_profiles.forEach((item) => {
-    depositsAmountArrayForPromise.push(
-      window.staking_smartcontract.methods
-        .depositsTotAmount(item.p_id)
-        .call({ from: userObject.account })
-    );
-  });
-  const depositAmountData = await Promise.all(depositsAmountArrayForPromise);
-
-  const depositsTotalArrayForPromise = [];
-  userObject.deposit_profiles.forEach((dep, index) => {
-    const dep_id = userObject.deposits.am_arr[0].findIndex(
-      (item) => toNumber(item) === toNumber(dep.p_id)
-    );
-    depositsTotalArrayForPromise.push(
-      calcUSDValueOfDeposit(depositAmountData[index], dep_id)
-    );
-  });
-  const depositsTotal = await Promise.all(depositsTotalArrayForPromise);
-
-  const tokensStatistic = depositAmountData.map((amount, index) => ({
-    name: userObject.deposit_profiles[index].p_name,
-    total: depositsTotal[index],
-    amount:
-      userObject.deposit_profiles[index].p_id !== NFT_TOKEN_ID
-        ? toTokens(amount, 1)
-        : amount,
-  }));
-
-  const nft = tokensStatistic.find((item) => item.name === 'nft');
-
-  const totalAssets = tokensStatistic.reduce(
-    (prev, cur) => toNumber(prev) + toNumber(cur.total),
-    0
-  );
-
-  let users = 0;
   try {
-    users = await window.staking_smartcontract.methods
-      .getCustomersDepositsLength()
-      .call({ from: userObject.account });
-  } catch {
-    users = 0;
-  }
+    const depositsAmountArrayForPromise = [];
+    userObject.deposit_profiles.forEach((item) => {
+      depositsAmountArrayForPromise.push(
+        window.staking_smartcontract.methods
+          .depositsTotAmount(item.p_id)
+          .call({ from: userObject.account })
+      );
+    });
+    const depositAmountData = await Promise.all(depositsAmountArrayForPromise);
 
-  const creditsAmountArrayForPromise = [];
-  userObject.deposit_profiles.forEach((item) => {
-    creditsAmountArrayForPromise.push(
-      window.credit_smartcontract.methods
-        .creditsTotAmount(item.p_id)
-        .call({ from: userObject.account })
+    const depositsTotalArrayForPromise = [];
+    userObject.deposit_profiles.forEach((dep, index) => {
+      const dep_id = userObject.deposits.am_arr[0].findIndex(
+        (item) => toNumber(item) === toNumber(dep.p_id)
+      );
+      depositsTotalArrayForPromise.push(
+        calcUSDValueOfDeposit(depositAmountData[index], dep_id)
+      );
+    });
+    const depositsTotal = await Promise.all(depositsTotalArrayForPromise);
+
+    const tokensStatistic = depositAmountData.map((amount, index) => ({
+      name: userObject.deposit_profiles[index].p_name,
+      total: depositsTotal[index],
+      amount:
+        userObject.deposit_profiles[index].p_id !== NFT_TOKEN_ID
+          ? toTokens(amount, 1)
+          : amount,
+    }));
+
+    const nft = tokensStatistic.find((item) => item.name === 'nft');
+
+    const totalAssets = tokensStatistic.reduce(
+      (prev, cur) => toNumber(prev) + toNumber(cur.total),
+      0
     );
-  });
-  const creditsAmountArray = await Promise.all(creditsAmountArrayForPromise);
 
-  const creditsTotalArrayForPromise = [];
-  userObject.deposit_profiles.forEach((dep, index) => {
-    const dep_id = userObject.deposits.am_arr[0].findIndex(
-      (item) => toNumber(item) === toNumber(dep.p_id)
+    let users = 0;
+    try {
+      users = await window.staking_smartcontract.methods
+        .getCustomersDepositsLength()
+        .call({ from: userObject.account });
+    } catch {
+      users = 0;
+    }
+
+    const creditsAmountArrayForPromise = [];
+    userObject.deposit_profiles.forEach((item) => {
+      creditsAmountArrayForPromise.push(
+        window.credit_smartcontract.methods
+          .creditsTotAmount(item.p_id)
+          .call({ from: userObject.account })
+      );
+    });
+    const creditsAmountArray = await Promise.all(creditsAmountArrayForPromise);
+
+    const creditsTotalArrayForPromise = [];
+    userObject.deposit_profiles.forEach((dep, index) => {
+      const dep_id = userObject.deposits.am_arr[0].findIndex(
+        (item) => toNumber(item) === toNumber(dep.p_id)
+      );
+      creditsTotalArrayForPromise.push(
+        calcUSDValueOfDeposit(creditsAmountArray[index], dep_id)
+      );
+    });
+    const creditsTotalArray = await Promise.all(creditsTotalArrayForPromise);
+    const creditsTotal = creditsTotalArray.reduce(
+      (prev, cur) => toNumber(prev) + toNumber(cur),
+      0
     );
-    creditsTotalArrayForPromise.push(
-      calcUSDValueOfDeposit(creditsAmountArray[index], dep_id)
-    );
-  });
-  const creditsTotalArray = await Promise.all(creditsTotalArrayForPromise);
-  const creditsTotal = creditsTotalArray.reduce(
-    (prev, cur) => toNumber(prev) + toNumber(cur),
-    0
-  );
 
-  const data = {
-    tokensStatistic,
-    totalUsers: users,
-    totalCredits: creditsTotal,
-    totalAssetsValue: totalAssets + creditsTotal,
-    totalNft: nft.amount,
-    totalDeposits: totalAssets,
-  };
+    const data = {
+      tokensStatistic,
+      totalUsers: users,
+      totalCredits: creditsTotal,
+      totalAssetsValue: totalAssets + creditsTotal,
+      totalNft: nft.amount,
+      totalDeposits: totalAssets,
+    };
 
-  if (data.length === 0) {
-    return;
-  }
+    if (data.length === 0) {
+      return;
+    }
 
-  const listOurCryptoTemplate = (name, amount, total) => {
-    const assetName = `<div class="w-3/12 row-name uppercase">${name}</div>`;
-    const assetAmount = `<div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">${amount}</div>`;
-    const assetTotal = `${numeral(total).format('($ 0.00 a)')}`;
+    const listOurCryptoTemplate = (name, amount, total) => {
+      const assetName = `<div class="w-3/12 row-name uppercase">${name}</div>`;
+      const assetAmount = `<div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">${amount}</div>`;
+      const assetTotal = `${numeral(total).format('($ 0.00 a)')}`;
 
-    return `
+      return `
         <div class="crypto-row">
           ${assetName}
           ${assetAmount}
@@ -3039,50 +3040,53 @@ async function getOurDashbord(callback = null) {
           </div>
         </div>
       `;
-  };
+    };
 
-  const ourCryptoList = document.querySelector('#our-crypto-list');
-  ourCryptoList.innerHTML = '';
+    const ourCryptoList = document.querySelector('#our-crypto-list');
+    ourCryptoList.innerHTML = '';
 
-  data.tokensStatistic.forEach((item) => {
-    ourCryptoList.innerHTML += listOurCryptoTemplate(
-      item.name,
-      item.amount,
-      item.total
-    );
-  });
+    data.tokensStatistic.forEach((item) => {
+      ourCryptoList.innerHTML += listOurCryptoTemplate(
+        item.name,
+        item.amount,
+        item.total
+      );
+    });
 
-  new SimpleBar(ourCryptoList, { autoHide: false });
+    new SimpleBar(ourCryptoList, { autoHide: false });
 
-  const cryptoNumbAll1 = document.querySelectorAll('.total-sum-1');
-  const cryptoNumbAll2 = document.querySelectorAll('.borrow-sum-2');
-  const cryptoNumbAll3 = document.querySelectorAll('.deposits-sum-3');
-  const cryptoNumb4 = document.querySelector('#credit-sum-4');
-  const cryptoNumbAll5 = document.querySelectorAll('.users-sum-5');
-  const comparedLastMonths = document.querySelectorAll('.last-month');
+    const cryptoNumbAll1 = document.querySelectorAll('.total-sum-1');
+    const cryptoNumbAll2 = document.querySelectorAll('.borrow-sum-2');
+    const cryptoNumbAll3 = document.querySelectorAll('.deposits-sum-3');
+    const cryptoNumb4 = document.querySelector('#credit-sum-4');
+    const cryptoNumbAll5 = document.querySelectorAll('.users-sum-5');
+    const comparedLastMonths = document.querySelectorAll('.last-month');
 
-  comparedLastMonths.forEach((elem) => {
-    elem.innerHTML = numeral(data.prevTotalAssetsValue).format('($0.00 a)');
-  });
+    comparedLastMonths.forEach((elem) => {
+      elem.innerHTML = numeral(data.prevTotalAssetsValue).format('($0.00 a)');
+    });
 
-  cryptoNumbAll1.forEach((each) => {
-    each.innerHTML = numeral(data.totalAssetsValue).format('($0.00 a)');
-  });
+    cryptoNumbAll1.forEach((each) => {
+      each.innerHTML = numeral(data.totalAssetsValue).format('($0.00 a)');
+    });
 
-  cryptoNumbAll2.forEach((item) => {
-    item.innerHTML = numeral(data.totalNft).format('(0 a)');
-  });
+    cryptoNumbAll2.forEach((item) => {
+      item.innerHTML = numeral(data.totalNft).format('(0 a)');
+    });
 
-  cryptoNumbAll3.forEach((elem) => {
-    elem.innerHTML = numeral(data.totalDeposits).format('($0.00 a)');
-  });
+    cryptoNumbAll3.forEach((elem) => {
+      elem.innerHTML = numeral(data.totalDeposits).format('($0.00 a)');
+    });
 
-  cryptoNumb4.innerHTML = numeral(data.totalCredits).format('($0.00 a)');
+    cryptoNumb4.innerHTML = numeral(data.totalCredits).format('($0.00 a)');
 
-  cryptoNumbAll5.forEach((el) => {
-    el.innerHTML = numeral(data.totalUsers).format('(0 a)');
-  });
-  setLdBar(100);
+    cryptoNumbAll5.forEach((el) => {
+      el.innerHTML = numeral(data.totalUsers).format('(0 a)');
+    });
+    setLdBar(100);
+  } catch (e) {
+    console.warn(e);
+  }
   if (callback) callback();
 }
 
