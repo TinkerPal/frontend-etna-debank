@@ -828,7 +828,7 @@ async function deposit() {
       return;
     }
 
-    for (let i = 0; i < userObject.state.selectedNFTAssets.length; i++) {
+    for (let i = 0; i < userObject.state.selectedNFTAssets?.length ?? 0; i++) {
       token_ids.push(toNumber(userObject.state.selectedNFTAssets[i].t_id));
     }
   } else {
@@ -1394,7 +1394,7 @@ let web3jsReadersList = {
 
   async init() {
     const await_array = [];
-    for (let i = 0; i < this.rpc_list.length; i++) {
+    for (let i = 0; i < this.rpc_list?.length ?? 0; i++) {
       await_array.push(
         new Web3(new Web3.providers.HttpProvider(this.rpc_list[i]))
       );
@@ -1846,7 +1846,7 @@ async function initDataProviderContractReader(callback = null) {
 async function getDepositProfilesList() {
   const plist = [];
 
-  for (let i = 0; i < userObject.deposit_profiles.length; i++) {
+  for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
     const option = {};
 
     option.text = userObject.deposit_profiles[i].p_name; // name
@@ -1877,7 +1877,7 @@ async function getDepositProfilesList() {
 async function getCreditProfilesList() {
   const plist = [];
 
-  for (let i = 0; i < userObject.credit_profiles.length; i++) {
+  for (let i = 0; i < userObject.credit_profiles?.length ?? 0; i++) {
     const option = {};
 
     option.text = userObject.credit_profiles[i].name;
@@ -1917,7 +1917,7 @@ async function getCreditProfilesListCredit() {
       	
     } */
   // all except NFT, we do not give credits in NFT
-  for (let i = 0; i < full_list.length; i++) {
+  for (let i = 0; i < full_list?.length ?? 0; i++) {
     if (toNumber(full_list[i].c_type) === ERC721_TOKEN) continue;
     plist.push(full_list[i]);
   }
@@ -2312,7 +2312,7 @@ async function getLiqTerms() {
     },
   ];
 
-  for (let i = 0; i < terms.length; i++) {
+  for (let i = 0; i < terms?.length ?? 0; i++) {
     const option = {};
     option.text = terms[i].text;
     option.code = terms[i].code;
@@ -2333,7 +2333,7 @@ async function getLiqPairs() {
 
   const pairs = LIQ_PAIRS;
 
-  for (let i = 0; i < pairs.length; i++) {
+  for (let i = 0; i < pairs?.length ?? 0; i++) {
     const option = {};
     option.text = pairs[i].text;
     option.addr = pairs[i].addr;
@@ -2481,7 +2481,7 @@ async function getAllCreditProfiles() {
 }
 
 function depTypeByProfileId(profile_id) {
-  for (let i = 0; i < userObject.deposit_profiles.length; i++) {
+  for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
     if (
       toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)
     ) {
@@ -2492,7 +2492,7 @@ function depTypeByProfileId(profile_id) {
 }
 
 function tokenAddressByProfileId(profile_id) {
-  for (let i = 0; i < userObject.deposit_profiles.length; i++) {
+  for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
     if (
       toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)
     ) {
@@ -2503,7 +2503,7 @@ function tokenAddressByProfileId(profile_id) {
 }
 
 function profileNameByProfileId(profile_id) {
-  for (let i = 0; i < userObject.deposit_profiles.length; i++) {
+  for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
     if (
       toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)
     ) {
@@ -2518,7 +2518,7 @@ async function unswAPYStrByProfileName(profile_name) {
     userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
   }
 
-  for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
+  for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
     if (userObject.deposit_profiles_liqpairs[i].p_name === profile_name) {
       const apy = toNumber(userObject.deposit_profiles_liqpairs[i].init_apy);
       const apy_real = apy / apy_scale;
@@ -2534,7 +2534,7 @@ async function unswIDByProfileName(profile_name) {
     userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
   }
 
-  for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
+  for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
     if (userObject.deposit_profiles_liqpairs[i].p_name === profile_name) {
       return toNumber(userObject.deposit_profiles_liqpairs[i].p_id);
     }
@@ -2547,7 +2547,7 @@ async function unswProfileNameByProfileId(profile_id) {
     userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
   }
 
-  for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
+  for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
     if (
       toNumber(userObject.deposit_profiles_liqpairs[i].p_id) ===
       toNumber(profile_id)
@@ -2563,7 +2563,7 @@ async function unswDepTypeByProfileId(profile_id) {
     userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
   }
 
-  for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
+  for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
     if (
       toNumber(userObject.deposit_profiles_liqpairs[i].p_id) ===
       toNumber(profile_id)
@@ -2770,7 +2770,7 @@ async function getLiquidityDashboard(callback = null) {
 
   usd_val_only_col.sort((a, b) => toNumber(b.val) - toNumber(a.val));
 
-  for (let i = 0; i < icon_column.length; i++) {
+  for (let i = 0; i < icon_column?.length ?? 0; i++) {
     const old_index = usd_val_only_col[i].ori_index;
 
     icon_column_s[i] = icon_column[old_index];
@@ -2790,7 +2790,7 @@ async function getLiquidityDashboard(callback = null) {
     withdraw_rew_col_s[i] = withdraw_rew_col[old_index];
   }
 
-  for (let i = 0; i < icon_column.length; i++) {
+  for (let i = 0; i < icon_column?.length ?? 0; i++) {
     // 0 means max amount for ERC20 compatible and ignored for ERC721
     html += '<tr class="table-row">';
 
@@ -3191,7 +3191,7 @@ async function getDepositsDashboard(callback = null) {
 
   usd_val_only_col.sort((a, b) => toNumber(b.val) - toNumber(a.val));
 
-  for (let i = 0; i < profiles.length; i++) {
+  for (let i = 0; i < profiles?.length ?? 0; i++) {
     const old_index = usd_val_only_col[i].ori_index;
 
     icon_column_s[i] = icon_column[old_index];
@@ -3208,7 +3208,7 @@ async function getDepositsDashboard(callback = null) {
     withdraw_rew_col_s[i] = withdraw_rew_col[old_index];
   }
 
-  for (let i = 0; i < profiles.length; i++) {
+  for (let i = 0; i < profiles?.length ?? 0; i++) {
     // 0 means max amount for ERC20 compatible and ignored for ERC721
     html += '<tr class="table-row">';
 
@@ -3319,7 +3319,7 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
     });
 
     const token_ids = [];
-    for (let i = 0; i < userObject.state.selectedNFTAssets.length; i++) {
+    for (let i = 0; i < userObject.state.selectedNFTAssets?.length ?? 0; i++) {
       token_ids.push(toNumber(userObject.state.selectedNFTAssets[i].t_id));
     }
 
@@ -4143,7 +4143,7 @@ async function getCYTRProfileId() {
   }
 
   if (!window.cytr_profile_id) {
-    for (let i = 0; i < userObject.deposit_profiles.length; i++) {
+    for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
       if (userObject.deposit_profiles[i].p_name === LEVERAGE_TOKEN) {
         window.cytr_profile_id = toNumber(userObject.deposit_profiles[i].p_id);
         return window.cytr_profile_id;
@@ -4202,7 +4202,7 @@ async function getAPY(profile_id) {
 
   if (!window.dep_apys) {
     window.dep_apys = [];
-    for (let i = 0; i < userObject.deposit_profiles.length; i++) {
+    for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
       window.dep_apys[toNumber(userObject.deposit_profiles[i].p_id)] = null;
     }
   }

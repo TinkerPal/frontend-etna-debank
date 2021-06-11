@@ -57,7 +57,7 @@ const CustomSelect = function (options) {
    * @param {object} options - options for the whole select or for an optgroup.
    */
   function generateOptions(options) {
-    for (let i = 0; i < options.length; i++) {
+    for (let i = 0; i < options?.length ?? 0; i++) {
       const li = document.createElement('li');
 
       li.innerHTML = options[i].innerHTML;
