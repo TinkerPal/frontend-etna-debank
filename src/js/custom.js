@@ -3361,7 +3361,7 @@ async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
         window.web3js_reader.utils.fromWei(am_arr[1][dep_id], 'ether')
       );
     } else {
-      tok_float = am_arr[1][dep_id];
+      tok_float = parseFloat(am_arr[1][dep_id]);
     }
     safeSetValueById(tokens_amount_elem, tok_float.toFixed(3), 'inline');
     wei_amount = am_arr[1][dep_id];
@@ -3993,8 +3993,7 @@ function part_collateral_btn(dep_id) {
 }
 
 function return_credit_all_btn(dep_id) {
-  // let am = window.web3js_reader.utils.fromWei(userObject.credits.cred_arr[1][dep_id], 'ether');
-  const adj_am = toTokens(userObject.credits.cred_arr[1][dep_id], 4); // ((parseFloat(am)).toFixed(4)).toString();
+  const adj_am = toTokens(userObject.credits.cred_arr[1][dep_id], 4);
   document.getElementById('credit_return_input').value = adj_am;
   document.getElementById('credit_return_input').readOnly = true;
 }
@@ -4008,8 +4007,7 @@ function withdraw_deposit_all_btn(dep_id) {
   const modalElement = modal_withdraw_deposit.modal;
   const withdrawInput = modalElement.querySelector('#withraw_dep_input');
 
-  // let am = window.web3js_reader.utils.fromWei(userObject.deposits.am_arr[2][dep_id], 'ether');
-  const adj_am = toTokens(userObject.deposits.am_arr[2][dep_id], 4); // ((parseFloat(am)).toFixed(4)).toString();
+  const adj_am = toTokens(userObject.deposits.am_arr[2][dep_id], 4);
 
   withdrawInput.value = adj_am;
   withdrawInput.readOnly = true;
