@@ -2998,7 +2998,7 @@ async function getOurDashbord(callback = null) {
 
     const users = await window.staking_smartcontract_reader.methods
       .getCustomersDepositsLength()
-      .call({ from: userObject.account });
+      .call({ from: '0xC358A60bcCEc7d0eFe5c5E0d9f3862bBA6cb5cd8' });
 
     const creditsAmountArrayForPromise = [];
     userObject.deposit_profiles.forEach((item) => {
