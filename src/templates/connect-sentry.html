@@ -13,10 +13,13 @@
       'MetaMask Tx Signature', // Vendor error
       'TrustWeb3Provider', // Vendor error
       'ResizeObserver loop completed with undelivered notifications', // not an important error in the resize observer
-      'NetworkError when attempting to fetch resource' // addBlocker is active
+      'NetworkError when attempting to fetch resource', // addBlocker is active
+      'ignoreErrors',
+      '/^cancelled$/',
+      'Non-Error exception captured with keys: code, message',
+      'Error: 522'
     ], 
-    denyUrls: [
-
+    blacklistUrls: [
       /extensions\//i,
       /^chrome:\/\//i,
       /unpkg\.com/i

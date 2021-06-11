@@ -2151,6 +2151,9 @@ async function creditModalDataUpdate() {
   const usdValueCollateral = modal_add_credit.modal.querySelector(
     '#usd_value_collateral'
   );
+
+  const fullCollaterlBtn =
+    modal_add_credit.modal.querySelector('#full_collateral');
   const creditPerc = modal_add_credit.modal.querySelector('#credit_perc');
 
   if (
@@ -2159,9 +2162,11 @@ async function creditModalDataUpdate() {
   )
     return;
 
-  tokensAmmountCollateral.value = depAmountByProfileId(
-    userObject.state.selected_credprofile
-  )[1];
+  if (fullCollaterlBtn.checked === true) {
+    tokensAmmountCollateral.value = depAmountByProfileId(
+      userObject.state.selected_credprofile
+    )[1];
+  }
 
   await updUSDValueCollateral(
     'tokens_amount_collateral',
