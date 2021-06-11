@@ -24,7 +24,7 @@ const userObject = {
         this.assets_column.length = 0;
         const profiles = userObject.deposit_profiles;
 
-        for (let i = 0; i < profiles.length; i++) {
+        for (let i = 0; i < profiles?.length ?? 0; i++) {
           this.icon_column.push(
             `<td class="table-cell">${createCellWithIcon(
               profiles[i].p_name
@@ -78,7 +78,7 @@ const userObject = {
         this.apy_column.length = 0;
         const profiles = userObject.deposit_profiles;
 
-        for (let i = 0; i < profiles.length; i++) {
+        for (let i = 0; i < profiles?.length ?? 0; i++) {
           const apy = await getAPY(profiles[i].p_id);
           const apy_adj = (apy / apy_scale) * 100;
 
@@ -105,7 +105,7 @@ const userObject = {
         this.in_wallet_column.length = 0;
         const profiles = userObject.deposit_profiles;
 
-        for (let i = 0; i < profiles.length; i++) {
+        for (let i = 0; i < profiles?.length ?? 0; i++) {
           let txt = '';
           if (toNumber(profiles[i].p_dep_type) === ERC721_TOKEN) {
             const token_count =
@@ -158,9 +158,9 @@ const userObject = {
         const profiles = userObject.deposit_profiles;
         const { am_arr } = this;
 
-        for (let j = 0; j < profiles.length; j++) {
+        for (let j = 0; j < profiles?.length ?? 0; j++) {
           let txt = '';
-          for (let i = 0; i < am_arr[0].length; i++) {
+          for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
             if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id)) {
               // found
               if (toNumber(profiles[j].p_dep_type) === ERC721_TOKEN) {
@@ -198,9 +198,9 @@ const userObject = {
         const profiles = userObject.deposit_profiles;
         const { am_arr } = this;
 
-        for (let j = 0; j < profiles.length; j++) {
+        for (let j = 0; j < profiles?.length ?? 0; j++) {
           let txt = '';
-          for (let i = 0; i < am_arr[0].length; i++) {
+          for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
             if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id)) {
               // found
 
@@ -242,9 +242,9 @@ const userObject = {
         const profiles = userObject.deposit_profiles;
         const { am_arr } = this;
 
-        for (let j = 0; j < profiles.length; j++) {
+        for (let j = 0; j < profiles?.length ?? 0; j++) {
           let txt = '';
-          for (let i = 0; i < am_arr[0].length; i++) {
+          for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
             if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id)) {
               if (toNumber(am_arr[1][i]) === 0) {
                 txt = '<td class="table-cell">-</td>';
@@ -280,9 +280,9 @@ const userObject = {
         const profiles = userObject.deposit_profiles;
         const { am_arr } = this;
 
-        for (let j = 0; j < profiles.length; j++) {
+        for (let j = 0; j < profiles?.length ?? 0; j++) {
           let txt = '';
-          for (let i = 0; i < am_arr[0].length; i++) {
+          for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
             if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id)) {
               // found
               if (toNumber(profiles[j].p_dep_type) === ERC721_TOKEN) {
@@ -317,9 +317,9 @@ const userObject = {
         const profiles = userObject.deposit_profiles;
         const { am_arr } = this;
 
-        for (let j = 0; j < profiles.length; j++) {
+        for (let j = 0; j < profiles?.length ?? 0; j++) {
           let txt = '';
-          for (let i = 0; i < am_arr[0].length; i++) {
+          for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
             if (
               toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id) &&
               toNumber(am_arr[2][i]) > 0
@@ -353,9 +353,9 @@ const userObject = {
         const profiles = userObject.deposit_profiles;
         const { rew_arr } = this;
 
-        for (let j = 0; j < profiles.length; j++) {
+        for (let j = 0; j < profiles?.length ?? 0; j++) {
           let txt = '';
-          for (let i = 0; i < rew_arr[0].length; i++) {
+          for (let i = 0; i < rew_arr[0]?.length ?? 0; i++) {
             if (toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id)) {
               // found
               // let adj = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');
@@ -386,9 +386,9 @@ const userObject = {
         const profiles = userObject.deposit_profiles;
         const { rew_arr } = this;
 
-        for (let j = 0; j < profiles.length; j++) {
+        for (let j = 0; j < profiles?.length ?? 0; j++) {
           let txt = '';
-          for (let i = 0; i < rew_arr[0].length; i++) {
+          for (let i = 0; i < rew_arr[0]?.length ?? 0; i++) {
             if (toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id)) {
               const adj_str = toTokens(rew_arr[2][i], 4);
               txt = `<td class="table-cell">${adj_str}</td>`;
@@ -416,9 +416,9 @@ const userObject = {
         const profiles = userObject.deposit_profiles;
         const { rew_arr } = this;
 
-        for (let j = 0; j < profiles.length; j++) {
+        for (let j = 0; j < profiles?.length ?? 0; j++) {
           let txt = '';
-          for (let i = 0; i < rew_arr[0].length; i++) {
+          for (let i = 0; i < rew_arr[0]?.length ?? 0; i++) {
             if (
               toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id) &&
               toNumber(rew_arr[2][i]) > 0
@@ -478,7 +478,7 @@ const userObject = {
         this.getLevArr_last_call = current_timestamp;
         this.lev_arr.length = 0;
         this.lev_ratio_arr.length = 0;
-        for (let i = 0; i < this.cred_arr[0].length; i++) {
+        for (let i = 0; i < this.cred_arr[0]?.length ?? 0; i++) {
           const res = await window.liqlev_smartcontract.methods
             .viewCustomerLeverageByCredId(userObject.account, i)
             .call({
@@ -503,7 +503,7 @@ const userObject = {
         this.getIconAssetsCols_last_call = current_timestamp;
         this.icon_column.length = 0;
         this.assets_column.length = 0;
-        for (let i = 0; i < this.cred_arr[0].length; i++) {
+        for (let i = 0; i < this.cred_arr[0]?.length ?? 0; i++) {
           this.icon_column.push(
             `<td class="table-cell">${createCellWithIcon(
               profileNameByProfileId(this.cred_arr[0][i])
@@ -528,7 +528,7 @@ const userObject = {
         this.apr_column.length = 0;
         const { cred_arr } = this;
         const { clt_arr } = this;
-        for (let i = 0; i < cred_arr[0].length; i++) {
+        for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
           const clt_id = cred_arr[4][i];
           const clt_profile_id = clt_arr[0][toNumber(clt_id)];
 
@@ -581,7 +581,7 @@ const userObject = {
         this.in_wallet_column.length = 0;
         const { cred_arr } = this;
 
-        for (let i = 0; i < cred_arr[0].length; i++) {
+        for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
           let txt = '';
           if (toNumber(depTypeByProfileId(cred_arr[0][i])) === ERC721_TOKEN) {
             const token_count =
@@ -640,9 +640,9 @@ const userObject = {
         const { cred_arr } = this;
         const { am_arr } = userObject.deposits;
 
-        for (let j = 0; j < cred_arr[0].length; j++) {
+        for (let j = 0; j < cred_arr[0]?.length ?? 0; j++) {
           let txt = '';
-          for (let i = 0; i < am_arr[0].length; i++) {
+          for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
             if (toNumber(am_arr[0][i]) === toNumber(cred_arr[0][j])) {
               // found
               if (
@@ -673,7 +673,7 @@ const userObject = {
         this.getCredCol_last_call = current_timestamp;
         this.cred_column.length = 0;
         const { cred_arr } = this;
-        for (let i = 0; i < cred_arr[0].length; i++) {
+        for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
           let txt = '';
 
           if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0) {
@@ -705,7 +705,7 @@ const userObject = {
         this.clt_column.length = 0;
         const { cred_arr } = this;
         const { clt_arr } = this;
-        for (let i = 0; i < cred_arr[0].length; i++) {
+        for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
           let txt = '';
           if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0) {
             // credit or fee unpaid
@@ -789,7 +789,7 @@ const userObject = {
         this.usd_val_column.length = 0;
         const { cred_arr } = this;
 
-        for (let i = 0; i < cred_arr[0].length; i++) {
+        for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
           let txt = '';
 
           if (toNumber(cred_arr[1][i]) > 0) {
@@ -823,7 +823,7 @@ const userObject = {
         this.duration_col.length = 0;
         const { cred_arr } = this;
 
-        for (let i = 0; i < cred_arr[0].length; i++) {
+        for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
           let txt = '';
 
           if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0) {
@@ -852,7 +852,7 @@ const userObject = {
         this.fee_col.length = 0;
         const { cred_arr } = this;
 
-        for (let i = 0; i < cred_arr[0].length; i++) {
+        for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
           let txt = '';
 
           if (toNumber(cred_arr[2][i]) === 0) {
@@ -882,7 +882,7 @@ const userObject = {
         const { lev_arr } = this;
         const { lev_ratio_arr } = this;
 
-        for (let i = 0; i < cred_arr[0].length; i++) {
+        for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
           let txt = '';
 
           if (toNumber(lev_arr[i]) > 0) {
@@ -911,7 +911,7 @@ const userObject = {
         const { cred_arr } = this;
         const { lev_arr } = this;
 
-        for (let i = 0; i < cred_arr[0].length; i++) {
+        for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
           let txt = '';
 
           // if (toNumber(cred_arr[1][i]) > 0 && toNumber(lev_arr[i]) === 0) {
@@ -959,7 +959,7 @@ const userObject = {
 
     return_empty_col: [],
     async getReturnEmptyCol(flag = false) {
-      for (let i = 0; i < this.cred_arr[0].length; i++) {
+      for (let i = 0; i < this.cred_arr[0]?.length ?? 0; i++) {
         this.return_empty_col.push(
           '<td class="table-cell table-cell-empty"></td>'
         );
@@ -982,7 +982,7 @@ const userObject = {
         const { lev_arr } = this;
         const { lev_ratio_arr } = this;
 
-        for (let i = 0; i < cred_arr[0].length; i++) {
+        for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
           // i === deposit id
           let txt = '';
 
@@ -1032,7 +1032,7 @@ const userObject = {
 
         const { rew_arr } = userObject.deposits;
 
-        for (let i = 0; i < am_arr[0].length; i++) {
+        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
           if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
             continue;
           if (
@@ -1074,7 +1074,7 @@ const userObject = {
         if (am_arr.length === 0) return [[], [], []];
         const { rew_arr } = userObject.deposits;
 
-        for (let i = 0; i < am_arr[0].length; i++) {
+        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
           if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
             continue;
           if (
@@ -1107,7 +1107,7 @@ const userObject = {
         const { am_arr } = userObject.deposits;
         const { rew_arr } = userObject.deposits;
 
-        for (let i = 0; i < am_arr[0].length; i++) {
+        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
           if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
             continue;
           if (
@@ -1147,7 +1147,7 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         let index = 0;
-        for (let i = 0; i < am_arr[0].length; i++) {
+        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
           if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
             continue;
           if (
@@ -1194,7 +1194,7 @@ const userObject = {
         const { am_arr } = userObject.deposits;
         const { rew_arr } = userObject.deposits;
 
-        for (let i = 0; i < am_arr[0].length; i++) {
+        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
           if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
             continue;
           if (
@@ -1257,7 +1257,7 @@ const userObject = {
         const { am_arr } = userObject.deposits;
         const { rew_arr } = userObject.deposits;
 
-        for (let i = 0; i < am_arr[0].length; i++) {
+        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
           if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
             continue;
           if (
@@ -1296,7 +1296,7 @@ const userObject = {
         const { am_arr } = userObject.deposits;
         const { rew_arr } = userObject.deposits;
 
-        for (let i = 0; i < am_arr[0].length; i++) {
+        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
           if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
             continue;
           if (
@@ -1338,7 +1338,7 @@ const userObject = {
         const { am_arr } = userObject.deposits;
         const { rew_arr } = userObject.deposits;
 
-        for (let i = 0; i < am_arr[0].length; i++) {
+        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
           if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
             continue;
           if (
@@ -1393,7 +1393,7 @@ const userObject = {
         const { am_arr } = userObject.deposits;
         const { rew_arr } = userObject.deposits;
 
-        for (let i = 0; i < am_arr[0].length; i++) {
+        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
           if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
             continue;
           if (
@@ -1432,7 +1432,7 @@ const userObject = {
         const { am_arr } = userObject.deposits;
         const { rew_arr } = userObject.deposits;
 
-        for (let i = 0; i < am_arr[0].length; i++) {
+        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
           if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
             continue;
           if (
@@ -1471,7 +1471,7 @@ const userObject = {
         const { am_arr } = userObject.deposits;
         const { rew_arr } = userObject.deposits;
 
-        for (let i = 0; i < am_arr[0].length; i++) {
+        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
           if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
             continue;
           if (

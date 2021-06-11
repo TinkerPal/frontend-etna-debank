@@ -125,7 +125,7 @@ const isMetaMaskInstalled = () => {
 
 function depAmountByProfileId(profile_id) {
   if (toNumber(profile_id) !== -1) {
-    for (let i = 0; i < userObject.deposits.am_arr[0].length; i++) {
+    for (let i = 0; i < userObject?.deposits?.am_arr[0]?.length ?? 0; i++) {
       if (toNumber(userObject.deposits.am_arr[0][i]) === toNumber(profile_id)) {
         let am = userObject.deposits.am_arr[1][i];
         if (toNumber(depTypeByProfileId(profile_id)) !== ERC721_TOKEN) {
@@ -143,7 +143,7 @@ function toNumber(number) {
 }
 
 function depAmountByProfileIdReal(profile_id) {
-  for (let i = 0; i < userObject.deposits.am_arr[0].length; i++) {
+  for (let i = 0; i < userObject?.deposits?.am_arr[0]?.length ?? 0; i++) {
     if (toNumber(userObject.deposits.am_arr[0][i]) === toNumber(profile_id)) {
       const am = userObject.deposits.am_arr[1][i];
 

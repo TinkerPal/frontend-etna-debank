@@ -254,7 +254,7 @@ const createTableBtnWithIcon = (icon, text, callback) => {
 };
 
 const createCellWithIcon = (iconSrc) => {
-  if (iconSrc) {
+  if (typeof iconSrc === 'string') {
     const iconName = iconSrc.toLowerCase();
     const iconObj = CRYPTO_ICONS.find((icon) => iconName === icon.name);
     if (iconObj) {
@@ -2648,7 +2648,7 @@ async function getCreditsDashboard(callback = null) {
   </thead> 
   <tbody>`;
 
-  for (let i = 0; i < cred_arr[0].length; i++) {
+  for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
     // i === credit id
 
     if (
