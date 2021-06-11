@@ -2967,14 +2967,20 @@ async function getOurDashbord(callback = null) {
       );
     });
     const depositAmountData = await Promise.all(depositsAmountArrayForPromise);
+    const totalNftInEtna = await window.staking_smartcontract_reader.methods
+      .totalNFTValue(NFT_TOKEN_ID)
+      .call({ from: userObject.account });
 
     const depositsTotalArrayForPromise = [];
-    userObject.deposit_profiles.forEach((item, index) => {
+    userObject.deposit_profiles.forEach(async (item, index) => {
       depositsTotalArrayForPromise.push(
         getPriceOfTokens(
-          toTokens(depositAmountData[index], 10),
-          item.p_name,
-          item.p_dep_type
+          item.p_id === NFT_TOKEN_ID
+            ? totalNftInEtna
+            : depositAmountData[index],
+          item.p_id === NFT_TOKEN_ID ? LEVERAGE_TOKEN : item.p_name,
+          item.p_dep_type,
+          true
         )
       );
     });
@@ -2996,9 +3002,14 @@ async function getOurDashbord(callback = null) {
       0
     );
 
-    const users = await window.staking_smartcontract_reader.methods
-      .getCustomersDepositsLength()
-      .call({ from: '0xC358A60bcCEc7d0eFe5c5E0d9f3862bBA6cb5cd8' });
+    let users = 0;
+    try {
+      users = await window.staking_smartcontract_reader.methods
+        .getCustomersDepositsLength()
+        .call({ from: '0xC358A60bcCEc7d0eFe5c5E0d9f3862bBA6cb5cd8' });
+    } catch (e) {
+      console.warn(e);
+    }
 
     const creditsAmountArrayForPromise = [];
     userObject.deposit_profiles.forEach((item) => {
@@ -3014,7 +3025,7 @@ async function getOurDashbord(callback = null) {
     userObject.deposit_profiles.forEach((item, index) => {
       creditsTotalArrayForPromise.push(
         getPriceOfTokens(
-          toTokens(creditsAmountArray[index], 4),
+          creditsAmountArray[index],
           item.p_name,
           item.p_dep_type
         )
@@ -3100,7 +3111,7 @@ async function getOurDashbord(callback = null) {
     });
     setLdBar(100);
   } catch (e) {
-    console.error(e);
+    console.warn(e);
   }
   if (callback) callback();
 }
@@ -3261,12 +3272,19 @@ async function getNftPrice(contract, vc_contract, token_ids) {
   return usd_float.toFixed(3);
 }
 
-async function getPriceOfTokens(tokenAmount, tokenName, tokenType) {
+async function getPriceOfTokens(
+  tokenAmount,
+  tokenName,
+  tokenType,
+  isSafeAmount = false
+) {
   const contract = window.data_provider_smartcontract_reader;
   const token = toNumber(tokenType) === NATIVE_ETHEREUM ? 'BNBUSD' : tokenName;
 
   const { BN } = window;
-  const wei_amount = safeFloatToWei(tokenAmount); // BN
+  const wei_amount = isSafeAmount
+    ? new BN(tokenAmount)
+    : safeFloatToWei(tokenAmount); // BN
 
   const [data, dec] = await Promise.all([
     contract.methods.getData(token).call({
