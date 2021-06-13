@@ -3032,7 +3032,8 @@ async function getOurDashbord(callback = null) {
         getPriceOfTokens(
           creditsAmountArray[index],
           item.p_name,
-          item.p_dep_type
+          item.p_dep_type,
+          true
         )
       );
     });
