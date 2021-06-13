@@ -3059,7 +3059,7 @@ async function getOurDashbord(callback = null) {
       const assetName = `<div class="w-3/12 row-name uppercase">${name}</div>`;
       const assetAmount = `<div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">${numeral(
         amount
-      ).format('($ 0.00 a)')}</div>`;
+      ).format('(0.00 a)')}</div>`;
       const assetTotal = `${numeral(total).format('($ 0.00 a)')}`;
 
       return `
@@ -3100,7 +3100,7 @@ async function getOurDashbord(callback = null) {
     });
 
     cryptoNumbAll1.forEach((each) => {
-      each.innerHTML = numeral(data.totalAssetsValue).format('($0.00 a)');
+      each.innerHTML = numeral(data.totalAssetsValue).format('($0.0000 a)');
     });
 
     cryptoNumbAll2.forEach((item) => {
