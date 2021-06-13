@@ -1,0 +1,37 @@
+<div class="collumn-via-inputs">
+  <div class="collumn-info">
+
+    <div class="collumn-info__row">
+      <div class="name-field mb-1">Select Asset</div>
+      <select class="js-choice-single" id="depprofiles-dropdown" name="depprofiles-dropdown">
+        <option>bnb</option>
+        <option>st1</option>
+        <option>st2</option>
+      </select>
+    </div>
+
+    <div class="collumn-info__row">
+      <div class="name-field mb-1">Select NFT</div>
+      <select class="js-choice-multiple" name="choices-multiple" id="nftAssetsSelect" multiple>
+        <option>bnb</option>
+        <option>st1</option>
+        <option>st2</option>
+      </select>
+    </div>
+
+    <div class="collumn-info__row">
+      <label for="withraw_dep_input" class="name-field mb-1">Total withdraw</label>
+      <input type="number" name="total-repay" id="withraw_dep_input" class="input-type" readonly value="0"
+        placeholder="0">
+    </div>
+    <div class="collumn-info__row">
+      <label for="withraw_dep_input" class="name-field mb-1">USD value</label>
+      <input type="number" name="total-repay" id="withraw_dep_input" class="input-type" readonly value="0"
+        placeholder="0">
+    </div>
+  </div>
+  <div class="btn-row">
+    <button type="submit" class="btn">Approve tokens move</button>
+    <button type="submit" class="btn" disabled>Deposit tokens</button>
+  </div>
+</div>

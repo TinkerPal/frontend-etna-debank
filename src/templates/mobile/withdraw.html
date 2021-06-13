@@ -1,0 +1,46 @@
+<div class="withdraw-block">
+  <div class="flex flex-col h-full">
+
+    <div class="connected-wallet">
+      <div class="connected-wallet__img">
+        <img src="./images/wallet.svg" alt="#">
+      </div>
+      <div class="flex flex-col">
+        <div class="connected-wallet__title">
+          Connected wallet:
+        </div>
+        <div class="connected-wallet__numb">
+          0x6cea79e4d4dea3461b4d8452c911db1aa22
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs-block">
+      <div class="return-tabs">
+        <div class="w-1/2">
+          <input type="radio" name="deposit" value="all-deposit" id="withraw_dep_all" checked class="hidden">
+          <label for="withraw_dep_all" class="btn-checked">
+            Withdraw all
+          </label>
+        </div>
+        <div class="w-1/2">
+          <input type="radio" name="deposit" value="part-deposit" id="withraw_dep_part" class="hidden">
+          <label for="withraw_dep_part" class="btn-checked">
+            Part
+          </label>
+        </div>
+      </div>
+      <div class="flex flex-col mb-11">
+        <label for="withraw_dep_input" class="name-field mb-1">Total withdraw</label>
+        <input type="number" name="total-repay" id="withraw_dep_input" class="input-type" readonly value="18.5000"
+          placeholder="18.5000">
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button type="submit" id="withraw_dep_confirm" data-id="confirm" class="btn">
+        Confirm
+      </button>
+    </div>
+  </div>
+</div>
