@@ -3057,7 +3057,9 @@ async function getOurDashbord(callback = null) {
 
     const listOurCryptoTemplate = (name, amount, total) => {
       const assetName = `<div class="w-3/12 row-name uppercase">${name}</div>`;
-      const assetAmount = `<div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">${amount}</div>`;
+      const assetAmount = `<div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">${numeral(
+        amount
+      ).format('($ 0.00 a)')}</div>`;
       const assetTotal = `${numeral(total).format('($ 0.00 a)')}`;
 
       return `
