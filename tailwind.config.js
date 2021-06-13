@@ -20,11 +20,15 @@ module.exports = {
       maxWidth: {
         460: '460px',
       },
+      padding: {
+        '6px': '6px',
+      },
       width: {
         'fit-content': 'fit-content',
         rest: 'calc(100% - 290px)',
         290: '290px',
         notif: 'calc(100% - 48px)',
+        'notif-mobile': 'calc(100% - 2rem)',
       },
       fontSize: {
         8: ['8px', '10px'],
@@ -32,6 +36,7 @@ module.exports = {
       height: {
         66: '66px',
         empty: 'calc(100vh - 346px)',
+        'empty-mobile': 'calc(100% - 160px)',
       },
     },
     fontFamily: {
@@ -57,9 +62,18 @@ module.exports = {
       'pane-error': 'rgb(43, 5, 5)',
       'pane-success': 'rgb(3, 37, 15)',
       'pane-info': 'rgb(73, 66, 40)',
+      'black-opacity-mobile': '#12121C',
+      'dark-green-mobile': '#262E2F',
       violet: '#5A5A89',
       'violet-100': '#7D84FC',
       'green-400': '#68D391',
+      'red-mobile': '#F7543E',
+      'blue-mobile': '#6374C3',
+      'green-200-mobile': '#30E0A1',
+      'blue-100-mobile': '#638FFE',
+      'green-100-mobile': '#82E717',
+      'violet-bg-mobile': '#9696CB',
+      'black-mobile': '#060711',
     }),
     textColor: (theme) => ({
       ...theme('colors'),
@@ -76,16 +90,23 @@ module.exports = {
       red: '#EB5757',
       yellow: '#FBBF24',
       'violet-100': '#9292C1',
+      'light-green-mobile': '#B8F907',
+      'light-grey-mobile': '#AEB6CE',
+      'grey-300-mobile': '#C4C4D3',
+      'green-4-mobile': '#68891C',
+      'grey-400-mobile': '#6B7280',
     }),
     borderColor: (theme) => ({
       ...theme('colors'),
       green: '#98EF10',
       'light-violet': '#5A5A89',
+      'medium-violet-mobile': '#B9C1D9',
       'light-grey': '#292948',
       'green-3': '#6FCF97',
       'medium-grey': '#35354E',
       red: '#EB5757',
       'green-400': '#68D391',
+      'grey-100-mobile': 'rgba(90, 90, 137, 0.67)',
     }),
     gradientColorStops: (theme) => ({
       ...theme('colors'),
