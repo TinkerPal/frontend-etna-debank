@@ -50,6 +50,10 @@ const userObject = {
           .call({
             from: userObject.account,
           });
+        if (!Array.isArray(this.am_arr)) {
+          this.am_arr = Object.values(this.am_arr);
+        }
+        console.log(this.am_arr);
       }
       return this.am_arr;
     },
@@ -64,6 +68,9 @@ const userObject = {
           .call({
             from: userObject.account,
           });
+        if (!Array.isArray(this.rew_arr)) {
+          this.rew_arr = Object.values(this.rew_arr);
+        }
       }
       return this.rew_arr;
     },
