@@ -53,7 +53,6 @@ const userObject = {
         if (!Array.isArray(this.am_arr)) {
           this.am_arr = Object.values(this.am_arr);
         }
-        console.log(this.am_arr);
       }
       return this.am_arr;
     },
