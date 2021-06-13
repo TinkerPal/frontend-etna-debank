@@ -3,31 +3,21 @@ const { watch, series, src, dest } = require('gulp');
 var browserSync = require('browser-sync').create();
 
 const postcss = require('gulp-postcss'),
-  uglify = require('gulp-uglify'),
-  htmlreplace = require('gulp-html-replace'),
-  hash = require('gulp-hash-filename'),
   babel = require('gulp-babel'),
   sass = require('gulp-sass'),
-  tap = require('gulp-tap'),
   imagemin = require('gulp-imagemin'),
   fileinclude = require('gulp-file-include'),
   gulp = require('gulp'),
   minifyCSS = require('gulp-minify-css'),
   env = require('gulp-env'),
   tailwindcss = require('tailwindcss'),
-  fs = require('fs'),
   replace = require('gulp-replace'),
   autoprefixer = require('gulp-autoprefixer'),
   clean = require('gulp-clean'),
-  rename = require('gulp-rename'),
   htmlmin = require('gulp-htmlmin'),
   concat = require('gulp-concat'),
-  sourcemaps = require('gulp-sourcemaps'),
   plumber = require('gulp-plumber');
 
-var hashedJS;
-var hashedCSS;
-var noop = function () {};
 const js = [
   './src/js/libs/*',
 
@@ -43,36 +33,6 @@ const js = [
   './src/js/custom.js',
 ];
 
-function foo(folder, enconding) {
-  return new Promise(function (resolve, reject) {
-    fs.readdir(folder, enconding, function (err, filenames) {
-      if (err) reject(err);
-      else resolve(filenames);
-    });
-  });
-}
-
-const getCssPath = async () => {
-  var cssPath;
-  try {
-    await foo('./public/css/').then(
-      (files) =>
-        (cssPath = '/css/' + files.filter((el) => /\.min.css$/.test(el)))
-    );
-  } catch (error) {
-    cssPath;
-  }
-  return cssPath;
-};
-
-const getJsPath = async () => {
-  var jsPath;
-  await foo('./public/js/').then(
-    (files) => (jsPath = '/js/' + files.filter((el) => /\.min.js$/.test(el)))
-  );
-  return jsPath;
-};
-
 function jsTask(envs) {
   return (
     src(js)
@@ -87,17 +47,6 @@ function jsTask(envs) {
       )
       // .pipe(envs === 'production' ? uglify() : tap(noop))
       .pipe(concat('common.js'))
-      // .pipe(
-      //   hash({
-      //     format: '{name}-{hash:8}{ext}',
-      //   })
-      // )
-      .pipe(
-        rename(function (path) {
-          path.basename += '';
-          hashedJS = '/js/' + path.basename + '.js';
-        })
-      )
       // .pipe(sourcemaps.write('maps'))
       .pipe(gulp.dest('./public/js/'))
       .pipe(copyLibs())
@@ -114,96 +63,61 @@ function htmlTask() {
       })
     )
     .pipe(htmlmin({ collapseWhitespace: true }))
-    .pipe(
-      htmlreplace({
-        css: hashedCSS ? hashedCSS : getCssPath(),
-        js: {
-          src: [hashedJS ? hashedJS : getJsPath()],
-          tpl: '<script defer src="%s"></script>',
-        },
-      })
-    )
     .pipe(gulp.dest('./public/'))
     .pipe(browserSync.stream());
 }
 
 // Task for compiling our CSS files using PostCSS
 function cssTask() {
-  return (
-    src(['./src/css/*.scss', '!./src/css/mobile.scss'])
-      .pipe(sass().on('error', sass.logError))
-      .pipe(replace('hover: ', 'hover:'))
-      .pipe(replace('focus: ', 'focus:'))
-      .pipe(replace('disabled: ', 'disabled:'))
-      .pipe(replace('xl: ', 'xl:'))
-      .pipe(replace('lg: ', 'lg:'))
-      .pipe(replace('md: ', 'md:'))
-      .pipe(
-        postcss([
-          tailwindcss('./tailwind.config.js'),
-          require('autoprefixer'),
-          require('tailwindcss'),
-        ])
-      )
-      .pipe(
-        autoprefixer({
-          cascade: false,
-        })
-      )
-      .pipe(minifyCSS())
-      // .pipe(
-      //   hash({
-      //     format: '{name}-{hash:8}{ext}',
-      //   })
-      // )
-      .pipe(
-        rename(function (path) {
-          path.basename += '';
-          hashedCSS = '/css/' + path.basename + '.css';
-        })
-      )
-      .pipe(gulp.dest('./public/css/'))
-      .pipe(browserSync.stream())
-  );
+  return src(['./src/css/*.scss', '!./src/css/mobile.scss'])
+    .pipe(sass().on('error', sass.logError))
+    .pipe(replace('hover: ', 'hover:'))
+    .pipe(replace('focus: ', 'focus:'))
+    .pipe(replace('disabled: ', 'disabled:'))
+    .pipe(replace('xl: ', 'xl:'))
+    .pipe(replace('lg: ', 'lg:'))
+    .pipe(replace('md: ', 'md:'))
+    .pipe(
+      postcss([
+        tailwindcss('./tailwind.config.js'),
+        require('autoprefixer'),
+        require('tailwindcss'),
+      ])
+    )
+    .pipe(
+      autoprefixer({
+        cascade: false,
+      })
+    )
+    .pipe(minifyCSS())
+    .pipe(gulp.dest('./public/css/'))
+    .pipe(browserSync.stream());
 }
 
 function cssTaskMobile() {
-  return (
-    src(['./src/css/*.scss', '!./src/css/styles.scss'])
-      .pipe(sass().on('error', sass.logError))
-      .pipe(replace('hover: ', 'hover:'))
-      .pipe(replace('focus: ', 'focus:'))
-      .pipe(replace('disabled: ', 'disabled:'))
-      .pipe(replace('xl: ', 'xl:'))
-      .pipe(replace('lg: ', 'lg:'))
-      .pipe(replace('md: ', 'md:'))
-      .pipe(
-        postcss([
-          tailwindcss('./tailwind.config.js'),
-          require('autoprefixer'),
-          require('tailwindcss'),
-        ])
-      )
-      .pipe(
-        autoprefixer({
-          cascade: false,
-        })
-      )
-      .pipe(minifyCSS())
-      // .pipe(
-      //   hash({
-      //     format: '{name}-{hash:8}{ext}',
-      //   })
-      // )
-      .pipe(
-        rename(function (path) {
-          path.basename += '';
-          hashedCSS = '/css/' + path.basename + '.css';
-        })
-      )
-      .pipe(gulp.dest('./public/css/'))
-      .pipe(browserSync.stream())
-  );
+  return src(['./src/css/*.scss', '!./src/css/styles.scss'])
+    .pipe(sass().on('error', sass.logError))
+    .pipe(replace('hover: ', 'hover:'))
+    .pipe(replace('focus: ', 'focus:'))
+    .pipe(replace('disabled: ', 'disabled:'))
+    .pipe(replace('xl: ', 'xl:'))
+    .pipe(replace('lg: ', 'lg:'))
+    .pipe(replace('md: ', 'md:'))
+    .pipe(
+      postcss([
+        tailwindcss('./tailwind.config.js'),
+        require('autoprefixer'),
+        require('tailwindcss'),
+      ])
+    )
+    .pipe(
+      autoprefixer({
+        cascade: false,
+      })
+    )
+    .pipe(minifyCSS())
+    .pipe(gulp.dest('./public/css/'))
+    .pipe(browserSync.stream());
 }
 
 function cssLibsTask() {

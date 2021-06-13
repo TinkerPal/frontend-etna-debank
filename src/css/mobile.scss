@@ -137,7 +137,7 @@
     @apply cursor-pointer py-6px px-3 w-1/3 text-center rounded-md text-sm tracking-tight items-center justify-center flex mb-0;
 
     &.active {
-      @apply bg-dark-green text-light-green;
+      @apply bg-dark-green-mobile text-light-green-mobile;
     }
 
     span {
@@ -146,11 +146,11 @@
   }
 
   .return-tabs input:checked + label {
-    @apply bg-dark-green text-light-green;
+    @apply bg-dark-green-mobile text-light-green-mobile;
   }
 
   .input-type {
-    @apply border-grey-100 border text-base rounded-md w-full h-12 bg-blueish-black focus: outline-none py-3 px-3 leading-6;
+    @apply border-grey-100-mobile border text-base rounded-md w-full h-12 bg-blueish-black focus: outline-none py-3 px-3 leading-6;
   }
 
   .collumn-via-inputs {
@@ -158,11 +158,11 @@
   }
 
   nav {
-    @apply flex bg-black-opacity w-full rounded-md;
+    @apply flex bg-black-opacity-mobile w-full rounded-md;
   }
 
   .return-tabs {
-    @apply flex bg-black-opacity w-full rounded-md mb-4;
+    @apply flex bg-black-opacity-mobile w-full rounded-md mb-4;
   }
 
   .category-name {
@@ -204,14 +204,14 @@
   }
 
   .withdraw {
-    @apply text-light-green;
+    @apply text-light-green-mobile;
 
     .table-name {
       @apply text-base font-normal;
     }
 
     .table-currency {
-      @apply text-green-4 text-xs;
+      @apply text-green-4-mobile text-xs;
     }
 
     .table-amount {
@@ -219,7 +219,7 @@
     }
 
     .table-data {
-      @apply text-green-4 text-xs;
+      @apply text-green-4-mobile text-xs;
     }
   }
 
@@ -244,7 +244,7 @@
   }
 
   .stat-row {
-    @apply w-full border-medium-violet border-b border-opacity-20 flex items-center py-4;
+    @apply w-full border-medium-violet-mobile border-b border-opacity-20 flex items-center py-4;
 
     &__icon {
       @apply px-5 py-4 rounded-2xl bg-opacity-10 flex items-center justify-center w-16 h-16 bg-transparent;
@@ -252,31 +252,31 @@
 
     &__red {
       .stat-row__icon {
-        @apply bg-red bg-opacity-10;
+        @apply bg-red-mobile bg-opacity-10;
       }
     }
 
     &__blue {
       .stat-row__icon {
-        @apply bg-blue bg-opacity-10;
+        @apply bg-blue-mobile bg-opacity-10;
       }
     }
 
     &__green {
       .stat-row__icon {
-        @apply bg-green-200 bg-opacity-10;
+        @apply bg-green-200-mobile bg-opacity-10;
       }
     }
 
     &__white {
       .stat-row__icon {
-        @apply bg-blue-100 bg-opacity-10;
+        @apply bg-blue-100-mobile bg-opacity-10;
       }
     }
 
     &__light-green {
       .stat-row__icon {
-        @apply bg-green-100 bg-opacity-10;
+        @apply bg-green-100-mobile bg-opacity-10;
       }
     }
   }
@@ -286,7 +286,7 @@
   }
 
   .crypto-stat__name {
-    @apply text-light-grey text-xs uppercase;
+    @apply text-light-grey-mobile text-xs uppercase;
   }
 
   .crypto-chart {
@@ -305,7 +305,7 @@
     }
 
     &-checked {
-      @apply cursor-pointer py-6px px-3 text-center rounded-md text-sm tracking-tight items-center justify-center flex mb-0 text-grey-400;
+      @apply cursor-pointer py-6px px-3 text-center rounded-md text-sm tracking-tight items-center justify-center flex mb-0 text-grey-400-mobile;
     }
 
     &.btn-load {
@@ -326,10 +326,10 @@
   }
 
   .connected-wallet {
-    @apply flex items-center w-full bg-black-opacity rounded-xl px-2 py-2 mb-6;
+    @apply flex items-center w-full bg-black-opacity-mobile rounded-xl px-2 py-2 mb-6;
 
     &__img {
-      @apply bg-violet-bg w-12 h-12 flex items-center justify-center mr-3 bg-opacity-10 rounded-lg;
+      @apply bg-violet-bg-mobile w-12 h-12 flex items-center justify-center mr-3 bg-opacity-10 rounded-lg;
 
       img {
         @apply w-4 h-4 object-center object-contain;
@@ -337,7 +337,7 @@
     }
 
     &__title {
-      @apply text-light-grey mb-1;
+      @apply text-light-grey-mobile mb-1;
     }
 
     &__numb {
