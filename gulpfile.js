@@ -130,7 +130,46 @@ function htmlTask() {
 // Task for compiling our CSS files using PostCSS
 function cssTask() {
   return (
-    src('./src/css/*.scss')
+    src(['./src/css/*.scss', '!./src/css/mobile.scss'])
+      .pipe(sass().on('error', sass.logError))
+      .pipe(replace('hover: ', 'hover:'))
+      .pipe(replace('focus: ', 'focus:'))
+      .pipe(replace('disabled: ', 'disabled:'))
+      .pipe(replace('xl: ', 'xl:'))
+      .pipe(replace('lg: ', 'lg:'))
+      .pipe(replace('md: ', 'md:'))
+      .pipe(
+        postcss([
+          tailwindcss('./tailwind.config.js'),
+          require('autoprefixer'),
+          require('tailwindcss'),
+        ])
+      )
+      .pipe(
+        autoprefixer({
+          cascade: false,
+        })
+      )
+      .pipe(minifyCSS())
+      // .pipe(
+      //   hash({
+      //     format: '{name}-{hash:8}{ext}',
+      //   })
+      // )
+      .pipe(
+        rename(function (path) {
+          path.basename += '';
+          hashedCSS = '/css/' + path.basename + '.css';
+        })
+      )
+      .pipe(gulp.dest('./public/css/'))
+      .pipe(browserSync.stream())
+  );
+}
+
+function cssTaskMobile() {
+  return (
+    src(['./src/css/*.scss', '!./src/css/styles.scss'])
       .pipe(sass().on('error', sass.logError))
       .pipe(replace('hover: ', 'hover:'))
       .pipe(replace('focus: ', 'focus:'))
@@ -235,6 +274,7 @@ function watchTask(envs) {
       htmlTask,
       cleanOldCss,
       cssTask,
+      cssTaskMobile,
       htmlTask,
       htmlTask,
       cssLibsTask,
@@ -247,6 +287,7 @@ function watchTask(envs) {
       htmlTask,
       cleanOldCss,
       cssTask,
+      cssTaskMobile,
       htmlTask,
       htmlTask,
       cssLibsTask,
@@ -266,7 +307,14 @@ function watchTask(envs) {
   watch(['./src/images/**/*'], series(imageminTask, browsersyncReload));
   watch(
     ['tailwind.config.js'],
-    series(htmlTask, cleanOldCss, cssTask, htmlTask, browsersyncReload)
+    series(
+      htmlTask,
+      cleanOldCss,
+      cssTask,
+      cssTaskMobile,
+      htmlTask,
+      browsersyncReload
+    )
   );
   watch(['./static/**/*'], series(copyStatic, browsersyncReload));
 }
@@ -276,9 +324,11 @@ function build(envs) {
     cleanOldCss,
     cleanOldJs,
     cssTask,
+    cssTaskMobile,
     () => jsTask(envs),
     htmlTask,
     cssTask,
+    cssTaskMobile,
     htmlTask,
     imageminTask,
     cssLibsTask,
