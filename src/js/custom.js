@@ -473,15 +473,9 @@ async function getAccount() {
 
     setLdBar(25);
 
-    if (
-      window.location.pathname === '/' ||
-      window.location.pathname === '/our-dashboard.html' ||
-      window.location.pathname === '/our-dashboard'
-    ) {
-      setNetInfo();
+    setNetInfo();
 
-      await updateData();
-    }
+    await updateData();
 
     window.gp = await window.web3js.eth.getGasPrice();
     window.gp *= 2;
@@ -530,15 +524,9 @@ async function getAccountWalletConnect() {
 
     setLdBar(25);
 
-    if (
-      window.location.pathname === '/' ||
-      window.location.pathname === '/our-dashboard.html' ||
-      window.location.pathname === '/our-dashboard'
-    ) {
-      setNetInfo();
+    setNetInfo();
 
-      await updateData();
-    }
+    await updateData();
 
     window.gp = await window.web3js.eth.getGasPrice();
     window.gp *= 2;
@@ -1532,7 +1520,7 @@ async function updateData(action = null) {
       window.location.pathname === '/our-dashboard'
     ) {
       getOurDashbord();
-    } else {
+    } else if (window.location.pathname === '/') {
       getCapDashbord();
     }
 
