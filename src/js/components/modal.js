@@ -183,7 +183,6 @@ function Modal(
       this.currentStep = this.modal.querySelector('[data-id="currentStep"]');
       this.allStep = this.modal.querySelector('[data-id="allStep"]');
       this.steps = this.modal.querySelectorAll('[data-step]');
-
       this.currentStep.innerHTML = 1;
       this.allStep.innerHTML = this.steps.length;
     }

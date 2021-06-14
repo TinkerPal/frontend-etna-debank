@@ -68,7 +68,7 @@ function htmlTask() {
 
 // Task for compiling our CSS files using PostCSS
 function cssTask() {
-  return src(['./src/css/styles.scss'])
+  return src(['./src/css/styles.scss', './src/css/common.scss'])
     .pipe(sass().on('error', sass.logError))
     .pipe(replace('hover: ', 'hover:'))
     .pipe(replace('focus: ', 'focus:'))
@@ -94,7 +94,7 @@ function cssTask() {
 }
 
 function cssTaskMobile() {
-  return src(['./src/css/mobile.scss'])
+  return src(['./src/css/mobile.scss', './src/css/common.scss'])
     .pipe(sass().on('error', sass.logError))
     .pipe(replace('hover: ', 'hover:'))
     .pipe(replace('focus: ', 'focus:'))

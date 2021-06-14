@@ -1,4 +1,4 @@
-<div class="collumn-via-inputs" id="modal-open-new-credit">
+<div class="collumn-via-inputs">
   <div class="collumn-info">
     <div class="collumn-info__row">
       <div class="name-field mb-1">Select Collateral</div>
@@ -16,7 +16,8 @@
             type="radio"
             name="deposit"
             value="all-deposit"
-            id="withraw_dep_all"
+            onclick="full_collateral_btn(depAmountByProfileId(userObject.state.selected_credprofile)[0])"
+            id="full_collateral"
             checked
             class="hidden"
           />
@@ -29,7 +30,8 @@
             type="radio"
             name="deposit"
             value="part-deposit"
-            id="withraw_dep_part"
+            onclick="part_collateral_btn(depAmountByProfileId(userObject.state.selected_credprofile)[0])"
+            id="part_collateral"
             class="hidden"
           />
           <label for="withraw_dep_part" class="btn-checked"> Part </label>
