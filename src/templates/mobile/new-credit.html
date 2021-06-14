@@ -1,52 +1,87 @@
-<div class="collumn-via-inputs">
+<div class="collumn-via-inputs" id="modal-open-new-credit">
   <div class="collumn-info">
-
     <div class="collumn-info__row">
       <div class="name-field mb-1">Select Collateral</div>
-      <select class="js-choice-single-2" id="credprofiles-dropdown" name="credprofiles-dropdown">
-
-      </select>
+      <select
+        class="js-choice-single-2"
+        id="credprofiles-dropdown"
+        name="credprofiles-dropdown"
+      ></select>
     </div>
 
     <div class="tabs-block">
       <div class="return-tabs">
         <div class="w-1/2">
-          <input type="radio" name="deposit" value="all-deposit" id="withraw_dep_all" checked class="hidden">
+          <input
+            type="radio"
+            name="deposit"
+            value="all-deposit"
+            id="withraw_dep_all"
+            checked
+            class="hidden"
+          />
           <label for="withraw_dep_all" class="btn-checked">
             Withdraw all
           </label>
         </div>
         <div class="w-1/2">
-          <input type="radio" name="deposit" value="part-deposit" id="withraw_dep_part" class="hidden">
-          <label for="withraw_dep_part" class="btn-checked">
-            Part
-          </label>
+          <input
+            type="radio"
+            name="deposit"
+            value="part-deposit"
+            id="withraw_dep_part"
+            class="hidden"
+          />
+          <label for="withraw_dep_part" class="btn-checked"> Part </label>
         </div>
       </div>
       <div class="collumn-info__row">
-        <label for="tokens_amount_collateral" class="name-field">Assets amount</label>
-        <input type="number"
+        <label for="tokens_amount_collateral" class="name-field"
+          >Assets amount</label
+        >
+        <input
+          type="number"
           oninput="updUSDValueCollateral('tokens_amount_collateral','usd_value_collateral', depAmountByProfileId(userObject.state.selected_credprofile)[0]);"
-          name="tokens_amount_collateral" id="tokens_amount_collateral" class="input-type" value="" placeholder="-"
-          readonly="">
+          name="tokens_amount_collateral"
+          id="tokens_amount_collateral"
+          class="input-type"
+          value=""
+          placeholder="-"
+          readonly=""
+        />
       </div>
       <div class="collumn-info__row">
-        <label for="usd_value_collateral" class="name-field">Coll. USD value</label>
-        <input type="number" name="usd_value_collateral" id="usd_value_collateral" readonly="readonly"
-          class="input-type" value="" placeholder="-">
+        <label for="usd_value_collateral" class="name-field"
+          >Coll. USD value</label
+        >
+        <input
+          type="number"
+          name="usd_value_collateral"
+          id="usd_value_collateral"
+          readonly="readonly"
+          class="input-type"
+          value=""
+          placeholder="-"
+        />
       </div>
 
       <div class="flex flex-col mb-4 custom-getcredit-dropdown">
         <div class="name-field">Get credit in:</div>
         <div class="flex w-full">
           <div class="w-8/12">
-            <select class="js-choice-single-3" id="custom-getcredit-dropdown" name="custom-getcredit-dropdown">
-  
-            </select>
+            <select
+              class="js-choice-single-3"
+              id="custom-getcredit-dropdown"
+              name="custom-getcredit-dropdown"
+            ></select>
           </div>
           <div class="w-4/12">
             <div class="field-info input-type rounded-l-none border-l-0">
-              <span class="in-wallet flex items-center ml-1" id="tokens_amount_getcredit">1.0000</span>
+              <span
+                class="in-wallet flex items-center ml-1"
+                id="tokens_amount_getcredit"
+                >1.0000</span
+              >
             </div>
           </div>
         </div>
@@ -55,30 +90,71 @@
     <div class="specify w-full flex items-center justify-center mb-6 mt-2">
       <div class="line h-px w-full bg-medium-grey"></div>
       <div
-        class="flex whitespace-nowrap items-center w-fit-content justify-center py-1 px-2 text-xs text-center text-gray-500 border border-medium-grey rounded-2xl">
-        Specify credit type</div>
+        class="
+          flex
+          whitespace-nowrap
+          items-center
+          w-fit-content
+          justify-center
+          py-1
+          px-2
+          text-xs text-center text-gray-500
+          border border-medium-grey
+          rounded-2xl
+        "
+      >
+        Specify credit type
+      </div>
       <div class="line h-px w-full bg-medium-grey"></div>
     </div>
     <div class="tabs-block">
       <div class="return-tabs">
-        <div class="w-1/2"><input type="radio" name="credit-type" value="percent-regular" id="set_var_credit"
-            onclick="set_var_credit()" checked="checked" class="hidden"> <label for="set_var_credit"
-            class="btn-checked">Regular</label>
+        <div class="w-1/2">
+          <input
+            type="radio"
+            name="credit-type"
+            value="percent-regular"
+            id="set_var_credit"
+            onclick="set_var_credit()"
+            checked="checked"
+            class="hidden"
+          />
+          <label for="set_var_credit" class="btn-checked">Regular</label>
         </div>
         <div class="w-1/2">
-          <input type="radio" name="credit-type" value="percent-fixed" id="set_fixed_credit"
-            onclick="set_fixed_credit()" class="hidden"> <label for="set_fixed_credit" class="btn-checked">Fixed
-            %</label>
+          <input
+            type="radio"
+            name="credit-type"
+            value="percent-fixed"
+            id="set_fixed_credit"
+            onclick="set_fixed_credit()"
+            class="hidden"
+          />
+          <label for="set_fixed_credit" class="btn-checked">Fixed %</label>
         </div>
       </div>
       <div class="collumn-info__row">
         <label for="total-credit" class="name-field">Total credit %</label>
-        <input type="number" readonly="readonly" name="credit_perc" id="credit_perc" class="input-type" placeholder="-">
+        <input
+          type="number"
+          readonly="readonly"
+          name="credit_perc"
+          id="credit_perc"
+          class="input-type"
+          placeholder="-"
+        />
       </div>
     </div>
   </div>
   <div class="btn-row">
-    <button type="submit" onclick="getCredit()" data-id="confirm" class="btn w-full"
-      id="getcredit_button">Confirm</button>
+    <button
+      type="submit"
+      onclick="getCredit()"
+      data-id="confirm"
+      class="btn w-full"
+      id="getcredit_button"
+    >
+      Confirm
+    </button>
   </div>
 </div>

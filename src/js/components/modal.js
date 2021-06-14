@@ -171,7 +171,9 @@ function Modal(
     });
 
     if (this.approve) {
-      const parentElementForSteps = this.modal.querySelector('.top-divider');
+      const parentElementForSteps =
+        this.modal.querySelector('.top-divider') || this.modal;
+
       parentElementForSteps.insertBefore(
         this.stepsStructure,
         parentElementForSteps.lastChild

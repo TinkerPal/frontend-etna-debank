@@ -375,25 +375,22 @@ window.addEventListener('DOMContentLoaded', async function () {
 });
 
 async function postWalletCallback() {
-  if (
-    window.location.pathname === '/' ||
-    window.location.pathname === '/our-dashboard.html' ||
-    window.location.pathname === '/our-dashboard'
-  ) {
-    await getWalletPref();
-    openTab(
-      {
-        srcElement: document.getElementById(
-          `${userObject.state.current_page_id}-menu`
-        ),
-      },
-      userObject.state.current_page_id
-    );
+  await getWalletPref();
+  const element =
+    document.getElementById(`${userObject.state.current_page_id}-menu`) ||
+    document.getElementById(`dashboard-tab-menu`);
+  openTab(
+    {
+      srcElement: element,
+    },
+    document.getElementById(`${userObject.state.current_page_id}-menu`)
+      ? userObject.state.current_page_id
+      : 'dashboard-tab'
+  );
 
-    modal_add_credit.modal && modal_add_credit.onInitCallback();
-    modal_add_lliquidity.modal && modal_add_lliquidity.onInitCallback();
-    modal_add_deposit.modal && modal_add_deposit.onInitCallback();
-  }
+  modal_add_credit.modal && modal_add_credit.onInitCallback();
+  modal_add_lliquidity.modal && modal_add_lliquidity.onInitCallback();
+  modal_add_deposit.modal && modal_add_deposit.onInitCallback();
 }
 
 async function initWeb3Modal() {
