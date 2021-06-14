@@ -2,18 +2,18 @@
   <div class="collumn-info">
     <div class="collumn-info__row">
       <div class="name-field mb-1">Select Asset</div>
-      <select
-        class="js-choice-single"
-        id="depprofiles-dropdown"
-        name="depprofiles-dropdown"
-      ></select>
+      <div class="without-link special-select flex border-medium-grey border rounded-lg">
+        <select
+          class="js-choice-single"
+          id="depprofiles-dropdown"
+        ></select>
+      </div>
     </div>
 
     <div class="collumn-info__row" id="assets-dropdown">
       <div class="name-field mb-1">Select NFT</div>
       <select
         class="js-choice-multiple"
-        name="choices-multiple"
         id="nftAssetsSelect"
         multiple
       ></select>

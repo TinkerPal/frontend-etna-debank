@@ -88,6 +88,7 @@ function cssTask() {
         cascade: false,
       })
     )
+    .pipe(concat('styles.css'))
     .pipe(minifyCSS())
     .pipe(gulp.dest('./public/css/'))
     .pipe(browserSync.stream());
@@ -114,6 +115,7 @@ function cssTaskMobile() {
         cascade: false,
       })
     )
+    .pipe(concat('mobile.css'))
     .pipe(minifyCSS())
     .pipe(gulp.dest('./public/css/'))
     .pipe(browserSync.stream());
