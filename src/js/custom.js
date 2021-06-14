@@ -1,3 +1,6 @@
+checkVersion();
+window.addEventListener('resize', throttle(checkVersion, 150), false);
+
 const modal_withdraw_deposit = new Modal('modal-withdraw-deposit');
 const modal_withdraw_yield = new Modal('modal-withdraw-reward');
 const modal_add_credit = new Modal(

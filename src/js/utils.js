@@ -1,3 +1,37 @@
+const isMobile = () => {
+  const width = window.innerWidth;
+  return width <= 1024;
+};
+
+function checkVersion() {
+  const isMob = isMobile();
+  if (
+    isMob &&
+    window.location.pathname !== '/mobile.html' &&
+    window.location.pathname !== '/mobile'
+  ) {
+    window.location.replace('/mobile.html');
+  } else if (
+    !isMob &&
+    (window.location.pathname === '/mobile.html' ||
+      window.location.pathname === '/mobile')
+  ) {
+    window.location.replace('/');
+  }
+}
+
+function throttle(func, delay) {
+  let timeout = null;
+  return function (...args) {
+    if (!timeout) {
+      timeout = setTimeout(() => {
+        func.call(this, ...args);
+        timeout = null;
+      }, delay);
+    }
+  };
+}
+
 const isToken = (
   dep_id,
   tokenName = 'nft',
