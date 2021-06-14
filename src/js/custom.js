@@ -2991,14 +2991,17 @@ async function getOurDashbord(callback = null) {
     });
 
     const depositsTotal = await Promise.all(depositsTotalArrayForPromise);
-    const tokensStatistic = depositAmountData.map((amount, index) => ({
-      name: userObject.deposit_profiles[index].p_name,
-      total: depositsTotal[index],
-      amount:
-        userObject.deposit_profiles[index].p_id !== NFT_TOKEN_ID
-          ? toTokens(amount, 1)
-          : amount,
-    }));
+
+    const tokensStatistic = depositAmountData
+      .map((amount, index) => ({
+        name: userObject.deposit_profiles[index].p_name,
+        total: depositsTotal[index],
+        amount:
+          userObject.deposit_profiles[index].p_id !== NFT_TOKEN_ID
+            ? toTokens(amount, 1)
+            : amount,
+      }))
+      .filter((item) => item.total > 0);
 
     const nft = tokensStatistic.find((item) => item.name === 'nft');
 
@@ -3058,16 +3061,12 @@ async function getOurDashbord(callback = null) {
 
     const listOurCryptoTemplate = (name, amount, total) => {
       const assetName = `<div class="w-3/12 row-name uppercase">${name}</div>`;
-      const assetAmount = `<div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">${numeral(
-        amount
-      ).format('(0.00 a)')}</div>`;
       const assetTotal = `${numeral(total).format('($ 0.00 a)')}`;
 
       return `
         <div class="crypto-row">
           ${assetName}
-          ${assetAmount}
-          <div class="w-6/12 flex items-center justify-end h-5 w-auto">
+          <div class="w-9/12 flex items-center justify-end h-5 w-auto">
             <div class="crypto-amount row-name">
               ${assetTotal} <span class="number_increase ml-2"></span>
             </div>
