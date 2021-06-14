@@ -20,7 +20,6 @@ const postcss = require('gulp-postcss'),
 
 const js = [
   './src/js/libs/*',
-
   './src/js/utils.js',
   './src/js/constants/env.js',
   './src/js/constants/constant.js',
@@ -69,7 +68,7 @@ function htmlTask() {
 
 // Task for compiling our CSS files using PostCSS
 function cssTask() {
-  return src(['./src/css/*.scss', '!./src/css/mobile.scss'])
+  return src(['./src/css/styles.scss'])
     .pipe(sass().on('error', sass.logError))
     .pipe(replace('hover: ', 'hover:'))
     .pipe(replace('focus: ', 'focus:'))
@@ -95,7 +94,7 @@ function cssTask() {
 }
 
 function cssTaskMobile() {
-  return src(['./src/css/*.scss', '!./src/css/styles.scss'])
+  return src(['./src/css/mobile.scss'])
     .pipe(sass().on('error', sass.logError))
     .pipe(replace('hover: ', 'hover:'))
     .pipe(replace('focus: ', 'focus:'))

@@ -35,7 +35,7 @@
 
 @layer components {
   .body {
-    @apply font-body bg-black text-white h-full min-h-screen relative w-screen flex flex-col relative;
+    @apply font-body bg-black-mobile text-white h-full min-h-screen relative w-screen flex flex-col relative;
   }
 
   #net_icon {
@@ -55,7 +55,7 @@
   }
 
   .notif-row {
-    @apply flex items-center justify-between py-4 px-5 border rounded-md top-4 hidden fixed w-notif z-80;
+    @apply flex items-center justify-between py-4 px-5 border rounded-md top-4 hidden fixed w-notif-mobile z-80;
 
     a {
       @apply underline;
@@ -318,7 +318,7 @@
   }
 
   .btn-row {
-    @apply fixed bottom-0 left-0 bg-black py-3;
+    @apply fixed bottom-0 left-0 bg-black-mobile py-3;
 
     .btn {
       @apply mb-8 w-full;
