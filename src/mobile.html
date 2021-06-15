@@ -1,98 +1,82 @@
 <!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1"
-    />
-    <meta name="theme-color" content="#212121" />
-    <meta name="msapplication-navbutton-color" content="#212121" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="#212121" />
-    <!-- Include base CSS (optional) -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/base.min.css"
-    />
-    <!-- Include Choices CSS -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"
-    />
-    <link rel="stylesheet" href="/css/libs/simplebar.css" />
-    <!-- Include base CSS (optional) -->
-    <link rel="stylesheet" href="/css/libs/base.min.css" />
-    <!-- Include Choices CSS -->
-    <link rel="stylesheet" href="/css/libs/choices.min.css" />
-    <link href="/css/mobile.css" rel="stylesheet" />
-    <link rel="icon" href="/images/logo-m.png" />
-    <title>ETNA_Mobile_Dashboard</title>
-  </head>
 
-  <body class="body _mobile" data-simplebar>
-    <div class="px-4">
-      <div id="load_bar_cover" class="load-bar-cover">
-        <div class="h-full flex items-center justify-center">
-          <div id="debank_load_bar" class="ldBar label-center" data-value="5" data-preset="circle" data-stroke="#98EF10"
-            data-stroke-lincap="round" style="width: 150px; height: 150px;" data-stroke-trail="#C4C4C4"></div>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="theme-color" content="#212121" />
+  <meta name="msapplication-navbutton-color" content="#212121" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="#212121" />
+  <!-- Include base CSS (optional) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/base.min.css" />
+  <!-- Include Choices CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <link rel="stylesheet" href="/css/libs/simplebar.css" />
+  <!-- Include base CSS (optional) -->
+  <link rel="stylesheet" href="/css/libs/base.min.css" />
+  <!-- Include Choices CSS -->
+  <link rel="stylesheet" href="/css/libs/choices.min.css" />
+  <link rel="stylesheet" href="/css/mobile.css" />
+  <link rel="icon" href="/images/logo-m.png" />
+  <title>ETNA_Mobile_Dashboard</title>
+</head>
+
+<body class="body _mobile" data-simplebar>
+  <div class="px-4">
+    <div id="load_bar_cover" class="load-bar-cover">
+      <div class="h-full flex items-center justify-center">
+        <div id="debank_load_bar" class="ldBar label-center" data-value="5" data-preset="circle" data-stroke="#98EF10"
+          data-stroke-lincap="round" style="width: 150px; height: 150px;" data-stroke-trail="#C4C4C4"></div>
       </div>
-
-      @@include('./templates/mobile/notifications-huge.html')
-      <header class="header">
-        @@include('./templates/mobile/header.html')
-      </header>
-      <main class="main">
-        @@include('./templates/mobile/category.html')
-        @@include('./templates/mobile/tabs.html')
-
-        <div id="dashboard-tab" class="page hide">
-          @@include('./templates/mobile/deposits.html')
-        </div>
-        <div id="borrow-tab" class="page hide">
-          @@include('./templates/mobile/borrow.html')
-        </div>
-        <div id="liq-earn-tab" class="page hide">
-          @@include('./templates/mobile/liquidity.html')
-        </div>
-        <div id="new-credit-tab" class="page hide">
-          @@include('./templates/mobile/new-credit.html')
-        </div>
-        <div id="new-deposit-tab" class="page hide">
-          @@include('./templates/mobile/new-deposit.html')
-        </div>
-        <div id="withdraw-deposit-tab" class="page hide">
-          @@include('./templates/mobile/withdraw.html')
-        </div>
-        <div id="crypto-info-tab" class="page hide">
-          @@include('./templates/mobile/crypto-info.html')
-        </div>
-        <div id="borrow-info-tab" class="page hide">
-          @@include('./templates/mobile/borrow-info.html')
-        </div>
-        <div id="add-liquidity-tab" class="page hide">
-          @@include('./templates/mobile/add-liquidity.html')
-        </div>
-      </main>
     </div>
 
-    <!-- scripts -->
+    @@include('./templates/mobile/notifications-huge.html')
+    <header class="header">
+      @@include('./templates/mobile/header.html')
+    </header>
+    <main class="main">
+      @@include('./templates/mobile/category.html')
+      @@include('./templates/mobile/tabs.html')
 
-    <script defer src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
-    <script
-      defer
-      src="https://unpkg.com/web3modal@1.9.2/dist/index.js"
-    ></script>
-    <script
-      defer
-      src="https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js"
-    ></script>
-    <script
-      defer
-      src="https://unpkg.com/@walletconnect/web3-provider@1.3.1/dist/umd/index.min.js"
-    ></script>
+      <div id="dashboard-tab" class="page hide">
+        @@include('./templates/mobile/deposits.html')
+      </div>
+      <div id="borrow-tab" class="page hide">
+        @@include('./templates/mobile/borrow.html')
+      </div>
+      <div id="liq-earn-tab" class="page hide">
+        @@include('./templates/mobile/liquidity.html')
+      </div>
+      <div id="new-credit-tab" class="page hide">
+        @@include('./templates/mobile/new-credit.html')
+      </div>
+      <div id="new-deposit-tab" class="page hide">
+        @@include('./templates/mobile/new-deposit.html')
+      </div>
+      <div id="withdraw-deposit-tab" class="page hide">
+        @@include('./templates/mobile/withdraw.html')
+      </div>
+      <div id="crypto-info-tab" class="page hide">
+        @@include('./templates/mobile/crypto-info.html')
+      </div>
+      <div id="borrow-info-tab" class="page hide">
+        @@include('./templates/mobile/borrow-info.html')
+      </div>
+      <div id="add-liquidity-tab" class="page hide">
+        @@include('./templates/mobile/add-liquidity.html')
+      </div>
+    </main>
+  </div>
 
-    <script defer src="/js/common.js"></script>
-  </body>
+  <!-- scripts -->
+
+  <script defer src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
+  <script defer src="https://unpkg.com/web3modal@1.9.2/dist/index.js"></script>
+  <script defer src="https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js"></script>
+  <script defer src="https://unpkg.com/@walletconnect/web3-provider@1.3.1/dist/umd/index.min.js"></script>
+
+  <script defer src="/js/common.js"></script>
+</body>
+
 </html>
