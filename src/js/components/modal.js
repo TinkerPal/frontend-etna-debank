@@ -12,10 +12,10 @@ function Modal(
   this.confirm = this.modal.querySelector('[data-id="confirm"]');
 
   this.stepsStructure = htmlToElement(`
-  <div class="flex steps flex-col" data-id="steps">
-        <div class="flex items-center mb-5 justify-center">
-          <div class="text-sm leading-4 font-medium text-grey-100 mr-7">Step <span data-id="currentStep" class="current-step"></span> of <span class="all-steps" data-id="allStep"></span></div>
-          <div class="steps-dots flex items-center">
+  <div class="steps" data-id="steps">
+        <div class="steps-row">
+          <div class="steps-styles">Step <span data-id="currentStep" class="current-step"></span> of <span class="all-steps" data-id="allStep"></span></div>
+          <div class="steps-dots">
             <div data-step="1" class="step active">
               <span></span>
             </div>

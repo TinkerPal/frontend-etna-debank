@@ -2,49 +2,29 @@
   <div class="collumn-info">
     <div class="collumn-info__row">
       <div class="name-field mb-1">Select Asset</div>
-      <div class="without-link special-select flex border-medium-grey border rounded-lg">
-        <select
-          class="js-choice-single"
-          id="depprofiles-dropdown"
-        ></select>
+      <div class="without-link special-select">
+        <select class="js-choice-single" id="depprofiles-dropdown"></select>
       </div>
     </div>
 
     <div class="collumn-info__row" id="assets-dropdown">
       <div class="name-field mb-1">Select NFT</div>
-      <select
-        class="js-choice-multiple"
-        id="nftAssetsSelect"
-        multiple
-      ></select>
+      <select class="js-choice-multiple" id="nftAssetsSelect" multiple></select>
     </div>
 
     <div class="collumn-info__row">
-      <label for="withraw_dep_input" class="name-field mb-1"
-        >Assets amount</label
-      >
-      <input
-        type="number"
-        id="tokens_amount"
-        class="input-type"
-        value="1"
-        placeholder="0"
-      />
+      <label for="withraw_dep_input" class="name-field mb-1">Assets amount</label>
+      <input type="number" id="tokens_amount" class="input-type" value="1" placeholder="0" />
     </div>
     <div class="collumn-info__row">
       <label for="withraw_dep_input" class="name-field mb-1">USD value</label>
-      <input
-        type="number"
-        id="usd_value"
-        class="input-type"
-        readonly
-        value="0"
-        placeholder="0"
-      />
+      <input type="number" id="usd_value" class="input-type" readonly value="0" placeholder="0" />
     </div>
   </div>
   <div class="btn-row">
-    <button type="submit" id="approve_button" class="btn" data-id="approve" onclick="approve_deposit()">Approve tokens move</button>
-    <button type="submit" class="btn" id="deposit_button" data-id="confirm" disabled onclick="deposit()">Deposit tokens</button>
+    <button type="submit" id="approve_button" class="btn" data-id="approve" onclick="approve_deposit()">Approve tokens
+      move</button>
+    <button type="submit" class="btn" id="deposit_button" data-id="confirm" disabled onclick="deposit()">Deposit
+      tokens</button>
   </div>
 </div>
