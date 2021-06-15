@@ -1,5 +1,8 @@
 const isMobile = () => {
   const width = window.innerWidth;
+  if (width <= 1024) {
+    document.querySelector('body').classList.add('_mobile');
+  }
   return width <= 1024;
 };
 
