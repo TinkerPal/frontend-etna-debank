@@ -2635,7 +2635,7 @@ async function getCreditsDashboard(callback = null) {
   </tr> 
   </thead> 
   <tbody>`;
-  let mobileHtml = '';
+  const wrapper = document.querySelector('#my_credits');
   for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
     // i === credit id
 
@@ -2645,15 +2645,38 @@ async function getCreditsDashboard(callback = null) {
       toNumber(lev_arr[i]) > 0
     ) {
       if (isMobile()) {
-        mobileHtml += `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${formatDataForMobile(
-          icon_column[i]
-        )}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${formatDataForMobile(
-          asset_column[i]
-        )}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${formatDataForMobile(
-          usd_val_column[i]
-        )}</div><div class="crypto-collateral crypto-stat__name">${formatDataForMobile(
-          cred_column[i]
-        )} ${formatDataForMobile(asset_column[i])}</div></div></div></div>`;
+        const options = {
+          icon_column: formatDataForMobile(icon_column[i]),
+          asset_column: formatDataForMobile(asset_column[i]),
+          cred_column: formatDataForMobile(cred_column[i]),
+          usd_val_column: formatDataForMobile(usd_val_column[i]),
+          duration_col: formatDataForMobile(duration_col[i]),
+          clt_column: formatDataForMobile(clt_column[i]),
+          apr_column: formatDataForMobile(apr_column[i]),
+          fee_col: formatDataForMobile(fee_col[i]),
+          leverage_column: formatDataForMobile(
+            return_leverage_visible ? leverage_column[i] : ''
+          ),
+          set_leverage_column: formatDataForMobile(
+            return_leverage_visible ? set_leverage_column[i] : ''
+          ),
+          return_credit_col: formatDataForMobile(return_credit_col[i]),
+          return_empty_col: formatDataForMobile(return_empty_col[i]),
+          in_wallet_column: formatDataForMobile(in_wallet_column[i]),
+          dep_column: formatDataForMobile(dep_column[i]),
+        };
+
+        const mobileListEl = htmlToElement(
+          `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.usd_val_column}</div><div class="crypto-collateral crypto-stat__name">${options.cred_column} ${options.asset_column}</div></div></div></div>`
+        );
+
+        /* eslint no-loop-func: "off" */
+        mobileListEl.onclick = function (e) {
+          cryptoInfoBuild(options, 'deposit');
+          opentab(e, 'crypto-info');
+        };
+
+        wrapper.appendChild(mobileListEl);
       } else {
         html += '<tr class="table-row">';
 
@@ -2692,7 +2715,7 @@ async function getCreditsDashboard(callback = null) {
 
   html += '</tbody>' + '</table>';
 
-  safeSetTableData('my_credits', isMobile() ? mobileHtml : html, 'empty');
+  safeSetTableData('my_credits', isMobile() ? '' : html, 'empty');
 
   if (callback) callback();
 }
@@ -2718,9 +2741,8 @@ async function getLiquidityDashboard(callback = null) {
     '</tr>' +
     '</thead>' +
     '<tbody>';
-  let mobileHtml = '';
   // let profiles = userObject.deposit_profiles;
-
+  const wrapper = document.querySelector('#deposits_uniswap');
   const [am_arr, rew_arr] = await Promise.all([
     userObject.deposits.getAmArr(),
     userObject.deposits.getRewArr(),
@@ -2793,15 +2815,38 @@ async function getLiquidityDashboard(callback = null) {
   for (let i = 0; i < icon_column?.length ?? 0; i++) {
     // 0 means max amount for ERC20 compatible and ignored for ERC721
     if (isMobile()) {
-      mobileHtml += `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${formatDataForMobile(
-        icon_column_s[i]
-      )}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${formatDataForMobile(
-        asset_column_s[i]
-      )}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${formatDataForMobile(
-        usd_val_column_s[i]
-      )}</div><div class="crypto-collateral crypto-stat__name">${formatDataForMobile(
-        dep_column_s[i]
-      )} ${formatDataForMobile(asset_column_s[i])}</div></div></div></div>`;
+      const options = {
+        icon_column: formatDataForMobile(icon_column_s[i]),
+        asset_column: formatDataForMobile(asset_column_s[i]),
+        dep_column: formatDataForMobile(dep_column_s[i]),
+        lockup_period: formatDataForMobile(lockup_period_s[i]),
+        unlock_col: formatDataForMobile(unlock_col_s[i]),
+        usd_val_column: formatDataForMobile(usd_val_column_s[i]),
+        apy_column: formatDataForMobile(apy_column_s[i]),
+        duration_col: formatDataForMobile(duration_col_s[i]),
+        extractable_dep_col: formatDataForMobile(extractable_dep_col_s[i]),
+        withdraw_dep_col: formatDataForMobile(withdraw_dep_col_s[i]),
+        withdraw_dep_inputs_col: formatDataForMobile(
+          withdraw_dep_inputs_col_s[i]
+        ),
+        reward_col: formatDataForMobile(reward_col_s[i]),
+        extractable_reward_col: formatDataForMobile(
+          extractable_reward_col_s[i]
+        ),
+        withdraw_rew_col: formatDataForMobile(withdraw_rew_col_s[i]),
+      };
+
+      const mobileListEl = htmlToElement(
+        `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.usd_val_column}</div><div class="crypto-collateral crypto-stat__name">${options.dep_column} ${options.asset_column}</div></div></div></div>`
+      );
+
+      /* eslint no-loop-func: "off" */
+      mobileListEl.onclick = function (e) {
+        cryptoInfoBuild(options, 'deposit');
+        opentab(e, 'crypto-info');
+      };
+
+      wrapper.appendChild(mobileListEl);
     } else {
       html += '<tr class="table-row">';
 
@@ -2841,7 +2886,7 @@ async function getLiquidityDashboard(callback = null) {
 
   html += '</tbody>' + '</table>';
 
-  safeSetTableData('deposits_uniswap', isMobile() ? mobileHtml : html, 'empty');
+  safeSetTableData('deposits_uniswap', isMobile() ? '' : html, 'empty');
   if (callback) callback();
 }
 
@@ -3155,8 +3200,7 @@ async function getDepositsDashboard(callback = null) {
     '</tr>' +
     '</thead>' +
     '<tbody>';
-  let mobileHtml = '';
-
+  const wrapper = document.querySelector('#tokens_balance');
   const profiles = userObject.deposit_profiles;
 
   await Promise.all([
@@ -3227,16 +3271,34 @@ async function getDepositsDashboard(callback = null) {
   for (let i = 0; i < profiles?.length ?? 0; i++) {
     // 0 means max amount for ERC20 compatible and ignored for ERC721
     if (isMobile()) {
-      console.log(icon_column_s[i]);
-      mobileHtml += `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${formatDataForMobile(
-        icon_column_s[i]
-      )}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${formatDataForMobile(
-        asset_column_s[i]
-      )}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${formatDataForMobile(
-        usd_val_column_s[i]
-      )}</div><div class="crypto-collateral crypto-stat__name">${formatDataForMobile(
-        dep_column_s[i]
-      )} ${formatDataForMobile(asset_column_s[i])}</div></div></div></div>`;
+      const options = {
+        icon_column: formatDataForMobile(icon_column_s[i]),
+        asset_column: formatDataForMobile(asset_column_s[i]),
+        in_wallet_column: formatDataForMobile(in_wallet_column_s[i]),
+        dep_column: formatDataForMobile(dep_column_s[i]),
+        usd_val_column: formatDataForMobile(usd_val_column_s[i]),
+        apy_column: formatDataForMobile(apy_column_s[i]),
+        duration_col: formatDataForMobile(duration_col_s[i]),
+        extractable_dep_col: formatDataForMobile(extractable_dep_col_s[i]),
+        withdraw_dep_col: formatDataForMobile(withdraw_dep_col_s[i]),
+        reward_col: formatDataForMobile(reward_col_s[i]),
+        extractable_reward_col: formatDataForMobile(
+          extractable_reward_col_s[i]
+        ),
+        withdraw_rew_col: formatDataForMobile(withdraw_rew_col_s[i]),
+      };
+
+      const mobileListEl = htmlToElement(
+        `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.usd_val_column}</div><div class="crypto-collateral crypto-stat__name">${options.dep_column} ${options.asset_column}</div></div></div></div>`
+      );
+
+      /* eslint no-loop-func: "off" */
+      mobileListEl.onclick = function (e) {
+        cryptoInfoBuild(options, 'deposit');
+        opentab(e, 'crypto-info');
+      };
+
+      wrapper.appendChild(mobileListEl);
     } else {
       html += '<tr class="table-row">';
 
@@ -3269,7 +3331,7 @@ async function getDepositsDashboard(callback = null) {
   }
   html += '</tbody>' + '</table>';
 
-  safeSetTableData('tokens_balance', isMobile() ? mobileHtml : html, 'empty');
+  safeSetTableData('tokens_balance', isMobile() ? '' : html, 'empty');
 
   if (callback) callback();
 }

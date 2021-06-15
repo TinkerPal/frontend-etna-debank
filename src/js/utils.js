@@ -59,9 +59,15 @@ const isToken = (
 };
 
 const isEmptyTable = (idContainer) => {
-  if (isMobile()) return;
+  if (isMobile())
+    return document.querySelector(`#${idContainer}`).innerHTML === '';
   return document.querySelector(`#${idContainer} table tbody`).innerHTML === '';
 };
+
+function toggleElement(elementId) {
+  const element = document.querySelector(`#${elementId}`);
+  element.classList.toggle('show');
+}
 
 /**
  * @param {String} HTML representing a single element
@@ -167,7 +173,9 @@ const setState = (state) => {
 const safeSetTableData = (id, value, className) => {
   const el = document.getElementById(id);
   if (el) {
-    el.innerHTML = value;
+    if (value !== '') {
+      el.innerHTML = value;
+    }
     const tableWithScroll = new SimpleBar(el);
     if (isEmptyTable(id)) {
       el.closest('.page').classList.add(className);
