@@ -23,6 +23,10 @@ function checkVersion() {
   }
 }
 
+function formatDataForMobile(data) {
+  return data.replace(/<td class="table-cell">(.*)<\/td>/, '$1');
+}
+
 function throttle(func, delay) {
   let timeout = null;
   return function (...args) {
@@ -55,6 +59,7 @@ const isToken = (
 };
 
 const isEmptyTable = (idContainer) => {
+  if (isMobile()) return;
   return document.querySelector(`#${idContainer} table tbody`).innerHTML === '';
 };
 

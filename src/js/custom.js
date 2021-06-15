@@ -2635,7 +2635,7 @@ async function getCreditsDashboard(callback = null) {
   </tr> 
   </thead> 
   <tbody>`;
-
+  let mobileHtml = '';
   for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
     // i === credit id
 
@@ -2644,35 +2644,47 @@ async function getCreditsDashboard(callback = null) {
       toNumber(cred_arr[2][i]) > 0 ||
       toNumber(lev_arr[i]) > 0
     ) {
-      html += '<tr class="table-row">';
+      if (isMobile()) {
+        mobileHtml += `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${formatDataForMobile(
+          icon_column[i]
+        )}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${formatDataForMobile(
+          asset_column[i]
+        )}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${formatDataForMobile(
+          usd_val_column[i]
+        )}</div><div class="crypto-collateral crypto-stat__name">${formatDataForMobile(
+          cred_column[i]
+        )} ${formatDataForMobile(asset_column[i])}</div></div></div></div>`;
+      } else {
+        html += '<tr class="table-row">';
 
-      html += icon_column[i];
+        html += icon_column[i];
 
-      html += asset_column[i];
+        html += asset_column[i];
 
-      html += cred_column[i];
+        html += cred_column[i];
 
-      html += usd_val_column[i];
+        html += usd_val_column[i];
 
-      html += clt_column[i];
+        html += clt_column[i];
 
-      html += duration_col[i];
+        html += duration_col[i];
 
-      html += apr_column[i];
+        html += apr_column[i];
 
-      html += fee_col[i];
+        html += fee_col[i];
 
-      html += return_leverage_visible ? leverage_column[i] : '';
+        html += return_leverage_visible ? leverage_column[i] : '';
 
-      html += return_leverage_visible ? set_leverage_column[i] : '';
+        html += return_leverage_visible ? set_leverage_column[i] : '';
 
-      html += return_credit_col[i];
+        html += return_credit_col[i];
 
-      html += return_empty_col[i];
+        html += return_empty_col[i];
 
-      html += in_wallet_column[i];
+        html += in_wallet_column[i];
 
-      html += dep_column[i];
+        html += dep_column[i];
+      }
     }
 
     html += '</tr>';
@@ -2680,7 +2692,7 @@ async function getCreditsDashboard(callback = null) {
 
   html += '</tbody>' + '</table>';
 
-  safeSetTableData('my_credits', html, 'empty');
+  safeSetTableData('my_credits', isMobile() ? mobileHtml : html, 'empty');
 
   if (callback) callback();
 }
@@ -2706,7 +2718,7 @@ async function getLiquidityDashboard(callback = null) {
     '</tr>' +
     '</thead>' +
     '<tbody>';
-
+  let mobileHtml = '';
   // let profiles = userObject.deposit_profiles;
 
   const [am_arr, rew_arr] = await Promise.all([
@@ -2780,44 +2792,56 @@ async function getLiquidityDashboard(callback = null) {
 
   for (let i = 0; i < icon_column?.length ?? 0; i++) {
     // 0 means max amount for ERC20 compatible and ignored for ERC721
-    html += '<tr class="table-row">';
+    if (isMobile()) {
+      mobileHtml += `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${formatDataForMobile(
+        icon_column_s[i]
+      )}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${formatDataForMobile(
+        asset_column_s[i]
+      )}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${formatDataForMobile(
+        usd_val_column_s[i]
+      )}</div><div class="crypto-collateral crypto-stat__name">${formatDataForMobile(
+        dep_column_s[i]
+      )} ${formatDataForMobile(asset_column_s[i])}</div></div></div></div>`;
+    } else {
+      html += '<tr class="table-row">';
 
-    html += icon_column_s[i];
+      html += icon_column_s[i];
 
-    html += asset_column_s[i];
+      html += asset_column_s[i];
 
-    // html += in_wallet_column_s[i];
+      // html += in_wallet_column_s[i];
 
-    html += dep_column_s[i];
+      html += dep_column_s[i];
 
-    html += lockup_period_s[i];
+      html += lockup_period_s[i];
 
-    html += unlock_col_s[i];
+      html += unlock_col_s[i];
 
-    html += usd_val_column_s[i];
+      html += usd_val_column_s[i];
 
-    html += apy_column_s[i];
+      html += apy_column_s[i];
 
-    html += duration_col_s[i];
+      html += duration_col_s[i];
 
-    html += extractable_dep_col_s[i];
+      html += extractable_dep_col_s[i];
 
-    html += withdraw_dep_col_s[i];
+      html += withdraw_dep_col_s[i];
 
-    html += withdraw_dep_inputs_col_s[i];
+      html += withdraw_dep_inputs_col_s[i];
 
-    html += reward_col_s[i];
+      html += reward_col_s[i];
 
-    html += extractable_reward_col_s[i];
+      html += extractable_reward_col_s[i];
 
-    html += withdraw_rew_col_s[i];
+      html += withdraw_rew_col_s[i];
 
-    html += '</tr>';
+      html += '</tr>';
+    }
   }
 
   html += '</tbody>' + '</table>';
 
-  safeSetTableData('deposits_uniswap', html, 'empty');
+  safeSetTableData('deposits_uniswap', isMobile() ? mobileHtml : html, 'empty');
   if (callback) callback();
 }
 
@@ -3131,6 +3155,7 @@ async function getDepositsDashboard(callback = null) {
     '</tr>' +
     '</thead>' +
     '<tbody>';
+  let mobileHtml = '';
 
   const profiles = userObject.deposit_profiles;
 
@@ -3201,38 +3226,50 @@ async function getDepositsDashboard(callback = null) {
 
   for (let i = 0; i < profiles?.length ?? 0; i++) {
     // 0 means max amount for ERC20 compatible and ignored for ERC721
-    html += '<tr class="table-row">';
+    if (isMobile()) {
+      console.log(icon_column_s[i]);
+      mobileHtml += `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${formatDataForMobile(
+        icon_column_s[i]
+      )}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${formatDataForMobile(
+        asset_column_s[i]
+      )}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${formatDataForMobile(
+        usd_val_column_s[i]
+      )}</div><div class="crypto-collateral crypto-stat__name">${formatDataForMobile(
+        dep_column_s[i]
+      )} ${formatDataForMobile(asset_column_s[i])}</div></div></div></div>`;
+    } else {
+      html += '<tr class="table-row">';
 
-    html += icon_column_s[i];
+      html += icon_column_s[i];
 
-    html += asset_column_s[i];
+      html += asset_column_s[i];
 
-    html += in_wallet_column_s[i];
+      html += in_wallet_column_s[i];
 
-    html += dep_column_s[i];
+      html += dep_column_s[i];
 
-    html += usd_val_column_s[i];
+      html += usd_val_column_s[i];
 
-    html += apy_column_s[i];
+      html += apy_column_s[i];
 
-    html += duration_col_s[i];
+      html += duration_col_s[i];
 
-    html += extractable_dep_col_s[i];
+      html += extractable_dep_col_s[i];
 
-    html += withdraw_dep_col_s[i];
+      html += withdraw_dep_col_s[i];
 
-    html += reward_col_s[i];
+      html += reward_col_s[i];
 
-    html += extractable_reward_col_s[i];
+      html += extractable_reward_col_s[i];
 
-    html += withdraw_rew_col_s[i];
+      html += withdraw_rew_col_s[i];
 
-    html += '</tr>';
+      html += '</tr>';
+    }
   }
-
   html += '</tbody>' + '</table>';
 
-  safeSetTableData('tokens_balance', html, 'empty');
+  safeSetTableData('tokens_balance', isMobile() ? mobileHtml : html, 'empty');
 
   if (callback) callback();
 }
