@@ -456,6 +456,40 @@
   .specify-wrap {
     @apply flex whitespace-nowrap items-center w-fit-content justify-center py-1 px-2 text-xs text-center text-gray-500 border border-medium-grey rounded-2xl;
   }
+
+  .crypto-icon-no-spaces {
+    @apply h-6 w-6;
+
+    img {
+      @apply w-full h-full object-contain object-center;
+    }
+  }
+
+  #add-liquidity-tab .js-Dropdown-title {
+    @apply border-grey-100-mobile border border-solid rounded-r-none;
+  }
+}
+
+#add-liquidity-tab {
+  .without-link {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    position: relative;
+    border: 0px;
+
+    .js-Dropdown {
+      height: 100%;
+
+      &-title {
+        height: 100%;
+      }
+    }
+  }
+
+  .special-select.without-link .js-Dropdown-list {
+    right: 0rem;
+    width: 100%;
+  }
 }
 
 ._mobile {
@@ -496,6 +530,10 @@
         height: 100%;
       }
     }
+  }
+
+  .creditprofiles-rounded .choices {
+    border-radius: 0.5rem;
   }
 }
 

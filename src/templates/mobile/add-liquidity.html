@@ -3,17 +3,13 @@
     <div class="collumn-info__row custom-getcredit-dropdown">
       <div class="name-field mb-1">Select asset</div>
       <div class="flex w-full">
-        <div class="w-8/12 without-link">
+        <div class="w-8/12 without-link special-select">
           <select id="liqpairs-dropdown" name="liqpairs-dropdown">
           </select>
         </div>
         <div class="w-4/12">
           <div class="field-info input-type rounded-l-none border-l-0">
-            <span
-              class="in-wallet flex items-center ml-1"
-              id="liq_pair_in_wallet"
-              >1.0000</span
-            >
+            <span class="in-wallet flex items-center ml-1" id="liq_pair_in_wallet">1.0000</span>
           </div>
         </div>
       </div>
@@ -21,49 +17,30 @@
 
     <div class="collumn-info__row">
       <label for="stake-qnt" class="name-field">Stake qnt</label>
-      <input
-        type="number"
-        name="stake-qnt"
-        id="liq_pair_stake_am"
-        placeholder="-"
-        class="stake-input input-type"
-      />
+      <input type="number" name="stake-qnt" id="liq_pair_stake_am" placeholder="-" class="stake-input input-type" />
     </div>
 
     <div class="collumn-info__row custom-getcredit-dropdown">
       <div class="name-field">Period and Annual rate</div>
       <div class="flex w-full">
-        <div class="w-8/12 without-link">
+        <div class="w-8/12 without-link special-select">
           <select id="liqterms-dropdown" name="liqterms-dropdown">
           </select>
         </div>
         <div class="w-4/12">
           <div class="field-info input-type rounded-l-none border-l-0">
-            <span class="in-wallet flex items-center ml-1" id="liq_pair_apy"
-              >1.0000</span
-            >
+            <span class="in-wallet flex items-center ml-1" id="liq_pair_apy">1.0000</span>
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="btn-row">
-    <button
-      type="submit"
-      class="btn w-full mb-4"
-      onclick="approve_stake_liq()"
-      data-id="approve"
-      id="approve_liq_confirm"
-    >
+    <button type="submit" class="btn w-full mb-4" onclick="approve_stake_liq()" data-id="approve"
+      id="approve_liq_confirm">
       Approve tokens move
     </button>
-    <button
-      disabled=""
-      class="btn w-full"
-      data-id="confirm"
-      onclick="stake_liq()"
-      id="stake_liq_confirm"
-    >
+    <button disabled="" class="btn w-full" data-id="confirm" onclick="stake_liq()" id="stake_liq_confirm">
       Confirm
     </button>
   </div>
