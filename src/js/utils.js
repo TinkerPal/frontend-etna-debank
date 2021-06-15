@@ -1,5 +1,8 @@
 const isMobile = () => {
   const width = window.innerWidth;
+  if (width <= 1024) {
+    document.querySelector('body').classList.add('_mobile');
+  }
   return width <= 1024;
 };
 
@@ -114,6 +117,8 @@ function openTab(event, tabid) {
     const tabs = document.querySelector('#control-tabs');
     const tabsElements = document.querySelectorAll(`[data-tab]`);
     const breadcrumbs = document.querySelector('.header-breadcrumbs');
+    const logo = document.querySelector('#header-logo');
+
     if (
       tabid !== 'dashboard-tab' &&
       tabid !== 'borrow-tab' &&
@@ -121,9 +126,11 @@ function openTab(event, tabid) {
     ) {
       tabs.classList.add('hidden');
       breadcrumbs.classList.remove('hidden');
+      logo.classList.add('hidden');
     } else {
       tabs.classList.remove('hidden');
       breadcrumbs.classList.add('hidden');
+      logo.classList.remove('hidden');
     }
 
     tabsElements.forEach((item) => {
