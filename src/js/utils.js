@@ -96,6 +96,9 @@ function openTab(event, tabid) {
 
   if (event.srcElement) {
     event.srcElement.classList.add('active');
+    const activeButton = document.getElementById(`${tabid}-menu`);
+    activeButton?.classList.add('active');
+
     document.getElementById(tabid).classList.remove('hide');
     userObject.state.current_page_id = tabid;
   } else {
@@ -105,6 +108,31 @@ function openTab(event, tabid) {
       },
       'total-dashboard-tab'
     );
+  }
+
+  if (isMobile()) {
+    const tabs = document.querySelector('#control-tabs');
+    const tabsElements = document.querySelectorAll(`[data-tab]`);
+    const breadcrumbs = document.querySelector('.header-breadcrumbs');
+    if (
+      tabid !== 'dashboard-tab' &&
+      tabid !== 'borrow-tab' &&
+      tabid !== 'liq-earn-tab'
+    ) {
+      tabs.classList.add('hidden');
+      breadcrumbs.classList.remove('hidden');
+    } else {
+      tabs.classList.remove('hidden');
+      breadcrumbs.classList.add('hidden');
+    }
+
+    tabsElements.forEach((item) => {
+      if (item.dataset.tab === tabid) {
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+      }
+    });
   }
 }
 
