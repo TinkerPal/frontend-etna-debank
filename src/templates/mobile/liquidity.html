@@ -7,13 +7,13 @@
   </div>
   <div class="fixed-btn mt-2 bg-black pt-3">
     <button type="submit" class="btn mb-3" onclick="modal_add_lliquidity.show(); openTab(event,'add-liquidity-tab'); ">Add liquidity</button>
-    <div class="table-btn link-dropdown mb-0 relative">
+    <div class="table-btn link-dropdown mb-0 relative" onclick="toggleElement('pancakeswapList')">
       Go to pool at Pancakeswap
       <span class="link-dropdown__arrow">
         <img src="./images/select-arrow.svg" alt="#">
       </span>
     </div>
-    <div class="links-list open">
+    <div class="links-list open" id="pancakeswapList">
       <a href="#" class="links-list__item">BNB-ETNA
         <span class="links-icon">
           <img src="./images/external-link.svg" alt="#">
