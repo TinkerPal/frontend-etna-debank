@@ -2844,7 +2844,7 @@ async function getCreditsDashboard(callback = null) {
 
         html += dep_column[i];
       }
-    } else {
+    } else if (isMobile()) {
       userObject.state.currentCredits = [
         ...userObject.state.currentCredits,
         {},
@@ -3359,7 +3359,6 @@ async function getOurDashbord(callback = null) {
     cryptoNumbAll5.forEach((el) => {
       el.innerHTML = numeral(data.totalUsers).format('(0 a)');
     });
-    setLdBar(100);
   } catch (e) {
     console.warn(e);
   }
