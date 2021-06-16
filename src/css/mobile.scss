@@ -207,6 +207,10 @@
     &__diagram {
       @apply mb-5;
     }
+
+    .fixed-btn {
+      @apply pt-5 bg-black-mobile;
+    }
   }
 
   .table-name {
@@ -225,7 +229,7 @@
     @apply text-light-green-mobile;
 
     .table-name {
-      @apply text-base font-normal;
+      @apply text-sm font-normal;
     }
 
     .table-currency {
@@ -233,7 +237,7 @@
     }
 
     .table-amount {
-      @apply tracking-tight;
+      @apply tracking-tight text-sm;
     }
 
     .table-data {
@@ -250,7 +254,7 @@
   }
 
   .table-btn {
-    @apply py-3 px-3 shadow-sm rounded-xl border border-light-violet flex items-center justify-center w-full cursor-pointer mb-2 text-sm font-bold tracking-wider;
+    @apply py-3 px-3 shadow-sm rounded-xl border border-light-violet bg-black-mobile flex items-center justify-center w-full cursor-pointer mb-2 text-sm font-bold tracking-wider;
 
     .icon-cell {
       @apply mr-3 w-4 h-4;
@@ -488,7 +492,11 @@
   }
 
   #empty-error__msg {
-    @aaply text-2xl leading-none font-medium text-ford-light mb-5;
+    @apply text-2xl leading-none font-medium text-ford-light mb-5;
+  }
+
+  .crypto-info__header {
+    @apply flex items-center uppercase;
   }
 }
 
@@ -581,11 +589,13 @@
 .fixed-btn {
   position: fixed;
   width: calc(100% - 2rem);
-  bottom: 24px;
+  padding-bottom: 24px;
+  bottom: 0px;
 }
 
 #liq-earn-tab .fixed-btn {
-  bottom: 20px;
+  padding-bottom: 20px;
+  bottom: 0px;
 }
 
 .btn {
@@ -737,13 +747,13 @@
       border-bottom: 0px;
     }
   }
+
+  &#deposits_uniswap {
+    height: calc(100vh - 390px);
+  }
 }
 
 .crypto-info__header {
-  display: flex;
-  align-items: center;
-  text-transform: uppercase;
-
   .crypto-icon-no-spaces {
     height: 55px;
     margin-right: 20px;
@@ -752,8 +762,10 @@
 
 .crypto-info {
   &__data {
-    max-height: 390px;
     overflow: auto;
+    max-height: 100%;
+    overflow: auto;
+    padding-bottom: 90px;
   }
 
   &__credit {
@@ -763,6 +775,18 @@
   &__diagram {
     height: 208px;
     width: 100%;
+  }
+
+  &__btn {
+    .table-btn {
+      &:first-child {
+        margin-bottom: 0px;
+      }
+
+      &:nth-child(2) {
+        margin-bottom: 0.5rem;
+      }
+    }
   }
 }
 
@@ -854,6 +878,7 @@
   box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.05),
     0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05);
   padding: 4px 0px;
+
   .choices__item--selectable.is-highlighted {
     background-color: rgb(53, 53, 78);
   }
