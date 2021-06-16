@@ -23,7 +23,7 @@
 <body class="body" data-simplebar>
 
   <header class="w-full z-70 h-66 fixed bg-black">
-    @@include('./templates/header.html')
+    @@include('./templates/desktop/header.html')
   </header>
 
   <!-- start ORIENTATION -->
@@ -51,21 +51,21 @@
     <div id="total-dashboard-tab" class="page hide">
       <div class="main mx-6 mt-11 text-white xl:flex-row flex flex-col">
         <div class="dashboard-col xl:w-290 w-full">
-          @@include('./templates/our-dashboard.html')
+          @@include('./templates/desktop/our-dashboard.html')
         </div>
         <div class="dashboard-col__rest xl:w-rest w-full">
-          @@include('./templates/our-parallax.html')
+          @@include('./templates/desktop/our-parallax.html')
         </div>
       </div>
     </div>
     <div id="dashboard-tab" class="page hide">
-      @@include('./templates/deposits.html')
+      @@include('./templates/desktop/deposits.html')
     </div>
     <div id="borrow-tab" class="page hide">
-      @@include('./templates/borrow.html')
+      @@include('./templates/desktop/borrow.html')
     </div>
     <div id="liq-earn-tab" class="page hide">
-      @@include('./templates/liquidity.html')
+      @@include('./templates/desktop/liquidity.html')
     </div>
 
     <div class="empty-access z-60 hidden fixed w-full flex flex-col bg-black">
@@ -81,7 +81,7 @@
           </div>
         </div>
         <div class="mt-auto">
-          @@include('./templates/socials.html')
+          @@include('./templates/desktop/socials.html')
         </div>
       </div>
     </div>
@@ -108,24 +108,24 @@
           </div>
         </div>
         <div class="mt-auto">
-          @@include('./templates/socials.html')
+          @@include('./templates/desktop/socials.html')
         </div>
       </div>
     </div>
 
   </main>
 
-  @@include('./templates/notifications-huge.html')
+  @@include('./templates/desktop/notifications-huge.html')
 
   <footer class="w-full mt-auto fixed bottom-0">
-    @@include('./templates/socials.html')
-    @@include('./templates/footer-credit.html')
+    @@include('./templates/desktop/socials.html')
+    @@include('./templates/desktop/footer-credit.html')
   </footer>
 
-  @@include('./templates/modals.html')
+  @@include('./templates/desktop/modals.html')
 
   <!-- connect sentry -->
-  @@include('./templates/connect-sentry.html')
+  @@include('./templates/desktop/connect-sentry.html')
 
   <script defer src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
   <script defer src="https://unpkg.com/web3modal@1.9.2/dist/index.js"></script>

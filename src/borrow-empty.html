@@ -15,33 +15,33 @@
 
 <body class="font-body bg-black text-white h-full min-h-screen relative w-screen flex flex-col">
   <header class="mx-8 w-full">
-    @@include('./templates/header.html')
+    @@include('./templates/desktop/header.html')
   </header>
   <div id="p1" class="page active">
     <div class="main mx-6 mt-11 text-white xl:flex-row flex flex-col">
       <div class="dashboard-col xl:w-96 w-full">
-        @@include('./templates/dashboard.html')
+        @@include('./templates/desktop/dashboard.html')
       </div>
       <div class="dashboard-col__rest xl:w-rest w-full">
-        @@include('./templates/parallax-main.html')
+        @@include('./templates/desktop/parallax-main.html')
       </div>
     </div>
   </div> 
   <div id="p2" class="page">
-    @@include('./templates/deposits.html')
+    @@include('./templates/desktop/deposits.html')
   </div>
   <div id="p3" class="page empty">
-    @@include('./templates/borrow.html')
+    @@include('./templates/desktop/borrow.html')
   </div>
   <div id="p4" class="page">
-    @@include('./templates/liquidity.html')
+    @@include('./templates/desktop/liquidity.html')
   </div>
 
   <div class="if-credit w-full mt-auto">
-    @@include('./templates/footer-credit.html')
+    @@include('./templates/desktop/footer-credit.html')
   </div>
   <!-- connect sentry -->
-  @@include('./templates/connect-sentry.html')
+  @@include('./templates/desktop/connect-sentry.html')
   <script defer src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
   <script defer src="https://unpkg.com/web3modal@1.9.2/dist/index.js"></script>
   <script defer src="https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js"></script>
