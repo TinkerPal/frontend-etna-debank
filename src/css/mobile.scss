@@ -70,7 +70,7 @@
     }
 
     &.info_pane_error {
-      @apply border-red bg-error flex;
+      @apply border-red bg-pane-error flex;
 
       .text-color {
         @apply text-red;
@@ -91,7 +91,7 @@
     }
 
     &.info_pane_success {
-      @apply bg-green-success border-green-3 flex;
+      @apply bg-pane-success border-green-3 flex;
 
       .text-color {
         @apply text-green-3;
@@ -112,7 +112,7 @@
     }
 
     &.info_pane_info {
-      @apply border-yellow-400 bg-warning flex;
+      @apply border-yellow-400 bg-pane-info flex;
 
       .text-color {
         @apply text-yellow;
@@ -388,7 +388,11 @@
   }
 
   .links-list {
-    @apply mt-4 rounded-xl bg-blueish-black border border-light-violet;
+    @apply mt-4 flex flex-col rounded-xl bg-blueish-black border border-light-violet h-0;
+
+    &.show {
+      @apply h-auto;
+    }
 
     &__item {
       @apply border-b border-light-violet flex items-center justify-center py-3 px-4 font-normal text-base tracking-tighter;
@@ -552,6 +556,10 @@
   bottom: 24px;
 }
 
+#liq-earn-tab .fixed-btn {
+  bottom: 0px;
+}
+
 .btn {
   background: linear-gradient(118.75deg, #3541f1 16.3%, #1f2386 123.67%);
 
@@ -702,6 +710,7 @@
     }
   }
 }
+
 .crypto-info__header {
   display: flex;
   align-items: center;
@@ -712,6 +721,7 @@
     margin-right: 20px;
   }
 }
+
 .crypto-info {
   &__data {
     max-height: 390px;

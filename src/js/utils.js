@@ -205,7 +205,9 @@ const safeSetTableData = (id, value, className) => {
     if (value !== '') {
       el.innerHTML = value;
     }
-    const tableWithScroll = new SimpleBar(el);
+    if (!isMobile()) {
+      const tableWithScroll = new SimpleBar(el);
+    }
     if (isEmptyTable(id)) {
       el.closest('.page').classList.add(className);
     } else {
