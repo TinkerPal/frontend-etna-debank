@@ -3087,7 +3087,6 @@ async function getOurDashbord(callback = null) {
     cryptoNumbAll5.forEach((el) => {
       el.innerHTML = numeral(data.totalUsers).format('(0 a)');
     });
-    setLdBar(100);
   } catch (e) {
     console.warn(e);
   }
