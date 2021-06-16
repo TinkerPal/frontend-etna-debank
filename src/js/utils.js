@@ -108,20 +108,23 @@ const setLdBar = (value, part = 'null') => {
 const openTabHistory = {};
 
 function openTab(event, tabid, callback, pageName) {
-  callback && callback();
+  if (callback) {
+    const callbackState = callback();
+    if (!callbackState) return;
+  }
 
   safeRemoveClassBySelector('.nav-link', 'active');
   safeAddClassBySelector('.page', 'hide');
 
   if (!openTabHistory.cur) {
     openTabHistory.cur = {
-      click: () => openTab(event, tabid, callback),
+      click: () => openTab(event, tabid, callback, pageName),
       pageName,
     };
   } else {
     openTabHistory.prev = { ...openTabHistory.cur };
     openTabHistory.cur = {
-      click: () => openTab(event, tabid, callback),
+      click: () => openTab(event, tabid, callback, pageName),
       pageName,
     };
   }

@@ -161,6 +161,8 @@ function Modal(
 
   this.hideModal = () => {
     this.modal.classList.remove('open');
+
+    if (isMobile()) openTabHistory?.prev?.click();
   };
 
   this.init = () => {

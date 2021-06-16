@@ -1532,6 +1532,9 @@ const userObject = {
     this.loaded = true;
   },
   state: {
+    currentDeposits: [],
+    currentCredits: [],
+    currentLiq: [],
     current_page_id: '',
     selectedNFTAssets: [],
     selected_credprofile: -1, // collateral asset,  not selected

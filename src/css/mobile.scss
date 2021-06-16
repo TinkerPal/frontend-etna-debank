@@ -702,7 +702,16 @@
     }
   }
 }
+.crypto-info__header {
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
 
+  .crypto-icon-no-spaces {
+    height: 55px;
+    margin-right: 20px;
+  }
+}
 .crypto-info {
   &__data {
     max-height: 390px;

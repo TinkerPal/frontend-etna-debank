@@ -1713,10 +1713,16 @@ async function getWalletPref() {
     });
 }
 
-function cryptoInfoBuild(options, breadcrumb) {
+function cryptoInfoBuild(index, breadcrumb, userObjectState) {
+  const options = userObject.state?.[userObjectState]?.[index] ?? {};
   const breadcrumbEl = document.querySelector('[data-tab="crypto-info"]');
   breadcrumbEl.onclick = (e) => openTab(e, breadcrumb.link);
   breadcrumbEl.innerHTML = breadcrumb.text;
+
+  if (Object.values(options).length === 0) {
+    breadcrumbEl.onclick();
+    return false;
+  }
   const wrapper = document.querySelector('#crypto-info .crypto-info__data');
   wrapper.innerHTML = '';
   const header = document.querySelector('#crypto-info-header');
@@ -1750,12 +1756,16 @@ function cryptoInfoBuild(options, breadcrumb) {
                 name === 'Withdraw deposit'
                   ? options.list.dep_column.data
                   : options.list.extractable_reward_col.data
-              } ${options.asset_column}
+              } ${
+        options.asset_column === 'nft' && name === 'Withdraw yield'
+          ? 'ETNA'
+          : options.asset_column
+      }
             </div>
             <div class="table-data">
               ${
                 name === 'Withdraw deposit'
-                  ? options.list.usd_val_column.data
+                  ? numeral(options.list.usd_val_column.data).format('$0.00 a')
                   : ''
               }
             </div>
@@ -1789,6 +1799,8 @@ function cryptoInfoBuild(options, breadcrumb) {
       }
     }
   });
+
+  return true;
 }
 
 function checkAdminAuthentification(
@@ -2715,6 +2727,8 @@ async function getCreditsDashboard(callback = null) {
   <tbody>`;
   const wrapper = document.querySelector('#my_credits');
   wrapper.innerHTML = '';
+  userObject.state.currentCredits = [];
+
   for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
     // i === credit id
 
@@ -2783,12 +2797,22 @@ async function getCreditsDashboard(callback = null) {
           `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div><div class="crypto-collateral crypto-stat__name">${options.list.cred_column.data} ${options.asset_column}</div></div></div></div>`
         );
 
+        userObject.state.currentCredits = [
+          ...userObject.state.currentCredits,
+          options,
+        ];
+
         /* eslint no-loop-func: "off" */
         mobileListEl.onclick = function (e) {
           openTab(
             e,
             'crypto-info',
-            cryptoInfoBuild(options, { link: 'borrow-tab', text: 'Borrow' }),
+            () =>
+              cryptoInfoBuild(
+                i,
+                { link: 'borrow-tab', text: 'Borrow' },
+                'currentCredits'
+              ),
             options.asset_column
           );
         };
@@ -2825,6 +2849,11 @@ async function getCreditsDashboard(callback = null) {
 
         html += dep_column[i];
       }
+    } else {
+      userObject.state.currentCredits = [
+        ...userObject.state.currentCredits,
+        {},
+      ];
     }
 
     html += '</tr>';
@@ -2861,6 +2890,7 @@ async function getLiquidityDashboard(callback = null) {
   // let profiles = userObject.deposit_profiles;
   const wrapper = document.querySelector('#deposits_uniswap');
   wrapper.innerHTML = '';
+  userObject.state.currentLiq = [];
   const [am_arr, rew_arr] = await Promise.all([
     userObject.deposits.getAmArr(),
     userObject.deposits.getRewArr(),
@@ -2988,16 +3018,21 @@ async function getLiquidityDashboard(callback = null) {
         `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div><div class="crypto-collateral crypto-stat__name">${options.list.dep_column.data} ${options.asset_column}</div></div></div></div>`
       );
 
+      userObject.state.currentLiq = [...userObject.state.currentLiq, options];
       /* eslint no-loop-func: "off" */
       mobileListEl.onclick = function (e) {
         openTab(
           e,
           'crypto-info',
-
-          cryptoInfoBuild(options, {
-            link: 'liq-earn-tab',
-            text: 'Liquidity-Earn',
-          }),
+          () =>
+            cryptoInfoBuild(
+              i,
+              {
+                link: 'liq-earn-tab',
+                text: 'Liquidity-Earn',
+              },
+              'currentLiq'
+            ),
           options.asset_column
         );
       };
@@ -3358,6 +3393,7 @@ async function getDepositsDashboard(callback = null) {
     '<tbody>';
   const wrapper = document.querySelector('#tokens_balance');
   wrapper.innerHTML = '';
+  userObject.state.currentCredits = [];
   const profiles = userObject.deposit_profiles;
 
   await Promise.all([
@@ -3479,12 +3515,22 @@ async function getDepositsDashboard(callback = null) {
         `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div><div class="crypto-collateral crypto-stat__name">${options.list.dep_column.data} ${options.asset_column}</div></div></div></div>`
       );
 
+      userObject.state.currentCredits = [
+        ...userObject.state.currentCredits,
+        options,
+      ];
+
       /* eslint no-loop-func: "off" */
       mobileListEl.onclick = function (e) {
         openTab(
           e,
           'crypto-info',
-          cryptoInfoBuild(options, { link: 'dashboard-tab', text: 'Deposits' }),
+          () =>
+            cryptoInfoBuild(
+              i,
+              { link: 'dashboard-tab', text: 'Deposits' },
+              'currentDeposits'
+            ),
           options.asset_column
         );
       };
