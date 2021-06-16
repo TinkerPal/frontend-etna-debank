@@ -1803,9 +1803,9 @@ function cryptoInfoBuild(index, breadcrumb, userObjectState) {
   );
 
   if (haveBtns) {
-    btnWrapper.parentNode.classList.add('_with-btns');
+    wrapper.parentNode.classList.add('_with-btns');
   } else {
-    btnWrapper.parentNode.classList.remove('_with-btns');
+    wrapper.parentNode.classList.remove('_with-btns');
   }
 
   return true;
