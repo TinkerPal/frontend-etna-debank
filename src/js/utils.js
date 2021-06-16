@@ -24,6 +24,7 @@ function checkVersion() {
 }
 
 function formatDataForMobile(data) {
+  if (!data) return;
   return data.replace(/<td class="table-cell">(.*)<\/td>/, '$1');
 }
 
@@ -104,9 +105,26 @@ const setLdBar = (value, part = 'null') => {
   }
 };
 
-function openTab(event, tabid) {
+const openTabHistory = {};
+
+function openTab(event, tabid, callback, pageName) {
+  callback && callback();
+
   safeRemoveClassBySelector('.nav-link', 'active');
   safeAddClassBySelector('.page', 'hide');
+
+  if (!openTabHistory.cur) {
+    openTabHistory.cur = {
+      click: () => openTab(event, tabid, callback),
+      pageName,
+    };
+  } else {
+    openTabHistory.prev = { ...openTabHistory.cur };
+    openTabHistory.cur = {
+      click: () => openTab(event, tabid, callback),
+      pageName,
+    };
+  }
 
   if (event.srcElement) {
     event.srcElement.classList.add('active');
@@ -151,6 +169,14 @@ function openTab(event, tabid) {
         item.classList.add('hidden');
       }
     });
+
+    // Todo: переписать все табы на единый формат истории
+    if (openTabHistory?.prev?.pageName) {
+      const tab = document.querySelector('[data-tab="with-page-name"]');
+      tab.classList.remove('hidden');
+      tab.innerHTML = openTabHistory.prev.pageName;
+      tab.onclick = openTabHistory.prev.click;
+    }
   }
 }
 

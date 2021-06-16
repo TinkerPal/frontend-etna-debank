@@ -9,7 +9,7 @@
 
     <div class="tabs-block">
       <div class="return-tabs">
-        <div class="w-1/2">
+        <div class="flex-1">
           <input type="radio" name="credit" value="all-deposit"
             onclick="full_collateral_btn(depAmountByProfileId(userObject.state.selected_credprofile)[0])"
             id="full_collateral" checked class="hidden" />
@@ -17,7 +17,7 @@
             Withdraw all
           </label>
         </div>
-        <div class="w-1/2">
+        <div class="flex-1">
           <input type="radio" name="credit" value="part-deposit"
             onclick="part_collateral_btn(depAmountByProfileId(userObject.state.selected_credprofile)[0])"
             id="part_collateral" class="hidden" />

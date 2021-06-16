@@ -1713,11 +1713,21 @@ async function getWalletPref() {
     });
 }
 
-function cryptoInfoBuild(options, type) {
+function cryptoInfoBuild(options, breadcrumb) {
+  const breadcrumbEl = document.querySelector('[data-tab="crypto-info"]');
+  breadcrumbEl.onclick = (e) => openTab(e, breadcrumb.link);
+  breadcrumbEl.innerHTML = breadcrumb.text;
   const wrapper = document.querySelector('#crypto-info .crypto-info__data');
   wrapper.innerHTML = '';
   const header = document.querySelector('#crypto-info-header');
   header.innerHTML = `${options.icon_column}${options.asset_column}`;
+
+  const btnWrapper = document.querySelector('#crypto-info .crypto-info__btn');
+  btnWrapper.innerHTML = '';
+
+  const getBtnStructure = (name, data) => {
+    return `${data}`;
+  };
 
   const getItemStructure = (name, data) => {
     if (name === 'Withdraw yield' || name === 'Withdraw deposit') {
@@ -1771,7 +1781,13 @@ function cryptoInfoBuild(options, type) {
   };
 
   Object.values(options.list).forEach((item) => {
-    wrapper.innerHTML += getItemStructure(item.name, item.data);
+    if (item.data) {
+      if (item.name === 'btn') {
+        btnWrapper.innerHTML += getBtnStructure(item.name, item.data);
+      } else {
+        wrapper.innerHTML += getItemStructure(item.name, item.data);
+      }
+    }
   });
 }
 
@@ -2698,6 +2714,7 @@ async function getCreditsDashboard(callback = null) {
   </thead> 
   <tbody>`;
   const wrapper = document.querySelector('#my_credits');
+  wrapper.innerHTML = '';
   for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
     // i === credit id
 
@@ -2727,7 +2744,6 @@ async function getCreditsDashboard(callback = null) {
               data: formatDataForMobile(duration_col[i]),
               name: 'Duration days',
             },
-
             apr_column: {
               data: formatDataForMobile(apr_column[i]),
               name: 'Curent APR*',
@@ -2738,17 +2754,9 @@ async function getCreditsDashboard(callback = null) {
             },
             leverage_column: {
               data: formatDataForMobile(
-                return_leverage_visible ? leverage_column[i] : ''
+                return_leverage_visible ? leverage_column[i] : undefined
               ),
               name: 'Leverage',
-            },
-            set_leverage_column: {
-              data: formatDataForMobile(
-                return_leverage_visible ? set_leverage_column[i] : ''
-              ),
-            },
-            return_credit_col: {
-              data: formatDataForMobile(return_credit_col[i]),
             },
             in_wallet_column: {
               data: formatDataForMobile(in_wallet_column[i]),
@@ -2757,6 +2765,16 @@ async function getCreditsDashboard(callback = null) {
             dep_column: {
               data: formatDataForMobile(dep_column[i]),
               name: 'Deposit',
+            },
+            set_leverage_column: {
+              data: formatDataForMobile(
+                return_leverage_visible ? set_leverage_column[i] : undefined
+              ),
+              name: 'btn',
+            },
+            return_credit_col: {
+              data: formatDataForMobile(return_credit_col[i]),
+              name: 'btn',
             },
           },
         };
@@ -2767,8 +2785,12 @@ async function getCreditsDashboard(callback = null) {
 
         /* eslint no-loop-func: "off" */
         mobileListEl.onclick = function (e) {
-          cryptoInfoBuild(options, 'credits');
-          openTab(e, 'crypto-info', 'borrow-tab');
+          openTab(
+            e,
+            'crypto-info',
+            cryptoInfoBuild(options, { link: 'borrow-tab', text: 'Borrow' }),
+            options.asset_column
+          );
         };
 
         wrapper.appendChild(mobileListEl);
@@ -2838,6 +2860,7 @@ async function getLiquidityDashboard(callback = null) {
     '<tbody>';
   // let profiles = userObject.deposit_profiles;
   const wrapper = document.querySelector('#deposits_uniswap');
+  wrapper.innerHTML = '';
   const [am_arr, rew_arr] = await Promise.all([
     userObject.deposits.getAmArr(),
     userObject.deposits.getRewArr(),
@@ -2967,8 +2990,16 @@ async function getLiquidityDashboard(callback = null) {
 
       /* eslint no-loop-func: "off" */
       mobileListEl.onclick = function (e) {
-        cryptoInfoBuild(options, 'liq');
-        openTab(e, 'crypto-info', 'liq-earn-tab');
+        openTab(
+          e,
+          'crypto-info',
+
+          cryptoInfoBuild(options, {
+            link: 'liq-earn-tab',
+            text: 'Liquidity-Earn',
+          }),
+          options.asset_column
+        );
       };
 
       wrapper.appendChild(mobileListEl);
@@ -3326,6 +3357,7 @@ async function getDepositsDashboard(callback = null) {
     '</thead>' +
     '<tbody>';
   const wrapper = document.querySelector('#tokens_balance');
+  wrapper.innerHTML = '';
   const profiles = userObject.deposit_profiles;
 
   await Promise.all([
@@ -3449,8 +3481,12 @@ async function getDepositsDashboard(callback = null) {
 
       /* eslint no-loop-func: "off" */
       mobileListEl.onclick = function (e) {
-        cryptoInfoBuild(options, 'deposit');
-        openTab(e, 'crypto-info', 'dashboard-tab');
+        openTab(
+          e,
+          'crypto-info',
+          cryptoInfoBuild(options, { link: 'dashboard-tab', text: 'Deposits' }),
+          options.asset_column
+        );
       };
 
       wrapper.appendChild(mobileListEl);
