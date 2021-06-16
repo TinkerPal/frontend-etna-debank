@@ -500,6 +500,16 @@
   }
 }
 
+.text-color {
+  word-break: break-all;
+
+  .info-msg {
+    width: calc(100% - 2rem);
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+  }
+}
+
 .links-list {
   transition: 0.35s height;
 }
@@ -760,12 +770,18 @@
   }
 }
 
+._with-btns {
+  .crypto-info__data {
+    padding-bottom: 90px;
+  }
+}
+
 .crypto-info {
   &__data {
     overflow: auto;
     max-height: 100%;
     overflow: auto;
-    padding-bottom: 90px;
+    padding-bottom: 40px;
   }
 
   &__credit {

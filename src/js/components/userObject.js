@@ -332,7 +332,7 @@ const userObject = {
             ) {
               if (isMobile()) {
                 txt = `<td class="table-cell">
-                  <div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))"> class="link-arrow">
+                  <div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))" class="link-arrow">
                     <img src="./images/link-arrow.svg" alt="#">
                   </div>
                 </td>`;
@@ -439,7 +439,7 @@ const userObject = {
             ) {
               if (isMobile()) {
                 txt = `<td class="table-cell">
-                  <div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))"> class="link-arrow">
+                  <div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))" class="link-arrow">
                     <img src="./images/link-arrow.svg" alt="#">
                   </div>
                 </td>`;
@@ -1344,7 +1344,7 @@ const userObject = {
             if (toNumber(am_arr[2][i]) > 0) {
               if (isMobile()) {
                 txt = `<td class="table-cell">
-                    <div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))"> class="link-arrow">
+                    <div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))" class="link-arrow">
                       <img src="./images/link-arrow.svg" alt="#">
                     </div>
                   </td>`;
@@ -1527,7 +1527,7 @@ const userObject = {
             if (toNumber(rew_arr[2][i]) > 0) {
               if (isMobile()) {
                 txt = `<td class="table-cell">
-                    <div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))"> class="link-arrow">
+                    <div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))" class="link-arrow">
                       <img src="./images/link-arrow.svg" alt="#">
                     </div>
                   </td>`;
