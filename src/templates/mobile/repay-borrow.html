@@ -1,0 +1,40 @@
+<div class="flex flex-col h-full" id="modal-withdraw-deposit">
+  <div class="connected-wallet">
+    <div class="connected-wallet__img">
+      <img src="./images/wallet.svg" alt="#" />
+    </div>
+    <div class="flex flex-col">
+      <div class="connected-wallet__title">Connected wallet:</div>
+      <div class="connected-wallet__numb">
+        0x6cea79e4d4dea3461b4d8452c911db1aa22
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs-block">
+    <div class="return-tabs">
+      <div class="w-1/2">
+        <input type="radio" name="borrow" value="all-borrow" id="return_credit_all" checked="checked" class="hidden">
+        <label for="return_credit_all" class="btn-checked"> All borrow </label>
+      </div>
+      <div class="w-1/2">
+        <input type="radio" name="borrow" value="part-borrow" id="return_credit_part" class="hidden">
+        <label for="return_credit_part" class="btn-checked"> Part </label>
+      </div>
+    </div>
+    <div class="flex flex-col mb-11">
+      <label for="credit_return_input" class="name-field mb-1">Total repay</label>
+      <input type="number" name="total-repay" id="credit_return_input" class="input-type" readonly value="18.5000"
+        placeholder="18.5000" />
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button type="submit" id="return_credit_mvtokens" data-id="approve" class="btn">
+      Approve tokens move
+    </button>
+    <button type="submit" id="return_credit_confirm" data-id="confirm" class="btn">
+      Confirm
+    </button>
+  </div>
+</div>
