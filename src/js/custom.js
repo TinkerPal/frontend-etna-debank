@@ -372,25 +372,19 @@ window.addEventListener('DOMContentLoaded', async function () {
 });
 
 async function postWalletCallback() {
-  if (
-    window.location.pathname === '/' ||
-    window.location.pathname === '/our-dashboard.html' ||
-    window.location.pathname === '/our-dashboard'
-  ) {
-    await getWalletPref();
-    openTab(
-      {
-        srcElement: document.getElementById(
-          `${userObject.state.current_page_id}-menu`
-        ),
-      },
-      userObject.state.current_page_id
-    );
+  await getWalletPref();
+  openTab(
+    {
+      srcElement: document.getElementById(
+        `${userObject.state.current_page_id}-menu`
+      ),
+    },
+    userObject.state.current_page_id
+  );
 
-    modal_add_credit.modal && modal_add_credit.onInitCallback();
-    modal_add_lliquidity.modal && modal_add_lliquidity.onInitCallback();
-    modal_add_deposit.modal && modal_add_deposit.onInitCallback();
-  }
+  modal_add_credit.modal && modal_add_credit.onInitCallback();
+  modal_add_lliquidity.modal && modal_add_lliquidity.onInitCallback();
+  modal_add_deposit.modal && modal_add_deposit.onInitCallback();
 }
 
 async function initWeb3Modal() {
@@ -429,19 +423,6 @@ async function getAccount() {
     });
     userObject.account = accounts[0];
 
-    const response = await fetch('/whitelisted.json');
-
-    const { whitelisted_wallets } = await response.json();
-
-    const isWhitelistedAccount = whitelisted_wallets.some(
-      (whitelistedWallet) =>
-        whitelistedWallet.toUpperCase() === userObject.account.toUpperCase()
-    );
-
-    if (!isWhitelistedAccount) {
-      window.location.replace('/by-invitation.html');
-    }
-
     setLdBar(10);
 
     safeSetValueBySelector('.current-wallet', userObject.account);
@@ -470,15 +451,9 @@ async function getAccount() {
 
     setLdBar(25);
 
-    if (
-      window.location.pathname === '/' ||
-      window.location.pathname === '/our-dashboard.html' ||
-      window.location.pathname === '/our-dashboard'
-    ) {
-      setNetInfo();
+    setNetInfo();
 
-      await updateData();
-    }
+    await updateData();
 
     window.gp = await window.web3js.eth.getGasPrice();
     window.gp *= 2;
@@ -527,15 +502,9 @@ async function getAccountWalletConnect() {
 
     setLdBar(25);
 
-    if (
-      window.location.pathname === '/' ||
-      window.location.pathname === '/our-dashboard.html' ||
-      window.location.pathname === '/our-dashboard'
-    ) {
-      setNetInfo();
+    setNetInfo();
 
-      await updateData();
-    }
+    await updateData();
 
     window.gp = await window.web3js.eth.getGasPrice();
     window.gp *= 2;
@@ -1524,14 +1493,16 @@ async function updateData(action = null) {
       setLdBar(null, '25');
     });
 
-    if (
-      window.location.pathname === '/our-dashboard.html' ||
-      window.location.pathname === '/our-dashboard'
-    ) {
-      getOurDashbord();
-    } else {
-      getCapDashbord();
-    }
+    getOurDashbord();
+
+    // if (
+    //   window.location.pathname === '/our-dashboard.html' ||
+    //   window.location.pathname === '/our-dashboard'
+    // ) {
+    //   getOurDashbord();
+    // } else {
+    //   getCapDashbord();
+    // }
 
     // getFamersDashboard();
   } else if (action === 'make_deposit') {
