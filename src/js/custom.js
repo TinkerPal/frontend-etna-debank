@@ -379,6 +379,7 @@ async function postWalletCallback() {
   const element =
     document.getElementById(`${userObject.state.current_page_id}-menu`) ||
     document.getElementById(`dashboard-tab-menu`);
+
   openTab(
     {
       srcElement: element,
@@ -428,19 +429,6 @@ async function getAccount() {
       method: 'eth_requestAccounts',
     });
     userObject.account = accounts[0];
-
-    const response = await fetch('/whitelisted.json');
-
-    const { whitelisted_wallets } = await response.json();
-
-    const isWhitelistedAccount = whitelisted_wallets.some(
-      (whitelistedWallet) =>
-        whitelistedWallet.toUpperCase() === userObject.account.toUpperCase()
-    );
-
-    if (!isWhitelistedAccount) {
-      window.location.replace('/by-invitation.html');
-    }
 
     setLdBar(10);
 
@@ -1512,14 +1500,16 @@ async function updateData(action = null) {
       setLdBar(null, '25');
     });
 
-    if (
-      window.location.pathname === '/our-dashboard.html' ||
-      window.location.pathname === '/our-dashboard'
-    ) {
-      getOurDashbord();
-    } else if (window.location.pathname === '/') {
-      getCapDashbord();
-    }
+    getOurDashbord();
+
+    // if (
+    //   window.location.pathname === '/our-dashboard.html' ||
+    //   window.location.pathname === '/our-dashboard'
+    // ) {
+    //   getOurDashbord();
+    // } else {
+    //   getCapDashbord();
+    // }
 
     // getFamersDashboard();
   } else if (action === 'make_deposit') {
@@ -3239,14 +3229,17 @@ async function getOurDashbord(callback = null) {
     });
 
     const depositsTotal = await Promise.all(depositsTotalArrayForPromise);
-    const tokensStatistic = depositAmountData.map((amount, index) => ({
-      name: userObject.deposit_profiles[index].p_name,
-      total: depositsTotal[index],
-      amount:
-        userObject.deposit_profiles[index].p_id !== NFT_TOKEN_ID
-          ? toTokens(amount, 1)
-          : amount,
-    }));
+
+    const tokensStatistic = depositAmountData
+      .map((amount, index) => ({
+        name: userObject.deposit_profiles[index].p_name,
+        total: depositsTotal[index],
+        amount:
+          userObject.deposit_profiles[index].p_id !== NFT_TOKEN_ID
+            ? toTokens(amount, 1)
+            : amount,
+      }))
+      .filter((item) => item.total > 0);
 
     const nft = tokensStatistic.find((item) => item.name === 'nft');
 
@@ -3306,16 +3299,12 @@ async function getOurDashbord(callback = null) {
 
     const listOurCryptoTemplate = (name, amount, total) => {
       const assetName = `<div class="w-3/12 row-name uppercase">${name}</div>`;
-      const assetAmount = `<div class="w-3/12 text-right text-violet-100 tracking-wider text-sm">${numeral(
-        amount
-      ).format('($ 0.00 a)')}</div>`;
       const assetTotal = `${numeral(total).format('($ 0.00 a)')}`;
 
       return `
         <div class="crypto-row">
           ${assetName}
-          ${assetAmount}
-          <div class="w-6/12 flex items-center justify-end h-5 w-auto">
+          <div class="w-9/12 flex items-center justify-end h-5 w-auto">
             <div class="crypto-amount row-name">
               ${assetTotal} <span class="number_increase ml-2"></span>
             </div>
@@ -3349,7 +3338,7 @@ async function getOurDashbord(callback = null) {
     });
 
     cryptoNumbAll1.forEach((each) => {
-      each.innerHTML = numeral(data.totalAssetsValue).format('($0.00 a)');
+      each.innerHTML = numeral(data.totalAssetsValue).format('($0.0000 a)');
     });
 
     cryptoNumbAll2.forEach((item) => {
@@ -3393,7 +3382,7 @@ async function getDepositsDashboard(callback = null) {
     '<tbody>';
   const wrapper = document.querySelector('#tokens_balance');
   wrapper.innerHTML = '';
-  userObject.state.currentCredits = [];
+  userObject.state.currentDeposits = [];
   const profiles = userObject.deposit_profiles;
 
   await Promise.all([
@@ -3515,8 +3504,8 @@ async function getDepositsDashboard(callback = null) {
         `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div><div class="crypto-collateral crypto-stat__name">${options.list.dep_column.data} ${options.asset_column}</div></div></div></div>`
       );
 
-      userObject.state.currentCredits = [
-        ...userObject.state.currentCredits,
+      userObject.state.currentDeposits = [
+        ...userObject.state.currentDeposits,
         options,
       ];
 
