@@ -3393,7 +3393,7 @@ async function getDepositsDashboard(callback = null) {
     '<tbody>';
   const wrapper = document.querySelector('#tokens_balance');
   wrapper.innerHTML = '';
-  userObject.state.currentCredits = [];
+  userObject.state.currentDeposits = [];
   const profiles = userObject.deposit_profiles;
 
   await Promise.all([
@@ -3515,8 +3515,8 @@ async function getDepositsDashboard(callback = null) {
         `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div><div class="crypto-collateral crypto-stat__name">${options.list.dep_column.data} ${options.asset_column}</div></div></div></div>`
       );
 
-      userObject.state.currentCredits = [
-        ...userObject.state.currentCredits,
+      userObject.state.currentDeposits = [
+        ...userObject.state.currentDeposits,
         options,
       ];
 
