@@ -1,7 +1,7 @@
-const getCoins = (perPage = 8) => {
+const getCoinData = (coinName) => {
   const baseURL = 'https://api.coingecko.com/api/v3';
   return fetch(
-    `${baseURL}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${perPage}&price_change_percentage=1h,24h,7d&sparkline=true&page=1`
+    `${baseURL}/coins/${coinName}?vs_currency=usd&price_change_percentage=1h,24h,7d&sparkline=true`
   ).then((response) => {
     return response.json();
   });
@@ -123,6 +123,7 @@ const openTabHistory = {};
 function openTab(event, tabid, callback, pageName) {
   if (callback) {
     const callbackState = callback();
+
     if (!callbackState) return;
   }
 

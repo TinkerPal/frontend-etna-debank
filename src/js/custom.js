@@ -1731,7 +1731,10 @@ function cryptoInfoBuild(index, breadcrumb, userObjectState) {
   };
 
   const getItemStructure = (name, data) => {
-    if (name === 'Withdraw yield' || name === 'Withdraw deposit') {
+    if (
+      name === 'Withdraw yield' ||
+      (name === 'Withdraw deposit' && data && data !== '-')
+    ) {
       return `<div class="crypto-info__row withdraw">
         <div class="w-1/2">
           <div class="flex flex-col">
@@ -3895,6 +3898,7 @@ async function set_leverage_confirm(ratio, cred_id) {
         modal_add_leverage.isLoadedAfterConfirm(false);
       });
   });
+  return true;
 }
 
 async function unfreeze_leverage(cred_id) {
@@ -3927,6 +3931,7 @@ async function unfreeze_leverage(cred_id) {
         modal_unfreeze.isLoadedAfterConfirm(false);
       });
   });
+  return true;
 }
 
 function return_credit(cred_id) {
@@ -3963,6 +3968,7 @@ function return_credit(cred_id) {
   } else {
     modal_return_credit.prevStep();
   }
+  return true;
 }
 
 function return_fee(cred_id) {
@@ -3980,11 +3986,13 @@ function return_fee(cred_id) {
   } else {
     modal_return_fee.prevStep();
   }
+  return true;
 }
 
 function withdraw_reward(dep_id) {
   modal_withdraw_yield.show();
   modal_withdraw_yield.confirm.onclick = () => withdraw_reward_confirm(dep_id);
+  return true;
 }
 
 function withdraw_deposit(dep_id) {
@@ -4008,6 +4016,7 @@ function withdraw_deposit(dep_id) {
     withdraw_deposit_confirm(dep_id);
 
   modal_withdraw_deposit.show();
+  return true;
 }
 
 async function calcTokensFromUSD(cred_profile_id, amount_usd) {
