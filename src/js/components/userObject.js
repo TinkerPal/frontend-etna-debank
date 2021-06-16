@@ -333,7 +333,8 @@ const userObject = {
               txt = `<td class="table-cell">${createTableBtnWithIcon(
                 'withdraw',
                 'Withdraw deposit',
-                `withdraw_deposit(${i.toString()})`
+                `withdraw_deposit(${i.toString()})`,
+                `openTab(event, 'withdraw_deposit-tab')`
               )}</td>`;
               break;
             }
@@ -432,7 +433,8 @@ const userObject = {
               txt = `<td class="table-cell">${createTableBtnWithIcon(
                 'withdraw',
                 'Withdraw yield',
-                `withdraw_reward(${i.toString()})`
+                `withdraw_reward(${i.toString()})`,
+                `openTab(event, 'withdraw_reward-tab')`
               )}</td>`;
               break;
             }
@@ -920,19 +922,12 @@ const userObject = {
         for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
           let txt = '';
 
-          // if (toNumber(cred_arr[1][i]) > 0 && toNumber(lev_arr[i]) === 0) {
-          //   txt = `<td class="table-cell w-12">${createTableBtnWithIcon(
-          //     'price-tag',
-          //     'Leverage',
-          //     `show_modal_leverage(${i.toString()})`
-          //   )}</td>`;
-          // }
-
           if (toNumber(lev_arr[i]) > 0) {
             txt = `<td class="table-cell w-12">${createTableBtnWithIcon(
               'discount',
               'Unfreeze',
-              `show_modal_unfreeze(${i.toString()})`
+              `show_modal_unfreeze(${i.toString()})`,
+              `openTab(event, 'unfreeze-tab')`
             )}</td>`;
           }
 
@@ -998,13 +993,15 @@ const userObject = {
               txt = `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon(
                 'money',
                 'Repay borrow',
-                `return_credit(${i.toString()})`
+                `return_credit(${i.toString()})`,
+                `openTab(event, 'return_credit-tab')`
               )}</td>`;
             } else {
               txt = `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon(
                 'money',
                 'Repay fee',
-                `return_fee(${i.toString()})`
+                `return_fee(${i.toString()})`,
+                `openTab(event, 'return_fee-tab')`
               )}</td>`;
             }
           }
@@ -1315,7 +1312,8 @@ const userObject = {
               txt = `<td class="table-cell">${createTableBtnWithIcon(
                 'withdraw',
                 'Withdraw deposit',
-                `withdraw_deposit(${i.toString()})`
+                `withdraw_deposit(${i.toString()})`,
+                `openTab(event, 'withdraw_deposit-tab')`
               )}</td>`;
             } else {
               txt = '<td class="table-cell">-</td>';
@@ -1490,7 +1488,8 @@ const userObject = {
               txt = `<td class="table-cell">${createTableBtnWithIcon(
                 'withdraw',
                 'Withdraw yield',
-                `withdraw_reward(${i.toString()})`
+                `withdraw_reward(${i.toString()})`,
+                `openTab(event, 'withdraw_reward-tab')`
               )}</td>`;
             } else {
               txt = '<td class="table-cell">-</td>';

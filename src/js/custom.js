@@ -247,8 +247,8 @@ const creditDropdown =
 
 const walletButton = document.getElementById('enableEthereumButton');
 
-const createTableBtnWithIcon = (icon, text, callback) => {
-  return `<span class="table-btn" onclick="${callback}">
+const createTableBtnWithIcon = (icon, text, callback, mobileCallback) => {
+  return `<span class="table-btn" onclick="isMobile() && ${mobileCallback}; ${callback};">
   <i class="icon-cell">
     <img src="/images/${icon}.svg" class="w-full h-full" alt="#">
   </i> 
@@ -1713,6 +1713,68 @@ async function getWalletPref() {
     });
 }
 
+function cryptoInfoBuild(options, type) {
+  const wrapper = document.querySelector('#crypto-info .crypto-info__data');
+  wrapper.innerHTML = '';
+  const header = document.querySelector('#crypto-info-header');
+  header.innerHTML = `${options.icon_column}${options.asset_column}`;
+
+  const getItemStructure = (name, data) => {
+    if (name === 'Withdraw yield' || name === 'Withdraw deposit') {
+      return `<div class="crypto-info__row withdraw">
+      <div class="w-1/2">
+        <div class="flex flex-col">
+          <div class="table-name">
+            ${name}
+          </div>
+          <div class="table-currency">
+            USD walue
+          </div>
+        </div>
+      </div>
+      <div class="w-1/2">
+        <div class="flex items-center justify-end">
+          <div class="flex flex-col">
+            <div class="table-amount">
+              ${
+                name === 'Withdraw deposit'
+                  ? options.list.dep_column.data
+                  : options.list.extractable_reward_col.data
+              } ${options.asset_column}
+            </div>
+            <div class="table-data">
+              ${
+                name === 'Withdraw deposit'
+                  ? options.list.usd_val_column.data
+                  : ''
+              }
+            </div>
+          </div>
+          ${data}
+        </div>
+      </div>
+    </div>`;
+    }
+
+    return `<div class="crypto-info__row">
+        <div class="w-1/2">
+          <div class="table-name">
+            ${name}
+          </div>
+        </div>
+        <div class="w-1/2">
+          <div class="table-data">
+          ${data}
+          </div>
+        </div>
+        </div>`;
+  };
+
+  Object.values(options.list).forEach((item) => {
+    wrapper.innerHTML += getItemStructure(item.name, item.data);
+  });
+}
+
 function checkAdminAuthentification(
   msg_params,
   encr_message,
@@ -2648,32 +2710,65 @@ async function getCreditsDashboard(callback = null) {
         const options = {
           icon_column: formatDataForMobile(icon_column[i]),
           asset_column: formatDataForMobile(asset_column[i]),
-          cred_column: formatDataForMobile(cred_column[i]),
-          usd_val_column: formatDataForMobile(usd_val_column[i]),
-          duration_col: formatDataForMobile(duration_col[i]),
-          clt_column: formatDataForMobile(clt_column[i]),
-          apr_column: formatDataForMobile(apr_column[i]),
-          fee_col: formatDataForMobile(fee_col[i]),
-          leverage_column: formatDataForMobile(
-            return_leverage_visible ? leverage_column[i] : ''
-          ),
-          set_leverage_column: formatDataForMobile(
-            return_leverage_visible ? set_leverage_column[i] : ''
-          ),
-          return_credit_col: formatDataForMobile(return_credit_col[i]),
-          return_empty_col: formatDataForMobile(return_empty_col[i]),
-          in_wallet_column: formatDataForMobile(in_wallet_column[i]),
-          dep_column: formatDataForMobile(dep_column[i]),
+          list: {
+            cred_column: {
+              data: formatDataForMobile(cred_column[i]),
+              name: 'Borrowed amount',
+            },
+            usd_val_column: {
+              data: formatDataForMobile(usd_val_column[i]),
+              name: 'USD value',
+            },
+            clt_column: {
+              data: formatDataForMobile(clt_column[i]),
+              name: 'Collateral',
+            },
+            duration_col: {
+              data: formatDataForMobile(duration_col[i]),
+              name: 'Duration days',
+            },
+
+            apr_column: {
+              data: formatDataForMobile(apr_column[i]),
+              name: 'Curent APR*',
+            },
+            fee_col: {
+              data: formatDataForMobile(fee_col[i]),
+              name: 'Fee',
+            },
+            leverage_column: {
+              data: formatDataForMobile(
+                return_leverage_visible ? leverage_column[i] : ''
+              ),
+              name: 'Leverage',
+            },
+            set_leverage_column: {
+              data: formatDataForMobile(
+                return_leverage_visible ? set_leverage_column[i] : ''
+              ),
+            },
+            return_credit_col: {
+              data: formatDataForMobile(return_credit_col[i]),
+            },
+            in_wallet_column: {
+              data: formatDataForMobile(in_wallet_column[i]),
+              name: 'In wallet',
+            },
+            dep_column: {
+              data: formatDataForMobile(dep_column[i]),
+              name: 'Deposit',
+            },
+          },
         };
 
         const mobileListEl = htmlToElement(
-          `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.usd_val_column}</div><div class="crypto-collateral crypto-stat__name">${options.cred_column} ${options.asset_column}</div></div></div></div>`
+          `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div><div class="crypto-collateral crypto-stat__name">${options.list.cred_column.data} ${options.asset_column}</div></div></div></div>`
         );
 
         /* eslint no-loop-func: "off" */
         mobileListEl.onclick = function (e) {
-          cryptoInfoBuild(options, 'deposit');
-          opentab(e, 'crypto-info');
+          cryptoInfoBuild(options, 'credits');
+          openTab(e, 'crypto-info', 'borrow-tab');
         };
 
         wrapper.appendChild(mobileListEl);
@@ -2818,32 +2913,62 @@ async function getLiquidityDashboard(callback = null) {
       const options = {
         icon_column: formatDataForMobile(icon_column_s[i]),
         asset_column: formatDataForMobile(asset_column_s[i]),
-        dep_column: formatDataForMobile(dep_column_s[i]),
-        lockup_period: formatDataForMobile(lockup_period_s[i]),
-        unlock_col: formatDataForMobile(unlock_col_s[i]),
-        usd_val_column: formatDataForMobile(usd_val_column_s[i]),
-        apy_column: formatDataForMobile(apy_column_s[i]),
-        duration_col: formatDataForMobile(duration_col_s[i]),
-        extractable_dep_col: formatDataForMobile(extractable_dep_col_s[i]),
-        withdraw_dep_col: formatDataForMobile(withdraw_dep_col_s[i]),
-        withdraw_dep_inputs_col: formatDataForMobile(
-          withdraw_dep_inputs_col_s[i]
-        ),
-        reward_col: formatDataForMobile(reward_col_s[i]),
-        extractable_reward_col: formatDataForMobile(
-          extractable_reward_col_s[i]
-        ),
-        withdraw_rew_col: formatDataForMobile(withdraw_rew_col_s[i]),
+        list: {
+          dep_column: {
+            data: formatDataForMobile(dep_column_s[i]),
+            name: 'Quantity',
+          },
+          lockup_period: {
+            data: formatDataForMobile(lockup_period_s[i]),
+            name: 'Lockup',
+          },
+          unlock_col: {
+            data: formatDataForMobile(unlock_col_s[i]),
+            name: 'Days till Withdraw',
+          },
+          usd_val_column: {
+            data: formatDataForMobile(usd_val_column_s[i]),
+            name: 'USD value',
+          },
+          apy_column: {
+            data: formatDataForMobile(apy_column_s[i]),
+            name: 'APY',
+          },
+          duration_col: {
+            data: formatDataForMobile(duration_col_s[i]),
+            name: 'Duration days',
+          },
+          extractable_dep_col: {
+            data: formatDataForMobile(extractable_dep_col_s[i]),
+            name: 'Extractable',
+          },
+          withdraw_dep_col: {
+            data: formatDataForMobile(withdraw_dep_col_s[i]),
+            name: 'Withdraw deposit',
+          },
+          reward_col: {
+            data: formatDataForMobile(reward_col_s[i]),
+            name: 'Current Yield ETNA',
+          },
+          extractable_reward_col: {
+            data: formatDataForMobile(extractable_reward_col_s[i]),
+            name: 'Extractable Yield ETNA',
+          },
+          withdraw_rew_col: {
+            data: formatDataForMobile(withdraw_rew_col_s[i]),
+            name: 'Withdraw yield',
+          },
+        },
       };
 
       const mobileListEl = htmlToElement(
-        `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.usd_val_column}</div><div class="crypto-collateral crypto-stat__name">${options.dep_column} ${options.asset_column}</div></div></div></div>`
+        `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div><div class="crypto-collateral crypto-stat__name">${options.list.dep_column.data} ${options.asset_column}</div></div></div></div>`
       );
 
       /* eslint no-loop-func: "off" */
       mobileListEl.onclick = function (e) {
-        cryptoInfoBuild(options, 'deposit');
-        opentab(e, 'crypto-info');
+        cryptoInfoBuild(options, 'liq');
+        openTab(e, 'crypto-info', 'liq-earn-tab');
       };
 
       wrapper.appendChild(mobileListEl);
@@ -3274,28 +3399,58 @@ async function getDepositsDashboard(callback = null) {
       const options = {
         icon_column: formatDataForMobile(icon_column_s[i]),
         asset_column: formatDataForMobile(asset_column_s[i]),
-        in_wallet_column: formatDataForMobile(in_wallet_column_s[i]),
-        dep_column: formatDataForMobile(dep_column_s[i]),
-        usd_val_column: formatDataForMobile(usd_val_column_s[i]),
-        apy_column: formatDataForMobile(apy_column_s[i]),
-        duration_col: formatDataForMobile(duration_col_s[i]),
-        extractable_dep_col: formatDataForMobile(extractable_dep_col_s[i]),
-        withdraw_dep_col: formatDataForMobile(withdraw_dep_col_s[i]),
-        reward_col: formatDataForMobile(reward_col_s[i]),
-        extractable_reward_col: formatDataForMobile(
-          extractable_reward_col_s[i]
-        ),
-        withdraw_rew_col: formatDataForMobile(withdraw_rew_col_s[i]),
+        list: {
+          in_wallet_column: {
+            data: formatDataForMobile(in_wallet_column_s[i]),
+            name: 'In wallet',
+          },
+          dep_column: {
+            data: formatDataForMobile(dep_column_s[i]),
+            name: 'Deposit',
+          },
+          usd_val_column: {
+            data: formatDataForMobile(usd_val_column_s[i]),
+            name: 'USD value',
+          },
+          apy_column: {
+            data: formatDataForMobile(apy_column_s[i]),
+            name: 'APY',
+          },
+          duration_col: {
+            data: formatDataForMobile(duration_col_s[i]),
+            name: 'Duration days',
+          },
+          extractable_dep_col: {
+            data: formatDataForMobile(extractable_dep_col_s[i]),
+            name: 'Extractable',
+          },
+          withdraw_dep_col: {
+            data: formatDataForMobile(withdraw_dep_col_s[i]),
+            name: 'Withdraw deposit',
+          },
+          reward_col: {
+            data: formatDataForMobile(reward_col_s[i]),
+            name: 'Current Yield',
+          },
+          extractable_reward_col: {
+            data: formatDataForMobile(extractable_reward_col_s[i]),
+            name: 'Extractable Yield',
+          },
+          withdraw_rew_col: {
+            data: formatDataForMobile(withdraw_rew_col_s[i]),
+            name: 'Withdraw yield',
+          },
+        },
       };
 
       const mobileListEl = htmlToElement(
-        `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.usd_val_column}</div><div class="crypto-collateral crypto-stat__name">${options.dep_column} ${options.asset_column}</div></div></div></div>`
+        `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div><div class="crypto-collateral crypto-stat__name">${options.list.dep_column.data} ${options.asset_column}</div></div></div></div>`
       );
 
       /* eslint no-loop-func: "off" */
       mobileListEl.onclick = function (e) {
         cryptoInfoBuild(options, 'deposit');
-        opentab(e, 'crypto-info');
+        openTab(e, 'crypto-info', 'dashboard-tab');
       };
 
       wrapper.appendChild(mobileListEl);
