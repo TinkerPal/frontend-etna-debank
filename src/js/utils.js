@@ -1,3 +1,16 @@
+const getCoins = (perPage = 8) => {
+  const baseURL = 'https://api.coingecko.com/api/v3';
+  return fetch(
+    `${baseURL}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${perPage}&price_change_percentage=1h,24h,7d&sparkline=true&page=1`
+  ).then((response) => {
+    return response.json();
+  });
+};
+
+const toNormalUSDView = (data) => {
+  return numeral(data).format('$ 0,0.00');
+};
+
 const isMobile = () => {
   const width = window.innerWidth;
   if (width <= 1024) {

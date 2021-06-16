@@ -247,11 +247,11 @@ const creditDropdown =
 
 const walletButton = document.getElementById('enableEthereumButton');
 
-const createTableBtnWithIcon = (icon, text, callback, mobileCallback) => {
-  return `<span class="table-btn" onclick="isMobile() && ${mobileCallback}; ${callback};">
+const createTableBtnWithIcon = (icon, text, callback) => {
+  return `<span class="table-btn" onclick="${callback};">
   <i class="icon-cell">
     <img src="/images/${icon}.svg" class="w-full h-full" alt="#">
-  </i> 
+  </i>
   ${text}
 </span>`;
 };
@@ -1733,56 +1733,56 @@ function cryptoInfoBuild(index, breadcrumb, userObjectState) {
   const getItemStructure = (name, data) => {
     if (name === 'Withdraw yield' || name === 'Withdraw deposit') {
       return `<div class="crypto-info__row withdraw">
-      <div class="w-1/2">
-        <div class="flex flex-col">
-          <div class="table-name">
-            ${name}
-          </div>
-          <div class="table-currency">
-            USD walue
+        <div class="w-1/2">
+          <div class="flex flex-col">
+            <div class="table-name">
+              ${name}
+            </div>
+            <div class="table-currency">
+              USD walue
+            </div>
           </div>
         </div>
-      </div>
-      <div class="w-1/2">
-        <div class="flex items-center justify-end">
-          <div class="flex flex-col">
-            <div class="table-amount">
-              ${
-                name === 'Withdraw deposit'
-                  ? options.list.dep_column.data
-                  : options.list.extractable_reward_col.data
-              } ${
+        <div class="w-1/2">
+          <div class="flex items-center justify-end">
+            <div class="flex flex-col">
+              <div class="table-amount">
+                ${
+                  name === 'Withdraw deposit'
+                    ? options.list.dep_column.data
+                    : options.list.extractable_reward_col.data
+                } ${
         options.asset_column === 'nft' && name === 'Withdraw yield'
           ? 'ETNA'
           : options.asset_column
       }
+              </div>
+              <div class="table-data">
+                ${
+                  name === 'Withdraw deposit'
+                    ? toNormalUSDView(options.list.usd_val_column.data)
+                    : ''
+                }
+              </div>
             </div>
-            <div class="table-data">
-              ${
-                name === 'Withdraw deposit'
-                  ? numeral(options.list.usd_val_column.data).format('$0.00 a')
-                  : ''
-              }
-            </div>
+            ${data}
           </div>
+        </div>
+      </div>`;
+    }
+
+    return `<div class="crypto-info__row">
+      <div class="w-1/2">
+        <div class="table-name">
+          ${name}
+        </div>
+      </div>
+      <div class="w-1/2">
+        <div class="table-data">
           ${data}
         </div>
       </div>
     </div>`;
-    }
-
-    return `<div class="crypto-info__row">
-        <div class="w-1/2">
-          <div class="table-name">
-            ${name}
-          </div>
-        </div>
-        <div class="w-1/2">
-          <div class="table-data">
-          ${data}
-          </div>
-        </div>
-        </div>`;
   };
 
   Object.values(options.list).forEach((item) => {
@@ -1794,6 +1794,16 @@ function cryptoInfoBuild(index, breadcrumb, userObjectState) {
       }
     }
   });
+
+  const haveBtns = Object.values(options.list).some(
+    (item) => item.name === 'btn'
+  );
+
+  if (haveBtns) {
+    btnWrapper.parentNode.classList.add('_with-btns');
+  } else {
+    btnWrapper.parentNode.classList.remove('_with-btns');
+  }
 
   return true;
 }
@@ -2789,7 +2799,28 @@ async function getCreditsDashboard(callback = null) {
         };
 
         const mobileListEl = htmlToElement(
-          `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div><div class="crypto-collateral crypto-stat__name">${options.list.cred_column.data} ${options.asset_column}</div></div></div></div>`
+          `<div class="stat-row stat-row__blue">
+          <div class="w-2/12">
+            <div class="stat-row__icon">${options.icon_column}</div>
+          </div>
+          <div class="w-3/12">
+            <div class="flex flex-col ml-5 h-full">
+              <div class="crypto-name crypto-style">${options.asset_column}</div>
+              <div class="crypto-stat crypto-stat__name">
+                +1,6%
+              </div>
+            </div>
+          </div>
+          <div class="w-4/12">
+            <div class="crypto-chart chart-bnb"></div>
+          </div>
+          <div class="w-3/12">
+            <div class="flex flex-col h-full text-right">
+              <div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div>
+              <div class="crypto-collateral crypto-stat__name">${options.list.cred_column.data} ${options.asset_column}</div>
+            </div>
+          </div>
+        </div>`
         );
 
         userObject.state.currentCredits = [
@@ -3010,7 +3041,34 @@ async function getLiquidityDashboard(callback = null) {
       };
 
       const mobileListEl = htmlToElement(
-        `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div><div class="crypto-collateral crypto-stat__name">${options.list.dep_column.data} ${options.asset_column}</div></div></div></div>`
+        `<div class="stat-row stat-row__blue">
+          <div class="w-2/12">
+            <div class="stat-row__icon">${options.icon_column}</div>
+          </div>
+          <div class="w-3/12">
+            <div class="flex flex-col ml-5 h-full">
+              <div class="crypto-name crypto-style">${
+                options.asset_column
+              }</div>
+              <div class="crypto-stat crypto-stat__name">
+                +1,6%
+              </div>
+            </div>
+          </div>
+          <div class="w-4/12">
+            <div class="crypto-chart chart-bnb"></div>
+          </div>
+          <div class="w-3/12">
+            <div class="flex flex-col h-full text-right">
+              <div class="crypto-amount crypto-style">${toNormalUSDView(
+                options.list.usd_val_column.data
+              )}</div>
+              <div class="crypto-collateral crypto-stat__name">${
+                options.list.duration_col.data
+              } days</div>
+            </div>
+          </div>
+        </div>`
       );
 
       userObject.state.currentLiq = [...userObject.state.currentLiq, options];
@@ -3115,7 +3173,7 @@ async function getCapDashbord(callback = null) {
   const listCryptoTemplate = (imgSrc, name, price, priceChange) => {
     const imgBlock = `<img width="20" height="20" src="${imgSrc}" />`;
     const nameBlock = `<div>${name}</div>`;
-    const priceBlock = `<div>${numeral(price).format('$ 0,0.00')}</div>`;
+    const priceBlock = `<div>${toNormalUSDView(price)}</div>`;
     const priceChangeBlock = `<div class="${getClassForNumber(
       priceChange
     )}">${numeral(priceChange / 100).format('0.0%')}</div>`;
@@ -3505,7 +3563,29 @@ async function getDepositsDashboard(callback = null) {
       };
 
       const mobileListEl = htmlToElement(
-        `<div class="stat-row stat-row__blue"><div class="w-2/12"><div class="stat-row__icon">${options.icon_column}</div></div><div class="w-3/12"><div class="flex flex-col ml-5 h-full"><div class="crypto-name crypto-style">${options.asset_column}</div></div></div><div class="w-4/12"><div class="crypto-chart chart-bnb"></div></div><div class="w-3/12"><div class="flex flex-col h-full text-right"><div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div><div class="crypto-collateral crypto-stat__name">${options.list.dep_column.data} ${options.asset_column}</div></div></div></div>`
+        `<div class="stat-row stat-row__blue">
+        <div class="w-2/12">
+          <div class="stat-row__icon">${options.icon_column}</div>
+        </div>
+        <div class="w-3/12">
+          <div class="flex flex-col ml-5 h-full">
+            <div class="crypto-name crypto-style">${options.asset_column}</div>
+            <div class="crypto-stat crypto-stat__name">
+              +1,6%
+            </div>
+          </div>
+        </div>
+        <div class="w-4/12">
+          <div class="crypto-chart chart-bnb"></div>
+        </div>
+        <div class="w-3/12">
+          <div class="flex flex-col h-full text-right">
+            <div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div>
+            <div class="crypto-collateral crypto-stat__name">${options.list.dep_column.data} ${options.asset_column}
+            </div>
+          </div>
+        </div>
+      </div>`
       );
 
       userObject.state.currentDeposits = [

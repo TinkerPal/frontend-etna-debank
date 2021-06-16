@@ -330,12 +330,19 @@ const userObject = {
               toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id) &&
               toNumber(am_arr[2][i]) > 0
             ) {
-              txt = `<td class="table-cell">${createTableBtnWithIcon(
-                'withdraw',
-                'Withdraw deposit',
-                `withdraw_deposit(${i.toString()})`,
-                `openTab(event, 'withdraw_deposit-tab')`
-              )}</td>`;
+              if (isMobile()) {
+                txt = `<td class="table-cell">
+                  <div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))"> class="link-arrow">
+                    <img src="./images/link-arrow.svg" alt="#">
+                  </div>
+                </td>`;
+              } else {
+                txt = `<td class="table-cell">${createTableBtnWithIcon(
+                  'withdraw',
+                  'Withdraw deposit',
+                  `withdraw_deposit(${i.toString()})`
+                )}</td>`;
+              }
               break;
             }
           }
@@ -430,12 +437,19 @@ const userObject = {
               toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id) &&
               toNumber(rew_arr[2][i]) > 0
             ) {
-              txt = `<td class="table-cell">${createTableBtnWithIcon(
-                'withdraw',
-                'Withdraw yield',
-                `withdraw_reward(${i.toString()})`,
-                `openTab(event, 'withdraw_reward-tab')`
-              )}</td>`;
+              if (isMobile()) {
+                txt = `<td class="table-cell">
+                  <div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))"> class="link-arrow">
+                    <img src="./images/link-arrow.svg" alt="#">
+                  </div>
+                </td>`;
+              } else {
+                txt = `<td class="table-cell">${createTableBtnWithIcon(
+                  'withdraw',
+                  'Withdraw yield',
+                  `withdraw_reward(${i.toString()})`
+                )}</td>`;
+              }
               break;
             }
           }
@@ -923,12 +937,19 @@ const userObject = {
           let txt = '';
 
           if (toNumber(lev_arr[i]) > 0) {
-            txt = `<td class="table-cell w-12">${createTableBtnWithIcon(
-              'discount',
-              'Unfreeze',
-              `show_modal_unfreeze(${i.toString()})`,
-              `openTab(event, 'unfreeze-tab')`
-            )}</td>`;
+            if (isMobile()) {
+              txt = `<td class="table-cell w-12">${createTableBtnWithIcon(
+                'discount',
+                'Unfreeze',
+                `openTab(event, 'unfreeze-tab', () => show_modal_unfreeze(${i.toString()}))`
+              )}</td>`;
+            } else {
+              txt = `<td class="table-cell w-12">${createTableBtnWithIcon(
+                'discount',
+                'Unfreeze',
+                `show_modal_unfreeze(${i.toString()})`
+              )}</td>`;
+            }
           }
 
           if (!txt) txt = '<td class="table-cell w-12">-</td>';
@@ -990,18 +1011,30 @@ const userObject = {
           if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0) {
             if (toNumber(cred_arr[1][i]) > 0) {
               // credit or fee unpaid
+              if (isMobile()) {
+                txt = `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon(
+                  'money',
+                  'Repay borrow',
+                  `openTab(event, 'return_credit-tab', () => return_credit(${i.toString()}))`
+                )}</td>`;
+              } else {
+                txt = `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon(
+                  'money',
+                  'Repay borrow',
+                  `return_credit(${i.toString()})`
+                )}</td>`;
+              }
+            } else if (isMobile()) {
               txt = `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon(
                 'money',
-                'Repay borrow',
-                `return_credit(${i.toString()})`,
-                `openTab(event, 'return_credit-tab')`
+                'Repay fee',
+                `openTab(event, 'return_credit-tab', () => return_credit(${i.toString()}))`
               )}</td>`;
             } else {
               txt = `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon(
                 'money',
                 'Repay fee',
-                `return_fee(${i.toString()})`,
-                `openTab(event, 'return_fee-tab')`
+                `return_fee(${i.toString()})`
               )}</td>`;
             }
           }
@@ -1121,9 +1154,9 @@ const userObject = {
             if (toNumber(am_arr[1][i]) > 0) {
               // let am = window.web3js_reader.utils.fromWei(am_arr[1][i], 'ether');
               const adj_am = toTokens(am_arr[1][i], 4); // ((parseFloat(am)).toFixed(4)).toString();
-              txt = `<td class="table-cell table-cell">${adj_am}</td>`;
+              txt = `<td class="table-cell">${adj_am}</td>`;
             } else {
-              txt = '<td class="table-cell table-cell">-</td>';
+              txt = '<td class="table-cell">-</td>';
             }
             this.dep_column.push(txt);
           }
@@ -1164,9 +1197,9 @@ const userObject = {
                 val: am,
                 ori_index: index,
               });
-              txt = `<td class="table-cell table-cell">${am}</td>`;
+              txt = `<td class="table-cell">${am}</td>`;
             } else {
-              txt = '<td class="table-cell table-cell">-</td>';
+              txt = '<td class="table-cell">-</td>';
               this.usd_val_only_col.push({
                 val: 0,
                 ori_index: index,
@@ -1309,12 +1342,19 @@ const userObject = {
             let txt = '';
 
             if (toNumber(am_arr[2][i]) > 0) {
-              txt = `<td class="table-cell">${createTableBtnWithIcon(
-                'withdraw',
-                'Withdraw deposit',
-                `withdraw_deposit(${i.toString()})`,
-                `openTab(event, 'withdraw_deposit-tab')`
-              )}</td>`;
+              if (isMobile()) {
+                txt = `<td class="table-cell">
+                    <div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))"> class="link-arrow">
+                      <img src="./images/link-arrow.svg" alt="#">
+                    </div>
+                  </td>`;
+              } else {
+                txt = `<td class="table-cell">${createTableBtnWithIcon(
+                  'withdraw',
+                  'Withdraw deposit',
+                  `withdraw_deposit(${i.toString()})`
+                )}</td>`;
+              }
             } else {
               txt = '<td class="table-cell">-</td>';
             }
@@ -1485,12 +1525,19 @@ const userObject = {
             let txt = '';
 
             if (toNumber(rew_arr[2][i]) > 0) {
-              txt = `<td class="table-cell">${createTableBtnWithIcon(
-                'withdraw',
-                'Withdraw yield',
-                `withdraw_reward(${i.toString()})`,
-                `openTab(event, 'withdraw_reward-tab')`
-              )}</td>`;
+              if (isMobile()) {
+                txt = `<td class="table-cell">
+                    <div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))"> class="link-arrow">
+                      <img src="./images/link-arrow.svg" alt="#">
+                    </div>
+                  </td>`;
+              } else {
+                txt = `<td class="table-cell">${createTableBtnWithIcon(
+                  'withdraw',
+                  'Withdraw yield',
+                  `withdraw_reward(${i.toString()})`
+                )}</td>`;
+              }
             } else {
               txt = '<td class="table-cell">-</td>';
             }
