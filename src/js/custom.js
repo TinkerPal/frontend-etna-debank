@@ -1795,6 +1795,16 @@ function cryptoInfoBuild(index, breadcrumb, userObjectState) {
     }
   });
 
+  const haveBtns = Object.values(options.list).some(
+    (item) => item.name === 'btn'
+  );
+
+  if (haveBtns) {
+    btnWrapper.parentNode.classList.add('_with-btns');
+  } else {
+    btnWrapper.parentNode.classList.remove('_with-btns');
+  }
+
   return true;
 }
 
