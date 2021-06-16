@@ -1710,7 +1710,12 @@ function cryptoInfoBuild(index, breadcrumb, userObjectState) {
   breadcrumbEl.innerHTML = breadcrumb.text;
 
   if (Object.values(options).length === 0) {
-    breadcrumbEl.onclick();
+    breadcrumbEl.openTab(
+      {
+        srcElement: document.getElementById(`${breadcrumb.link}-menu`),
+      },
+      breadcrumb.link
+    );
     return false;
   }
   const wrapper = document.querySelector('#crypto-info .crypto-info__data');
@@ -2839,7 +2844,7 @@ async function getCreditsDashboard(callback = null) {
 
         html += dep_column[i];
       }
-    } else {
+    } else if (isMobile()) {
       userObject.state.currentCredits = [
         ...userObject.state.currentCredits,
         {},
@@ -3354,7 +3359,6 @@ async function getOurDashbord(callback = null) {
     cryptoNumbAll5.forEach((el) => {
       el.innerHTML = numeral(data.totalUsers).format('(0 a)');
     });
-    setLdBar(100);
   } catch (e) {
     console.warn(e);
   }
