@@ -26,6 +26,7 @@ const js = [
   './src/js/constants/token.js',
   './src/js/components/userObject.js',
   './src/js/components/customSelect.js',
+  './src/js/components/chart.js',
   './src/js/components/modal.js',
   './src/js/staticData/parseNotifData.js',
   './src/js/common.js',
