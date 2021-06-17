@@ -22,8 +22,8 @@ jobs:
       - name: Clear old js/css files
         uses: garygrossgarten/github-action-ssh@v0.6.3
         with:
-          command: '(rm -rf /home/irina/frontend/preprod-debank/css/; rm -rf /home/irina/frontend/preprod-debank/js/)'
-          host: 'preprod-debank.etna.network'
+          command: '(rm -rf /home/irina/frontend/dev-mobile-debank/css/; rm -rf /home/irina/frontend/dev-mobile-debank/js/)'
+          host: 'dev-mobile-debank.etna.network'
           username: 'irina'
           privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: SFTP Deploy
