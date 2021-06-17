@@ -71,6 +71,30 @@
         @@include('./templates/mobile/repay-borrow.html')
       </div>
 
+      <!-- need to add if nowhere metamask wallet -->
+
+      <div class="empty-metamask hidden">
+        <div class="h-full flex flex-col justify-center">
+          <div class="empty-metamask__wrapper">
+            <div class="empty-metamask__img">
+              <div class="empty-metamask__img-animate absolute h-full w-full top-0 left-0 animate-bounce-3">
+                <img src="../images/no-metamask-logo.svg" class="w-full h-full" alt="#">
+              </div>
+              <img src="../images/no-metamask.png" class="w-full h-full" alt="#">
+            </div>
+            <div class="text-2xl leading-none font-medium text-grey-100 mb-5" id="empty-error__msg">
+              It seems that you dont have metamask
+            </div>
+            <div class="max-w-xl text-lg text-faux mx-auto">
+              To continue using Debank, please connect your wallet
+            </div>
+            <div class="connect-btn table-btn">
+              Connect Wallet
+            </div>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 
