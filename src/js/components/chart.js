@@ -64,9 +64,12 @@ class EtnaChart extends HTMLElement {
     const cryptoStatInDeposit = this.closest('.stat-row').querySelector(
       '.crypto-stat__percent'
     );
-    cryptoStatInDeposit.innerHTML = `${
-      percentage > 0 ? '+' : ''
-    }${percentage}%`;
+
+    if (cryptoStatInDeposit) {
+      cryptoStatInDeposit.innerHTML = `${
+        percentage > 0 ? '+' : ''
+      }${percentage}%`;
+    }
 
     const myChart = new Chart(
       this.querySelector(`[data-chart]`).getContext('2d'),
