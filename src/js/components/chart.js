@@ -6,7 +6,7 @@ class EtnaChart extends HTMLElement {
 
     this.renderHTML();
     this.renderChart(
-      this.coinData.market_data.market_cap_change_percentage_24h.toFixed(2),
+      this.coinData.market_data.price_change_percentage_24h.toFixed(2),
       this.coinData.market_data.sparkline_7d.price
     );
   }
