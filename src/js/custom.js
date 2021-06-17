@@ -4639,5 +4639,5 @@ async function getAPY(profile_id) {
 }
 
 if (isMobile()) {
-  customElements.define('etna-chart', Chart);
+  customElements.define('etna-chart', EtnaChart);
 }

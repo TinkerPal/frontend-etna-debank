@@ -1,4 +1,4 @@
-class Chart extends HTMLElement {
+class EtnaChart extends HTMLElement {
   async connectedCallback() {
     this.coin = this.getAttribute('coin');
     this.coinData = await getCoinData(this.coin);
