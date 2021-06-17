@@ -501,7 +501,7 @@
     }
 
     &-metamask {
-      @apply z-60 fixed w-full flex flex-col bg-black-mobile px-4 hidden;
+      @apply z-90 fixed w-full flex flex-col bg-black-mobile px-4;
 
       &__img {
         @apply mb-10 mx-auto relative;

@@ -459,7 +459,7 @@ async function getAccount() {
       initCyclopsNFTContract(),
     ]);
 
-    setLdBar(100);
+    setLdBar(15);
 
     await userObject.load();
 
@@ -496,7 +496,7 @@ async function getAccountWalletConnect() {
 
     userObject.account = accounts[0];
 
-    setLdBar(100);
+    setLdBar(10);
 
     safeSetValueBySelector('.current-wallet', userObject.account);
     safeSetInnerHTMLBySelector('.current-wallet', userObject.account, 'inline');
