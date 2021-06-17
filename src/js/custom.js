@@ -3588,7 +3588,7 @@ async function getDepositsDashboard(callback = null) {
         <div class="w-3/12">
           <div class="flex flex-col ml-5 h-full">
             <div class="crypto-name crypto-style">${options.asset_column}</div>
-            <div class="crypto-stat crypto-stat__name">
+            <div class="crypto-stat crypto-stat__percent">
               +1,6%
             </div>
           </div>
