@@ -1028,7 +1028,7 @@ const userObject = {
               txt = `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon(
                 'money',
                 'Repay fee',
-                `openTab(event, 'return_credit-tab', () => return_credit(${i.toString()}))`
+                `openTab(event, 'return_fee-tab', () => return_fee(${i.toString()}))`
               )}</td>`;
             } else {
               txt = `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon(

@@ -1,10 +1,26 @@
-const getCoinData = (coinName) => {
+const getCoinData = async (coinName) => {
+  if (coinName === 'nft') {
+    return;
+  }
+
+  const COIN_MAP = {
+    bnb: 'binancecoin',
+    etna: 'etna-network',
+    usdt: 'tether',
+    dai: 'dai',
+    eth: 'ethereum',
+    btcb: 'binance-bitcoin',
+    busd: 'binance-usd',
+  };
+
   const baseURL = 'https://api.coingecko.com/api/v3';
-  return fetch(
-    `${baseURL}/coins/${coinName}?vs_currency=usd&price_change_percentage=1h,24h,7d&sparkline=true`
+  const response = await fetch(
+    `${baseURL}/coins/${COIN_MAP[coinName]}?vs_currency=usd&price_change_percentage=1h,24h,7d&sparkline=true`
   ).then((response) => {
     return response.json();
   });
+
+  return response;
 };
 
 const toNormalUSDView = (data) => {

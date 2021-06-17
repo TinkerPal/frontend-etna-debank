@@ -181,7 +181,7 @@ const nftAssetsSelect =
         item: (classNames, data) => {
           const value = `${data.value.text}[${data.value.t_id}]`;
 
-          return template(`
+          return template(/* html */ `
               <div class="${classNames.item} ${
             data.highlighted
               ? classNames.highlightedState
@@ -201,7 +201,7 @@ const nftAssetsSelect =
         choice: (classNames, data) => {
           const value = `${data.value.text}[${data.value.t_id}]`;
 
-          return template(`
+          return template(/* html */ `
               <div class="${classNames.item} ${classNames.itemChoice} ${
             data.disabled ? classNames.itemDisabled : classNames.itemSelectable
           }" data-choice ${
@@ -1735,7 +1735,7 @@ function cryptoInfoBuild(index, breadcrumb, userObjectState) {
       name === 'Withdraw yield' ||
       (name === 'Withdraw deposit' && data && data !== '-')
     ) {
-      return `<div class="crypto-info__row withdraw">
+      return /* html */ `<div class="crypto-info__row withdraw">
         <div class="w-1/2">
           <div class="flex flex-col">
             <div class="table-name">
@@ -1774,7 +1774,7 @@ function cryptoInfoBuild(index, breadcrumb, userObjectState) {
       </div>`;
     }
 
-    return `<div class="crypto-info__row">
+    return /* html */ `<div class="crypto-info__row">
       <div class="w-1/2">
         <div class="table-name">
           ${name}
@@ -2801,30 +2801,35 @@ async function getCreditsDashboard(callback = null) {
           },
         };
 
-        const mobileListEl = htmlToElement(
-          `<div class="stat-row stat-row__blue">
+        const mobileListEl = htmlToElement(/* html */ `
+         <div class="stat-row stat-row__blue">
           <div class="w-2/12">
             <div class="stat-row__icon">${options.icon_column}</div>
           </div>
           <div class="w-3/12">
             <div class="flex flex-col ml-5 h-full">
-              <div class="crypto-name crypto-style">${options.asset_column}</div>
+              <div class="crypto-name crypto-style">${
+                options.asset_column
+              }</div>
               <div class="crypto-stat crypto-stat__name">
                 +1,6%
               </div>
             </div>
           </div>
           <div class="w-4/12">
-            <div class="crypto-chart chart-bnb"></div>
+            <etna-chart class="crypto-chart" coin="${options.asset_column.toLowerCase()}"></etna-chart>
           </div>
           <div class="w-3/12">
             <div class="flex flex-col h-full text-right">
-              <div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div>
-              <div class="crypto-collateral crypto-stat__name">${options.list.cred_column.data} ${options.asset_column}</div>
+              <div class="crypto-amount crypto-style">${
+                options.list.usd_val_column.data
+              }</div>
+              <div class="crypto-collateral crypto-stat__name">${
+                options.list.cred_column.data
+              } ${options.asset_column}</div>
             </div>
           </div>
-        </div>`
-        );
+        </div>`);
 
         userObject.state.currentCredits = [
           ...userObject.state.currentCredits,
@@ -3044,6 +3049,7 @@ async function getLiquidityDashboard(callback = null) {
       };
 
       const mobileListEl = htmlToElement(
+        /* html */
         `<div class="stat-row stat-row__blue">
           <div class="w-2/12">
             <div class="stat-row__icon">${options.icon_column}</div>
@@ -3059,7 +3065,7 @@ async function getLiquidityDashboard(callback = null) {
             </div>
           </div>
           <div class="w-4/12">
-            <div class="crypto-chart chart-bnb"></div>
+            <etna-chart class="crypto-chart" coin="${options.asset_column.toLowerCase()}"></etna-chart>
           </div>
           <div class="w-3/12">
             <div class="flex flex-col h-full text-right">
@@ -3181,7 +3187,7 @@ async function getCapDashbord(callback = null) {
       priceChange
     )}">${numeral(priceChange / 100).format('0.0%')}</div>`;
 
-    return `
+    return /* html */ `
     <div class="w-full flex items-center mb-5">
       <div class="w-1/12">${imgBlock}</div>
       <div class="w-3/12"><div class="ml-2 uppercase text-sm tracking-wide">${nameBlock}</div></div>
@@ -3364,10 +3370,10 @@ async function getOurDashbord(callback = null) {
     }
 
     const listOurCryptoTemplate = (name, amount, total) => {
-      const assetName = `<div class="w-3/12 row-name uppercase">${name}</div>`;
+      const assetName = /* html */ `<div class="w-3/12 row-name uppercase">${name}</div>`;
       const assetTotal = `${numeral(total).format('($ 0.00 a)')}`;
 
-      return `
+      return /* html */ `
         <div class="crypto-row">
           ${assetName}
           <div class="w-9/12 flex items-center justify-end h-5 w-auto">
@@ -3565,8 +3571,8 @@ async function getDepositsDashboard(callback = null) {
         },
       };
 
-      const mobileListEl = htmlToElement(
-        `<div class="stat-row stat-row__blue">
+      const mobileListEl = htmlToElement(/* html */ `
+       <div class="stat-row stat-row__blue">
         <div class="w-2/12">
           <div class="stat-row__icon">${options.icon_column}</div>
         </div>
@@ -3579,17 +3585,21 @@ async function getDepositsDashboard(callback = null) {
           </div>
         </div>
         <div class="w-4/12">
-          <div class="crypto-chart chart-bnb"></div>
+          <etna-chart class="crypto-chart" coin="${options.asset_column.toLowerCase()}"></etna-chart>
         </div>
         <div class="w-3/12">
           <div class="flex flex-col h-full text-right">
-            <div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div>
-            <div class="crypto-collateral crypto-stat__name">${options.list.dep_column.data} ${options.asset_column}
+            <div class="crypto-amount crypto-style">${
+              options.list.usd_val_column.data
+            }</div>
+            <div class="crypto-collateral crypto-stat__name">${
+              options.list.dep_column.data
+            } ${options.asset_column}
             </div>
           </div>
         </div>
-      </div>`
-      );
+      </div>
+      `);
 
       userObject.state.currentDeposits = [
         ...userObject.state.currentDeposits,
@@ -4626,4 +4636,8 @@ async function getAPY(profile_id) {
     });
   window.dep_apys[profile_id] = apy;
   return window.dep_apys[profile_id];
+}
+
+if (isMobile()) {
+  customElements.define('etna-chart', Chart);
 }
