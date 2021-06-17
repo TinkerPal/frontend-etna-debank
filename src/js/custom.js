@@ -452,7 +452,7 @@ async function getAccount() {
       initCyclopsNFTContract(),
     ]);
 
-    setLdBar(15);
+    setLdBar(100);
 
     await userObject.load();
 
