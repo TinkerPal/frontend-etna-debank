@@ -489,7 +489,7 @@ async function getAccountWalletConnect() {
 
     userObject.account = accounts[0];
 
-    setLdBar(10);
+    setLdBar(100);
 
     safeSetValueBySelector('.current-wallet', userObject.account);
     safeSetInnerHTMLBySelector('.current-wallet', userObject.account, 'inline');
