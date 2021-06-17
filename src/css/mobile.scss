@@ -485,11 +485,22 @@
     @apply border-grey-100-mobile border border-solid rounded-r-none;
   }
 
-  .empty-access {
-    @apply z-60 fixed w-full flex flex-col bg-black-mobile hidden px-4;
+  .empty {
+    &-access {
+      @apply z-60 fixed w-full flex flex-col bg-black-mobile hidden px-4;
 
-    &__body {
-      @apply flex flex-col h-full items-center justify-center text-center;
+      &__body {
+        @apply flex flex-col h-full items-center justify-center text-center;
+      }
+    }
+    &-metamask {
+      @apply z-60 fixed w-full flex flex-col bg-black-mobile;
+      &__img {
+        @apply mb-10 mx-auto relative;
+      }
+      &__wrapper {
+        @apply flex flex-col h-full items-center justify-center text-center;
+      }
     }
   }
 
