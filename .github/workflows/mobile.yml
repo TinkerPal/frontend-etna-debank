@@ -22,16 +22,16 @@ jobs:
       - name: Clear old js/css files
         uses: garygrossgarten/github-action-ssh@v0.6.3
         with:
-          command: '(rm -rf /home/irina/frontend/dev-mobile-debank/css/; rm -rf /home/irina/frontend/dev-mobile-debank/js/)'
-          host: 'dev-mobile-debank.etna.network'
+          command: '(rm -rf /home/irina/frontend/m-preprod-debank/css/; rm -rf /home/irina/frontend/m-preprod-debank/js/)'
+          host: 'm-preprod-debank.etna.network'
           username: 'irina'
           privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: SFTP Deploy
         uses: wlixcc/SFTP-Deploy-Action@v1.2.1       
         with:
           username: 'irina'
-          server: 'dev-mobile-debank.etna.network'
+          server: 'm-preprod-debank.etna.network'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
           local_path: './public/*'
-          remote_path: '/home/irina/frontend/dev-mobile-debank/'
+          remote_path: '/home/irina/frontend/m-preprod-debank/'
           args: '-o ConnectTimeout=5'
