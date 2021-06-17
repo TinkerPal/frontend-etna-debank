@@ -213,6 +213,14 @@
     }
   }
 
+  .connect-btn {
+    @apply mt-4;
+  }
+
+  .fixed-btn {
+    @apply bg-black-mobile;
+  }
+
   .table-name {
     @apply text-sm font-medium leading-5;
   }
@@ -478,7 +486,7 @@
   }
 
   .empty-access {
-    @apply z-60 fixed w-full flex flex-col bg-black-mobile hidden;
+    @apply z-60 fixed w-full flex flex-col bg-black-mobile hidden px-4;
 
     &__body {
       @apply flex flex-col h-full items-center justify-center text-center;
@@ -516,8 +524,8 @@
 
 .empty-access {
   top: 232px;
-  height: calc(100% - 320px);
-  left: 0px;
+  height: calc(100% - 236px);
+  left: 0;
 }
 
 #add-liquidity-tab {
@@ -818,9 +826,15 @@
   }
 }
 
-.connected-wallet__numb {
-  max-width: 266px;
-  overflow: auto;
+.connected-wallet {
+  &__numb {
+    max-width: 266px;
+    overflow: auto;
+  }
+
+  &__wrapper {
+    width: calc(100% - 60px);
+  }
 }
 
 #credprofiles-dropdown,
@@ -834,16 +848,22 @@
   }
 }
 
-#assets-dropdown .choices__inner {
-  max-height: 128px;
-  height: 100%;
-  overflow: auto;
-  align-items: flex-start;
+#assets-dropdown {
+  .choices__inner {
+    max-height: 128px;
+    height: 100%;
+    overflow: auto;
+    align-items: flex-start;
+  }
+
+  .choices__list--dropdown .choices__list {
+    max-height: 200px;
+    overflow: auto;
+  }
 }
 
-#assets-dropdown .choices__list--dropdown .choices__list {
-  max-height: 200px;
-  overflow: auto;
+#modal-return-credit {
+  min-height: calc(100vh - 190px);
 }
 
 // start multiSelect
