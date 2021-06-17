@@ -59,23 +59,30 @@ function closeAllModals() {
 }
 
 function choiseOnInitNft(choice) {
-  let list = new SimpleBar(choice.choiceList.element, {
-    autoHide: false,
-  });
-  let inner = new SimpleBar(choice.containerInner.element, {
-    autoHide: false,
-  });
+  let list =
+    !isMobile() &&
+    new SimpleBar(choice.choiceList.element, {
+      autoHide: false,
+    });
+  let inner =
+    !isMobile() &&
+    new SimpleBar(choice.containerInner.element, {
+      autoHide: false,
+    });
 
   const rebuildScroll = () => {
     const currentChoices = choice._currentState.choices;
-    list && list.unMount();
-    list = new SimpleBar(choice.choiceList.element, {
-      autoHide: false,
-    });
-    inner && inner.unMount();
-    inner = new SimpleBar(choice.containerInner.element, {
-      autoHide: false,
-    });
+
+    if (!isMobile()) {
+      list && list.unMount();
+      list = new SimpleBar(choice.choiceList.element, {
+        autoHide: false,
+      });
+      inner && inner.unMount();
+      inner = new SimpleBar(choice.containerInner.element, {
+        autoHide: false,
+      });
+    }
 
     if (currentChoices) {
       const isEmpty = currentChoices.every((item) => item.selected === false);
@@ -3272,6 +3279,8 @@ async function getCapDashbord(callback = null) {
 }
 
 async function getOurDashbord(callback = null) {
+  const ourCryptoList = document.querySelector('#our-crypto-list');
+  if (!ourCryptoList) return;
   try {
     const depositsAmountArrayForPromise = [];
     userObject.deposit_profiles.forEach((item) => {

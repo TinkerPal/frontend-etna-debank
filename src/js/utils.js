@@ -1,8 +1,4 @@
 const getCoinData = async (coinName) => {
-  if (coinName === 'nft') {
-    return;
-  }
-
   const COIN_MAP = {
     bnb: 'binancecoin',
     etna: 'etna-network',
@@ -12,6 +8,10 @@ const getCoinData = async (coinName) => {
     btcb: 'binance-bitcoin',
     busd: 'binance-usd',
   };
+
+  if (!COIN_MAP[coinName]) {
+    return;
+  }
 
   const baseURL = 'https://api.coingecko.com/api/v3';
   const response = await fetch(
