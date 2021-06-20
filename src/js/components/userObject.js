@@ -1269,19 +1269,21 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
-          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
-            continue;
+          if (toNumber(rew_arr[1][i]) === 0) continue;
+
           if (
             toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
             UNISWAP_PAIR
           ) {
             let txt = '';
-            if (toNumber(am_arr[1][i]) > 0) {
+
+            if (toNumber(rew_arr[2][i]) > 0) {
               const am = await calcUSDValueOfDeposit(rew_arr[2][i], i);
               txt = `<td class="table-cell">${am}</td>`;
             } else {
               txt = '<td class="table-cell">-</td>';
             }
+
             this.usd_reward_column.push(txt);
           }
         }

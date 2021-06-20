@@ -2840,7 +2840,7 @@ async function getCreditsDashboard(callback = null) {
                 options.asset_column
               }</div>
               <div class="crypto-stat crypto-stat__name">
-               
+              ${options.list.cred_column.data}
               </div>
             </div>
           </div>
@@ -2852,7 +2852,9 @@ async function getCreditsDashboard(callback = null) {
               ${
                 options.list.usd_val_column.data !== '-'
                   ? `
-              <div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div>`
+              <div class="crypto-amount crypto-style">${toNormalUSDView(
+                options.list.usd_val_column.data
+              )}</div>`
                   : ''
               }
               ${
@@ -3107,7 +3109,11 @@ async function getLiquidityDashboard(callback = null) {
                 options.asset_column
               }</div>
               <div class="crypto-stat crypto-stat__name">
-               
+              ${
+                options.list.dep_column.data !== '-'
+                  ? options.list.dep_column.data
+                  : ''
+              }
               </div>
             </div>
           </div>
