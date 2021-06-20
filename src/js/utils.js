@@ -27,31 +27,6 @@ const toNormalUSDView = (data) => {
   return numeral(data).format('$ 0,0.00');
 };
 
-const isMobile = () => {
-  const width = window.innerWidth;
-  if (width <= 1024) {
-    document.querySelector('body').classList.add('_mobile');
-  }
-  return width <= 1024;
-};
-
-function checkVersion() {
-  const isMob = isMobile();
-  if (
-    isMob &&
-    window.location.pathname !== '/mobile.html' &&
-    window.location.pathname !== '/mobile'
-  ) {
-    window.location.replace('/mobile.html');
-  } else if (
-    !isMob &&
-    (window.location.pathname === '/mobile.html' ||
-      window.location.pathname === '/mobile')
-  ) {
-    window.location.replace('/');
-  }
-}
-
 function formatDataForMobile(data) {
   if (!data) return;
   return data.replace(/<td class="table-cell">(.*)<\/td>/, '$1');
@@ -89,7 +64,7 @@ const isToken = (
 };
 
 const isEmptyTable = (idContainer) => {
-  if (isMobile())
+  if (isMobile)
     return document.querySelector(`#${idContainer}`).innerHTML === '';
   return document.querySelector(`#${idContainer} table tbody`).innerHTML === '';
 };
@@ -175,7 +150,7 @@ function openTab(event, tabid, callback, pageName) {
     );
   }
 
-  if (isMobile()) {
+  if (isMobile) {
     const tabs = document.querySelector('#control-tabs');
     const tabsElements = document.querySelectorAll(`[data-tab]`);
     const breadcrumbs = document.querySelector('.header-breadcrumbs');
@@ -235,7 +210,7 @@ const safeSetTableData = (id, value, className) => {
     if (value !== '') {
       el.innerHTML = value;
     }
-    if (!isMobile()) {
+    if (!isMobile) {
       const tableWithScroll = new SimpleBar(el);
     }
     if (isEmptyTable(id)) {

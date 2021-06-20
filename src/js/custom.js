@@ -1,6 +1,3 @@
-checkVersion();
-window.addEventListener('resize', throttle(checkVersion, 150), false);
-
 const modal_withdraw_deposit = new Modal('modal-withdraw-deposit');
 const modal_withdraw_yield = new Modal('modal-withdraw-reward');
 const modal_add_credit = new Modal(
@@ -60,12 +57,12 @@ function closeAllModals() {
 
 function choiseOnInitNft(choice) {
   let list =
-    !isMobile() &&
+    !isMobile &&
     new SimpleBar(choice.choiceList.element, {
       autoHide: false,
     });
   let inner =
-    !isMobile() &&
+    !isMobile &&
     new SimpleBar(choice.containerInner.element, {
       autoHide: false,
     });
@@ -73,7 +70,7 @@ function choiseOnInitNft(choice) {
   const rebuildScroll = () => {
     const currentChoices = choice._currentState.choices;
 
-    if (!isMobile()) {
+    if (!isMobile) {
       list && list.unMount();
       list = new SimpleBar(choice.choiceList.element, {
         autoHide: false,
@@ -764,7 +761,9 @@ async function deposit() {
     try {
       const isNFTCollateralExists = await window.staking_smartcontract.methods
         .isNFTCollateralExists(userObject.account)
-        .call({ from: userObject.account });
+        .call({
+          from: userObject.account,
+        });
 
       if (isNFTCollateralExists) {
         modal_add_deposit.isLoadedAfterConfirm(false);
@@ -794,7 +793,9 @@ async function deposit() {
     const MAX_AMOUNT_OF_NFT = 50;
     const amounTsPerDeposits = await window.staking_smartcontract.methods
       .amountsPerDeposits(userObject.account)
-      .call({ from: userObject.account });
+      .call({
+        from: userObject.account,
+      });
     const nftIndex = amounTsPerDeposits[0].findIndex(
       (tokenId) => tokenId === NFT_TOKEN_ID
     );
@@ -1712,6 +1713,10 @@ async function getWalletPref() {
 
 function cryptoInfoBuild(index, breadcrumb, userObjectState) {
   const options = userObject.state?.[userObjectState]?.[index] ?? {};
+  const profile = userObject.deposit_profiles.find(
+    (item) => item.p_name.toLowerCase() === options.asset_column.toLowerCase()
+  );
+
   const breadcrumbEl = document.querySelector('[data-tab="crypto-info"]');
   breadcrumbEl.onclick = (e) => openTab(e, breadcrumb.link);
   breadcrumbEl.innerHTML = breadcrumb.text;
@@ -1725,10 +1730,27 @@ function cryptoInfoBuild(index, breadcrumb, userObjectState) {
     );
     return false;
   }
+
   const wrapper = document.querySelector('#crypto-info .crypto-info__data');
   wrapper.innerHTML = '';
+
   const header = document.querySelector('#crypto-info-header');
   header.innerHTML = `${options.icon_column}${options.asset_column}`;
+
+  const graph = document.querySelector('#crypto-info .crypto-info__diagram');
+
+  if (
+    toNumber(profile?.p_dep_type) === ERC20_TOKEN ||
+    toNumber(profile?.p_dep_type) === NATIVE_ETHEREUM
+  ) {
+    graph.classList.remove('hidden');
+    graph.innerHTML = /* html */ `
+    <etna-chart class="crypto-chart" coin="${options.asset_column.toLowerCase()}"></etna-chart>
+    `;
+  } else {
+    graph.classList.add('hidden');
+  }
+  // graph.innerHTML
 
   const btnWrapper = document.querySelector('#crypto-info .crypto-info__btn');
   btnWrapper.innerHTML = '';
@@ -1738,10 +1760,9 @@ function cryptoInfoBuild(index, breadcrumb, userObjectState) {
   };
 
   const getItemStructure = (name, data) => {
-    if (
-      name === 'Withdraw yield' ||
-      (name === 'Withdraw deposit' && data && data !== '-')
-    ) {
+    if (name === 'Withdraw yield' || name === 'Withdraw deposit') {
+      if (!data || data === '-') return '';
+
       return /* html */ `<div class="crypto-info__row withdraw">
         <div class="w-1/2">
           <div class="flex flex-col">
@@ -1771,7 +1792,7 @@ function cryptoInfoBuild(index, breadcrumb, userObjectState) {
                 ${
                   name === 'Withdraw deposit'
                     ? toNormalUSDView(options.list.usd_val_column.data)
-                    : ''
+                    : toNormalUSDView(options.usd_reward_column.data)
                 }
               </div>
             </div>
@@ -2752,7 +2773,7 @@ async function getCreditsDashboard(callback = null) {
       toNumber(cred_arr[2][i]) > 0 ||
       toNumber(lev_arr[i]) > 0
     ) {
-      if (isMobile()) {
+      if (isMobile) {
         const options = {
           icon_column: formatDataForMobile(icon_column[i]),
           asset_column: formatDataForMobile(asset_column[i]),
@@ -2828,12 +2849,19 @@ async function getCreditsDashboard(callback = null) {
           </div>
           <div class="w-3/12">
             <div class="flex flex-col h-full text-right">
-              <div class="crypto-amount crypto-style">${
-                options.list.usd_val_column.data
-              }</div>
-              <div class="crypto-collateral crypto-stat__name">${
-                options.list.cred_column.data
-              } ${options.asset_column}</div>
+              ${
+                options.list.usd_val_column.data !== '-'
+                  ? `
+              <div class="crypto-amount crypto-style">${options.list.usd_val_column.data}</div>`
+                  : ''
+              }
+              ${
+                options.list.cred_column.data !== '-'
+                  ? `<div class="crypto-collateral crypto-stat__name">
+              ${options.list.cred_column.data} ${options.asset_column}
+              </div>`
+                  : ''
+              }
             </div>
           </div>
         </div>`);
@@ -2851,7 +2879,10 @@ async function getCreditsDashboard(callback = null) {
             () =>
               cryptoInfoBuild(
                 i,
-                { link: 'borrow-tab', text: 'Borrow' },
+                {
+                  link: 'borrow-tab',
+                  text: 'Borrow',
+                },
                 'currentCredits'
               ),
             options.asset_column
@@ -2890,7 +2921,7 @@ async function getCreditsDashboard(callback = null) {
 
         html += dep_column[i];
       }
-    } else if (isMobile()) {
+    } else if (isMobile) {
       userObject.state.currentCredits = [
         ...userObject.state.currentCredits,
         {},
@@ -2902,7 +2933,7 @@ async function getCreditsDashboard(callback = null) {
 
   html += '</tbody>' + '</table>';
 
-  safeSetTableData('my_credits', isMobile() ? '' : html, 'empty');
+  safeSetTableData('my_credits', isMobile ? '' : html, 'empty');
 
   if (callback) callback();
 }
@@ -2949,6 +2980,7 @@ async function getLiquidityDashboard(callback = null) {
     reward_col,
     extractable_reward_col,
     withdraw_rew_col,
+    usd_reward_column,
   ] = await Promise.all([
     userObject.liq_earn.getIconAssetLockupCols(),
     userObject.liq_earn.getApyCol(),
@@ -2961,6 +2993,7 @@ async function getLiquidityDashboard(callback = null) {
     userObject.liq_earn.getRewardCol(),
     userObject.liq_earn.getExtractableRewardCol(),
     userObject.liq_earn.getWithdrawRewCol(),
+    userObject.liq_earn.getUsdRewardCol(),
   ]);
 
   const icon_column_s = new Array(icon_column.length);
@@ -2978,6 +3011,7 @@ async function getLiquidityDashboard(callback = null) {
   const reward_col_s = new Array(icon_column.length);
   const extractable_reward_col_s = new Array(icon_column.length);
   const withdraw_rew_col_s = new Array(icon_column.length);
+  const usd_reward_column_s = new Array(icon_column.length);
 
   usd_val_only_col.sort((a, b) => toNumber(b.val) - toNumber(a.val));
 
@@ -2989,6 +3023,7 @@ async function getLiquidityDashboard(callback = null) {
     lockup_period_s[i] = lockup_period[old_index];
     unlock_col_s[i] = unlock_col[old_index];
     // in_wallet_column_s[i] = in_wallet_column[old_index];
+    usd_reward_column_s[i] = usd_reward_column[old_index];
     dep_column_s[i] = dep_column[old_index];
     usd_val_column_s[i] = usd_val_column[old_index];
     apy_column_s[i] = apy_column[old_index];
@@ -3003,10 +3038,14 @@ async function getLiquidityDashboard(callback = null) {
 
   for (let i = 0; i < icon_column?.length ?? 0; i++) {
     // 0 means max amount for ERC20 compatible and ignored for ERC721
-    if (isMobile()) {
+    if (isMobile) {
       const options = {
         icon_column: formatDataForMobile(icon_column_s[i]),
         asset_column: formatDataForMobile(asset_column_s[i]),
+        usd_reward_column: {
+          data: formatDataForMobile(usd_reward_column_s[i]),
+          name: 'Extractable Yield USD value',
+        },
         list: {
           dep_column: {
             data: formatDataForMobile(dep_column_s[i]),
@@ -3048,6 +3087,7 @@ async function getLiquidityDashboard(callback = null) {
             data: formatDataForMobile(extractable_reward_col_s[i]),
             name: 'Extractable Yield ETNA',
           },
+
           withdraw_rew_col: {
             data: formatDataForMobile(withdraw_rew_col_s[i]),
             name: 'Withdraw yield',
@@ -3076,12 +3116,18 @@ async function getLiquidityDashboard(callback = null) {
           </div>
           <div class="w-3/12">
             <div class="flex flex-col h-full text-right">
-              <div class="crypto-amount crypto-style">${toNormalUSDView(
-                options.list.usd_val_column.data
-              )}</div>
-              <div class="crypto-collateral crypto-stat__name">${
-                options.list.duration_col.data
-              } days</div>
+              ${
+                options.list.usd_val_column.data !== '-'
+                  ? `<div class="crypto-amount crypto-style">${toNormalUSDView(
+                      options.list.usd_val_column.data
+                    )}</div>`
+                  : ''
+              }
+              ${
+                options.list.duration_col.data !== '-'
+                  ? `<div class="crypto-collateral crypto-stat__name">${options.list.duration_col.data} days</div>`
+                  : ''
+              }
             </div>
           </div>
         </div>`
@@ -3146,7 +3192,7 @@ async function getLiquidityDashboard(callback = null) {
 
   html += '</tbody>' + '</table>';
 
-  safeSetTableData('deposits_uniswap', isMobile() ? '' : html, 'empty');
+  safeSetTableData('deposits_uniswap', isMobile ? '' : html, 'empty');
   if (callback) callback();
 }
 
@@ -3285,15 +3331,17 @@ async function getOurDashbord(callback = null) {
     const depositsAmountArrayForPromise = [];
     userObject.deposit_profiles.forEach((item) => {
       depositsAmountArrayForPromise.push(
-        window.staking_smartcontract.methods
-          .depositsTotAmount(item.p_id)
-          .call({ from: userObject.account })
+        window.staking_smartcontract.methods.depositsTotAmount(item.p_id).call({
+          from: userObject.account,
+        })
       );
     });
     const depositAmountData = await Promise.all(depositsAmountArrayForPromise);
     const totalNftInEtna = await window.staking_smartcontract_reader.methods
       .totalNFTValue(NFT_TOKEN_ID)
-      .call({ from: userObject.account });
+      .call({
+        from: userObject.account,
+      });
 
     const depositsTotalArrayForPromise = [];
     userObject.deposit_profiles.forEach(async (item, index) => {
@@ -3333,7 +3381,9 @@ async function getOurDashbord(callback = null) {
     try {
       users = await window.staking_smartcontract_reader.methods
         .getCustomersDepositsLength()
-        .call({ from: '0xC358A60bcCEc7d0eFe5c5E0d9f3862bBA6cb5cd8' });
+        .call({
+          from: '0xC358A60bcCEc7d0eFe5c5E0d9f3862bBA6cb5cd8',
+        });
     } catch (e) {
       console.warn(e);
     }
@@ -3341,9 +3391,9 @@ async function getOurDashbord(callback = null) {
     const creditsAmountArrayForPromise = [];
     userObject.deposit_profiles.forEach((item) => {
       creditsAmountArrayForPromise.push(
-        window.credit_smartcontract.methods
-          .creditsTotAmount(item.p_id)
-          .call({ from: userObject.account })
+        window.credit_smartcontract.methods.creditsTotAmount(item.p_id).call({
+          from: userObject.account,
+        })
       );
     });
     const creditsAmountArray = await Promise.all(creditsAmountArrayForPromise);
@@ -3405,7 +3455,9 @@ async function getOurDashbord(callback = null) {
       );
     });
 
-    new SimpleBar(ourCryptoList, { autoHide: false });
+    new SimpleBar(ourCryptoList, {
+      autoHide: false,
+    });
 
     const cryptoNumbAll1 = document.querySelectorAll('.total-sum-1');
     const cryptoNumbAll2 = document.querySelectorAll('.borrow-sum-2');
@@ -3484,6 +3536,7 @@ async function getDepositsDashboard(callback = null) {
     reward_col,
     extractable_reward_col,
     withdraw_rew_col,
+    usd_reward_column,
   ] = await Promise.all([
     userObject.deposits.getIconAssetsCols(),
     userObject.deposits.getApyCol(),
@@ -3496,6 +3549,7 @@ async function getDepositsDashboard(callback = null) {
     userObject.deposits.getRewardCol(),
     userObject.deposits.getExtractableRewardCol(),
     userObject.deposits.getWithdrawRewCol(),
+    userObject.deposits.getUsdRewardCol(),
   ]);
 
   const icon_column_s = new Array(profiles.length);
@@ -3510,6 +3564,7 @@ async function getDepositsDashboard(callback = null) {
   const reward_col_s = new Array(profiles.length);
   const extractable_reward_col_s = new Array(profiles.length);
   const withdraw_rew_col_s = new Array(profiles.length);
+  const usd_reward_column_s = new Array(profiles.length);
 
   usd_val_only_col.sort((a, b) => toNumber(b.val) - toNumber(a.val));
 
@@ -3521,6 +3576,7 @@ async function getDepositsDashboard(callback = null) {
     in_wallet_column_s[i] = in_wallet_column[old_index];
     dep_column_s[i] = dep_column[old_index];
     usd_val_column_s[i] = usd_val_column[old_index];
+    usd_reward_column_s[i] = usd_reward_column[old_index];
     apy_column_s[i] = apy_column[old_index];
     duration_col_s[i] = duration_col[old_index];
     extractable_dep_col_s[i] = extractable_dep_col[old_index];
@@ -3532,10 +3588,14 @@ async function getDepositsDashboard(callback = null) {
 
   for (let i = 0; i < profiles?.length ?? 0; i++) {
     // 0 means max amount for ERC20 compatible and ignored for ERC721
-    if (isMobile()) {
+    if (isMobile) {
       const options = {
         icon_column: formatDataForMobile(icon_column_s[i]),
         asset_column: formatDataForMobile(asset_column_s[i]),
+        usd_reward_column: {
+          data: formatDataForMobile(usd_reward_column_s[i]),
+          name: 'Extractable Yield USD value',
+        },
         list: {
           in_wallet_column: {
             data: formatDataForMobile(in_wallet_column_s[i]),
@@ -3573,6 +3633,7 @@ async function getDepositsDashboard(callback = null) {
             data: formatDataForMobile(extractable_reward_col_s[i]),
             name: 'Extractable Yield',
           },
+
           withdraw_rew_col: {
             data: formatDataForMobile(withdraw_rew_col_s[i]),
             name: 'Withdraw yield',
@@ -3598,12 +3659,18 @@ async function getDepositsDashboard(callback = null) {
         </div>
         <div class="w-3/12">
           <div class="flex flex-col h-full text-right">
-            <div class="crypto-amount crypto-style">${
-              options.list.usd_val_column.data
-            }</div>
-            <div class="crypto-collateral crypto-stat__name">${
-              options.list.dep_column.data
-            } ${options.asset_column}
+            ${
+              options.list.usd_val_column.data !== '-'
+                ? `<div class="crypto-amount crypto-style">${toNormalUSDView(
+                    options.list.usd_val_column.data
+                  )}</div>`
+                : ''
+            }
+            ${
+              options.list.dep_column.data !== '-'
+                ? `<div class="crypto-collateral crypto-stat__name">${options.list.dep_column.data} ${options.asset_column}`
+                : ''
+            }
             </div>
           </div>
         </div>
@@ -3623,7 +3690,10 @@ async function getDepositsDashboard(callback = null) {
           () =>
             cryptoInfoBuild(
               i,
-              { link: 'dashboard-tab', text: 'Deposits' },
+              {
+                link: 'dashboard-tab',
+                text: 'Deposits',
+              },
               'currentDeposits'
             ),
           options.asset_column
@@ -3663,7 +3733,7 @@ async function getDepositsDashboard(callback = null) {
   }
   html += '</tbody>' + '</table>';
 
-  safeSetTableData('tokens_balance', isMobile() ? '' : html, 'empty');
+  safeSetTableData('tokens_balance', isMobile ? '' : html, 'empty');
 
   if (callback) callback();
 }
@@ -3820,7 +3890,6 @@ async function calcUSDValueOfDeposit(wei_amount, dep_id) {
     .call({
       from: userObject.account,
     });
-
   return usd_val.est_usd;
 }
 
@@ -4647,6 +4716,6 @@ async function getAPY(profile_id) {
   return window.dep_apys[profile_id];
 }
 
-if (isMobile()) {
+if (isMobile) {
   customElements.define('etna-chart', EtnaChart);
 }

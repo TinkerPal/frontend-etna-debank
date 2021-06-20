@@ -1,14 +1,9 @@
 class EtnaChart extends HTMLElement {
-  async connectedCallback() {
+  connectedCallback() {
     this.coin = this.getAttribute('coin');
-    this.coinData = await getCoinData(this.coin);
-    if (!this.coinData) return;
 
     this.renderHTML();
-    this.renderChart(
-      this.coinData.market_data.price_change_percentage_24h.toFixed(2),
-      this.coinData.market_data.sparkline_7d.price
-    );
+    this.renderChart();
   }
 
   renderHTML() {
@@ -17,7 +12,14 @@ class EtnaChart extends HTMLElement {
     `;
   }
 
-  renderChart(percentage, lines) {
+  async renderChart() {
+    this.coinData = await getCoinData(this.coin);
+    if (!this.coinData) return;
+
+    const percentage =
+      this.coinData.market_data.price_change_percentage_24h.toFixed(2);
+    const lines = this.coinData.market_data.sparkline_7d.price;
+
     const data = {
       labels: lines,
       datasets: [
@@ -61,7 +63,7 @@ class EtnaChart extends HTMLElement {
       },
     };
 
-    const cryptoStatInDeposit = this.closest('.stat-row').querySelector(
+    const cryptoStatInDeposit = this.closest('.stat-row')?.querySelector(
       '.crypto-stat__percent'
     );
 
@@ -75,7 +77,5 @@ class EtnaChart extends HTMLElement {
       this.querySelector(`[data-chart]`).getContext('2d'),
       config
     );
-
-    console.log(myChart);
   }
 }

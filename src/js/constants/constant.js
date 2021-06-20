@@ -144,10 +144,10 @@ const INIT_PRICE_DATE = Date.parse('2021-01-01');
 const FORECAST_TOKENS_PER_DAY = 5;
 const PRICE_CHANGE = 1.0015;
 
-const ERC20_TOKEN = 1;
-const ERC721_TOKEN = 2;
-const UNISWAP_PAIR = 3;
-const NATIVE_ETHEREUM = 4;
+const ERC20_TOKEN = 1; // normal token
+const ERC721_TOKEN = 2; // NFT
+const UNISWAP_PAIR = 3; // Liquidity pair tokens
+const NATIVE_ETHEREUM = 4; // bnb
 const BAD_TOKEN = 99;
 
 const BAD_DEPOSIT_PROFILE_ID = 9999999;

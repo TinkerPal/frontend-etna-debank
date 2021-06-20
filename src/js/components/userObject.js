@@ -330,7 +330,7 @@ const userObject = {
               toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id) &&
               toNumber(am_arr[2][i]) > 0
             ) {
-              if (isMobile()) {
+              if (isMobile) {
                 txt = `<td class="table-cell">
                   <div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))" class="link-arrow">
                     <img src="./images/link-arrow.svg" alt="#">
@@ -416,6 +416,46 @@ const userObject = {
       return this.extractable_reward_col;
     },
 
+    usd_reward_column: [],
+    getUsdRewardCol_last_call: 0,
+    async getUsdRewardCol(flag = false) {
+      const current_timestamp = Date.now();
+      if (
+        current_timestamp > this.getUsdRewardCol_last_call + CACHE_TIME ||
+        flag
+      ) {
+        this.getUsdRewardCol_last_call = current_timestamp;
+
+        this.usd_reward_column.length = 0;
+
+        const profiles = userObject.deposit_profiles;
+        const { rew_arr } = this;
+
+        for (let j = 0; j < profiles?.length ?? 0; j++) {
+          let txt = '';
+          for (let i = 0; i < rew_arr[0]?.length ?? 0; i++) {
+            if (toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id)) {
+              const usdReward = await getPriceOfTokens(
+                rew_arr[2][i],
+                profiles[j].p_id === NFT_TOKEN_ID
+                  ? LEVERAGE_TOKEN
+                  : profiles[j].p_name,
+                profiles[j].p_dep_type,
+                true
+              );
+
+              txt = `<td class="table-cell">${usdReward}</td>`;
+
+              break;
+            }
+          }
+          if (!txt) txt = '<td class="table-cell">-</td>';
+          this.usd_reward_column.push(txt);
+        }
+      }
+      return this.usd_reward_column;
+    },
+
     withdraw_rew_col: [],
     getWithdrawRewCol_last_call: 0,
     async getWithdrawRewCol(flag = false) {
@@ -437,7 +477,7 @@ const userObject = {
               toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id) &&
               toNumber(rew_arr[2][i]) > 0
             ) {
-              if (isMobile()) {
+              if (isMobile) {
                 txt = `<td class="table-cell">
                   <div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))" class="link-arrow">
                     <img src="./images/link-arrow.svg" alt="#">
@@ -937,7 +977,7 @@ const userObject = {
           let txt = '';
 
           if (toNumber(lev_arr[i]) > 0) {
-            if (isMobile()) {
+            if (isMobile) {
               txt = `<td class="table-cell w-12">${createTableBtnWithIcon(
                 'discount',
                 'Unfreeze',
@@ -1011,7 +1051,7 @@ const userObject = {
           if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0) {
             if (toNumber(cred_arr[1][i]) > 0) {
               // credit or fee unpaid
-              if (isMobile()) {
+              if (isMobile) {
                 txt = `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon(
                   'money',
                   'Repay borrow',
@@ -1024,7 +1064,7 @@ const userObject = {
                   `return_credit(${i.toString()})`
                 )}</td>`;
               }
-            } else if (isMobile()) {
+            } else if (isMobile) {
               txt = `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon(
                 'money',
                 'Repay fee',
@@ -1213,6 +1253,42 @@ const userObject = {
       return [this.usd_val_column, this.usd_val_only_col];
     },
 
+    usd_reward_column: [],
+    getUsdRewardCol_last_call: 0,
+    async getUsdRewardCol(flag = false) {
+      const current_timestamp = Date.now();
+      if (
+        current_timestamp > this.getUsdRewardCol_last_call + CACHE_TIME ||
+        flag
+      ) {
+        this.getUsdRewardCol_last_call = current_timestamp;
+
+        this.usd_reward_column.length = 0;
+
+        const { am_arr } = userObject.deposits;
+        const { rew_arr } = userObject.deposits;
+
+        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
+          if (toNumber(am_arr[1][i]) === 0 && toNumber(rew_arr[1][i]) === 0)
+            continue;
+          if (
+            toNumber(await unswDepTypeByProfileId(am_arr[0][i])) ===
+            UNISWAP_PAIR
+          ) {
+            let txt = '';
+            if (toNumber(am_arr[1][i]) > 0) {
+              const am = await calcUSDValueOfDeposit(rew_arr[2][i], i);
+              txt = `<td class="table-cell">${am}</td>`;
+            } else {
+              txt = '<td class="table-cell">-</td>';
+            }
+            this.usd_reward_column.push(txt);
+          }
+        }
+      }
+      return this.usd_reward_column;
+    },
+
     duration_col: [],
     unlock_col: [],
     getDurationUnlockCol_last_call: 0,
@@ -1342,7 +1418,7 @@ const userObject = {
             let txt = '';
 
             if (toNumber(am_arr[2][i]) > 0) {
-              if (isMobile()) {
+              if (isMobile) {
                 txt = `<td class="table-cell">
                     <div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))" class="link-arrow">
                       <img src="./images/link-arrow.svg" alt="#">
@@ -1525,7 +1601,7 @@ const userObject = {
             let txt = '';
 
             if (toNumber(rew_arr[2][i]) > 0) {
-              if (isMobile()) {
+              if (isMobile) {
                 txt = `<td class="table-cell">
                     <div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))" class="link-arrow">
                       <img src="./images/link-arrow.svg" alt="#">

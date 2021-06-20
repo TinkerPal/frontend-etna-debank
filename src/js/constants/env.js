@@ -71,6 +71,7 @@ const GLOBAL_VARIABLES = {
 
 const env = process.env.NODE_ENV;
 
+const isMobile = process.env.SITE_VERSION === 'mobile';
 const { WEB3_MODAL_NETWORK } = GLOBAL_VARIABLES[env];
 const { WALLETS_API_URL } = GLOBAL_VARIABLES[env];
 const { WALLET_OPTION_RPC } = GLOBAL_VARIABLES[env];

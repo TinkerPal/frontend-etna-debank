@@ -4,6 +4,7 @@
   "start:prod": "gulp prod",
   "build": "gulp build",
   "build:prod": "gulp build_prod",
+  "build:prod:mobile": "gulp build_prod_mobile",
   "prettierJS": "prettier --write ./src/**/*.js",
   "lintJS": "eslint --fix --quiet ./src/**/*.js",
   "prettierSCSS": "prettier --write ./src/**/*.scss",
@@ -56,6 +57,7 @@
   "stylelint-config-standard": "^22.0.0",
   "stylelint-scss": "^3.19.0",
   "tailwindcss": "^2.1.1",
+  "through2": "^4.0.2",
   "uglify": "^0.1.5"
  },
  "devDependencies": {

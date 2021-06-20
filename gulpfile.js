@@ -1,6 +1,7 @@
 // gulpfile.js
 const { watch, series, src, dest } = require('gulp');
 var browserSync = require('browser-sync').create();
+var through2 = require('through2');
 
 const postcss = require('gulp-postcss'),
   babel = require('gulp-babel'),
@@ -33,11 +34,24 @@ const js = [
   './src/js/custom.js',
 ];
 
-function jsTask(envs) {
+function createEmptyStream() {
+  var pass = through2.obj();
+  process.nextTick(pass.end.bind(pass));
+  return pass;
+}
+
+function jsTask(envs, buildType) {
   return (
     src(js)
       .pipe(plumber())
-      .pipe(env({ vars: { NODE_ENV: envs } }))
+      .pipe(
+        env({
+          vars: {
+            NODE_ENV: envs,
+            SITE_VERSION: buildType,
+          },
+        })
+      )
       // .pipe(sourcemaps.init())
       .pipe(
         babel({
@@ -55,16 +69,53 @@ function jsTask(envs) {
 }
 
 function htmlTask() {
-  return src(['./src/*.html'])
+  return src(['./src/*.html', '!./src/mobile.html'])
     .pipe(
       fileinclude({
         prefix: '@@',
         basepath: '@file',
       })
     )
-    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(
+      htmlmin({
+        collapseWhitespace: true,
+      })
+    )
     .pipe(gulp.dest('./public/'))
     .pipe(browserSync.stream());
+}
+
+function htmlMobile() {
+  return src(['./src/*.html', '!./src/index.html', '!./src/mobile.html'])
+    .pipe(
+      fileinclude({
+        prefix: '@@',
+        basepath: '@file',
+      })
+    )
+    .pipe(
+      htmlmin({
+        collapseWhitespace: true,
+      })
+    )
+    .pipe(gulp.dest('./public/'));
+}
+
+function renameMobileHtml() {
+  return src('./src/mobile.html')
+    .pipe(
+      fileinclude({
+        prefix: '@@',
+        basepath: '@file',
+      })
+    )
+    .pipe(concat('index.html'))
+    .pipe(
+      htmlmin({
+        collapseWhitespace: true,
+      })
+    )
+    .pipe(gulp.dest('./public/'));
 }
 
 // Task for compiling our CSS files using PostCSS
@@ -172,27 +223,36 @@ function browsersyncReload(cb) {
 // Чистим директорию назначения и делаем ребилд, чтобы удаленные из проекта файлы не остались
 function cleanOldCss() {
   return gulp
-    .src(['./public/css'], { read: false, allowEmpty: true })
+    .src(['./public/css'], {
+      read: false,
+      allowEmpty: true,
+    })
     .pipe(clean());
 }
 
 function cleanOldJs() {
   return gulp
-    .src(['./public/js'], { read: false, allowEmpty: true })
+    .src(['./public/js'], {
+      read: false,
+      allowEmpty: true,
+    })
     .pipe(clean());
 }
 
 // Watch Files & Reload browser after tasks
-function watchTask(envs) {
+function watchTask(envs, buildType = 'desktop') {
   watch(
     './src/**/*.html',
     series(
-      htmlTask,
+      buildType === 'desktop' ? htmlTask : htmlMobile,
+      buildType === 'mobile' ? renameMobileHtml : createEmptyStream,
       cleanOldCss,
       cssTask,
       cssTaskMobile,
-      htmlTask,
-      htmlTask,
+      buildType === 'desktop' ? htmlTask : htmlMobile,
+      buildType === 'mobile' ? renameMobileHtml : createEmptyStream,
+      buildType === 'desktop' ? htmlTask : htmlMobile,
+      buildType === 'mobile' ? renameMobileHtml : createEmptyStream,
       cssLibsTask,
       browsersyncReload
     )
@@ -200,12 +260,15 @@ function watchTask(envs) {
   watch(
     ['./src/css/**/*'],
     series(
-      htmlTask,
+      buildType === 'desktop' ? htmlTask : htmlMobile,
+      buildType === 'mobile' ? renameMobileHtml : createEmptyStream,
       cleanOldCss,
       cssTask,
       cssTaskMobile,
-      htmlTask,
-      htmlTask,
+      buildType === 'desktop' ? htmlTask : htmlMobile,
+      buildType === 'mobile' ? renameMobileHtml : createEmptyStream,
+      buildType === 'desktop' ? htmlTask : htmlMobile,
+      buildType === 'mobile' ? renameMobileHtml : createEmptyStream,
       cssLibsTask,
       browsersyncReload
     )
@@ -214,9 +277,11 @@ function watchTask(envs) {
     ['./src/js/**/*.js'],
     series(
       cleanOldJs,
-      () => jsTask(envs),
-      htmlTask,
-      htmlTask,
+      () => jsTask(envs, buildType),
+      buildType === 'desktop' ? htmlTask : htmlMobile,
+      buildType === 'mobile' ? renameMobileHtml : createEmptyStream,
+      buildType === 'desktop' ? htmlTask : htmlMobile,
+      buildType === 'mobile' ? renameMobileHtml : createEmptyStream,
       browsersyncReload
     )
   );
@@ -224,28 +289,32 @@ function watchTask(envs) {
   watch(
     ['tailwind.config.js'],
     series(
-      htmlTask,
+      buildType === 'desktop' ? htmlTask : htmlMobile,
+      buildType === 'mobile' ? renameMobileHtml : createEmptyStream,
       cleanOldCss,
       cssTask,
       cssTaskMobile,
-      htmlTask,
+      buildType === 'desktop' ? htmlTask : htmlMobile,
+      buildType === 'mobile' ? renameMobileHtml : createEmptyStream,
       browsersyncReload
     )
   );
   watch(['./static/**/*'], series(copyStatic, browsersyncReload));
 }
 
-function build(envs) {
+function build(envs, buildType = 'desktop') {
   return series(
     cleanOldCss,
     cleanOldJs,
     cssTask,
     cssTaskMobile,
-    () => jsTask(envs),
-    htmlTask,
+    () => jsTask(envs, buildType),
+    buildType === 'desktop' ? htmlTask : htmlMobile,
+    buildType === 'mobile' ? renameMobileHtml : createEmptyStream,
     cssTask,
     cssTaskMobile,
-    htmlTask,
+    buildType === 'desktop' ? htmlTask : htmlMobile,
+    buildType === 'mobile' ? renameMobileHtml : createEmptyStream,
     imageminTask,
     cssLibsTask,
     fontsTask,
@@ -262,6 +331,19 @@ exports.prod = series(build('production'), browsersyncServe, () =>
   watchTask('production')
 );
 
+exports.mobile = series(build('development', 'mobile'), browsersyncServe, () =>
+  watchTask('development', 'mobile')
+);
+
+exports.mobile_prod = series(
+  build('production', 'mobile'),
+  browsersyncServe,
+  () => watchTask('production', 'mobile')
+);
+
 exports.build = series(build('development'));
 
 exports.build_prod = series(build('production'));
+
+exports.build_mobile = series(build('development', 'mobile'));
+exports.build_prod_mobile = series(build('production', 'mobile'));
