@@ -1711,9 +1711,13 @@
 
 							<div class="row" style="height: 100%; margin-top: 2vh; border-top:  solid; border-color: black"></div>
 							<div class="row" style="height: 100%; margin-top: 2vh;">
+								<label for="liq_diff_perc" class="col-2 col-form-label">diff. %%:</label> 
+								<div class="col-2">
+										<input type="number" id="liq_diff_perc" class="form-control"  name="liq_diff_perc" value="20"> 
+								</div>
 								<div class="col-2">
 									<div style="float: right;">
-								  		<button  class="btn btn-primary" onclick="getAnalysisTable()">Analyze liquidity</button>
+								  		<button  class="btn btn-primary" onclick="getAnalysisTable(document.getElementById('liq_diff_perc').value)">Analyze liquidity</button>
 								  	</div>
 								</div>
 								<!--<div class="col-2">
@@ -4453,10 +4457,12 @@ function copyToClipboardInput(elem = null){
 }
 
 
-async function getAnalysisTable(){
+async function getAnalysisTable(d_perc){
 		
+		let diff_perc = parseInt(d_perc);
 
-	
+		console.log('diff_perc=',diff_perc);
+		
 			
 		
 		depositContractInstance = window.staking_smartcontract_reader;
@@ -4510,7 +4516,7 @@ async function getAnalysisTable(){
 	        for (let j=0; j < parseInt(cust[1]); j++){
 	        	let res;
 	        	 try {
-	             	res = await analyzeLiquidationForCredit(i,j, cust[0]);
+	             	res = await analyzeLiquidationForCredit(i,j, cust[0], diff_perc);
 	             	active_credits += parseInt(res[3]);
 	             } catch(err) {
 
@@ -4531,7 +4537,7 @@ async function getAnalysisTable(){
 			let txt ='';
 			if (bad__credits_count == 0){
 				if (active_credits > 0){
-					txt = 'Yes: <button  onclick="analyze_customer('+i.toString()+')">Details</button>';
+					txt = 'Yes: <button  onclick="analyze_customer('+i.toString()+','+diff_perc.toString()+')">Details</button>';
 				} else {
 					txt = 'Yes';
 				}
@@ -4832,7 +4838,7 @@ async function adjustWithPairCoefficientGet( get_credit_profile_id,  collateral_
 }
 
 
-async function analyzeLiquidationForCredit(cust_id, cred_id, cust_wallet){
+async function analyzeLiquidationForCredit(cust_id, cred_id, cust_wallet, diff_perc=0){
 
 			let creditContractInstance = window.credit_smartcontract_reader;
 			let usageContract = window.usage_calc_smartcontract_reader;
@@ -4885,6 +4891,14 @@ async function analyzeLiquidationForCredit(cust_id, cred_id, cust_wallet){
 	        
 	        let comp_value = usd_v_cred.mul(new BN(liq_limit));
 	        comp_value = comp_value.div(new BN(apy_scale));
+	        //console.log('diff_perc=',diff_perc);
+	       
+	        let coeff = new BN((diff_perc+100).toString());
+
+	        console.log('coeff=', coeff.toString());
+
+	        usd_v_coll = usd_v_coll.mul(coeff);
+	        usd_v_coll = usd_v_coll.div(new BN("100"));
 	        
 	        if (usd_v_coll.lt(comp_value)){   
 	            need_to_liquidate = true;    
@@ -4913,7 +4927,9 @@ async function analyzeLiquidationForCredit(cust_id, cred_id, cust_wallet){
 }
 
 
-async function analyze_customer(cust_id){
+async function analyze_customer(cust_id, d_perc='0'){
+
+		let diff_perc = parseInt(d_perc);
 		
 		safeSetInnerHTMLById('cust_analysis_table', '');
 		depositContractInstance = window.staking_smartcontract_reader;
@@ -5036,7 +5052,7 @@ async function analyze_customer(cust_id){
 			
 			if (credit.collateral_profile_id != "7"){
 				//console.log('anal params=',cust_id, i, cust[0]);
-				analyze_res = await analyzeLiquidationForCredit(cust_id, i, cust[0]);
+				analyze_res = await analyzeLiquidationForCredit(cust_id, i, cust[0], diff_perc);
 				bad_credit = analyze_res[0];
 				//console.log(analyze_res);
 			} else {
