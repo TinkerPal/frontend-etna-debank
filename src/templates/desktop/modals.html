@@ -12,14 +12,14 @@
     <div class="top-divider">
       <div class="flex flex-col mb-4">
         <div class="name-field">Select asset</div>
-        <div class="flex border-medium-grey border rounded-lg w-full">
+        <div class="divider-border">
           <div class="w-7/12 without-link">
             <select id="liqpairs-dropdown" name="liqpairs-dropdown">
             </select>
           </div>
           <div class="w-5/12">
             <div class="field-info" data-id="infoPopup"><span class="field-info__container"><span class="inline-flex">In
-                  wallet: <span class="in-wallet items-center ml-1" id="liq_pair_in_wallet"></span></span></span></div>
+                  wallet: <span class="in-wallet" id="liq_pair_in_wallet"></span></span></span></div>
           </div>
         </div>
       </div>
@@ -29,14 +29,14 @@
       </div>
       <div class="flex flex-col mb-11">
         <div class="name-field ">Period and Annual rate</div>
-        <div class="flex border-medium-grey border rounded-lg w-full">
+        <div class="divider-border">
           <div class="w-7/12 without-link">
             <select id="liqterms-dropdown" name="liqterms-dropdown">
             </select>
           </div>
           <div class="w-5/12">
             <div class="field-info justify-center percent-data">
-              <span class="field-info__container"><span class="inline-flex"><span class="in-wallet items-center ml-1"
+              <span class="field-info__container"><span class="inline-flex"><span class="in-wallet"
                     id="liq_pair_apy"></span></span></span>
             </div>
           </div>
@@ -66,7 +66,7 @@
     <div class="top-divider">
       <div class="flex flex-col mb-4">
         <div class="name-field">Leverage %</div>
-        <div class="flex border-medium-grey border rounded-lg w-full without-link cursor-pointer">
+        <div class="divider-border without-link cursor-pointer">
           <select id="select-leverage" name="select-leverage" class="color-select">
             <option value="25" selected>25%</option>
             <option value="50">50%</option>
@@ -141,7 +141,7 @@
     <div class="top-divider">
       <div class="flex flex-col mb-4">
         <div class="name-field">Select Collateral</div>
-        <div class="flex border-medium-grey border rounded-lg w-full without-link cursor-pointer">
+        <div class="divider-border without-link cursor-pointer">
           <select id="credprofiles-dropdown" name="credprofiles-dropdown">
 
           </select>
@@ -181,22 +181,21 @@
       </div>
       <div class="flex flex-col mb-4">
         <div class="name-field">Get credit in:</div>
-        <div class="flex border-medium-grey border rounded-lg w-full">
-          <div class="w-8/12 without-link">
+        <div class="divider-border">
+          <div class="w-8/12">
             <select id="getcredit-dropdown" name="getcredit-dropdown">
               <option value="" disabled selected>Select asset</option>
             </select>
           </div>
           <div class="w-4/12">
-            <div class="field-info" data-id="infoPopup"><span class="in-wallet flex items-center ml-1"
+            <div class="field-info" data-id="infoPopup"><span class="in-wallet flex"
                 id="tokens_amount_getcredit">-</span></div>
           </div>
         </div>
       </div>
-      <div class="specify w-full flex items-center justify-center mb-4">
+      <div class="specify">
         <div class="line h-px w-full bg-medium-grey"></div>
-        <div
-          class="flex whitespace-nowrap items-center w-fit-content justify-center py-1 px-2 text-xs text-center text-gray-500 border border-medium-grey rounded-2xl">
+        <div class="specify-wrap">
           Specify credit type</div>
         <div class="line h-px w-full bg-medium-grey"></div>
       </div>

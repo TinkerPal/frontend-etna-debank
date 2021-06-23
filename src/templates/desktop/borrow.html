@@ -1,17 +1,17 @@
-<div class="main mx-6 mt-11 text-white">
+<div class="main">
   <div class="wrapper">
     <div class="flex items-center">
       <div class="w-6 h-6 mr-4">
         <img src="../images/borrow.svg" class="w-full h-full" alt="#">
       </div>
-      <div class="text-3xl leading-9 font-bold mr-4">Borrow</div>
+      <div class="main-title">Borrow</div>
     </div>
     <div class="btn ml-auto" onclick="modal_add_credit.show()">
       Open New Credit
     </div>
   </div>
   <div class="main-row">
-    <div class="text-lg leading-6 font-medium mr-auto">
+    <div class="main-row__title">
       My credits
     </div>
     <div class="address-info">
@@ -25,7 +25,7 @@
 
   <div class="w-full flex filled flex-col">
     <div class="overflow-x-auto">
-      <div class="align-middle inline-block min-w-full">
+      <div class="table-align">
         <div class="overflow-hidden">
 
           <div id="my_credits"></div>
@@ -36,15 +36,15 @@
   </div>
 </div>
 
-<div class="empty-borrow h-empty w-full items-center justify-center text-center">
+<div class="empty-borrow">
   <div class="flex flex-col">
     <div class="w-48 h-35 mb-8 mx-auto">
       <img src="../images/empty.svg" class="w-full h-full" alt="#">
     </div>
-    <div class="text-2xl leading-none font-medium text-ford-light mb-5">
+    <div class="empty-error__msg">
       You dont have any credits yet.
     </div>
-    <div class="max-w-sm text-lg text-faux mx-auto">
+    <div class="empty-access__text">
       When you open your first credit you will
       see all usefull data.
     </div>
