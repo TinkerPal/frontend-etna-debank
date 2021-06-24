@@ -1,8 +1,8 @@
 on:
   push:
-    branches: [ mobile ]
+    branches: [ main ]
   pull_request:
-    branches: [ mobile ]
+    branches: [ main ]
 
 # https://docs.github.com/en/actions/guides/building-and-testing-nodejs
 
