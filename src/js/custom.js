@@ -3331,114 +3331,39 @@ async function getCapDashbord(callback = null) {
 }
 
 async function getOurDashbord(callback = null) {
-  const ourCryptoList = document.querySelector('#our-crypto-list');
-  if (!ourCryptoList) return;
-  try {
-    const depositsAmountArrayForPromise = [];
-    userObject.deposit_profiles.forEach((item) => {
-      depositsAmountArrayForPromise.push(
-        window.staking_smartcontract.methods.depositsTotAmount(item.p_id).call({
-          from: userObject.account,
-        })
-      );
-    });
-    const depositAmountData = await Promise.all(depositsAmountArrayForPromise);
-    const totalNftInEtna = await window.staking_smartcontract_reader.methods
-      .totalNFTValue(NFT_TOKEN_ID)
-      .call({
-        from: userObject.account,
-      });
+  const data = await fetch('https://debank.etna.network/dashboard.json')
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new Error(response.status);
+      } else {
+        return response.json();
+      }
+    })
+    .catch((error) => {
+      // if api for get dashboard data failed, remove dashboard page and change current page to
+      document.getElementById('total-dashboard-tab-menu').remove();
 
-    const depositsTotalArrayForPromise = [];
-    userObject.deposit_profiles.forEach(async (item, index) => {
-      depositsTotalArrayForPromise.push(
-        getPriceOfTokens(
-          item.p_id === NFT_TOKEN_ID
-            ? totalNftInEtna
-            : depositAmountData[index],
-          item.p_id === NFT_TOKEN_ID ? LEVERAGE_TOKEN : item.p_name,
-          item.p_dep_type,
-          true
-        )
-      );
+      if (userObject.state.current_page_id === 'total-dashboard-tab') {
+        openTab(
+          {
+            srcElement: document.getElementById('dashboard-tab-menu'),
+          },
+          'dashboard-tab'
+        );
+      }
+
+      throw new Error(error);
     });
 
-    const depositsTotal = await Promise.all(depositsTotalArrayForPromise);
+  if (data.length === 0) {
+    return;
+  }
 
-    const tokensStatistic = depositAmountData
-      .map((amount, index) => ({
-        name: userObject.deposit_profiles[index].p_name,
-        total: depositsTotal[index],
-        amount:
-          userObject.deposit_profiles[index].p_id !== NFT_TOKEN_ID
-            ? toTokens(amount, 1)
-            : amount,
-      }))
-      .filter((item) => item.total > 0);
+  const listOurCryptoTemplate = (name, amount, total) => {
+    const assetName = /* html */ `<div class="w-3/12 row-name uppercase">${name}</div>`;
+    const assetTotal = `${numeral(total).format('($ 0.00 a)')}`;
 
-    const nft = tokensStatistic.find((item) => item.name === 'nft');
-
-    const totalAssets = tokensStatistic.reduce(
-      (prev, cur) => toNumber(prev) + toNumber(cur.total),
-      0
-    );
-
-    let users = 0;
-    try {
-      users = await window.staking_smartcontract_reader.methods
-        .getCustomersDepositsLength()
-        .call({
-          from: '0xC358A60bcCEc7d0eFe5c5E0d9f3862bBA6cb5cd8',
-        });
-    } catch (e) {
-      console.warn(e);
-    }
-
-    const creditsAmountArrayForPromise = [];
-    userObject.deposit_profiles.forEach((item) => {
-      creditsAmountArrayForPromise.push(
-        window.credit_smartcontract.methods.creditsTotAmount(item.p_id).call({
-          from: userObject.account,
-        })
-      );
-    });
-    const creditsAmountArray = await Promise.all(creditsAmountArrayForPromise);
-
-    const creditsTotalArrayForPromise = [];
-    userObject.deposit_profiles.forEach((item, index) => {
-      creditsTotalArrayForPromise.push(
-        getPriceOfTokens(
-          creditsAmountArray[index],
-          item.p_name,
-          item.p_dep_type,
-          true
-        )
-      );
-    });
-    const creditsTotalArray = await Promise.all(creditsTotalArrayForPromise);
-    const creditsTotal = creditsTotalArray.reduce(
-      (prev, cur) => toNumber(prev) + toNumber(cur),
-      0
-    );
-
-    const data = {
-      tokensStatistic,
-      totalUsers: toNumber(users),
-      totalCredits: creditsTotal,
-      totalAssetsValue: totalAssets + creditsTotal,
-      totalNft: nft.amount,
-      totalDeposits: totalAssets,
-    };
-
-    if (data.length === 0) {
-      return;
-    }
-
-    const listOurCryptoTemplate = (name, amount, total) => {
-      const assetName = /* html */ `<div class="w-3/12 row-name uppercase">${name}</div>`;
-      const assetTotal = `${numeral(total).format('($ 0.00 a)')}`;
-
-      return /* html */ `
+    return /* html */ `
         <div class="crypto-row">
           ${assetName}
           <div class="w-9/12 flex items-center justify-end h-5 w-auto">
@@ -3448,54 +3373,52 @@ async function getOurDashbord(callback = null) {
           </div>
         </div>
       `;
-    };
+  };
 
-    const ourCryptoList = document.querySelector('#our-crypto-list');
-    ourCryptoList.innerHTML = '';
+  const ourCryptoList = document.querySelector('#our-crypto-list');
+  ourCryptoList.innerHTML = '';
 
-    data.tokensStatistic.forEach((item) => {
-      ourCryptoList.innerHTML += listOurCryptoTemplate(
-        item.name,
-        item.amount,
-        item.total
-      );
-    });
+  data.tokensStatistic.forEach((item) => {
+    ourCryptoList.innerHTML += listOurCryptoTemplate(
+      item.name,
+      item.amount,
+      item.total
+    );
+  });
 
-    new SimpleBar(ourCryptoList, {
-      autoHide: false,
-    });
+  new SimpleBar(ourCryptoList, {
+    autoHide: false,
+  });
 
-    const cryptoNumbAll1 = document.querySelectorAll('.total-sum-1');
-    const cryptoNumbAll2 = document.querySelectorAll('.borrow-sum-2');
-    const cryptoNumbAll3 = document.querySelectorAll('.deposits-sum-3');
-    const cryptoNumb4 = document.querySelector('#credit-sum-4');
-    const cryptoNumbAll5 = document.querySelectorAll('.users-sum-5');
-    const comparedLastMonths = document.querySelectorAll('.last-month');
+  const cryptoNumbAll1 = document.querySelectorAll('.total-sum-1');
+  const cryptoNumbAll2 = document.querySelectorAll('.borrow-sum-2');
+  const cryptoNumbAll3 = document.querySelectorAll('.deposits-sum-3');
+  const cryptoNumb4 = document.querySelector('#credit-sum-4');
+  const cryptoNumbAll5 = document.querySelectorAll('.users-sum-5');
+  const comparedLastMonths = document.querySelectorAll('.last-month');
 
-    comparedLastMonths.forEach((elem) => {
-      elem.innerHTML = numeral(data.prevTotalAssetsValue).format('($0.00 a)');
-    });
+  comparedLastMonths.forEach((elem) => {
+    elem.innerHTML = numeral(data.prevTotalAssetsValue).format('($0.00 a)');
+  });
 
-    cryptoNumbAll1.forEach((each) => {
-      each.innerHTML = numeral(data.totalAssetsValue).format('($0.0000 a)');
-    });
+  cryptoNumbAll1.forEach((each) => {
+    each.innerHTML = numeral(data.totalAssetsValue).format('($0.0000 a)');
+  });
 
-    cryptoNumbAll2.forEach((item) => {
-      item.innerHTML = numeral(data.totalNft).format('(0 a)');
-    });
+  cryptoNumbAll2.forEach((item) => {
+    item.innerHTML = numeral(data.totalNft).format('(0 a)');
+  });
 
-    cryptoNumbAll3.forEach((elem) => {
-      elem.innerHTML = numeral(data.totalDeposits).format('($0.00 a)');
-    });
+  cryptoNumbAll3.forEach((elem) => {
+    elem.innerHTML = numeral(data.totalDeposits).format('($0.00 a)');
+  });
 
-    cryptoNumb4.innerHTML = numeral(data.totalCredits).format('($0.00 a)');
+  cryptoNumb4.innerHTML = numeral(data.totalCredits).format('($0.00 a)');
 
-    cryptoNumbAll5.forEach((el) => {
-      el.innerHTML = numeral(data.totalUsers).format('(0 a)');
-    });
-  } catch (e) {
-    console.warn(e);
-  }
+  cryptoNumbAll5.forEach((el) => {
+    el.innerHTML = numeral(data.totalUsers).format('(0 a)');
+  });
+
   if (callback) callback();
 }
 
