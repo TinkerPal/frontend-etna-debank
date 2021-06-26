@@ -69,9 +69,11 @@ const isEmptyTable = (idContainer) => {
   return document.querySelector(`#${idContainer} table tbody`).innerHTML === '';
 };
 
-function toggleElement(elementId) {
+function toggleElement(elementId, event) {
+  const target = event.target;
   const element = document.querySelector(`#${elementId}`);
   element.classList.toggle('show');
+  target.classList.toggle('show');
 }
 
 /**
