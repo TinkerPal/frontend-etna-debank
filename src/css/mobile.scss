@@ -534,6 +534,23 @@
   .attention-cell {
     @apply border border-yellow-400;
   }
+
+  #new-credit-tab {
+    .collumn-via-inputs {
+      @apply mt-auto overflow-auto;
+    }
+  }
+
+  .empty-metamask {
+    @apply top-0 left-0 h-full;
+  }
+}
+
+#new-credit-tab {
+  .collumn-via-inputs {
+    max-height: calc(100vh - 16rem);
+    min-height: auto;
+  }
 }
 
 .load-bar-cover {
@@ -566,12 +583,6 @@
   }
 }
 
-.empty-metamask {
-  top: 0px;
-  height: 100%;
-  left: 0px;
-}
-
 #add-liquidity-tab {
   .without-link {
     border-top-right-radius: 0px;
@@ -588,6 +599,7 @@
   #add-liquidity-tab .without-link {
     position: relative;
     border: 0px;
+
     .js-Dropdown {
       border-top-right-radius: 0px;
       border-bottom-right-radius: 0px;
@@ -1190,15 +1202,6 @@
     max-width: 96px;
     width: 100%;
     flex-wrap: wrap;
-  }
-}
-
-#new-credit-tab {
-  .collumn-via-inputs {
-    max-height: calc(100vh - 16rem);
-    margin-top: auto;
-    overflow: auto;
-    min-height: auto;
   }
 }
 
