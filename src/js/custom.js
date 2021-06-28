@@ -3331,6 +3331,9 @@ async function getCapDashbord(callback = null) {
 }
 
 async function getOurDashbord(callback = null) {
+  const ourCryptoList = document.querySelector('#our-crypto-list');
+  if (!ourCryptoList) return;
+
   const data = await fetch('/dashboard.json')
     .then((response) => {
       if (response.status !== 200) {
@@ -3375,7 +3378,6 @@ async function getOurDashbord(callback = null) {
       `;
   };
 
-  const ourCryptoList = document.querySelector('#our-crypto-list');
   ourCryptoList.innerHTML = '';
 
   data.tokensStatistic.forEach((item) => {
