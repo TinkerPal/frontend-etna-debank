@@ -3331,7 +3331,7 @@ async function getCapDashbord(callback = null) {
 }
 
 async function getOurDashbord(callback = null) {
-  const data = await fetch('https://debank.etna.network/dashboard.json')
+  const data = await fetch('/dashboard.json')
     .then((response) => {
       if (response.status !== 200) {
         throw new Error(response.status);
