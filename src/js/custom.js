@@ -346,6 +346,10 @@ window.addEventListener('DOMContentLoaded', async function () {
   // in any case;
   await initWeb3jsReader();
 
+  if (!web3jsReadersList) {
+    return errorEmptyMsg('Cannot access wallet. Reload your page, please.');
+  }
+
   await web3jsReadersList.init();
 
   await Promise.all([
@@ -444,9 +448,18 @@ async function getAccount() {
     );
 
     checkAdminButton();
+
+    if (!Web3) {
+      return errorEmptyMsg('Cannot access wallet. Reload your page, please.');
+    }
+
     window.web3js = await new Web3(window.ethereum);
     window.web3 = window.web3js;
     window.BN = web3js.utils.BN;
+
+    if (!window.BN || !window.web3) {
+      return errorEmptyMsg('Cannot access wallet. Reload your page, please.');
+    }
 
     await Promise.all([
       initStakingContract(),
@@ -484,9 +497,18 @@ async function getAccountWalletConnect() {
 
     // Load chain information over an HTTP API
     // const chainData = evmChains.getChain(chainId);
+
+    if (!Web3) {
+      return errorEmptyMsg('Cannot access wallet. Reload your page, please.');
+    }
+
     window.web3js = await new Web3(window.provider);
     window.web3 = window.web3js;
     window.BN = web3js.utils.BN;
+
+    if (!window.BN || !window.web3) {
+      return errorEmptyMsg('Cannot access wallet. Reload your page, please.');
+    }
 
     // Get list of accounts of the connected wallet
     window.accounts = await web3js.eth.getAccounts();
@@ -1396,6 +1418,10 @@ let web3jsReadersList = {
 
 async function initWeb3jsReader(callback = null) {
   if (!window.web3js_reader) {
+    if (!Web3) {
+      return errorEmptyMsg('Cannot access wallet. Reload your page, please.');
+    }
+
     window.web3js_reader = await new Web3(
       new Web3.providers.HttpProvider(infura_endpoint[window.chainId])
     );
@@ -1509,17 +1535,6 @@ async function updateData(action = null) {
     });
 
     getOurDashbord();
-
-    // if (
-    //   window.location.pathname === '/our-dashboard.html' ||
-    //   window.location.pathname === '/our-dashboard'
-    // ) {
-    //   getOurDashbord();
-    // } else {
-    //   getCapDashbord();
-    // }
-
-    // getFamersDashboard();
   } else if (action === 'make_deposit') {
     await getDepositsDashboard();
   } else if (action === 'withdraw_deposit') {
@@ -2167,6 +2182,8 @@ async function collateralDropdownBuild(clear = true) {
     true
   );
 
+  if (ddData.length === 0) return;
+
   if (clear) {
     setState({
       selected_credprofile: ddData[0].p_id,
@@ -2233,6 +2250,8 @@ async function initCollateralDropdown() {
 
       const { value } = e.target;
       const selectedData = ddData.find((item) => item.text === value);
+
+      if (!selectedData) return;
 
       if (value === 'nft') {
         fullCollateral.checked = true;
@@ -3199,134 +3218,6 @@ async function getLiquidityDashboard(callback = null) {
   html += '</tbody>' + '</table>';
 
   safeSetTableData('deposits_uniswap', isMobile ? '' : html, 'empty');
-  if (callback) callback();
-}
-
-// getDepositsDashboard
-
-async function getCapDashbord(callback = null) {
-  const data = await fetch(
-    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&price_change_percentage=24h,30d'
-  )
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new Error(response.status);
-      } else {
-        return response.json();
-      }
-    })
-    .catch((error) => {
-      // if api for get dashboard data failed, remove dashboard page and change current page to
-      document.getElementById('total-dashboard-tab-menu').remove();
-
-      if (userObject.state.current_page_id === 'total-dashboard-tab') {
-        openTab(
-          {
-            srcElement: document.getElementById('dashboard-tab-menu'),
-          },
-          'dashboard-tab'
-        );
-      }
-
-      throw new Error(error);
-    });
-
-  if (data.length === 0) {
-    return;
-  }
-
-  const getClassForNumber = (value) => {
-    return value > 0 ? 'number_increase' : 'number_degrease';
-  };
-  const listCryptoTemplate = (imgSrc, name, price, priceChange) => {
-    const imgBlock = `<img width="20" height="20" src="${imgSrc}" />`;
-    const nameBlock = `<div>${name}</div>`;
-    const priceBlock = `<div>${toNormalUSDView(price)}</div>`;
-    const priceChangeBlock = `<div class="${getClassForNumber(
-      priceChange
-    )}">${numeral(priceChange / 100).format('0.0%')}</div>`;
-
-    return /* html */ `
-    <div class="w-full flex items-center mb-5">
-      <div class="w-1/12">${imgBlock}</div>
-      <div class="w-3/12"><div class="ml-2 uppercase text-sm tracking-wide">${nameBlock}</div></div>
-      <div class="w-5/12"><div class="text-white text-opacity-50 text-sm tracking-wide">${priceBlock}</div></div>
-      <div class="w-3/12 justify-end">${priceChangeBlock}</div>
-    </div>
-    `;
-  };
-  const marketCapElem = document.querySelector('#dashboard-market-cap');
-  const marketCapCompared = document.querySelector(
-    '#dashboard-market-compared'
-  );
-  const marketTopFiveList = document.querySelector('#market-top-five-list');
-  marketTopFiveList.innerHTML = '';
-
-  let marketCap = 0;
-  let marketCapChange = 0;
-  const marketTopFiveCurrency = [];
-
-  data.forEach((item) => {
-    marketCap += item.market_cap;
-    marketCapChange += item.market_cap_change_24h;
-    marketTopFiveList.innerHTML += listCryptoTemplate(
-      item.image,
-      item.symbol,
-      item.current_price,
-      item.price_change_percentage_24h
-    );
-    marketTopFiveCurrency.push({
-      market_cap: item.market_cap,
-      name: item.name,
-      price_change: numeral(
-        item.price_change_percentage_30d_in_currency / 100
-      ).format('0.0%'),
-      price_change_class: getClassForNumber(
-        item.price_change_percentage_30d_in_currency
-      ),
-    });
-  });
-
-  const cryptoNumb1 = document.querySelector('#crypto-cap-1');
-  const cryptoName1 = document.querySelector('#crypto-name-1');
-  const cryptoNumb2 = document.querySelector('#crypto-cap-2');
-  const cryptoName2 = document.querySelector('#crypto-name-2');
-  const cryptoNumb3 = document.querySelector('#crypto-cap-3');
-  const cryptoName3 = document.querySelector('#crypto-name-3');
-  const cryptoNumb4 = document.querySelector('#crypto-cap-4');
-  const cryptoName4 = document.querySelector('#crypto-name-4');
-  const cryptoNumb5 = document.querySelector('#crypto-cap-5');
-  const cryptoName5 = document.querySelector('#crypto-name-5');
-
-  cryptoNumb1.innerHTML = numeral(marketTopFiveCurrency[0].market_cap).format(
-    '($0.0000 a)'
-  );
-  cryptoName1.innerHTML = marketTopFiveCurrency[0].name;
-  cryptoNumb2.innerHTML = numeral(marketTopFiveCurrency[1].market_cap).format(
-    '($0.00 a)'
-  );
-  cryptoName2.innerHTML = marketTopFiveCurrency[1].name;
-  cryptoNumb3.innerHTML = numeral(marketTopFiveCurrency[2].market_cap).format(
-    '($0.00 a)'
-  );
-  cryptoName3.innerHTML = marketTopFiveCurrency[2].name;
-  cryptoNumb4.innerHTML = numeral(marketTopFiveCurrency[3].market_cap).format(
-    '($0.00 a)'
-  );
-  cryptoName4.innerHTML = marketTopFiveCurrency[3].name;
-  cryptoNumb5.innerHTML = numeral(marketTopFiveCurrency[4].market_cap).format(
-    '($0.00 a)'
-  );
-  cryptoName5.innerHTML = marketTopFiveCurrency[4].name;
-
-  const marketCapPercentChange =
-    marketCapChange / (marketCap + marketCapChange * -1);
-
-  marketCapElem.innerHTML = numeral(marketCap).format('$0,000');
-
-  marketCapCompared.innerHTML = numeral(marketCapPercentChange).format('0.0%');
-  marketCapCompared.classList.add(getClassForNumber(marketCapPercentChange));
-
   if (callback) callback();
 }
 
