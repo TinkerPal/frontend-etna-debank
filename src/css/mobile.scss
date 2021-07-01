@@ -157,24 +157,6 @@
     @apply border-grey-100-mobile border text-base rounded-md w-full h-12 bg-blueish-black focus: outline-none py-3 px-3 leading-6;
   }
 
-  ._mobile {
-    .without-link .js-Dropdown {
-      @apply border-grey-100-mobile border text-base rounded-md w-full h-12 bg-blueish-black focus: outline-none py-3 px-3 leading-6;
-
-      &-title {
-        @apply h-full;
-      }
-    }
-
-    .dropdown-text {
-      @apply leading-none;
-    }
-
-    .without-link .choices {
-      @apply border-grey-100-mobile border border-solid;
-    }
-  }
-
   .collumn-via-inputs {
     @apply flex flex-col h-full;
   }
@@ -523,6 +505,14 @@
     }
   }
 
+  .empty-access {
+    @apply left-0;
+
+    &.access-wallet {
+      @apply min-h-screen h-full top-0;
+    }
+  }
+
   #empty-error__msg {
     @apply text-2xl leading-none font-medium text-ford-light mb-5;
   }
@@ -544,7 +534,103 @@
   .empty-metamask {
     @apply top-0 left-0 h-full;
   }
+
+  .custom-getcredit-dropdown .choices__inner {
+    @apply rounded-r-none;
+  }
+
+  .text-color {
+    @apply break-all;
+
+    .info-msg {
+      @apply mx-2;
+    }
+  }
+
+  ._mobile {
+    .without-link {
+      .js-Dropdown {
+        @apply border-grey-100-mobile border text-base rounded-md w-full h-12 bg-blueish-black focus: outline-none py-3 px-3 leading-6;
+
+        &-title {
+          @apply h-full;
+        }
+      }
+
+      .choices {
+        @apply border-grey-100-mobile border border-solid;
+      }
+    }
+
+    .dropdown-text {
+      @apply leading-none;
+    }
+
+    #add-liquidity-tab .without-link {
+      @apply relative border-none rounded-r-none;
+
+      &.special-select .js-Dropdown-list {
+        @apply right-0 w-full;
+      }
+
+      .js-Dropdown {
+        @apply rounded-r-none h-full;
+
+        &-title {
+          @apply h-full;
+        }
+      }
+    }
+
+    .js-Dropdown-title {
+      @apply w-full relative;
+
+      &::after {
+        @apply right-0;
+      }
+    }
+
+    .btn {
+      @apply h-12;
+
+      &-row {
+        @apply pb-6;
+
+        .btn {
+          @apply mb-0;
+
+          &:first-child {
+            @apply mb-0;
+          }
+        }
+      }
+    }
+
+    .without-link {
+      .choices {
+        @apply rounded-t-lg rounded-l-lg rounded-b-lg rounded-r-lg;
+
+        &__inner {
+          @apply h-full;
+        }
+      }
+
+      .js-Dropdown {
+        @apply py-2 px-3;
+
+        &-title {
+          @apply h-full;
+        }
+      }
+    }
+
+    .creditprofiles-rounded .choices {
+      @apply rounded-lg;
+    }
+  }
 }
+
+// start simple scss
 
 #new-credit-tab {
   .collumn-via-inputs {
@@ -558,12 +644,8 @@
 }
 
 .text-color {
-  word-break: break-all;
-
   .info-msg {
     width: calc(100% - 2rem);
-    margin-right: 0.5rem;
-    margin-left: 0.5rem;
   }
 }
 
@@ -574,43 +656,9 @@
 .empty-access {
   top: 232px;
   height: calc(100% - 236px);
-  left: 0;
-
-  &.access-wallet {
-    min-height: 100vh;
-    height: 100%;
-    top: 0px;
-  }
-}
-
-#add-liquidity-tab {
-  .without-link {
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-  }
-
-  .special-select.without-link .js-Dropdown-list {
-    right: 0rem;
-    width: 100%;
-  }
 }
 
 ._mobile {
-  #add-liquidity-tab .without-link {
-    position: relative;
-    border: 0px;
-
-    .js-Dropdown {
-      border-top-right-radius: 0px;
-      border-bottom-right-radius: 0px;
-      height: 100%;
-
-      &-title {
-        height: 100%;
-      }
-    }
-  }
-
   .choices:not(.is-open) .choices__list.choices__list--multiple:empty {
     &:after {
       content: 'Choose NFT';
@@ -639,33 +687,8 @@
     }
   }
 
-  .js-Dropdown-title {
-    position: relative;
-    width: 100%;
-
-    &::after {
-      right: 0px;
-    }
-  }
-
   .js-Dropdown {
     min-height: 48px;
-  }
-
-  .btn-row {
-    padding-bottom: 24px;
-
-    .btn {
-      margin-bottom: 0rem;
-
-      &:first-child {
-        margin-bottom: 0rem;
-      }
-    }
-  }
-
-  .btn {
-    height: 3rem;
   }
 
   .header-center {
@@ -675,28 +698,6 @@
     left: 50%;
     top: 1.5rem;
     transform: translateX(-50%);
-  }
-
-  .without-link {
-    .choices {
-      border-radius: 0.5rem 0rem 0rem 0.5rem;
-
-      &__inner {
-        height: 100%;
-      }
-    }
-
-    .js-Dropdown {
-      padding: 0.5rem 0.75rem 0.5rem;
-
-      &-title {
-        height: 100%;
-      }
-    }
-  }
-
-  .creditprofiles-rounded .choices {
-    border-radius: 0.5rem;
   }
 }
 
@@ -725,19 +726,23 @@
   bottom: 0px;
 }
 
-.btn {
+@mixin bg-gradient() {
   background: linear-gradient(118.75deg, #3541f1 16.3%, #1f2386 123.67%);
+}
+
+.btn {
+  @include bg-gradient();
 
   &:hover {
-    background: linear-gradient(118.75deg, #1f2497 16.3%, #1f2497 123.67%);
+    @include bg-gradient();
   }
 
   &:focus {
-    background: linear-gradient(118.75deg, #3541f1 16.3%, #1f2386 123.67%);
+    @include bg-gradient();
   }
 
   &:disabled {
-    background: linear-gradient(118.75deg, #23287d 16.3%, #23287d 123.67%);
+    @include bg-gradient();
   }
 
   &-load {
@@ -1181,11 +1186,6 @@
   .table-btn {
     background-color: transparent;
   }
-}
-
-.custom-getcredit-dropdown .choices__inner {
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
 }
 
 .link-dropdown__arrow {
