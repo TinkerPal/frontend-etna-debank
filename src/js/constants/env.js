@@ -71,16 +71,20 @@ const GLOBAL_VARIABLES = {
 
 const env = process.env.NODE_ENV;
 
-const isMobile = process.env.SITE_VERSION === 'mobile';
-const { WEB3_MODAL_NETWORK } = GLOBAL_VARIABLES[env];
-const { WALLETS_API_URL } = GLOBAL_VARIABLES[env];
-const { WALLET_OPTION_RPC } = GLOBAL_VARIABLES[env];
-const { RPC_LIST } = GLOBAL_VARIABLES[env];
-const { LIQ_PAIRS } = GLOBAL_VARIABLES[env];
-const { LEVERAGE_TOKEN } = GLOBAL_VARIABLES[env];
-const { TRANSACTION_LINK } = GLOBAL_VARIABLES[env];
-const { NFT_TOKEN_ID } = GLOBAL_VARIABLES[env];
+export const isMobile = process.env.SITE_VERSION === 'mobile';
 
-window.cyclops_nft_contract_address =
+export const {
+  WEB3_MODAL_NETWORK,
+  WALLETS_API_URL,
+  WALLET_OPTION_RPC,
+  RPC_LIST,
+  LIQ_PAIRS,
+  LEVERAGE_TOKEN,
+  TRANSACTION_LINK,
+  NFT_TOKEN_ID,
+} = GLOBAL_VARIABLES[env];
+
+export const CYCLOPS_NFT_CONTRACT_ADDRESS =
   GLOBAL_VARIABLES[env].cyclops_nft_contract_address;
-window.chainId = GLOBAL_VARIABLES[env].chainId;
+
+export const CHAIN_ID = GLOBAL_VARIABLES[env].chainId;

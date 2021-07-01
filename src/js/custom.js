@@ -1,6 +1,21 @@
-const modal_withdraw_deposit = new Modal('modal-withdraw-deposit');
-const modal_withdraw_yield = new Modal('modal-withdraw-reward');
-const modal_add_credit = new Modal(
+import SimpleBar from 'simplebar';
+import { Modal } from './components/Modal';
+import {
+  CHAINS,
+  INFURA_ENDPOINT,
+  ZERO_ADDRESS,
+  ADJ_CONSTANT,
+  ERC20_TOKEN,
+  NATIVE_ETHEREUM,
+  NONE_FAMER_ID,
+} from './constants';
+import { isMobile, LEVERAGE_TOKEN } from './constants/env';
+import { userObject } from './store/userObject';
+import { isTokenBnb, isTokenNft } from './utils';
+
+const modalWithdrawDeposit = new Modal('modal-withdraw-deposit');
+const modalWithdrawYield = new Modal('modal-withdraw-reward');
+const modalAddCredit = new Modal(
   'modal-open-new-credit',
   async () => {
     await initCollateralDropdown();
@@ -12,11 +27,11 @@ const modal_add_credit = new Modal(
     await creditModalDataUpdate();
   }
 );
-const modal_return_fee = new Modal('modal-return-fee');
-const modal_return_credit = new Modal('modal-return-credit');
-const modal_add_leverage = new Modal('modal-set-leverage');
-const modal_unfreeze = new Modal('modal-unfreeze');
-const modal_add_lliquidity = new Modal(
+const modalReturnFee = new Modal('modal-return-fee');
+const modalReturnCredit = new Modal('modal-return-credit');
+const modalAddLeverage = new Modal('modal-set-leverage');
+const modalUnfreeze = new Modal('modal-unfreeze');
+const modalAddLiquidity = new Modal(
   'modal-add-liquidity',
   () => {
     initLiqPairsDropdown();
@@ -24,7 +39,7 @@ const modal_add_lliquidity = new Modal(
   },
   liqModalBuild
 );
-const modal_add_deposit = new Modal(
+const modalAddDeposit = new Modal(
   'modal-new-deposit',
   initDepositProfilesDropdown,
   () => {
@@ -35,20 +50,20 @@ const modal_add_deposit = new Modal(
   depositModalUpdateNftDropdown
 );
 
-const modals = [
-  modal_withdraw_deposit,
-  modal_withdraw_yield,
-  modal_add_credit,
-  modal_return_fee,
-  modal_return_credit,
-  modal_add_leverage,
-  modal_unfreeze,
-  modal_add_lliquidity,
-  modal_add_deposit,
+const allModals = [
+  modalWithdrawDeposit,
+  modalWithdrawYield,
+  modalAddCredit,
+  modalReturnFee,
+  modalReturnCredit,
+  modalAddLeverage,
+  modalUnfreeze,
+  modalAddLiquidity,
+  modalAddDeposit,
 ];
 
 function closeAllModals() {
-  modals.forEach((modal) => {
+  allModals.forEach((modal) => {
     if (modal.modal) {
       modal.hideModal();
     }
@@ -260,21 +275,6 @@ const createTableBtnWithIcon = (icon, text, callback) => {
 </span>`;
 };
 
-const createCellWithIcon = (iconSrc) => {
-  if (typeof iconSrc === 'string') {
-    const iconName = iconSrc.toLowerCase();
-    const iconObj = CRYPTO_ICONS.find((icon) => iconName === icon.name);
-    if (iconObj) {
-      iconSrc = iconObj.icon ? iconObj.icon : iconObj.name;
-    } else {
-      iconSrc = 'b';
-    }
-    return `<span class="crypto-icon-no-spaces"><img src="/images/crypto-icons/icon-${iconSrc}.svg"></span>`;
-  }
-
-  return `<span class="crypto-icon-no-spaces"><img src="/images/crypto-icons/icon-b.svg"></span>`;
-};
-
 const contractsObject = {
   deposit_contract: {
     address: '',
@@ -393,24 +393,17 @@ async function postWalletCallback() {
       : 'dashboard-tab'
   );
 
-  modal_add_credit.modal && modal_add_credit.onInitCallback();
-  modal_add_lliquidity.modal && modal_add_lliquidity.onInitCallback();
-  modal_add_deposit.modal && modal_add_deposit.onInitCallback();
+  modalAddCredit.modal && modalAddCredit.onInitCallback();
+  modalAddLiquidity.modal && modalAddLiquidity.onInitCallback();
+  modalAddDeposit.modal && modalAddDeposit.onInitCallback();
 }
 
 async function initWeb3Modal() {
   if (window.web3Modal) return;
 
-  // not used?
-  // let walletConnectProvider =  new WalletConnectProvider({
-  //   rpc: {
-  //     WALLET_OPTION_RPC
-  //       }
-  // });
-
   const providerOptions = {
     walletconnect: {
-      package: WalletConnectProvider,
+      package: window.WalletConnectProvider.default,
       options: {
         rpc: WALLET_OPTION_RPC,
       },
@@ -540,8 +533,8 @@ async function setNetInfo() {
       netInfo.style.display = 'flex';
       netIcon.style.color = 'red';
       netTxt.innerHTML = ' wrong network, connect to BSC';
-    } else if (chainIdHex !== window.chainId) {
-      netName.innerHTML = chains[window.chainId];
+    } else if (chainIdHex !== CHAIN_ID) {
+      netName.innerHTML = CHAINS[CHAIN_ID];
       netInfo.style.display = 'flex';
       netIcon.style.color = 'red';
       netTxt.innerHTML = ' wrong network, connect to BSC';
@@ -602,43 +595,36 @@ async function initLiqLevContract(callback = null) {
 
 async function initVotesCalcContractReader(callback = null) {
   if (!window.votes_calc_smartcontract_reader) {
-    // if (window.web3js_reader){
-    // window.votes_calc_smartcontract_reader = await new window.web3js_reader.eth.Contract(votes_calc_abi, window.votes_calc_contract_address);
     const reader = web3jsReadersList.get();
     window.votes_calc_smartcontract_reader = await new reader.eth.Contract(
       votes_calc_abi,
       window.votes_calc_contract_address
     );
     if (callback) callback(window.votes_calc_smartcontract_reader);
-    // }
   } else if (callback) callback(window.votes_calc_smartcontract_reader);
 }
 
 async function initUsageCalcContractReader(callback = null) {
   if (!window.usage_calc_smartcontract_reader) {
-    // if (window.web3js_reader){
     const reader = web3jsReadersList.get();
     window.usage_calc_smartcontract_reader = await new reader.eth.Contract(
       usage_calc_abi,
       window.usage_calc_contract_address
     );
-    // window.usage_calc_smartcontract_reader = await new window.web3js_reader.eth.Contract(usage_calc_abi, window.usage_calc_contract_address);
+
     if (callback) callback(window.usage_calc_smartcontract_reader);
-    // }
   } else if (callback) callback(window.usage_calc_smartcontract_reader);
 }
 
 async function initCyclopsNFTContractReader(callback = null) {
   if (!window.cyclops_nft_smartcontract_reader) {
-    // if (window.web3js_reader){
     const reader = web3jsReadersList.get();
     window.cyclops_nft_smartcontract_reader = await new reader.eth.Contract(
       nftpub_contracts_abi,
-      window.cyclops_nft_contract_address
+      CYCLOPS_NFT_CONTRACT_ADDRESS
     );
-    // window.cyclops_nft_smartcontract_reader = await new window.web3js_reader.eth.Contract(nftpub_contracts_abi, window.cyclops_nft_contract_address);
+
     if (callback) callback(window.cyclops_nft_smartcontract_reader);
-    // }
   } else if (callback) callback(window.cyclops_nft_smartcontract_reader);
 }
 
@@ -647,7 +633,7 @@ async function initCyclopsNFTContract(callback = null) {
     if (window.web3js) {
       window.cyclops_nft_smartcontract = await new window.web3js.eth.Contract(
         nftpub_contracts_abi,
-        window.cyclops_nft_contract_address
+        CYCLOPS_NFT_CONTRACT_ADDRESS
       );
       if (callback) callback(window.cyclops_nft_smartcontract);
     }
@@ -657,13 +643,13 @@ async function initCyclopsNFTContract(callback = null) {
 async function getCredit() {
   // function getCredit(address cust_wallet, uint32 dep_id,  uint256 cred_amount, uint32 get_credit_profile_id) nonReentrant public
 
-  modal_add_credit.isLoadingAfterConfirm();
+  modalAddCredit.isLoadingAfterConfirm();
 
   if (
     toNumber(userObject.state.selected_credprofile) === -1 ||
     !userObject.state.selected_credprofile
   ) {
-    modal_add_credit.isLoadedAfterConfirm(false);
+    modalAddCredit.isLoadedAfterConfirm(false);
     errorMsg('You need to select collateral asset');
     return;
   }
@@ -672,7 +658,7 @@ async function getCredit() {
     toNumber(userObject.state.getcredit_profile) === -1 ||
     !userObject.state.getcredit_profile
   ) {
-    modal_add_credit.isLoadedAfterConfirm(false);
+    modalAddCredit.isLoadedAfterConfirm(false);
     errorMsg('You need to select credit asset');
     return;
   }
@@ -681,7 +667,7 @@ async function getCredit() {
     toNumber(userObject.state.getcredit_profile) ===
     toNumber(userObject.state.selected_credprofile)
   ) {
-    modal_add_credit.isLoadedAfterConfirm(false);
+    modalAddCredit.isLoadedAfterConfirm(false);
     errorMsg('Assets for collateral and credit should be different');
     return;
   }
@@ -715,7 +701,7 @@ async function getCredit() {
         },
         function (error, txnHash) {
           if (error) {
-            modal_add_credit.isLoadedAfterConfirm(false);
+            modalAddCredit.isLoadedAfterConfirm(false);
             throw error;
           }
           output_transaction(txnHash);
@@ -724,22 +710,22 @@ async function getCredit() {
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('get_credit');
-          modal_add_credit.isLoadedAfterConfirm();
+          modalAddCredit.isLoadedAfterConfirm();
         }
         resetMsg();
       })
       .catch((error) => {
-        modal_add_credit.isLoadedAfterConfirm(false);
+        modalAddCredit.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
       });
   });
 }
 
 async function deposit() {
-  modal_add_deposit.isLoadingAfterConfirm();
+  modalAddDeposit.isLoadingAfterConfirm();
 
   if (toNumber(userObject.state.selected_depprofile) === -1) {
-    modal_add_deposit.isLoadedAfterConfirm(false);
+    modalAddDeposit.isLoadedAfterConfirm(false);
     errorMsg('You need to select asset');
     return;
   }
@@ -753,7 +739,7 @@ async function deposit() {
     // return;
 
     if (userObject.state.selectedNFTAssets.length === 0) {
-      modal_add_deposit.isLoadedAfterConfirm(false);
+      modalAddDeposit.isLoadedAfterConfirm(false);
       errorMsg('You need to select tokens');
       return;
     }
@@ -766,7 +752,7 @@ async function deposit() {
         });
 
       if (isNFTCollateralExists) {
-        modal_add_deposit.isLoadedAfterConfirm(false);
+        modalAddDeposit.isLoadedAfterConfirm(false);
         errorMsg(
           'You have NFT as collateral, please return credit to unfreeze it and you will be able to open new NFT deposit'
         );
@@ -783,7 +769,7 @@ async function deposit() {
       });
 
     if (!isApproved) {
-      modal_add_deposit.isLoadedAfterConfirm(false, false);
+      modalAddDeposit.isLoadedAfterConfirm(false, false);
       errorMsg('You need to approve tokens move first');
       return;
     }
@@ -803,7 +789,7 @@ async function deposit() {
       nftIndex === -1 ? 0 : toNumber(amounTsPerDeposits[1][nftIndex]);
 
     if (amountNftInDeposit + amount > MAX_AMOUNT_OF_NFT) {
-      modal_add_deposit.isLoadedAfterConfirm(false);
+      modalAddDeposit.isLoadedAfterConfirm(false);
       errorMsg(
         `You have ${amountNftInDeposit} tokens on you NFT deposit now. You are adding ${amount} tokens. Total is ${
           amountNftInDeposit + amount
@@ -831,7 +817,7 @@ async function deposit() {
       const amount_bn = new BN(amount);
 
       if (toNumber(wb_bn.cmp(amount_bn)) === -1) {
-        modal_add_deposit.isLoadedAfterConfirm(false);
+        modalAddDeposit.isLoadedAfterConfirm(false);
         errorMsg('You do not have enough BNB in your wallet');
         return;
       }
@@ -852,10 +838,10 @@ async function deposit() {
 
       const tokenAmountToApprove = new BN(amount);
       // amount is already adjusted *10**18
-      const calculatedApproveValue = tokenAmountToApprove; // tokenAmountToApprove.mul(new BN(ADJ_CONSTANT.toString()));
+      const calculatedApproveValue = tokenAmountToApprove;
 
       if (allow < calculatedApproveValue) {
-        modal_add_deposit.isLoadedAfterConfirm(false);
+        modalAddDeposit.isLoadedAfterConfirm(false);
         errorMsg(
           'Please approve tokens move / wait for approval transaction to finish'
         );
@@ -871,7 +857,7 @@ async function deposit() {
       const amount_bn = new BN(amount);
 
       if (toNumber(erc20_count_bn.cmp(amount_bn)) === -1) {
-        modal_add_deposit.isLoadedAfterConfirm(false);
+        modalAddDeposit.isLoadedAfterConfirm(false);
         errorMsg('You do not have enough tokens in your wallet');
         return;
       }
@@ -883,11 +869,11 @@ async function deposit() {
   initStakingContract(async (stakingContractInstance) => {
     if (amount === '0' || !amount) {
       errorMsg('Amount of asset must be greater than 0');
-      return modal_add_deposit.isLoadedAfterConfirm(false);
+      return modalAddDeposit.isLoadedAfterConfirm(false);
     }
 
     stakingContractInstance.methods
-      .deposit(amount, token_ids, dep_profile_id, window.famer)
+      .deposit(amount, token_ids, dep_profile_id, NONE_FAMER_ID)
       .send(
         {
           from: userObject.account,
@@ -896,7 +882,7 @@ async function deposit() {
         },
         function (error, txnHash) {
           if (error) {
-            modal_add_deposit.isLoadedAfterConfirm(false);
+            modalAddDeposit.isLoadedAfterConfirm(false);
             throw error;
           }
           output_transaction(txnHash);
@@ -905,22 +891,22 @@ async function deposit() {
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('make_deposit');
-          modal_add_deposit.isLoadedAfterConfirm();
+          modalAddDeposit.isLoadedAfterConfirm();
         }
         resetMsg();
       })
       .catch((error) => {
-        modal_add_deposit.isLoadedAfterConfirm(false);
+        modalAddDeposit.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
       });
   });
 }
 
 async function approve_stake_liq() {
-  modal_add_lliquidity.isLoadingAfterApprove();
+  modalAddLiquidity.isLoadingAfterApprove();
 
   if (!userObject.state.liq_pair_name) {
-    modal_add_lliquidity.isLoadedAfterApprove(false);
+    modalAddLiquidity.isLoadedAfterApprove(false);
     errorMsg('You need to select liquidity pair');
     return;
   }
@@ -932,26 +918,26 @@ async function approve_stake_liq() {
     userObject.state.liq_pair_address,
     amount_wei,
     window.staking_contract_address,
-    modal_add_lliquidity
+    modalAddLiquidity
   );
 }
 
 async function stake_liq() {
-  modal_add_lliquidity.isLoadingAfterConfirm();
+  modalAddLiquidity.isLoadingAfterConfirm();
 
   if (!userObject.state.liq_pair_name) {
-    modal_add_lliquidity.isLoadedAfterConfirm(false, false);
+    modalAddLiquidity.isLoadedAfterConfirm(false, false);
     errorMsg('You need to select liquidity pair');
     return;
   }
 
   if (!userObject.state.liq_pair_fullcode) {
-    modal_add_lliquidity.isLoadedAfterConfirm(false, false);
+    modalAddLiquidity.isLoadedAfterConfirm(false, false);
     errorMsg('You need to select term');
     return;
   }
 
-  const dep_profile_id = await unswIDByProfileName(
+  const dep_profile_id = await tokenIdByLiqpairsTokenName(
     userObject.state.liq_pair_fullcode
   );
   const wei_val = 0;
@@ -976,10 +962,10 @@ async function stake_liq() {
   const tokenAmountToApprove = new BN(amount);
 
   // amount is already adjusted *10**18
-  const calculatedApproveValue = tokenAmountToApprove; // tokenAmountToApprove.mul(new BN(ADJ_CONSTANT.toString()));
+  const calculatedApproveValue = tokenAmountToApprove;
 
   if (allow < calculatedApproveValue) {
-    modal_add_lliquidity.isLoadedAfterConfirm(false, false);
+    modalAddLiquidity.isLoadedAfterConfirm(false, false);
     errorMsg(
       'Please approve tokens move / wait for approval transaction to finish'
     );
@@ -995,7 +981,7 @@ async function stake_liq() {
   const amount_bn = new BN(amount);
 
   if (toNumber(erc20_count_bn.cmp(amount_bn)) === -1) {
-    modal_add_lliquidity.isLoadedAfterConfirm(false, false);
+    modalAddLiquidity.isLoadedAfterConfirm(false, false);
     errorMsg('You do not have enough tokens in your wallet');
     return;
   }
@@ -1013,7 +999,7 @@ async function stake_liq() {
         },
         function (error, txnHash) {
           if (error) {
-            modal_add_lliquidity.isLoadedAfterConfirm(false);
+            modalAddLiquidity.isLoadedAfterConfirm(false);
             throw error;
           }
           output_transaction(txnHash);
@@ -1022,22 +1008,22 @@ async function stake_liq() {
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('stake_liq');
-          modal_add_lliquidity.isLoadedAfterConfirm();
+          modalAddLiquidity.isLoadedAfterConfirm();
         }
         resetMsg();
       })
       .catch((error) => {
-        modal_add_lliquidity.isLoadedAfterConfirm(false);
+        modalAddLiquidity.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
       });
   });
 }
 
 async function approve_deposit() {
-  modal_add_deposit.isLoadingAfterApprove();
+  modalAddDeposit.isLoadingAfterApprove();
 
   if (toNumber(userObject.state.selected_depprofile) === -1) {
-    modal_add_deposit.isLoadedAfterApprove(false);
+    modalAddDeposit.isLoadedAfterApprove(false);
     errorMsg('You need to select asset');
     return;
   }
@@ -1051,7 +1037,7 @@ async function approve_deposit() {
       });
 
     if (isApproved) {
-      modal_add_deposit.isLoadedAfterApprove();
+      modalAddDeposit.isLoadedAfterApprove();
       successMsg('Already approved');
     } else {
       // solidity: function setApprovalForAll(address _operator,bool _approved) external{}
@@ -1064,7 +1050,7 @@ async function approve_deposit() {
           },
           function (error, txnHash) {
             if (error) {
-              modal_add_deposit.isLoadedAfterApprove(false);
+              modalAddDeposit.isLoadedAfterApprove(false);
               throw error;
             }
             output_transaction(txnHash);
@@ -1073,12 +1059,12 @@ async function approve_deposit() {
         .on('confirmation', function (confirmationNumber, receipt) {
           if (toNumber(confirmationNumber) === 5) {
             successMsg('NFT move approved');
-            modal_add_deposit.isLoadedAfterApprove();
+            modalAddDeposit.isLoadedAfterApprove();
           }
         })
         .catch((error) => {
           errorMsg('Smartcontract communication error');
-          modal_add_deposit.isLoadedAfterApprove(false);
+          modalAddDeposit.isLoadedAfterApprove(false);
         });
     }
   } else {
@@ -1095,7 +1081,7 @@ async function approve_deposit() {
       userObject.state.selected_depprofile_token_address,
       amount_wei,
       window.staking_contract_address,
-      modal_add_deposit
+      modalAddDeposit
     );
   }
 }
@@ -1350,7 +1336,7 @@ function eventFire(el, etype) {
 
 async function onUniversalConnect() {
   try {
-    window.provider = await web3Modal.connectTo('walletconnect');
+    window.provider = await window.Web3Modal.default.connectTo('walletconnect');
     getAccountWalletConnect();
   } catch (e) {
     return;
@@ -1397,7 +1383,7 @@ let web3jsReadersList = {
 async function initWeb3jsReader(callback = null) {
   if (!window.web3js_reader) {
     window.web3js_reader = await new Web3(
-      new Web3.providers.HttpProvider(infura_endpoint[window.chainId])
+      new Web3.providers.HttpProvider(INFURA_ENDPOINT[CHAIN_ID])
     );
   }
   // and in any case
@@ -1437,8 +1423,6 @@ async function connectWeb3() {
       console.warn(error);
     }
 
-    // await web3Modal.updateTheme("dark");
-
     await onUniversalConnect();
   }
 }
@@ -1452,7 +1436,7 @@ async function onUniversalDisconnect() {
     // WalletConnect will default to the existing session
     // and does not allow to re-scan the QR code with a new wallet.
     // Depending on your use case you may want or want not his behavir.
-    await web3Modal.clearCachedProvider();
+    await window.Web3Modal.default.clearCachedProvider();
     window.provider = null;
   }
 
@@ -1945,15 +1929,13 @@ async function getBackendParameter(var_name, callback = null) {
 
 async function initDataProviderContractReader(callback = null) {
   if (!window.data_provider_smartcontract_reader) {
-    // if (window.web3js_reader){
     const reader = web3jsReadersList.get();
     window.data_provider_smartcontract_reader = await new reader.eth.Contract(
       data_provider_abi,
       window.data_provider_contract_address
     );
-    // window.data_provider_smartcontract_reader = await new window.web3js_reader.eth.Contract(data_provider_abi, window.data_provider_contract_address);
+
     if (callback) callback(window.data_provider_smartcontract_reader);
-    // }
   } else if (callback) callback(window.data_provider_smartcontract_reader);
 }
 
@@ -2040,7 +2022,7 @@ async function getCreditProfilesListCredit() {
 
 async function depositModalUpdateNftDropdown() {
   const nftAssetsDropdownRow =
-    modal_add_deposit.modal.querySelector('#assets-dropdown');
+    modalAddDeposit.modal.querySelector('#assets-dropdown');
 
   nftAssetsDropdownRow.classList.add('loading');
   const nftData = await getNFTAssets();
@@ -2053,16 +2035,16 @@ async function depositModalUpdateNftDropdown() {
 }
 
 async function depositModalRebuild() {
-  if (modal_add_deposit.isLoading) return;
+  if (modalAddDeposit.isLoading) return;
   const ddData = await getDepositProfilesList();
 
-  const depprofilesDropdown = modal_add_deposit.modal.querySelector(
+  const depprofilesDropdown = modalAddDeposit.modal.querySelector(
     '#depprofiles-dropdown'
   );
   const nftAssetsDropdownRow =
-    modal_add_deposit.modal.querySelector('#assets-dropdown');
+    modalAddDeposit.modal.querySelector('#assets-dropdown');
   const assetsAmountRow =
-    modal_add_deposit.modal.querySelector('#tokens_amount').parentNode;
+    modalAddDeposit.modal.querySelector('#tokens_amount').parentNode;
   const depositSelectedAsset = depprofilesDropdown.value;
 
   const currentDepProfile = ddData.find(
@@ -2079,9 +2061,9 @@ async function depositModalRebuild() {
   });
 
   if (toNumber(currentDepProfile.d_type) === NATIVE_ETHEREUM) {
-    modal_add_deposit.nextStep();
+    modalAddDeposit.nextStep();
   } else {
-    modal_add_deposit.prevStep();
+    modalAddDeposit.prevStep();
   }
 
   if (currentDepProfile.text === 'nft') {
@@ -2105,11 +2087,11 @@ async function initDepositProfilesDropdown() {
     initAssetsDropdown(nftData);
   }
 
-  const depprofilesDropdown = modal_add_deposit.modal.querySelector(
+  const depprofilesDropdown = modalAddDeposit.modal.querySelector(
     '#depprofiles-dropdown'
   );
   const assetsAmmountValue =
-    modal_add_deposit.modal.querySelector('#tokens_amount');
+    modalAddDeposit.modal.querySelector('#tokens_amount');
 
   setOptionsToSelect(ddData, depprofilesDropdown);
 
@@ -2141,8 +2123,7 @@ const getCollateralAvailableTokens = async () => {
 };
 
 async function collateralDropdownBuild(clear = true) {
-  const fullCollateral =
-    modal_add_credit.modal.querySelector('#full_collateral');
+  const fullCollateral = modalAddCredit.modal.querySelector('#full_collateral');
 
   let ddData = await getCollateralAvailableTokens();
 
@@ -2215,14 +2196,10 @@ async function creditDropdownBuild(clear = true) {
 }
 
 async function initCollateralDropdown() {
-  const dropdown = modal_add_credit.modal.querySelector(
-    '#credprofiles-dropdown'
-  );
+  const dropdown = modalAddCredit.modal.querySelector('#credprofiles-dropdown');
 
-  const fullCollateral =
-    modal_add_credit.modal.querySelector('#full_collateral');
-  const partCollateral =
-    modal_add_credit.modal.querySelector('#part_collateral');
+  const fullCollateral = modalAddCredit.modal.querySelector('#full_collateral');
+  const partCollateral = modalAddCredit.modal.querySelector('#part_collateral');
 
   await collateralDropdownBuild();
 
@@ -2256,19 +2233,19 @@ async function initCollateralDropdown() {
 }
 
 async function creditModalDataUpdate() {
-  const tokensAmmountCollateral = modal_add_credit.modal.querySelector(
+  const tokensAmmountCollateral = modalAddCredit.modal.querySelector(
     '#tokens_amount_collateral'
   );
-  const tokensAmmountGetCredit = modal_add_credit.modal.querySelector(
+  const tokensAmmountGetCredit = modalAddCredit.modal.querySelector(
     '#tokens_amount_getcredit'
   );
-  const usdValueCollateral = modal_add_credit.modal.querySelector(
+  const usdValueCollateral = modalAddCredit.modal.querySelector(
     '#usd_value_collateral'
   );
 
   const fullCollaterlBtn =
-    modal_add_credit.modal.querySelector('#full_collateral');
-  const creditPerc = modal_add_credit.modal.querySelector('#credit_perc');
+    modalAddCredit.modal.querySelector('#full_collateral');
+  const creditPerc = modalAddCredit.modal.querySelector('#credit_perc');
 
   if (
     toNumber(userObject.state.selected_credprofile) === -1 ||
@@ -2301,7 +2278,7 @@ async function creditModalDataUpdate() {
     .call({
       from: userObject.account,
     });
-  const apy_adj = (apy / apy_scale) * 100;
+  const apy_adj = (apy / APY_SCALE) * 100;
   creditPerc.value = parseFloat(apy_adj).toFixed(2).toString();
 }
 
@@ -2310,7 +2287,7 @@ async function initCreditDropdown() {
 
   if (ddData.length === 0) return;
 
-  const dropdown = modal_add_credit.modal.querySelector('#getcredit-dropdown');
+  const dropdown = modalAddCredit.modal.querySelector('#getcredit-dropdown');
 
   await creditDropdownBuild();
   await creditModalDataUpdate();
@@ -2468,7 +2445,7 @@ const setApyStr = async (asset) => {
     liq_pair_fullcode: `${userObject.state.liq_pair_name}-${asset.code}`,
   });
 
-  const apy_str = await unswAPYStrByProfileName(
+  const apy_str = await APYStrByLiqpairsTokenName(
     userObject.state.liq_pair_fullcode
   );
 
@@ -2481,7 +2458,7 @@ const setApyStr = async (asset) => {
 
 async function initLiqTermsDropdown() {
   const liqTermsSelect =
-    modal_add_lliquidity.modal.querySelector('#liqterms-dropdown');
+    modalAddLiquidity.modal.querySelector('#liqterms-dropdown');
   const liqTermsData = userObject.liq_terms;
 
   if (liqTermsData.length === 0) return;
@@ -2512,7 +2489,7 @@ async function initLiqPairsDropdown() {
   };
 
   const liqPairsAssets =
-    modal_add_lliquidity.modal.querySelector('#liqpairs-dropdown');
+    modalAddLiquidity.modal.querySelector('#liqpairs-dropdown');
   const liqPairsAssetsOptions = userObject.liq_pairs;
 
   if (liqPairsAssetsOptions.length === 0) return;
@@ -2533,7 +2510,7 @@ async function initLiqPairsDropdown() {
     setBal(currentOption);
 
     const liqTermsValue =
-      modal_add_lliquidity.modal.querySelector('#liqterms-dropdown').value;
+      modalAddLiquidity.modal.querySelector('#liqterms-dropdown').value;
     const currentLiqTerm = userObject.liq_terms.find(
       (item) => item.text === liqTermsValue
     );
@@ -2542,7 +2519,7 @@ async function initLiqPairsDropdown() {
 }
 
 async function liqModalBuild() {
-  if (modal_add_lliquidity.isLoading) return;
+  if (modalAddLiquidity.isLoading) return;
 
   const setBal = async (asset) => {
     setState({
@@ -2559,133 +2536,7 @@ async function liqModalBuild() {
 
   setBal(liqPairsAssetsOptions[0]);
 
-  modal_add_lliquidity.prevStep();
-}
-
-async function getAllProfiles() {
-  let profiles;
-  await getBackendParameter('DEPPROFILES_UI_LIST', (profiles_s) => {
-    profiles = JSON.parse(profiles_s);
-  });
-  return profiles || [];
-}
-
-async function getAllProfilesWithUniswap() {
-  let profiles;
-  await getBackendParameter('ASSETS_UI_FULL_LIST', (profiles_s) => {
-    profiles = JSON.parse(profiles_s);
-  });
-  return profiles || [];
-}
-
-async function getAllProfilesUniswap() {
-  let profiles;
-  await getBackendParameter('ASSETS_UI_LIQ_PAIRS', (profiles_s) => {
-    profiles = JSON.parse(profiles_s);
-  });
-  return profiles || [];
-}
-
-async function getAllCreditProfiles() {
-  let profiles;
-  await getBackendParameter('CREDIT_PROFILES_UI_LIST', (profiles_s) => {
-    profiles = JSON.parse(profiles_s);
-  });
-  return profiles || [];
-}
-
-function depTypeByProfileId(profile_id) {
-  for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
-    if (
-      toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)
-    ) {
-      return toNumber(userObject.deposit_profiles[i].p_dep_type);
-    }
-  }
-  return BAD_DEPOSIT_PROFILE_ID;
-}
-
-function tokenAddressByProfileId(profile_id) {
-  for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
-    if (
-      toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)
-    ) {
-      return userObject.deposit_profiles[i].p_tok_addr;
-    }
-  }
-  return zero_address;
-}
-
-function profileNameByProfileId(profile_id) {
-  for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
-    if (
-      toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)
-    ) {
-      return userObject.deposit_profiles[i].p_name;
-    }
-  }
-  return BAD_DEPOSIT_PROFILE_ID;
-}
-
-async function unswAPYStrByProfileName(profile_name) {
-  if (!userObject.deposit_profiles_liqpairs) {
-    userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
-  }
-
-  for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
-    if (userObject.deposit_profiles_liqpairs[i].p_name === profile_name) {
-      const apy = toNumber(userObject.deposit_profiles_liqpairs[i].init_apy);
-      const apy_real = apy / apy_scale;
-      const apy_str = `${(apy_real * 100).toFixed(1).toString()}%`;
-      return apy_str;
-    }
-  }
-  return null;
-}
-
-async function unswIDByProfileName(profile_name) {
-  if (!userObject.deposit_profiles_liqpairs) {
-    userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
-  }
-
-  for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
-    if (userObject.deposit_profiles_liqpairs[i].p_name === profile_name) {
-      return toNumber(userObject.deposit_profiles_liqpairs[i].p_id);
-    }
-  }
-  return null;
-}
-
-async function unswProfileNameByProfileId(profile_id) {
-  if (!userObject.deposit_profiles_liqpairs) {
-    userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
-  }
-
-  for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
-    if (
-      toNumber(userObject.deposit_profiles_liqpairs[i].p_id) ===
-      toNumber(profile_id)
-    ) {
-      return userObject.deposit_profiles_liqpairs[i].p_name;
-    }
-  }
-  return null;
-}
-
-async function unswDepTypeByProfileId(profile_id) {
-  if (!userObject.deposit_profiles_liqpairs) {
-    userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
-  }
-
-  for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
-    if (
-      toNumber(userObject.deposit_profiles_liqpairs[i].p_id) ===
-      toNumber(profile_id)
-    ) {
-      return toNumber(userObject.deposit_profiles_liqpairs[i].p_dep_type);
-    }
-  }
-  return BAD_DEPOSIT_PROFILE_ID;
+  modalAddLiquidity.prevStep();
 }
 
 // getCreditsDashboard
@@ -2693,10 +2544,11 @@ async function unswDepTypeByProfileId(profile_id) {
 async function getCreditsDashboard(callback = null) {
   // let profiles = userObject.deposit_profiles;
 
-  const [am_arr, cred_arr, clt_arr] = await Promise.all([
+  const [am_arr, cred_arr, clt_arr, cred_cc_arr] = await Promise.all([
     userObject.deposits.getAmArr(),
     userObject.credits.getCredArr(),
     userObject.credits.getCltArr(),
+    userObject.credits.getCredCCArr(),
   ]);
 
   const [lev_arr, lev_ratio_arr] = await userObject.credits.getLevArr();
@@ -3700,14 +3552,14 @@ async function getNftPrice(contract, vc_contract, token_ids) {
   return usd_float.toFixed(3);
 }
 
-async function getPriceOfTokens(
-  tokenAmount,
-  tokenName,
-  tokenType,
-  isSafeAmount = false
-) {
+async function getPriceOfTokens(tokenAmount, tokenId, isSafeAmount = false) {
   const contract = window.data_provider_smartcontract_reader;
-  const token = toNumber(tokenType) === NATIVE_ETHEREUM ? 'BNBUSD' : tokenName;
+  const tokenName = tokenNameByDepositTokenId(tokenId);
+
+  const token =
+    (isTokenBnb(tokenId) && 'BNBUSD') ||
+    (isTokenNft(tokenId) && LEVERAGE_TOKEN) ||
+    tokenName;
 
   const { BN } = window;
   const wei_amount = isSafeAmount
@@ -3754,8 +3606,7 @@ async function updUSDValue(tokens_amount_elem, usd_val_elem) {
   const tokens_amount = document.getElementById(tokens_amount_elem).value;
   const usd_float = await getPriceOfTokens(
     tokens_amount,
-    userObject.state.selected_depprofile_name,
-    userObject.state.selected_depprofile_type
+    tokenIdByTokenName(userObject.state.selected_depprofile_name)
   );
   safeSetValueById(usd_val_elem, usd_float.toFixed(3), 'inline');
 }
@@ -3825,7 +3676,7 @@ async function calcUSDValueOfDeposit(wei_amount, dep_id) {
 }
 
 async function calcUSDValueByProfileNonNFT(wei_amount, profile_id) {
-  if (profileNameByProfileId(profile_id) === 'nft') return 0;
+  if (tokenNameByDepositTokenId(profile_id) === 'nft') return 0;
   const usd_val = await window.usage_calc_smartcontract_reader.methods
     .calcUSDValueByProfileNonNFT(profile_id, wei_amount)
     .call({
@@ -3835,9 +3686,9 @@ async function calcUSDValueByProfileNonNFT(wei_amount, profile_id) {
 }
 
 function show_modal_leverage(cread_id) {
-  const { confirm } = modal_add_leverage;
+  const { confirm } = modalAddLeverage;
   const leveragePercentSelect =
-    modal_add_leverage.modal.querySelector('#select-leverage');
+    modalAddLeverage.modal.querySelector('#select-leverage');
   set_leverage(leveragePercentSelect.value, cread_id);
 
   confirm.onclick = () =>
@@ -3845,21 +3696,21 @@ function show_modal_leverage(cread_id) {
   leveragePercentSelect.onchange = (e) =>
     set_leverage(leveragePercentSelect.value, cread_id);
 
-  modal_add_leverage.show();
+  modalAddLeverage.show();
 }
 
-function show_modal_unfreeze(cread_id) {
-  const { confirm } = modal_unfreeze;
+function show_modalUnfreeze(cread_id) {
+  const { confirm } = modalUnfreeze;
   confirm.onclick = () => unfreeze_leverage(cread_id);
 
-  modal_unfreeze.show();
+  modalUnfreeze.show();
 }
 
 async function set_leverage_confirm(ratio, cred_id) {
   // function freezeLeverageForCredit(address cust_wallet, uint32 dep_id, uint32 cred_id, uint256 lev_amount) nonReentrant public
-  modal_add_leverage.isLoadingAfterConfirm();
+  modalAddLeverage.isLoadingAfterConfirm();
   if (toNumber(userObject.credits.cred_arr[1][cred_id]) === 0) {
-    modal_add_leverage.isLoadedAfterConfirm(false);
+    modalAddLeverage.isLoadedAfterConfirm(false);
     infoMsg('No active credit');
     return;
   }
@@ -3872,7 +3723,7 @@ async function set_leverage_confirm(ratio, cred_id) {
       });
 
     if (toNumber(lev.lev_amount) > 0) {
-      modal_add_leverage.isLoadedAfterConfirm(false);
+      modalAddLeverage.isLoadedAfterConfirm(false);
       infoMsg('You need to unfreeze current leverage first');
       return;
     }
@@ -3885,7 +3736,7 @@ async function set_leverage_confirm(ratio, cred_id) {
     const cytr_am_bn = new BN(cytr_am);
 
     if (toNumber(window.lev_size_wei.cmp(cytr_am_bn)) === 1) {
-      modal_add_leverage.isLoadedAfterConfirm(false);
+      modalAddLeverage.isLoadedAfterConfirm(false);
       infoMsg('Not enough ETNA on deposit');
       return;
     }
@@ -3899,7 +3750,7 @@ async function set_leverage_confirm(ratio, cred_id) {
         },
         function (error, txnHash) {
           if (error) {
-            modal_add_leverage.isLoadedAfterConfirm(false);
+            modalAddLeverage.isLoadedAfterConfirm(false);
             throw error;
           }
           output_transaction(txnHash);
@@ -3908,20 +3759,20 @@ async function set_leverage_confirm(ratio, cred_id) {
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('set_leverage');
-          modal_add_leverage.isLoadedAfterConfirm();
+          modalAddLeverage.isLoadedAfterConfirm();
         }
         resetMsg();
       })
       .catch((error) => {
         errorMsg('Smartcontract communication error');
-        modal_add_leverage.isLoadedAfterConfirm(false);
+        modalAddLeverage.isLoadedAfterConfirm(false);
       });
   });
   return true;
 }
 
 async function unfreeze_leverage(cred_id) {
-  modal_unfreeze.isLoadingAfterConfirm();
+  modalUnfreeze.isLoadingAfterConfirm();
   initLiqLevContract(async (contractInstance) => {
     contractInstance.methods
       .unfreezeLeverageForCredit(userObject.account, cred_id)
@@ -3932,7 +3783,7 @@ async function unfreeze_leverage(cred_id) {
         },
         function (error, txnHash) {
           if (error) {
-            modal_unfreeze.isLoadedAfterConfirm(false);
+            modalUnfreeze.isLoadedAfterConfirm(false);
             throw error;
           }
           output_transaction(txnHash);
@@ -3941,30 +3792,32 @@ async function unfreeze_leverage(cred_id) {
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('unfreeze_leverage');
-          modal_unfreeze.isLoadedAfterConfirm();
+          modalUnfreeze.isLoadedAfterConfirm();
         }
         resetMsg();
       })
       .catch((error) => {
         errorMsg('Smartcontract communication error');
-        modal_unfreeze.isLoadedAfterConfirm(false);
+        modalUnfreeze.isLoadedAfterConfirm(false);
       });
   });
   return true;
 }
 
 function return_credit(cred_id) {
-  modal_return_credit.show();
-  if (modal_return_credit.isLoading) return;
-  const modalElement = modal_return_credit.modal;
+  modalReturnCredit.show();
+  if (modalReturnCredit.isLoading) return;
+  const modalElement = modalReturnCredit.modal;
   const allCreditReturnBtn = modalElement.querySelector('#return_credit_all');
   const partCreditReturnBtn = modalElement.querySelector('#return_credit_part');
   const creditReturnInput = modalElement.querySelector('#credit_return_input');
 
+  const creditTokenId = userObject.credits.cred_arr[0][cred_id];
+
   allCreditReturnBtn.onchange = () => return_credit_all_btn(cred_id);
   partCreditReturnBtn.onchange = () => return_credit_part_btn(cred_id);
-  modal_return_credit.approve.onclick = () => return_credit_mvtokens(cred_id);
-  modal_return_credit.confirm.onclick = () => return_credit_confirm(cred_id);
+  modalReturnCredit.approve.onclick = () => return_credit_mvtokens(cred_id);
+  modalReturnCredit.confirm.onclick = () => return_credit_confirm(cred_id);
 
   allCreditReturnBtn.checked = true;
   creditReturnInput.value = toTokens(
@@ -3972,58 +3825,49 @@ function return_credit(cred_id) {
     4
   );
 
-  if (
-    isToken(
-      cred_id,
-      'bnb',
-      'credit_profiles',
-      'credits',
-      'cred_arr',
-      'id',
-      'name'
-    )
-  ) {
-    modal_return_credit.nextStep();
+  if (isTokenBnb(creditTokenId)) {
+    modalReturnCredit.nextStep();
   } else {
-    modal_return_credit.prevStep();
+    modalReturnCredit.prevStep();
   }
   return true;
 }
 
 function return_fee(cred_id) {
-  modal_return_fee.show();
-  if (modal_return_fee.isLoading) return;
+  modalReturnFee.show();
+  if (modalReturnFee.isLoading) return;
 
-  modal_return_fee.approve.onclick = () => return_fee_mvtokens(cred_id);
-  modal_return_fee.confirm.onclick = () => return_fee_confirm(cred_id);
+  modalReturnFee.approve.onclick = () => return_fee_mvtokens(cred_id);
+  modalReturnFee.confirm.onclick = () => return_fee_confirm(cred_id);
 
-  if (
-    toNumber(depTypeByProfileId(userObject.credits.cred_arr[0][cred_id])) ===
-    NATIVE_ETHEREUM
-  ) {
-    modal_return_fee.nextStep();
+  if (isTokenBnb(userObject.credits.cred_arr[0][cred_id])) {
+    modalReturnFee.nextStep();
   } else {
-    modal_return_fee.prevStep();
+    modalReturnFee.prevStep();
   }
   return true;
 }
 
 function withdraw_reward(dep_id) {
-  modal_withdraw_yield.show();
-  modal_withdraw_yield.confirm.onclick = () => withdraw_reward_confirm(dep_id);
+  modalWithdrawYield.show();
+  modalWithdrawYield.confirm.onclick = () => withdraw_reward_confirm(dep_id);
   return true;
 }
 
 function withdraw_deposit(dep_id) {
   const deposit = userObject.deposits.am_arr[2][dep_id];
-  const modalElement = modal_withdraw_deposit.modal;
+  const depositTokenId = userObject.deposits.am_arr[0][dep_id];
+
+  const modalElement = modalWithdrawDeposit.modal;
   const allDepositsBtn = modalElement.querySelector('#withraw_dep_all');
   const partDepositsBtn = modalElement.querySelector('#withraw_dep_part');
   const withdrawInput = modalElement.querySelector('#withraw_dep_input');
 
-  const adj_am = isToken(dep_id) ? deposit : toTokens(deposit, 4);
+  const isNft = isTokenNft(depositTokenId);
 
-  isToken(dep_id)
+  const adj_am = isNft ? deposit : toTokens(deposit, 4);
+
+  isNft
     ? partDepositsBtn.parentElement.classList.add('hidden')
     : partDepositsBtn.parentElement.classList.remove('hidden');
 
@@ -4031,10 +3875,9 @@ function withdraw_deposit(dep_id) {
   allDepositsBtn.checked = true;
   allDepositsBtn.onchange = () => withdraw_deposit_all_btn(dep_id);
   partDepositsBtn.onchange = () => withdraw_deposit_part_btn(dep_id);
-  modal_withdraw_deposit.confirm.onclick = () =>
-    withdraw_deposit_confirm(dep_id);
+  modalWithdrawDeposit.confirm.onclick = () => withdraw_deposit_confirm(dep_id);
 
-  modal_withdraw_deposit.show();
+  modalWithdrawDeposit.show();
   return true;
 }
 
@@ -4064,7 +3907,7 @@ function withdraw_deposit_confirm(dep_id) {
     ? 0
     : safeFloatToWei(depositValue);
 
-  modal_withdraw_deposit.isLoadingAfterConfirm();
+  modalWithdrawDeposit.isLoadingAfterConfirm();
 
   initStakingContract(async (stakingContractInstance) => {
     stakingContractInstance.methods
@@ -4081,7 +3924,7 @@ function withdraw_deposit_confirm(dep_id) {
         },
         function (error, txnHash) {
           if (error) {
-            modal_withdraw_deposit.isLoadedAfterConfirm(false);
+            modalWithdrawDeposit.isLoadedAfterConfirm(false);
             throw error;
           }
           output_transaction(txnHash);
@@ -4090,21 +3933,21 @@ function withdraw_deposit_confirm(dep_id) {
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('withdraw_deposit');
-          modal_withdraw_deposit.isLoadedAfterConfirm();
+          modalWithdrawDeposit.isLoadedAfterConfirm();
         }
         resetMsg();
       })
       .catch((error) => {
-        modal_withdraw_deposit.isLoadedAfterConfirm(false);
+        modalWithdrawDeposit.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
       });
   });
 }
 
 async function return_credit_mvtokens(cred_id) {
-  modal_return_credit.isLoadingAfterApprove();
+  modalReturnCredit.isLoadingAfterApprove();
   if (toNumber(userObject.credits.cred_arr[1][cred_id]) === 0) {
-    modal_return_credit.isLoadedAfterApprove(false);
+    modalReturnCredit.isLoadedAfterApprove(false);
     infoMsg('No active credit');
     return;
   }
@@ -4119,43 +3962,43 @@ async function return_credit_mvtokens(cred_id) {
     ? userObject.credits.cred_arr[1][cred_id]
     : safeFloatToWei(returnCreditValue);
 
-  const returned_asset_token_address = tokenAddressByProfileId(
+  const returned_asset_token_address = tokenAddressByDepositTokenId(
     userObject.credits.cred_arr[0][cred_id]
   );
   approveTokenMove(
     returned_asset_token_address,
     return_amount,
     window.credit_contract_address,
-    modal_return_credit
+    modalReturnCredit
   );
 }
 
 async function return_fee_mvtokens(cred_id) {
-  modal_return_fee.isLoadingAfterApprove();
+  modalReturnFee.isLoadingAfterApprove();
 
   if (toNumber(userObject.credits.cred_arr[2][cred_id]) === 0) {
-    modal_return_fee.isLoadedAfterApprove(false);
+    modalReturnFee.isLoadedAfterApprove(false);
     infoMsg('No active credit');
     return;
   }
 
   const return_amount = userObject.credits.cred_arr[2][cred_id];
 
-  const returned_asset_token_address = tokenAddressByProfileId(
+  const returned_asset_token_address = tokenAddressByDepositTokenId(
     userObject.credits.cred_arr[0][cred_id]
   );
   approveTokenMove(
     returned_asset_token_address,
     return_amount,
     window.credit_contract_address,
-    modal_return_fee
+    modalReturnFee
   );
 }
 
 async function return_credit_confirm(cred_id) {
-  modal_return_credit.isLoadingAfterConfirm();
+  modalReturnCredit.isLoadingAfterConfirm();
   if (toNumber(userObject.credits.cred_arr[1][cred_id]) === 0) {
-    modal_return_credit.isLoadedAfterConfirm(false);
+    modalReturnCredit.isLoadedAfterConfirm(false);
     infoMsg('No active credit');
     return;
   }
@@ -4171,10 +4014,10 @@ async function return_credit_confirm(cred_id) {
     : safeFloatToWei(returnCreditValue);
 
   // alert(return_amount); return;
-  const returned_asset_type = depTypeByProfileId(
+  const returned_asset_type = depTypeByDepositTokenId(
     userObject.credits.cred_arr[0][cred_id]
   );
-  const returned_asset_token_address = tokenAddressByProfileId(
+  const returned_asset_token_address = tokenAddressByDepositTokenId(
     userObject.credits.cred_arr[0][cred_id]
   );
 
@@ -4183,7 +4026,7 @@ async function return_credit_confirm(cred_id) {
     return_val = return_amount;
     // do nothing
   } else if (toNumber(returned_asset_type) === ERC721_TOKEN) {
-    modal_return_credit.isLoadedAfterConfirm(false);
+    modalReturnCredit.isLoadedAfterConfirm(false);
     errorMsg('Error: ERC721 is not possible type for credit');
     return;
   } else {
@@ -4204,10 +4047,10 @@ async function return_credit_confirm(cred_id) {
     const tokenAmountToApprove = new BN(return_amount);
 
     // amount is already adjusted *10**18
-    const calculatedApproveValue = tokenAmountToApprove; // tokenAmountToApprove.mul(new BN(ADJ_CONSTANT.toString()));
+    const calculatedApproveValue = tokenAmountToApprove;
 
     if (allow < calculatedApproveValue) {
-      modal_return_credit.isLoadedAfterConfirm(false, false);
+      modalReturnCredit.isLoadedAfterConfirm(false, false);
       errorMsg(
         'Please approve tokens move / wait for approval transaction to finish'
       );
@@ -4223,7 +4066,7 @@ async function return_credit_confirm(cred_id) {
     const return_amount_bn = new BN(return_amount);
 
     if (toNumber(erc20_count_bn.cmp(return_amount_bn)) === -1) {
-      modal_return_credit.isLoadedAfterConfirm(false);
+      modalReturnCredit.isLoadedAfterConfirm(false);
       errorMsg('You do not have enough tokens in your wallet');
       return;
     }
@@ -4240,7 +4083,7 @@ async function return_credit_confirm(cred_id) {
         },
         function (error, txnHash) {
           if (error) {
-            modal_return_credit.isLoadedAfterConfirm(false);
+            modalReturnCredit.isLoadedAfterConfirm(false);
             throw error;
           }
           output_transaction(txnHash);
@@ -4249,21 +4092,21 @@ async function return_credit_confirm(cred_id) {
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('return_credit');
-          modal_return_credit.isLoadedAfterConfirm();
+          modalReturnCredit.isLoadedAfterConfirm();
         }
         resetMsg();
       })
       .catch((error) => {
-        modal_return_credit.isLoadedAfterConfirm(false);
+        modalReturnCredit.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
       });
   });
 }
 
 async function return_fee_confirm(cred_id) {
-  modal_return_fee.isLoadingAfterConfirm();
+  modalReturnFee.isLoadingAfterConfirm();
   if (toNumber(userObject.credits.cred_arr[2][cred_id]) === 0) {
-    modal_return_fee.isLoadedAfterConfirm(false);
+    modalReturnFee.isLoadedAfterConfirm(false);
     infoMsg('No active credit');
     return;
   }
@@ -4271,10 +4114,10 @@ async function return_fee_confirm(cred_id) {
   const return_amount = userObject.credits.cred_arr[2][cred_id];
 
   // alert(return_amount); return;
-  const returned_asset_type = depTypeByProfileId(
+  const returned_asset_type = depTypeByDepositTokenId(
     userObject.credits.cred_arr[0][cred_id]
   );
-  const returned_asset_token_address = tokenAddressByProfileId(
+  const returned_asset_token_address = tokenAddressByDepositTokenId(
     userObject.credits.cred_arr[0][cred_id]
   );
   let return_val = 0;
@@ -4283,7 +4126,7 @@ async function return_fee_confirm(cred_id) {
     return_val = return_amount;
     // do nothing
   } else if (toNumber(returned_asset_type) === ERC721_TOKEN) {
-    modal_return_fee.isLoadedAfterConfirm(false);
+    modalReturnFee.isLoadedAfterConfirm(false);
     errorMsg('Error: ERC721 is not possible type for credit');
     return;
   } else {
@@ -4303,11 +4146,10 @@ async function return_fee_confirm(cred_id) {
 
     const tokenAmountToApprove = new BN(return_amount);
 
-    // amount is already adjusted *10**18
-    const calculatedApproveValue = tokenAmountToApprove; // tokenAmountToApprove.mul(new BN(ADJ_CONSTANT.toString()));
+    const calculatedApproveValue = tokenAmountToApprove;
 
     if (allow < calculatedApproveValue) {
-      modal_return_fee.isLoadedAfterConfirm(false, false);
+      modalReturnFee.isLoadedAfterConfirm(false, false);
       errorMsg(
         'Please approve tokens move / wait for approval transaction to finish'
       );
@@ -4323,7 +4165,7 @@ async function return_fee_confirm(cred_id) {
     const return_amount_bn = new BN(return_amount);
 
     if (toNumber(erc20_count_bn.cmp(return_amount_bn)) === -1) {
-      modal_return_fee.isLoadedAfterConfirm(false);
+      modalReturnFee.isLoadedAfterConfirm(false);
       errorMsg('You do not have enough tokens in your wallet');
       return;
     }
@@ -4340,7 +4182,7 @@ async function return_fee_confirm(cred_id) {
         },
         function (error, txnHash) {
           if (error) {
-            modal_return_fee.isLoadedAfterConfirm(false);
+            modalReturnFee.isLoadedAfterConfirm(false);
             throw error;
           }
           output_transaction(txnHash);
@@ -4349,22 +4191,22 @@ async function return_fee_confirm(cred_id) {
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('return_fee');
-          modal_return_fee.isLoadedAfterConfirm();
+          modalReturnFee.isLoadedAfterConfirm();
         }
         resetMsg();
       })
       .catch((error) => {
-        modal_return_fee.isLoadedAfterConfirm(false);
+        modalReturnFee.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
       });
   });
 }
 
 function withdraw_reward_confirm(dep_id) {
-  modal_withdraw_yield.isLoadingAfterConfirm();
+  modalWithdrawYield.isLoadingAfterConfirm();
   // alert(dep_id); return;
   if (toNumber(userObject.deposits.rew_arr[2][dep_id]) === 0) {
-    modal_withdraw_yield.isLoadedAfterConfirm(false);
+    modalWithdrawYield.isLoadedAfterConfirm(false);
     infoMsg('Reward is not currently exractable');
     return;
   }
@@ -4379,7 +4221,7 @@ function withdraw_reward_confirm(dep_id) {
         },
         function (error, txnHash) {
           if (error) {
-            modal_withdraw_yield.isLoadedAfterConfirm(false);
+            modalWithdrawYield.isLoadedAfterConfirm(false);
             throw error;
           }
           output_transaction(txnHash);
@@ -4388,12 +4230,12 @@ function withdraw_reward_confirm(dep_id) {
       .on('confirmation', async function (confirmationNumber, receipt) {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('withdraw_deposit_reward');
-          modal_withdraw_yield.isLoadedAfterConfirm();
+          modalWithdrawYield.isLoadedAfterConfirm();
         }
         resetMsg();
       })
       .catch((error) => {
-        modal_withdraw_yield.isLoadedAfterConfirm(false);
+        modalWithdrawYield.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
       });
   });
@@ -4432,7 +4274,7 @@ function return_credit_part_btn(dep_id) {
 }
 
 function withdraw_deposit_all_btn(dep_id) {
-  const modalElement = modal_withdraw_deposit.modal;
+  const modalElement = modalWithdrawDeposit.modal;
   const withdrawInput = modalElement.querySelector('#withraw_dep_input');
 
   const adj_am = toTokens(userObject.deposits.am_arr[2][dep_id], 4);
@@ -4442,7 +4284,7 @@ function withdraw_deposit_all_btn(dep_id) {
 }
 
 function withdraw_deposit_part_btn() {
-  const modalElement = modal_withdraw_deposit.modal;
+  const modalElement = modalWithdrawDeposit.modal;
   const withdrawInput = modalElement.querySelector('#withraw_dep_input');
 
   withdrawInput.value = 0;
@@ -4472,7 +4314,7 @@ async function set_fixed_credit() {
     .call({
       from: userObject.account,
     });
-  const apy_adj = (apy / apy_scale) * 100;
+  const apy_adj = (apy / APY_SCALE) * 100;
   document.getElementById('credit_perc').value = parseFloat(apy_adj)
     .toFixed(2)
     .toString();
@@ -4501,7 +4343,7 @@ async function set_var_credit() {
     .call({
       from: userObject.account,
     });
-  const apy_adj = (apy / apy_scale) * 100;
+  const apy_adj = (apy / APY_SCALE) * 100;
   document.getElementById('credit_perc').value = parseFloat(apy_adj)
     .toFixed(2)
     .toString();
@@ -4584,7 +4426,7 @@ async function getCYTRProfileId() {
   return window.cytr_profile_id;
 }
 
-async function getWalletBalanceStr(token_address) {
+export async function getWalletBalanceStr(token_address) {
   const erc20contract = await new window.web3js_reader.eth.Contract(
     erc20TokenContractAbi,
     token_address
@@ -4594,33 +4436,9 @@ async function getWalletBalanceStr(token_address) {
     .call({
       from: userObject.account,
     });
-  // let adj_count = floorDecimals( window.web3js_reader.utils.fromWei(erc20_count, 'ether'),3);
 
-  const adj_count_str = toTokens(erc20_count, 3);
+  const adj_count_str = toTokens(erc20_count, 4);
   return adj_count_str;
-}
-
-async function getWalletBalance(token_address) {
-  if (token_address === 'BNB') {
-    const wb = await window.web3js_reader.eth.getBalance(userObject.account);
-    return floorDecimals(window.web3js_reader.utils.fromWei(wb, 'ether'), 3);
-  }
-  const erc20contract = await new window.web3js_reader.eth.Contract(
-    erc20TokenContractAbi,
-    token_address
-  );
-  const erc20_count = await erc20contract.methods
-    .balanceOf(userObject.account)
-    .call({
-      from: userObject.account,
-    });
-  // let adj_count = floorDecimals( window.web3js_reader.utils.fromWei(erc20_count, 'ether'),3);
-
-  const n_tokens = floorDecimals(
-    window.web3js_reader.utils.fromWei(erc20_count, 'ether'),
-    3
-  );
-  return n_tokens;
 }
 
 async function getAPY(profile_id) {

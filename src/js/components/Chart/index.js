@@ -1,4 +1,7 @@
-class EtnaChart extends HTMLElement {
+import { Chart } from 'chart.js';
+import { getCoinData } from './utils';
+
+export default class EtnaChart extends HTMLElement {
   connectedCallback() {
     this.coin = this.getAttribute('coin');
 
@@ -30,6 +33,7 @@ class EtnaChart extends HTMLElement {
         },
       ],
     };
+
     const config = {
       type: 'line',
       data,
@@ -73,9 +77,6 @@ class EtnaChart extends HTMLElement {
       }${percentage}%`;
     }
 
-    const myChart = new Chart(
-      this.querySelector(`[data-chart]`).getContext('2d'),
-      config
-    );
+    Chart(this.querySelector(`[data-chart]`).getContext('2d'), config);
   }
 }
