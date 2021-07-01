@@ -48,6 +48,14 @@
 
   .notif-block {
     @apply h-auto px-5 pt-5 pb-4 bg-blueish-black flex flex-col rounded-xl border border-light-grey shadow absolute right-0 top-9 z-10;
+
+    &__close {
+      @apply w-3 h-3 ml-4;
+
+      .modal-close {
+        @apply w-3 h-3 focus: outline-none;
+      }
+    }
   }
 
   .notif-amount {
@@ -628,6 +636,28 @@
       @apply rounded-lg;
     }
   }
+
+  #liq-earn-tab .fixed-btn {
+    @apply bottom-0 pb-5;
+  }
+
+  .ldBar {
+    @apply relative;
+
+    &-label {
+      @apply text-ldbar font-body text-3xl font-semibold leading-none;
+    }
+  }
+
+  .choices__list {
+    &--single {
+      @apply p-0;
+    }
+
+    .table-btn {
+      @apply bg-transparent;
+    }
+  }
 }
 
 // start simple scss
@@ -721,11 +751,6 @@
   z-index: 70;
 }
 
-#liq-earn-tab .fixed-btn {
-  padding-bottom: 20px;
-  bottom: 0px;
-}
-
 @mixin bg-gradient() {
   background: linear-gradient(118.75deg, #3541f1 16.3%, #1f2386 123.67%);
 }
@@ -765,18 +790,6 @@
 }
 
 // start Loading Bar
-
-.ldBar-label {
-  color: rgb(152, 239, 15);
-  font-family: 'Inter';
-  font-size: 2rem;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.ldBar {
-  position: relative;
-}
 
 .ldBar.label-center > .ldBar-label {
   position: absolute;
@@ -832,21 +845,6 @@
 
   &__text {
     width: calc(100% - 28px - 26px);
-  }
-
-  &__close {
-    width: 12px;
-    height: 12px;
-    margin-left: 14px;
-
-    .modal-close {
-      width: 12px;
-      height: 12px;
-
-      &:focus {
-        outline: none;
-      }
-    }
   }
 
   &__item {
@@ -1177,16 +1175,6 @@
 }
 
 // end multiSelect
-
-.choices__list {
-  &--single {
-    padding: 0px;
-  }
-
-  .table-btn {
-    background-color: transparent;
-  }
-}
 
 .link-dropdown__arrow {
   position: absolute;
