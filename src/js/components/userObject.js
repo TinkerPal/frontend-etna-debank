@@ -1012,7 +1012,7 @@ const userObject = {
         const { cred_arr } = this;
         const { lev_arr } = this;
 
-        this.return_leverage_visible = cred_arr[0].some(
+        this.return_leverage_visible = cred_arr[0]?.some(
           (value, index) => toNumber(lev_arr[index]) > 0
         );
       }
@@ -1269,6 +1269,8 @@ const userObject = {
         const { rew_arr } = userObject.deposits;
 
         for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
+          if (!rew_arr[1]) continue;
+
           if (toNumber(rew_arr[1][i]) === 0) continue;
 
           if (

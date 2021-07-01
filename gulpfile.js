@@ -56,7 +56,11 @@ function jsTask(envs, buildType) {
       .pipe(
         babel({
           // presets: [ '@babel/preset-env' ],
-          plugins: ['transform-inline-environment-variables'],
+          plugins: [
+            'transform-inline-environment-variables',
+            '@babel/plugin-proposal-optional-chaining',
+            '@babel/plugin-proposal-nullish-coalescing-operator',
+          ],
         })
       )
       // .pipe(envs === 'production' ? uglify() : tap(noop))
