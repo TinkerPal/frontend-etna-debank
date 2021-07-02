@@ -348,10 +348,14 @@
   }
 
   .btn-row {
-    @apply fixed bottom-0 left-0 bg-black-mobile py-3;
+    @apply fixed bottom-0 left-0 bg-black-mobile py-3 mx-4;
 
     .btn {
       @apply mb-8 w-full;
+
+      &:first-child {
+        @apply mb-3;
+      }
     }
   }
 
@@ -666,198 +670,82 @@
       @apply flex items-center;
     }
   }
+
+  .notif-block {
+    @apply overflow-auto;
+
+    &__icon {
+      @apply w-4 h-5 mr-3;
+
+      .nofif-icon {
+        @apply w-4 h-5 pt-1;
+      }
+    }
+
+    &__item {
+      .modal-close {
+        @apply hidden;
+      }
+
+      &:first-child {
+        .modal-close {
+          @apply flex;
+        }
+      }
+
+      &:last-child {
+        .notif-item {
+          @apply border-0 mb-1 pb-0;
+        }
+      }
+    }
+  }
+
+  .stat-block {
+    @apply overflow-auto;
+
+    .stat-row {
+      &:last-child {
+        @apply border-b-0;
+      }
+    }
+  }
+
+  .crypto-info {
+    &__data {
+      @apply overflow-auto max-h-full pb-10;
+    }
+
+    &__diagram {
+      @apply w-full;
+    }
+
+    &__btn {
+      .table-btn {
+        &:first-child {
+          @apply mb-0;
+        }
+
+        &:nth-child(2) {
+          @apply mb-2;
+        }
+      }
+    }
+  }
+
+  #credprofiles-dropdown,
+  #custom-depprofiles-dropdown,
+  .choices-collateral {
+    @apply uppercase;
+
+    .js-Dropdown-title,
+    .choices__item {
+      @apply uppercase;
+    }
+  }
 }
 
 // start simple scss
-
-// start Loading Bar
-
-.ldBar.label-center > .ldBar-label {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-
-.ldBar-label:after {
-  content: '%';
-  display: inline;
-}
-
-.ldBar.no-percent .ldBar-label:after {
-  content: '';
-}
-
-.ldBar path.mainline {
-  stroke-width: 3;
-  stroke-linecap: round;
-}
-
-.ldBar path.baseline {
-  stroke-width: 1;
-  stroke-linecap: round;
-  stroke: rgb(17, 24, 39);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
-
-// end Loading Bar
-
-.hide {
-  display: none;
-}
-
-.notif-block {
-  max-height: calc(100vh - 100px);
-  overflow: auto;
-  width: calc(100vw - 32px);
-
-  &__icon {
-    width: 16px;
-    height: 18px;
-    margin-right: 12px;
-
-    .nofif-icon {
-      width: 16px;
-      height: 22px;
-      padding-top: 4px;
-    }
-  }
-
-  &__text {
-    width: calc(100% - 28px - 26px);
-  }
-
-  &__item {
-    .modal-close {
-      display: none;
-    }
-
-    &:first-child {
-      .modal-close {
-        display: flex;
-      }
-    }
-
-    &:last-child {
-      .notif-item {
-        border: none;
-        margin-bottom: 4px;
-        padding-bottom: 0px;
-      }
-    }
-  }
-}
-
-.stat-block {
-  height: calc(100vh - 320px);
-  overflow: auto;
-
-  .stat-row {
-    &:last-child {
-      border-bottom: 0px;
-    }
-  }
-
-  &#deposits_uniswap {
-    height: calc(100vh - 390px);
-  }
-}
-
-.crypto-info__header {
-  .crypto-icon-no-spaces {
-    height: 55px;
-    margin-right: 20px;
-  }
-}
-
-._with-btns {
-  .crypto-info__data {
-    padding-bottom: 90px;
-  }
-}
-
-.crypto-info {
-  &__data {
-    overflow: auto;
-    max-height: 100%;
-    overflow: auto;
-    padding-bottom: 40px;
-  }
-
-  &__credit {
-    max-height: 316px;
-  }
-
-  &__diagram {
-    width: 100%;
-  }
-
-  &__btn {
-    .table-btn {
-      &:first-child {
-        margin-bottom: 0px;
-      }
-
-      &:nth-child(2) {
-        margin-bottom: 0.5rem;
-      }
-    }
-  }
-}
-
-.btn-row {
-  width: calc(100% - 2rem);
-  margin-left: 1rem;
-  margin-right: 1rem;
-
-  .btn {
-    &:first-child {
-      margin-bottom: 0.75rem;
-    }
-  }
-}
-
-.connected-wallet {
-  &__numb {
-    max-width: 266px;
-    overflow: auto;
-  }
-
-  &__wrapper {
-    width: calc(100% - 60px);
-  }
-}
-
-#credprofiles-dropdown,
-#custom-depprofiles-dropdown,
-.choices-collateral {
-  text-transform: uppercase;
-
-  .js-Dropdown-title,
-  .choices__item {
-    text-transform: uppercase;
-  }
-}
-
-#assets-dropdown {
-  .choices__inner {
-    max-height: 128px;
-    height: 100%;
-    overflow: auto;
-    align-items: flex-start;
-  }
-
-  .choices__list--dropdown .choices__list {
-    max-height: 200px;
-    overflow: auto;
-  }
-}
-
-#modal-return-credit,
-#modal-return-fee {
-  min-height: calc(100vh - 190px);
-}
 
 // start multiSelect
 
@@ -1196,4 +1084,107 @@
       background-repeat: no-repeat;
     }
   }
+}
+
+.ldBar.label-center > .ldBar-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.ldBar-label:after {
+  content: '%';
+  display: inline;
+}
+
+.ldBar.no-percent .ldBar-label:after {
+  content: '';
+}
+
+.ldBar path.mainline {
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.ldBar path.baseline {
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke: rgb(17, 24, 39);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.hide {
+  display: none;
+}
+
+.notif-block {
+  max-height: calc(100vh - 100px);
+  width: calc(100vw - 32px);
+
+  &__text {
+    width: calc(100% - 28px - 26px);
+  }
+}
+
+.stat-block {
+  height: calc(100vh - 320px);
+
+  &#deposits_uniswap {
+    height: calc(100vh - 390px);
+  }
+}
+
+.crypto-info__header {
+  .crypto-icon-no-spaces {
+    height: 55px;
+    margin-right: 20px;
+  }
+}
+
+._with-btns {
+  .crypto-info__data {
+    padding-bottom: 90px;
+  }
+}
+
+.crypto-info {
+  &__credit {
+    max-height: 316px;
+  }
+}
+
+.btn-row {
+  width: calc(100% - 2rem);
+}
+
+.connected-wallet {
+  &__numb {
+    max-width: 266px;
+    overflow: auto;
+  }
+
+  &__wrapper {
+    width: calc(100% - 60px);
+  }
+}
+
+#assets-dropdown {
+  .choices__inner {
+    max-height: 128px;
+    height: 100%;
+    overflow: auto;
+    align-items: flex-start;
+  }
+
+  .choices__list--dropdown .choices__list {
+    max-height: 200px;
+    overflow: auto;
+  }
+}
+
+#modal-return-credit,
+#modal-return-fee {
+  min-height: calc(100vh - 190px);
 }
