@@ -12,3 +12,12 @@ export const createCellWithIcon = (iconSrc) => {
 
   return `<span class="crypto-icon-no-spaces"><img src="/images/crypto-icons/icon-b.svg"></span>`;
 };
+
+export const createTableBtnWithIcon = (icon, text, callback) => {
+  return `<span class="table-btn" onclick="${callback};">
+  <i class="icon-cell">
+    <img src="/images/${icon}.svg" class="w-full h-full" alt="#">
+  </i>
+  ${text}
+</span>`;
+};

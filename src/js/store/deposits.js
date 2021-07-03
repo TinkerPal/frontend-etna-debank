@@ -92,57 +92,43 @@ export default {
     return this.apy_column;
   },
 
+  in_wallet_arr: [],
   in_wallet_column: [],
   getInWalletCol_last_call: 0,
   async getInWalletCol(flag = false) {
     const currentTimestamp = Date.now();
-    if (
-      currentTimestamp > this.getInWalletCol_last_call + CACHE_TIME ||
-      flag
-    ) {
+    if (currentTimestamp > this.getInWalletCol_last_call + CACHE_TIME || flag) {
       this.getInWalletCol_last_call = currentTimestamp;
 
       this.in_wallet_column.length = 0;
-      const profiles = userObject.deposit_profiles;
+      this.in_wallet_arr.length = 0;
 
-      for (let i = 0; i < profiles?.length ?? 0; i++) {
-        let txt = '';
-        if (toNumber(profiles[i].p_dep_type) === ERC721_TOKEN) {
-          const token_count =
-            await window.cyclops_nft_smartcontract_reader.methods
+      const tokenCountPromise = [];
+      userObject.deposit_profiles.forEach((token) => {
+        const { p_id, p_tok_addr } = token;
+
+        if (isTokenNft(p_id)) {
+          tokenCountPromise.push(
+            window.cyclops_nft_smartcontract_reader.methods
               .balanceOf(userObject.account)
               .call({
                 from: userObject.account,
-              });
-
-          txt = `<td class="table-cell">${token_count}</td>`;
-        } else if (
-          toNumber(profiles[i].p_dep_type) === ERC20_TOKEN ||
-          toNumber(profiles[i].p_dep_type) === UNISWAP_PAIR
-        ) {
-          const erc20contract = await new window.web3js_reader.eth.Contract(
-            erc20TokenContractAbi,
-            profiles[i].p_tok_addr
+              })
           );
-          const erc20_count = await erc20contract.methods
-            .balanceOf(userObject.account)
-            .call({
-              from: userObject.account,
-            });
-          // let adj_count = floorDecimals( window.web3js_reader.utils.fromWei(erc20_count, 'ether'), 4);
-          const adj_count_str = toTokens(erc20_count, 4); // ((parseFloat(adj_count)).toFixed(4)).toString();
-          txt = `<td class="table-cell">${adj_count_str}</td>`;
-        } else if (toNumber(profiles[i].p_dep_type) === NATIVE_ETHEREUM) {
-          const wb = await window.web3js_reader.eth.getBalance(
-            userObject.account
-          );
-          // let eth_balance = window.web3js_reader.utils.fromWei(wb, 'ether');
-          const adj_eth_balance = toTokens(wb, 4); // ((parseFloat(eth_balance)).toFixed(4)).toString();
-          txt = `<td class="table-cell">${adj_eth_balance}</td>`;
+        } else {
+          tokenCountPromise.push(getWalletBalanceStr(p_tok_addr));
         }
-        if (!txt) txt = '<td class="table-cell">-</td>';
-        this.in_wallet_column.push(txt);
-      }
+      });
+      const tokensCount = await Promise.all(tokenCountPromise);
+
+      tokensCount.forEach((amount) => {
+        this.in_wallet_column.push(
+          `<td class="rounded-l-lg table-cell">${
+            toNumber(amount) > 0 ? amount : '-'
+          }</td>`
+        );
+        this.in_wallet_arr.push(amount);
+      });
     }
     return this.in_wallet_column;
   },
@@ -229,10 +215,7 @@ export default {
   getDurationCol_last_call: 0,
   async getDurationCol(flag = false) {
     const currentTimestamp = Date.now();
-    if (
-      currentTimestamp > this.getDurationCol_last_call + CACHE_TIME ||
-      flag
-    ) {
+    if (currentTimestamp > this.getDurationCol_last_call + CACHE_TIME || flag) {
       this.getDurationCol_last_call = currentTimestamp;
 
       this.duration_col.length = 0;

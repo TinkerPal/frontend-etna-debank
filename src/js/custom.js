@@ -266,15 +266,6 @@ const creditDropdown =
 
 const walletButton = document.getElementById('enableEthereumButton');
 
-const createTableBtnWithIcon = (icon, text, callback) => {
-  return `<span class="table-btn" onclick="${callback};">
-  <i class="icon-cell">
-    <img src="/images/${icon}.svg" class="w-full h-full" alt="#">
-  </i>
-  ${text}
-</span>`;
-};
-
 const contractsObject = {
   deposit_contract: {
     address: '',
@@ -2566,7 +2557,6 @@ async function getCreditsDashboard(callback = null) {
     leverage_column,
     set_leverage_column,
     return_credit_col,
-    return_empty_col,
     return_leverage_visible,
   ] = await Promise.all([
     userObject.credits.getIconAssetsCols(),
@@ -2581,7 +2571,6 @@ async function getCreditsDashboard(callback = null) {
     userObject.credits.getLevCol(),
     userObject.credits.getSetLevCol(),
     userObject.credits.getReturnCreditCol(),
-    userObject.credits.getReturnEmptyCol(),
     userObject.credits.returnLeverageVisible(),
   ]);
 
@@ -2769,7 +2758,7 @@ async function getCreditsDashboard(callback = null) {
 
         html += return_credit_col[i];
 
-        html += return_empty_col[i];
+        html += '<td class="table-cell table-cell-empty"></td>';
 
         html += in_wallet_column[i];
 
