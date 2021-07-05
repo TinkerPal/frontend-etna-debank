@@ -496,10 +496,11 @@ export default {
       const { cred_arr } = this;
 
       cred_arr[0].forEach((credTokenId, i) => {
-        if (toNumber(cred_arr[1][i]) > 0 || toNumber(cred_arr[2][i]) > 0) {
-          const isRepayBorrow = toNumber(cred_arr[1][i]) > 0;
+        const hasCredit = toNumber(cred_arr[1][i]) > 0;
+        const hasFee = toNumber(cred_arr[2][i]) > 0;
 
-          const text = isRepayBorrow ? 'Repay borrow' : 'Repay fee';
+        if (hasCredit || hasFee) {
+          const text = hasCredit ? 'Repay borrow' : 'Repay fee';
 
           const borrowCallback = isMobile
             ? `openTab(event, 'return_credit-tab', () => return_credit(${i.toString()}))`
@@ -509,7 +510,7 @@ export default {
             ? `openTab(event, 'return_fee-tab', () => return_fee(${i.toString()}))`
             : `return_fee(${i.toString()})`;
 
-          const callback = isRepayBorrow ? borrowCallback : feeCallback;
+          const callback = hasCredit ? borrowCallback : feeCallback;
 
           this.return_credit_col.push(
             `<td class="table-cell pl-0 rounded-r-lg">${createTableBtnWithIcon(

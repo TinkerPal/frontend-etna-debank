@@ -3655,7 +3655,7 @@ async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
   }
 }
 
-async function calcUSDValueOfDeposit(wei_amount, dep_id) {
+export async function calcUSDValueOfDeposit(wei_amount, dep_id) {
   const usd_val = await window.usage_calc_smartcontract_reader.methods
     .calcUSDValue(userObject.account, dep_id, wei_amount)
     .call({
@@ -4428,30 +4428,6 @@ export async function getWalletBalanceStr(token_address) {
 
   const adj_count_str = toTokens(erc20_count, 4);
   return adj_count_str;
-}
-
-async function getAPY(profile_id) {
-  if (!userObject.deposit_profiles) {
-    userObject.deposit_profiles = await getAllProfiles();
-  }
-
-  if (!window.dep_apys) {
-    window.dep_apys = [];
-    for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
-      window.dep_apys[toNumber(userObject.deposit_profiles[i].p_id)] = null;
-    }
-  }
-
-  if (window.dep_apys[profile_id]) {
-    return window.dep_apys[profile_id];
-  }
-  const apy = await window.usage_calc_smartcontract_reader.methods
-    .calcDepApy(profile_id)
-    .call({
-      from: userObject.account,
-    });
-  window.dep_apys[profile_id] = apy;
-  return window.dep_apys[profile_id];
 }
 
 if (isMobile) {

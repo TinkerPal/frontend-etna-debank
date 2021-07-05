@@ -1,6 +1,17 @@
+/* eslint-disable camelcase */
+import { APY_SCALE } from '../constants';
+import { isMobile } from '../constants/env';
+import { calcUSDValueOfDeposit, getWalletBalanceStr } from '../custom';
+import {
+  getAPY,
+  getPriceOfTokens,
+  isTokenNft,
+  toNumber,
+  toTokens,
+} from '../utils';
 import { CACHE_TIME } from './constants';
 import userObject from './userObject';
-import { createCellWithIcon } from './utils';
+import { createCellWithIcon, createTableBtnWithIcon } from './utils';
 
 export default {
   icon_column: [],
@@ -17,16 +28,12 @@ export default {
       this.assets_column.length = 0;
       const profiles = userObject.deposit_profiles;
 
-      for (let i = 0; i < profiles?.length ?? 0; i++) {
+      profiles.forEach((token) => {
         this.icon_column.push(
-          `<td class="table-cell">${createCellWithIcon(
-            profiles[i].p_name
-          )}</td>`
+          `<td class="table-cell">${createCellWithIcon(token.p_name)}</td>`
         );
-        this.assets_column.push(
-          `<td class="table-cell">${profiles[i].p_name}</td>`
-        );
-      }
+        this.assets_column.push(`<td class="table-cell">${token.p_name}</td>`);
+      });
     }
     return [this.icon_column, this.assets_column];
   },
@@ -43,6 +50,7 @@ export default {
         .call({
           from: userObject.account,
         });
+
       if (!Array.isArray(this.am_arr)) {
         this.am_arr = Object.values(this.am_arr);
       }
@@ -61,6 +69,7 @@ export default {
         .call({
           from: userObject.account,
         });
+
       if (!Array.isArray(this.rew_arr)) {
         this.rew_arr = Object.values(this.rew_arr);
       }
@@ -78,16 +87,21 @@ export default {
       this.apy_column.length = 0;
       const profiles = userObject.deposit_profiles;
 
-      for (let i = 0; i < profiles?.length ?? 0; i++) {
-        const apy = await getAPY(profiles[i].p_id);
-        const apy_adj = (apy / APY_SCALE) * 100;
+      const apyColumnPromise = [];
+      profiles.forEach((token) => {
+        apyColumnPromise.push(getAPY(token.p_id));
+      });
+      const apyColumnData = await Promise.all(apyColumnPromise);
+
+      apyColumnData.forEach((apy) => {
+        const apyAdj = (toNumber(apy) / APY_SCALE) * 100;
 
         this.apy_column.push(
-          `<td class="table-cell">${parseFloat(apy_adj)
+          `<td class="table-cell">${parseFloat(apyAdj)
             .toFixed(2)
             .toString()}</td>`
         );
-      }
+      });
     }
     return this.apy_column;
   },
@@ -141,28 +155,29 @@ export default {
       this.getDepCol_last_call = currentTimestamp;
 
       this.dep_column.length = 0;
+
       const profiles = userObject.deposit_profiles;
       const { am_arr } = this;
 
-      for (let j = 0; j < profiles?.length ?? 0; j++) {
-        let txt = '';
-        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
-          if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id)) {
-            // found
-            if (toNumber(profiles[j].p_dep_type) === ERC721_TOKEN) {
-              // amount
-              txt = `<td class="table-cell">${am_arr[1][i]}</td>`;
-            } else {
-              // let am = window.web3js_reader.utils.fromWei(am_arr[1][i], 'ether');
-              const adj_am = toTokens(am_arr[1][i], 4); // ((parseFloat(am)).toFixed(4)).toString();
-              txt = `<td class="table-cell">${adj_am}</td>`;
-            }
-            break;
-          }
+      profiles.forEach((token) => {
+        const depositTokenId = am_arr[0].find(
+          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
+        );
+
+        if (depositTokenId) {
+          const i = am_arr[0].indexOf(depositTokenId);
+
+          this.dep_column.push(
+            `<td class="table-cell">${
+              isTokenNft(depositTokenId)
+                ? am_arr[1][i]
+                : toTokens(am_arr[1][i], 4)
+            }</td>`
+          );
+        } else {
+          this.dep_column.push(`<td class="table-cell">-</td>`);
         }
-        if (!txt) txt = '<td class="table-cell">-</td>';
-        this.dep_column.push(txt);
-      }
+      });
     }
     return this.dep_column;
   },
@@ -181,32 +196,43 @@ export default {
       const profiles = userObject.deposit_profiles;
       const { am_arr } = this;
 
-      for (let j = 0; j < profiles?.length ?? 0; j++) {
-        let txt = '';
-        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
-          if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id)) {
-            // found
+      const calcUsdValuePromise = [];
+      profiles.forEach((token) => {
+        const depositTokenId = am_arr[0].find(
+          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
+        );
 
-            const am = await calcUSDValueOfDeposit(am_arr[1][i], i);
-            this.usd_val_only_col.push({
-              val: am,
-              ori_index: j,
-            });
-            txt = `<td class="table-cell">${am}</td>`;
+        if (depositTokenId) {
+          const i = am_arr[0].indexOf(depositTokenId);
 
-            break;
-          }
+          calcUsdValuePromise.push(calcUSDValueOfDeposit(am_arr[1][i], i));
         }
-        if (!txt) {
-          txt = '<td class="table-cell">-</td>';
+      });
+      const calcUsdValueData = await Promise.all(calcUsdValuePromise);
+
+      profiles.forEach((token, profileIndex) => {
+        const depositTokenIndex = am_arr[0].findIndex(
+          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
+        );
+
+        if (depositTokenIndex !== -1) {
+          const usdValue = calcUsdValueData[depositTokenIndex];
+
+          this.usd_val_only_col.push({
+            val: usdValue,
+            ori_index: profileIndex,
+          });
+
+          this.usd_val_column.push(`<td class="table-cell">${usdValue}</td>`);
+        } else {
           this.usd_val_only_col.push({
             val: 0,
-            ori_index: j,
+            ori_index: profileIndex,
           });
-        }
 
-        this.usd_val_column.push(txt);
-      }
+          this.usd_val_column.push(`<td class="table-cell">-</td>`);
+        }
+      });
     }
     return [this.usd_val_column, this.usd_val_only_col];
   },
@@ -222,26 +248,45 @@ export default {
       const profiles = userObject.deposit_profiles;
       const { am_arr } = this;
 
-      for (let j = 0; j < profiles?.length ?? 0; j++) {
-        let txt = '';
-        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
-          if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id)) {
-            if (toNumber(am_arr[1][i]) === 0) {
-              txt = '<td class="table-cell">-</td>';
-            } else {
-              const days = await window.staking_smartcontract.methods
-                .depositDays(userObject.account, i)
-                .call({
-                  from: userObject.account,
-                }); // duration
-              txt = `<td class="table-cell">${days.toString()}</td>`;
-            }
-            break;
-          }
+      const depositDaysPromise = [];
+      profiles.forEach((token) => {
+        const depositTokenIndex = am_arr[0].findIndex(
+          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
+        );
+
+        if (
+          depositTokenIndex !== -1 &&
+          toNumber(am_arr[1][depositTokenIndex]) > 0
+        ) {
+          depositDaysPromise.push(
+            window.staking_smartcontract.methods
+              .depositDays(userObject.account, depositTokenIndex)
+              .call({
+                from: userObject.account,
+              })
+          );
         }
-        if (!txt) txt = '<td class="table-cell">-</td>';
-        this.duration_col.push(txt);
-      }
+      });
+      const depositDaysData = await Promise.all(depositDaysPromise);
+
+      profiles.forEach((token) => {
+        const depositTokenIndex = am_arr[0].findIndex(
+          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
+        );
+
+        if (
+          depositTokenIndex !== -1 &&
+          toNumber(am_arr[1][depositTokenIndex]) > 0
+        ) {
+          const days = depositDaysData[depositTokenIndex];
+
+          this.duration_col.push(
+            `<td class="table-cell">${days.toString()}</td>`
+          );
+        } else {
+          this.duration_col.push(`<td class="table-cell">-</td>`);
+        }
+      });
     }
     return this.duration_col;
   },
@@ -260,25 +305,24 @@ export default {
       const profiles = userObject.deposit_profiles;
       const { am_arr } = this;
 
-      for (let j = 0; j < profiles?.length ?? 0; j++) {
-        let txt = '';
-        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
-          if (toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id)) {
-            // found
-            if (toNumber(profiles[j].p_dep_type) === ERC721_TOKEN) {
-              // amount
-              txt = `<td class="table-cell">${am_arr[2][i]}</td>`;
-            } else {
-              // let am = window.web3js_reader.utils.fromWei(am_arr[2][i], 'ether');
-              const adj_am = toTokens(am_arr[2][i], 4); // ((parseFloat(am)).toFixed(4)).toString();
-              txt = `<td class="table-cell">${adj_am}</td>`;
-            }
-            break;
-          }
+      profiles.forEach((token) => {
+        const depositTokenId = am_arr[0].find(
+          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
+        );
+        const isNft = isTokenNft(token.p_id);
+
+        if (depositTokenId) {
+          const i = am_arr[0].indexOf(depositTokenId);
+
+          this.extractable_dep_col.push(
+            `<td class="table-cell">${
+              isNft ? am_arr[2][i] : toTokens(am_arr[2][i], 4)
+            }</td>`
+          );
+        } else {
+          this.extractable_dep_col.push(`<td class="table-cell">-</td>`);
         }
-        if (!txt) txt = '<td class="table-cell">-</td>';
-        this.extractable_dep_col.push(txt);
-      }
+      });
     }
     return this.extractable_dep_col;
   },
@@ -297,32 +341,33 @@ export default {
       const profiles = userObject.deposit_profiles;
       const { am_arr } = this;
 
-      for (let j = 0; j < profiles?.length ?? 0; j++) {
-        let txt = '';
-        for (let i = 0; i < am_arr[0]?.length ?? 0; i++) {
-          if (
-            toNumber(am_arr[0][i]) === toNumber(profiles[j].p_id) &&
-            toNumber(am_arr[2][i]) > 0
-          ) {
-            if (isMobile) {
-              txt = `<td class="table-cell">
-                  <div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))" class="link-arrow">
-                    <img src="./images/link-arrow.svg" alt="#">
-                  </div>
-                </td>`;
-            } else {
-              txt = `<td class="table-cell">${createTableBtnWithIcon(
-                'withdraw',
-                'Withdraw deposit',
-                `withdraw_deposit(${i.toString()})`
-              )}</td>`;
+      profiles.forEach((token) => {
+        const depositTokenId = am_arr[0].find(
+          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
+        );
+
+        if (depositTokenId) {
+          const i = am_arr[0].indexOf(depositTokenId);
+          const hasDeposit = toNumber(am_arr[2][i]) > 0;
+
+          if (hasDeposit) {
+            this.withdraw_dep_col.push(`<td class="table-cell">${
+              isMobile
+                ? `<div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))" class="link-arrow">
+                      <img src="./images/link-arrow.svg" alt="#">
+                    </div>`
+                : `${createTableBtnWithIcon(
+                    'withdraw',
+                    'Withdraw deposit',
+                    `withdraw_deposit(${i.toString()})`
+                  )}`
             }
-            break;
+              </td>`);
           }
+        } else {
+          this.withdraw_dep_col.push(`<td class="table-cell">-</td>`);
         }
-        if (!txt) txt = '<td class="table-cell">-</td>';
-        this.withdraw_dep_col.push(txt);
-      }
+      });
     }
     return this.withdraw_dep_col;
   },
@@ -338,20 +383,21 @@ export default {
       const profiles = userObject.deposit_profiles;
       const { rew_arr } = this;
 
-      for (let j = 0; j < profiles?.length ?? 0; j++) {
-        let txt = '';
-        for (let i = 0; i < rew_arr[0]?.length ?? 0; i++) {
-          if (toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id)) {
-            // found
-            // let adj = window.web3js_reader.utils.fromWei(rew_arr[1][i], 'ether');
-            const adj_str = toTokens(rew_arr[1][i], 4); // ((parseFloat(adj)).toFixed(4)).toString();
-            txt = `<td class="table-cell">${adj_str}</td>`;
-            break;
-          }
+      profiles.forEach((token) => {
+        const depositTokenId = rew_arr[0].find(
+          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
+        );
+
+        if (depositTokenId) {
+          const i = rew_arr[0].indexOf(depositTokenId);
+
+          this.reward_col.push(
+            `<td class="table-cell">${toTokens(rew_arr[1][i], 4)}</td>`
+          );
+        } else {
+          this.reward_col.push(`<td class="table-cell">-</td>`);
         }
-        if (!txt) txt = '<td class="table-cell">-</td>';
-        this.reward_col.push(txt);
-      }
+      });
     }
     return this.reward_col;
   },
@@ -370,18 +416,21 @@ export default {
       const profiles = userObject.deposit_profiles;
       const { rew_arr } = this;
 
-      for (let j = 0; j < profiles?.length ?? 0; j++) {
-        let txt = '';
-        for (let i = 0; i < rew_arr[0]?.length ?? 0; i++) {
-          if (toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id)) {
-            const adj_str = toTokens(rew_arr[2][i], 4);
-            txt = `<td class="table-cell">${adj_str}</td>`;
-            break;
-          }
+      profiles.forEach((token) => {
+        const depositTokenId = rew_arr[0].find(
+          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
+        );
+
+        if (depositTokenId) {
+          const i = rew_arr[0].indexOf(depositTokenId);
+
+          this.extractable_reward_col.push(
+            `<td class="table-cell">${toTokens(rew_arr[2][i], 4)}</td>`
+          );
+        } else {
+          this.extractable_reward_col.push(`<td class="table-cell">-</td>`);
         }
-        if (!txt) txt = '<td class="table-cell">-</td>';
-        this.extractable_reward_col.push(txt);
-      }
+      });
     }
     return this.extractable_reward_col;
   },
@@ -401,24 +450,36 @@ export default {
       const profiles = userObject.deposit_profiles;
       const { rew_arr } = this;
 
-      for (let j = 0; j < profiles?.length ?? 0; j++) {
-        let txt = '';
-        for (let i = 0; i < rew_arr[0]?.length ?? 0; i++) {
-          if (toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id)) {
-            const usdReward = await getPriceOfTokens(
-              rew_arr[2][i],
-              profiles[j].p_id,
-              true
-            );
+      const usdRewardPromise = [];
+      profiles.forEach((token) => {
+        const depositTokenId = rew_arr[0].find(
+          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
+        );
 
-            txt = `<td class="table-cell">${usdReward}</td>`;
+        if (depositTokenId) {
+          const i = rew_arr[0].indexOf(depositTokenId);
 
-            break;
-          }
+          usdRewardPromise.push(
+            getPriceOfTokens(rew_arr[2][i], token.p_id, true)
+          );
         }
-        if (!txt) txt = '<td class="table-cell">-</td>';
-        this.usd_reward_column.push(txt);
-      }
+      });
+      const usdRewardData = await Promise.all(usdRewardPromise);
+
+      profiles.forEach((token) => {
+        const depositTokenIndex = rew_arr[0].findIndex(
+          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
+        );
+
+        if (depositTokenIndex !== -1) {
+          const usdReward = usdRewardData[depositTokenIndex];
+          this.usd_reward_column.push(
+            `<td class="table-cell">${usdReward}</td>`
+          );
+        } else {
+          this.usd_reward_column.push(`td class="table-cell">-</td>`);
+        }
+      });
     }
     return this.usd_reward_column;
   },
@@ -437,32 +498,34 @@ export default {
       const profiles = userObject.deposit_profiles;
       const { rew_arr } = this;
 
-      for (let j = 0; j < profiles?.length ?? 0; j++) {
-        let txt = '';
-        for (let i = 0; i < rew_arr[0]?.length ?? 0; i++) {
-          if (
-            toNumber(rew_arr[0][i]) === toNumber(profiles[j].p_id) &&
-            toNumber(rew_arr[2][i]) > 0
-          ) {
-            if (isMobile) {
-              txt = `<td class="table-cell">
-                  <div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))" class="link-arrow">
-                    <img src="./images/link-arrow.svg" alt="#">
-                  </div>
-                </td>`;
-            } else {
-              txt = `<td class="table-cell">${createTableBtnWithIcon(
-                'withdraw',
-                'Withdraw yield',
-                `withdraw_reward(${i.toString()})`
-              )}</td>`;
+      profiles.forEach((token) => {
+        const depositTokenId = rew_arr[0].find(
+          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
+        );
+
+        if (depositTokenId) {
+          const i = rew_arr[0].indexOf(depositTokenId);
+          const hasReward = toNumber(rew_arr[2][i]) > 0;
+
+          if (hasReward) {
+            this.withdraw_rew_col.push(`<td class="table-cell">${
+              isMobile
+                ? `<div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))" class="link-arrow">
+            <img src="./images/link-arrow.svg" alt="#">
+          </div>`
+                : `${createTableBtnWithIcon(
+                    'withdraw',
+                    'Withdraw yield',
+                    `withdraw_reward(${i.toString()})`
+                  )}`
             }
-            break;
+            
+          </td>`);
           }
+        } else {
+          this.withdraw_rew_col.push(`<td class="table-cell">-</td>`);
         }
-        if (!txt) txt = '<td class="table-cell">-</td>';
-        this.withdraw_rew_col.push(txt);
-      }
+      });
     }
     return this.withdraw_rew_col;
   },

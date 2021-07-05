@@ -439,3 +439,27 @@ export async function getPriceOfTokens(
 
   return parseFloat(window.web3js_reader.utils.fromWei(usd_adj, 'ether'));
 }
+
+export async function getAPY(profile_id) {
+  if (!userObject.deposit_profiles) {
+    userObject.deposit_profiles = await getAllProfiles();
+  }
+
+  if (!window.dep_apys) {
+    window.dep_apys = [];
+    for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
+      window.dep_apys[toNumber(userObject.deposit_profiles[i].p_id)] = null;
+    }
+  }
+
+  if (window.dep_apys[profile_id]) {
+    return window.dep_apys[profile_id];
+  }
+  const apy = await window.usage_calc_smartcontract_reader.methods
+    .calcDepApy(profile_id)
+    .call({
+      from: userObject.account,
+    });
+  window.dep_apys[profile_id] = apy;
+  return window.dep_apys[profile_id];
+}
