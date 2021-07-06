@@ -45,7 +45,7 @@ const userObject = {
       if (current_timestamp > this.getAmArr_last_call + CACHE_TIME) {
         this.getAmArr_last_call = current_timestamp;
 
-        this.am_arr = await window.staking_smartcontract.methods
+        this.am_arr = await window.staking_smartcontract_reader.methods
           .amountsPerDeposits(userObject.account)
           .call({
             from: userObject.account,
@@ -62,7 +62,7 @@ const userObject = {
       const current_timestamp = Date.now();
       if (current_timestamp > this.getRewArr_last_call + CACHE_TIME) {
         this.getRewArr_last_call = current_timestamp;
-        this.rew_arr = await window.staking_smartcontract.methods
+        this.rew_arr = await window.staking_smartcontract_reader.methods
           .rewardsPerDeposits(userObject.account)
           .call({
             from: userObject.account,
@@ -255,7 +255,7 @@ const userObject = {
               if (toNumber(am_arr[1][i]) === 0) {
                 txt = '<td class="table-cell">-</td>';
               } else {
-                const days = await window.staking_smartcontract.methods
+                const days = await window.staking_smartcontract_reader.methods
                   .depositDays(userObject.account, i)
                   .call({
                     from: userObject.account,
@@ -1321,7 +1321,7 @@ const userObject = {
             let txt_unl = '';
 
             if (toNumber(am_arr[1][i]) > 0) {
-              const days = await window.staking_smartcontract.methods
+              const days = await window.staking_smartcontract_reader.methods
                 .depositDays(userObject.account, i)
                 .call({
                   from: userObject.account,

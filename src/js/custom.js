@@ -781,11 +781,12 @@ async function deposit() {
     }
 
     try {
-      const isNFTCollateralExists = await window.staking_smartcontract.methods
-        .isNFTCollateralExists(userObject.account)
-        .call({
-          from: userObject.account,
-        });
+      const isNFTCollateralExists =
+        await window.staking_smartcontract_reader.methods
+          .isNFTCollateralExists(userObject.account)
+          .call({
+            from: userObject.account,
+          });
 
       if (isNFTCollateralExists) {
         modal_add_deposit.isLoadedAfterConfirm(false);
@@ -813,7 +814,7 @@ async function deposit() {
     amount = userObject.state.selectedNFTAssets.length;
 
     const MAX_AMOUNT_OF_NFT = 50;
-    const amounTsPerDeposits = await window.staking_smartcontract.methods
+    const amounTsPerDeposits = await window.staking_smartcontract_reader.methods
       .amountsPerDeposits(userObject.account)
       .call({
         from: userObject.account,
