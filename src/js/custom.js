@@ -3225,7 +3225,7 @@ async function getOurDashbord(callback = null) {
   const ourCryptoList = document.querySelector('#our-crypto-list');
   if (!ourCryptoList) return;
 
-  const data = await fetch('/dashboard.json')
+  const data = await fetch(`/dashboard.json?ts=${Date.now()}`)
     .then((response) => {
       if (response.status !== 200) {
         throw new Error(response.status);
