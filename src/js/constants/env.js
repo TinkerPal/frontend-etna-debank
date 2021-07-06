@@ -8,12 +8,7 @@ const GLOBAL_VARIABLES = {
     },
     WEB3_MODAL_NETWORK: { network: 'binance' },
     RPC_LIST: [
-      // 'https://bsc-dataseed.binance.org/',
-      // 'https://bsc-dataseed1.defibit.io/',
-      // 'https://bsc-dataseed1.ninicoin.io/',
-      'https://proud-patient-forest.bsc.quiknode.pro/8fffb4d84f42ec02686c35631b566c819138e876/',
-      'https://proud-patient-forest.bsc.quiknode.pro/8fffb4d84f42ec02686c35631b566c819138e876/',
-      'https://proud-patient-forest.bsc.quiknode.pro/8fffb4d84f42ec02686c35631b566c819138e876/',
+      'https://apis.ankr.com/abbe2452f68c447aa37facdffe004205/99c48308afafffe45b5aeae352176b72/binance/full/main',
     ],
     LIQ_PAIRS: [
       {
