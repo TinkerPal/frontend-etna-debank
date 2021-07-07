@@ -507,7 +507,7 @@ const userObject = {
       const current_timestamp = Date.now();
       if (current_timestamp > this.getCredArr_last_call + CACHE_TIME) {
         this.getCredArr_last_call = current_timestamp;
-        this.cred_arr = await window.credit_smartcontract.methods
+        this.cred_arr = await window.credit_smartcontract_reader.methods
           .dataPerCredits(userObject.account)
           .call({
             from: userObject.account,
@@ -522,7 +522,7 @@ const userObject = {
       const current_timestamp = Date.now();
       if (current_timestamp > this.getCltArr_last_call + CACHE_TIME) {
         this.getCltArr_last_call = current_timestamp;
-        this.clt_arr = await window.credit_smartcontract.methods
+        this.clt_arr = await window.credit_smartcontract_reader.methods
           .amountsPerCollaterals(userObject.account)
           .call({
             from: userObject.account,
@@ -541,7 +541,7 @@ const userObject = {
         this.lev_arr.length = 0;
         this.lev_ratio_arr.length = 0;
         for (let i = 0; i < this.cred_arr[0]?.length ?? 0; i++) {
-          const res = await window.liqlev_smartcontract.methods
+          const res = await window.liqlev_smartcontract_reader.methods
             .viewCustomerLeverageByCredId(userObject.account, i)
             .call({
               from: userObject.account,
@@ -594,13 +594,13 @@ const userObject = {
           const clt_id = cred_arr[4][i];
           const clt_profile_id = clt_arr[0][toNumber(clt_id)];
 
-          const cc = await window.credit_smartcontract.methods
+          const cc = await window.credit_smartcontract_reader.methods
             .viewCustomerCredit(userObject.account, 0)
             .call({
               from: userObject.account,
             });
           const cc_index = toNumber(cc.index);
-          const x = await window.credit_smartcontract.methods
+          const x = await window.credit_smartcontract_reader.methods
             .viewCustomerCreditExtraDataByIndex(cc_index, i)
             .call({
               from: userObject.account,
@@ -786,13 +786,13 @@ const userObject = {
                 adj_am = clt_amount;
               } else {
                 adj_am = toTokens(clt_amount, 4);
-                const cc = await window.credit_smartcontract.methods
+                const cc = await window.credit_smartcontract_reader.methods
                   .viewCustomerCredit(userObject.account, 0)
                   .call({
                     from: userObject.account,
                   });
                 const cc_index = toNumber(cc.index);
-                const credit = await window.credit_smartcontract.methods
+                const credit = await window.credit_smartcontract_reader.methods
                   .viewCustomerCreditByIndex(cc_index, i)
                   .call({
                     from: userObject.account,
@@ -801,7 +801,7 @@ const userObject = {
                   credit.credit_amount,
                   credit.profile_id
                 ); // usd value for credit
-                const coll = await window.credit_smartcontract.methods
+                const coll = await window.credit_smartcontract_reader.methods
                   .viewCustomerCollateralByIndex(cc_index, credit.collateral_id)
                   .call({
                     from: userObject.account,

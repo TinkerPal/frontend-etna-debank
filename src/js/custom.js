@@ -465,7 +465,9 @@ async function getAccount() {
       initStakingContract(),
       initStakingContractReader(),
       initCreditContract(),
+      initCreditContractReader(),
       initLiqLevContract(),
+      initLiqLevContractReader(),
       initCyclopsNFTContract(),
     ]);
 
@@ -483,6 +485,7 @@ async function getAccount() {
     window.gp *= 2;
   } catch (error) {
     errorEmptyMsg('Cannot access wallet. Reload your page, please.');
+    throw new Error(error);
   }
 }
 
@@ -526,7 +529,9 @@ async function getAccountWalletConnect() {
       initStakingContract(),
       initStakingContractReader(),
       initCreditContract(),
+      initCreditContractReader(),
       initLiqLevContract(),
+      initLiqLevContractReader(),
       initCyclopsNFTContract(),
     ]);
 
@@ -546,6 +551,7 @@ async function getAccountWalletConnect() {
     await postWalletCallback();
   } catch (error) {
     errorEmptyMsg('Cannot access wallet. Reload your page, please.');
+    throw new Error(error);
   }
 }
 
@@ -564,7 +570,7 @@ async function setNetInfo() {
       netIcon.style.color = 'red';
       netTxt.innerHTML = ' wrong network, connect to BSC';
     } else if (chainIdHex !== window.chainId) {
-      netName.innerHTML = chains[window.chainId];
+      netName.innerHTML = chains[chainIdHex] ?? 'Unknown';
       netInfo.style.display = 'flex';
       netIcon.style.color = 'red';
       netTxt.innerHTML = ' wrong network, connect to BSC';
@@ -611,6 +617,17 @@ async function initCreditContract(callback = null) {
   } else if (callback) callback(window.credit_smartcontract);
 }
 
+async function initCreditContractReader(callback = null) {
+  if (!window.credit_smartcontract_reader) {
+    const reader = web3jsReadersList.get();
+    window.credit_smartcontract_reader = await new reader.eth.Contract(
+      credit_contract_abi,
+      window.credit_contract_address
+    );
+    if (callback) callback(window.credit_smartcontract_reader);
+  } else if (callback) callback(window.credit_smartcontract_reader);
+}
+
 async function initLiqLevContract(callback = null) {
   if (!window.liqlev_smartcontract) {
     if (window.web3js) {
@@ -621,6 +638,17 @@ async function initLiqLevContract(callback = null) {
       if (callback) callback(window.liqlev_smartcontract);
     }
   } else if (callback) callback(window.liqlev_smartcontract);
+}
+
+async function initLiqLevContractReader(callback = null) {
+  if (!window.liqlev_smartcontract_reader) {
+    const reader = web3jsReadersList.get();
+    window.liqlev_smartcontract_reader = await new reader.eth.Contract(
+      liqlev_contract_abi,
+      window.liqlev_contract_address
+    );
+    if (callback) callback(window.liqlev_smartcontract_reader);
+  } else if (callback) callback(window.liqlev_smartcontract_reader);
 }
 
 async function initVotesCalcContractReader(callback = null) {
@@ -754,6 +782,7 @@ async function getCredit() {
       .catch((error) => {
         modal_add_credit.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
+        throw new Error(error);
       });
   });
 }
@@ -797,7 +826,7 @@ async function deposit() {
         return;
       }
     } catch (error) {
-      console.warn(error);
+      throw new Error(error);
     }
 
     const isApproved = await window.cyclops_nft_smartcontract.methods
@@ -936,6 +965,7 @@ async function deposit() {
       .catch((error) => {
         modal_add_deposit.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
+        throw new Error(error);
       });
   });
 }
@@ -1053,6 +1083,7 @@ async function stake_liq() {
       .catch((error) => {
         modal_add_lliquidity.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
+        throw new Error(error);
       });
   });
 }
@@ -1103,6 +1134,7 @@ async function approve_deposit() {
         .catch((error) => {
           errorMsg('Smartcontract communication error');
           modal_add_deposit.isLoadedAfterApprove(false);
+          throw new Error(error);
         });
     }
   } else {
@@ -1165,6 +1197,7 @@ async function approveTokenMove(token_address, amount_wei, toAddress, modal) {
     .catch((error) => {
       modal.isLoadedAfterApprove(false);
       errorMsg('Smartcontract communication error');
+      throw new Error(error);
     });
 }
 
@@ -1362,22 +1395,12 @@ function resetMsg() {
   safeSetInnerHTMLById('info_pane_message', '');
 }
 
-function eventFire(el, etype) {
-  if (el.fireEvent) {
-    el.fireEvent(`on${etype}`);
-  } else {
-    const evObj = document.createEvent('Events');
-    evObj.initEvent(etype, true, false);
-    el.dispatchEvent(evObj);
-  }
-}
-
 async function onUniversalConnect() {
   try {
     window.provider = await web3Modal.connectTo('walletconnect');
     getAccountWalletConnect();
-  } catch (e) {
-    return;
+  } catch (error) {
+    throw new Error(error);
   }
 
   window.provider.on('accountsChanged', (accounts) => {
@@ -1462,7 +1485,7 @@ async function connectWeb3() {
         return;
       }
     } catch (error) {
-      console.warn(error);
+      throw new Error(error);
     }
 
     // await web3Modal.updateTheme("dark");
@@ -1509,13 +1532,6 @@ async function toggleWeb3Connect() {
       walletButton.classList.add('web3-disconnected');
     }
   }
-}
-
-function copyToClipboard(elem) {
-  // elem should be input
-  elem.select();
-  elem.setSelectionRange(0, 99999);
-  document.execCommand('copy');
 }
 
 async function updateData(action = null) {
@@ -1600,6 +1616,7 @@ function loginAdmin() {
       } else {
         // console.error(error);
       }
+      throw new Error(error);
     });
 }
 
@@ -1644,7 +1661,7 @@ function checkAdminButton(token) {
       }
     })
     .catch((error) => {
-      new Error(error);
+      throw new Error(error);
     });
 }
 
@@ -1684,6 +1701,7 @@ function setWalletPref(pref) {
     })
     .catch((error) => {
       errorMsg('Set wallet preferences error');
+      throw new Error(error);
     });
 }
 
@@ -1725,6 +1743,7 @@ async function getWalletPref() {
     })
     .catch((error) => {
       userObject.state.current_page_id = 'dashboard-tab';
+      throw new Error(error);
     });
 }
 
@@ -1908,6 +1927,7 @@ function checkAdminAuthentification(
     })
     .catch((error) => {
       errorMsg('This wallet does not have admin access');
+      throw new Error(error);
     });
 }
 
@@ -1956,7 +1976,7 @@ async function getBackendParameter(var_name, callback = null) {
       }
     })
     .catch((error) => {
-      new Error(error);
+      throw new Error(error);
     });
 }
 
@@ -3808,6 +3828,7 @@ async function set_leverage_confirm(ratio, cred_id) {
       .catch((error) => {
         errorMsg('Smartcontract communication error');
         modal_add_leverage.isLoadedAfterConfirm(false);
+        throw new Error(error);
       });
   });
   return true;
@@ -3841,6 +3862,7 @@ async function unfreeze_leverage(cred_id) {
       .catch((error) => {
         errorMsg('Smartcontract communication error');
         modal_unfreeze.isLoadedAfterConfirm(false);
+        throw new Error(error);
       });
   });
   return true;
@@ -3990,6 +4012,7 @@ function withdraw_deposit_confirm(dep_id) {
       .catch((error) => {
         modal_withdraw_deposit.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
+        throw new Error(error);
       });
   });
 }
@@ -4149,6 +4172,7 @@ async function return_credit_confirm(cred_id) {
       .catch((error) => {
         modal_return_credit.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
+        throw new Error(error);
       });
   });
 }
@@ -4249,6 +4273,7 @@ async function return_fee_confirm(cred_id) {
       .catch((error) => {
         modal_return_fee.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
+        throw new Error(error);
       });
   });
 }
@@ -4288,6 +4313,7 @@ function withdraw_reward_confirm(dep_id) {
       .catch((error) => {
         modal_withdraw_yield.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
+        throw new Error(error);
       });
   });
 }
@@ -4411,13 +4437,13 @@ async function set_leverage(ratio, cred_id) {
   const cytr_profile_id = await getCYTRProfileId();
   const credit_size = userObject.credits.cred_arr[1][cred_id]; // safeFloatToWei(document.getElementById('tokens_amount_getcredit').value);
 
-  const cc = await window.credit_smartcontract.methods
+  const cc = await window.credit_smartcontract_reader.methods
     .viewCustomerCredit(userObject.account, 0)
     .call({
       from: userObject.account,
     });
   const cc_index = toNumber(cc.index);
-  const x = await window.credit_smartcontract.methods
+  const x = await window.credit_smartcontract_reader.methods
     .viewCustomerCreditExtraDataByIndex(cc_index, cred_id)
     .call({
       from: userObject.account,
