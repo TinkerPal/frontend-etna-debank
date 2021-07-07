@@ -1,4 +1,4 @@
-import { ERC721_TOKEN } from '../constants';
+import { ERC721_TOKEN, NATIVE_ETHEREUM, UNISWAP_PAIR } from '../constants';
 
 function toNormalUSDView(data) {
   return numeral(data).format('$ 0,0.00');
@@ -294,6 +294,10 @@ export function isTokenNft(tokenId) {
   return toNumber(depTypeByDepositTokenId(tokenId)) === ERC721_TOKEN;
 }
 
+export function isTokenLiqPairs(tokenId) {
+  return toNumber(depTypeByLiqpairsTokenId(tokenId)) === UNISWAP_PAIR;
+}
+
 export function isTokenBnb(tokenId) {
   return toNumber(depTypeByDepositTokenId(tokenId)) === NATIVE_ETHEREUM;
 }
@@ -343,11 +347,7 @@ export function tokenIdByTokenName(tokenName) {
   return BAD_DEPOSIT_PROFILE_ID;
 }
 
-export async function APYStrByLiqpairsTokenName(profile_name) {
-  if (!userObject.deposit_profiles_liqpairs) {
-    userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
-  }
-
+export function APYStrByLiqpairsTokenName(profile_name) {
   for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
     if (userObject.deposit_profiles_liqpairs[i].p_name === profile_name) {
       const apy = toNumber(userObject.deposit_profiles_liqpairs[i].init_apy);
@@ -359,11 +359,7 @@ export async function APYStrByLiqpairsTokenName(profile_name) {
   return null;
 }
 
-async function tokenIdByLiqpairsTokenName(profile_name) {
-  if (!userObject.deposit_profiles_liqpairs) {
-    userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
-  }
-
+export function tokenIdByLiqpairsTokenName(profile_name) {
   for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
     if (userObject.deposit_profiles_liqpairs[i].p_name === profile_name) {
       return toNumber(userObject.deposit_profiles_liqpairs[i].p_id);
@@ -372,11 +368,7 @@ async function tokenIdByLiqpairsTokenName(profile_name) {
   return null;
 }
 
-async function tokenNameByLiqpairsTokenId(profile_id) {
-  if (!userObject.deposit_profiles_liqpairs) {
-    userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
-  }
-
+export function tokenNameByLiqpairsTokenId(profile_id) {
   for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
     if (
       toNumber(userObject.deposit_profiles_liqpairs[i].p_id) ===
@@ -389,10 +381,6 @@ async function tokenNameByLiqpairsTokenId(profile_id) {
 }
 
 async function depTypeByLiqpairsTokenId(profile_id) {
-  if (!userObject.deposit_profiles_liqpairs) {
-    userObject.deposit_profiles_liqpairs = await getAllProfilesUniswap();
-  }
-
   for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
     if (
       toNumber(userObject.deposit_profiles_liqpairs[i].p_id) ===

@@ -1484,17 +1484,6 @@ async function updateData(action = null) {
     });
 
     getOurDashbord();
-
-    // if (
-    //   window.location.pathname === '/our-dashboard.html' ||
-    //   window.location.pathname === '/our-dashboard'
-    // ) {
-    //   getOurDashbord();
-    // } else {
-    //   getCapDashbord();
-    // }
-
-    // getFamersDashboard();
   } else if (action === 'make_deposit') {
     await getDepositsDashboard();
   } else if (action === 'withdraw_deposit') {

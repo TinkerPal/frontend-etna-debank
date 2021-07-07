@@ -351,18 +351,21 @@ export default {
           const hasDeposit = toNumber(am_arr[2][i]) > 0;
 
           if (hasDeposit) {
-            this.withdraw_dep_col.push(`<td class="table-cell">${
-              isMobile
-                ? `<div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))" class="link-arrow">
-                      <img src="./images/link-arrow.svg" alt="#">
-                    </div>`
-                : `${createTableBtnWithIcon(
-                    'withdraw',
-                    'Withdraw deposit',
-                    `withdraw_deposit(${i.toString()})`
-                  )}`
-            }
-              </td>`);
+            this.withdraw_dep_col.push(`
+              <td class="table-cell">
+                ${
+                  isMobile
+                    ? `<div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))" class="link-arrow">
+                        <img src="./images/link-arrow.svg" alt="#">
+                      </div>`
+                    : `${createTableBtnWithIcon(
+                        'withdraw',
+                        'Withdraw deposit',
+                        `withdraw_deposit(${i.toString()})`
+                      )}`
+                }
+              </td>
+            `);
           }
         } else {
           this.withdraw_dep_col.push(`<td class="table-cell">-</td>`);
@@ -508,19 +511,21 @@ export default {
           const hasReward = toNumber(rew_arr[2][i]) > 0;
 
           if (hasReward) {
-            this.withdraw_rew_col.push(`<td class="table-cell">${
-              isMobile
-                ? `<div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))" class="link-arrow">
-            <img src="./images/link-arrow.svg" alt="#">
-          </div>`
-                : `${createTableBtnWithIcon(
-                    'withdraw',
-                    'Withdraw yield',
-                    `withdraw_reward(${i.toString()})`
-                  )}`
-            }
-            
-          </td>`);
+            this.withdraw_rew_col.push(`
+              <td class="table-cell">
+                ${
+                  isMobile
+                    ? `<div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))" class="link-arrow">
+                        <img src="./images/link-arrow.svg" alt="#">
+                      </div>`
+                    : `${createTableBtnWithIcon(
+                        'withdraw',
+                        'Withdraw yield',
+                        `withdraw_reward(${i.toString()})`
+                      )}`
+                }
+              </td>
+            `);
           }
         } else {
           this.withdraw_rew_col.push(`<td class="table-cell">-</td>`);

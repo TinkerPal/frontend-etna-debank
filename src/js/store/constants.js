@@ -77,6 +77,34 @@ export const CRYPTO_ICONS = [
     name: 'bnb-st2',
     icon: 'pancake',
   },
+  {
+    name: 'bnb-etna-2w',
+    icon: 'pancake',
+  },
+  {
+    name: 'bnb-etna-1w',
+    icon: 'pancake',
+  },
+  {
+    name: 'bnb-etna-1m',
+    icon: 'pancake',
+  },
+  {
+    name: 'bnb-etna-1m',
+    icon: 'pancake',
+  },
+  {
+    name: 'bnb-etna-2w',
+    icon: 'pancake',
+  },
+  {
+    name: 'bnb-etna-1w',
+    icon: 'pancake',
+  },
+  {
+    name: 'bnb-etna',
+    icon: 'pancake',
+  },
 ];
 
 export const PERIOD_NAME_FROM_CODE = {

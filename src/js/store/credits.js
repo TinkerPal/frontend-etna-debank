@@ -35,6 +35,10 @@ export default {
           from: userObject.account,
         });
 
+      if (!Array.isArray(this.cred_arr)) {
+        this.cred_arr = Object.values(this.cred_arr);
+      }
+
       const credPricePromise = [];
       this.cred_arr[0].forEach((credTokenId, i) => {
         const creditAmount = toNumber(this.cred_arr[1][i]);
@@ -92,6 +96,10 @@ export default {
         .call({
           from: userObject.account,
         });
+
+      if (!Array.isArray(this.clt_arr)) {
+        this.clt_arr = Object.values(this.clt_arr);
+      }
     }
     return this.clt_arr;
   },
@@ -192,19 +200,19 @@ export default {
         const calcVarApyPromise = [];
         this.cred_cc_arr.forEach((item, i) => {
           calcVarApyPromise.push(
-            !item.is_fixed_apy
-              ? window.usage_calc_smartcontract_reader.methods
+            item.is_fixed_apy
+              ? item.fixed_apy
+              : window.usage_calc_smartcontract_reader.methods
                   .calcVarApy(cred_arr[0][i], clt_arr[0][i])
                   .call({
                     from: userObject.account,
                   })
-              : item.fixed_apy
           );
         });
         const calcVarApy = await Promise.all(calcVarApyPromise);
 
         calcVarApy.forEach((apr, i) => {
-          const aprAdj = (apr / APY_SCALE) * 100;
+          const aprAdj = (toNumber(apr) / APY_SCALE) * 100;
           this.apr_column.push(
             `<td class="table-cell">${
               this.cred_cc_arr[i].is_fixed_apy ? 'V: ' : 'F: '
@@ -346,13 +354,11 @@ export default {
             toNumber(this.cred_price_arr[i]) * 0.9 >
             toNumber(collateralPriceArray[i]);
 
-          isCollateralCheaperThenCredit
-            ? this.clt_column.push(
-                `<td class="table-cell attention-cell" title="Your collateral doesn’t cover credit value, please be aware that bank can liquidate your collateral partially or fully at any moment. To prevent that - please return your credit fully or partially.">${collateralName}: ${collateralAmount}</td>`
-              )
-            : this.clt_column.push(
-                `<td class="table-cell">${collateralName}: ${collateralAmount}</td>`
-              );
+          this.clt_column.push(
+            isCollateralCheaperThenCredit
+              ? `<td class="table-cell attention-cell" title="Your collateral doesn’t cover credit value, please be aware that bank can liquidate your collateral partially or fully at any moment. To prevent that - please return your credit fully or partially.">${collateralName}: ${collateralAmount}</td>`
+              : `<td class="table-cell">${collateralName}: ${collateralAmount}</td>`
+          );
         }
       });
     }
@@ -374,9 +380,7 @@ export default {
         const duration = toNumber(cred_arr[3][i]);
 
         this.duration_col.push(
-          `<td class="table-cell">${
-            duration === 0 ? '-' : duration.toString()
-          }</td>`
+          `<td class="table-cell">${duration > 0 ? duration : '-'}</td>`
         );
       });
     }
@@ -398,7 +402,7 @@ export default {
         const fee = toNumber(cred_arr[2][i]);
 
         this.fee_col.push(
-          `<td class="table-cell">${fee === 0 ? '-' : toTokens(fee, 4)}</td>`
+          `<td class="table-cell">${fee > 0 ? toTokens(fee, 4) : '-'}</td>`
         );
       });
     }
@@ -418,11 +422,11 @@ export default {
       const { lev_ratio_arr } = this;
 
       cred_arr[0].forEach((credTokenId, i) => {
+        const lev = toNumber(lev_arr[i]);
+
         this.leverage_column.push(
           `<td class="table-cell">${
-            toNumber(lev_arr[i]) > 0
-              ? `${lev_ratio_arr[i]}% (${toTokens(lev_arr[i], 4)})`
-              : '-'
+            lev > 0 ? `${lev_ratio_arr[i]}% (${toTokens(lev, 4)})` : '-'
           }</td>`
         );
       });
@@ -441,22 +445,18 @@ export default {
       const { lev_arr } = this;
 
       lev_arr.forEach((levTokenId, i) => {
-        let data = '';
-
-        if (toNumber(lev_arr[i]) > 0) {
-          data = `${createTableBtnWithIcon(
-            'discount',
-            'Unfreeze',
-            isMobile
-              ? `openTab(event, 'unfreeze-tab', () => show_modal_unfreeze(${i.toString()}))`
-              : `show_modal_unfreeze(${i.toString()})`
-          )}`;
-        } else {
-          data = '-';
-        }
-
         this.set_leverage_column.push(
-          `<td class="table-cell w-12">${data}</td>`
+          `<td class="table-cell w-12">${
+            toNumber(lev_arr[i]) > 0
+              ? `${createTableBtnWithIcon(
+                  'discount',
+                  'Unfreeze',
+                  isMobile
+                    ? `openTab(event, 'unfreeze-tab', () => show_modal_unfreeze(${i.toString()}))`
+                    : `show_modal_unfreeze(${i.toString()})`
+                )}`
+              : '-'
+          }</td>`
         );
       });
     }
@@ -476,9 +476,13 @@ export default {
       const { cred_arr } = this;
       const { lev_arr } = this;
 
-      this.return_leverage_visible = cred_arr[0]?.some(
-        (value, index) => toNumber(lev_arr[index]) > 0
-      );
+      if (cred_arr[0].length > 0) {
+        this.return_leverage_visible = cred_arr[0].some(
+          (value, index) => toNumber(lev_arr[index]) > 0
+        );
+      } else {
+        this.return_leverage_visible = false;
+      }
     }
     return this.return_leverage_visible;
   },
