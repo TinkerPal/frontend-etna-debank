@@ -524,6 +524,7 @@ async function getAccountWalletConnect() {
 
     await Promise.all([
       initStakingContract(),
+      initStakingContractReader(),
       initCreditContract(),
       initLiqLevContract(),
       initCyclopsNFTContract(),
