@@ -2,7 +2,7 @@ import deposits from './deposits';
 import credits from './credits';
 import liqEarn from './liqEarn';
 
-export const userObject = {
+export default {
   loaded: false,
   self: this,
   account: '',

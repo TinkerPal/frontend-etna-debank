@@ -10,7 +10,7 @@ import {
   toTokens,
 } from '../utils';
 import { CACHE_TIME } from './constants';
-import userObject from './userObject';
+import userObject from '.';
 import { createCellWithIcon, createTableBtnWithIcon } from './utils';
 
 export default {

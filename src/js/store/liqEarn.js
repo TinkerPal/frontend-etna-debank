@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { APY_SCALE } from '../constants';
 import { isMobile } from '../constants/env';
 import { calcUSDValueOfDeposit } from '../custom';
@@ -13,7 +14,7 @@ import {
   PERIOD_LEN_FROM_CODE,
   PERIOD_NAME_FROM_CODE,
 } from './constants';
-import userObject from './userObject';
+import userObject from '.';
 import { createCellWithIcon, createTableBtnWithIcon } from './utils';
 
 export default {

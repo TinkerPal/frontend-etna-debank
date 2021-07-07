@@ -1,23 +1,15 @@
 /* eslint-disable camelcase */
-import {
-  APY_SCALE,
-  ERC20_TOKEN,
-  ERC721_TOKEN,
-  NATIVE_ETHEREUM,
-  UNISWAP_PAIR,
-} from '../constants';
+import { APY_SCALE } from '../constants';
 import { isMobile } from '../constants/env';
-import { depTypeByDepositTokenId, getWalletBalanceStr } from '../custom';
 import {
   getPriceOfTokens,
   isTokenNft,
-  tokenAddressByDepositTokenId,
   tokenNameByDepositTokenId,
   toNumber,
   toTokens,
 } from '../utils';
 import { CACHE_TIME } from './constants';
-import userObject from './userObject';
+import userObject from '.';
 import { createCellWithIcon, createTableBtnWithIcon } from './utils';
 
 export default {

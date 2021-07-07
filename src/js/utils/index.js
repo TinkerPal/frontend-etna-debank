@@ -159,7 +159,7 @@ function setOptionsToSelect(data, select) {
   });
 }
 
-function setState(state) {
+export function setState(state) {
   userObject.state = {
     ...userObject.state,
     ...state,
@@ -183,7 +183,7 @@ function safeSetTableData(id, value, className) {
   }
 }
 
-function getDepositByTokenId(p_id) {
+export function getDepositByTokenId(p_id) {
   if ((userObject.deposits.am_arr?.length ?? 0) === 0) return;
 
   const index = userObject.deposits.am_arr[0].findIndex(
@@ -450,4 +450,47 @@ export async function getAPY(profile_id) {
     });
   window.dep_apys[profile_id] = apy;
   return window.dep_apys[profile_id];
+}
+
+export async function calcTokensFromUSD(cred_profile_id, amount_usd) {
+  if (!amount_usd) return 0;
+  // function calcFromUSDValue(uint256 usd_value, uint256 profile_id) public view returns(uint256 est_tokens)
+  const tokens = await window.usage_calc_smartcontract_reader.methods
+    .calcFromUSDValue(amount_usd, cred_profile_id)
+    .call({
+      from: userObject.account,
+    });
+  const n_tokens = window.web3js_reader.utils.fromWei(tokens, 'ether');
+  return parseFloat(n_tokens).toFixed(4).toString();
+}
+
+export async function getBackendParameter(var_name, callback = null) {
+  const myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'application/json');
+
+  const requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow',
+  };
+
+  await fetch(`${WALLETS_API_URL}/get_var/${var_name}`, requestOptions)
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new Error(response.status);
+      } else {
+        return response.clone().json();
+      }
+    })
+    .then((respJson) => {
+      if (respJson.type === 'success') {
+        resetMsg();
+        if (callback) callback(respJson.var);
+      } else {
+        errorMsg('API error');
+      }
+    })
+    .catch((error) => {
+      new Error(error);
+    });
 }
