@@ -42,10 +42,6 @@
     @apply fixed top-0 left-0 w-full h-full bg-black;
   }
 
-  #net_icon {
-    @apply fill-green;
-  }
-
   .notif-block {
     @apply h-auto px-5 pt-5 pb-4 bg-blueish-black flex flex-col rounded-xl border border-light-grey shadow absolute right-0 top-9 z-10;
 
@@ -1187,4 +1183,8 @@
 #modal-return-credit,
 #modal-return-fee {
   min-height: calc(100vh - 190px);
+}
+
+#net_icon {
+  fill: currentColor;
 }
