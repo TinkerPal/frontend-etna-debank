@@ -455,7 +455,7 @@ async function getAccount() {
 
     window.web3js = await new Web3(window.ethereum);
     window.web3 = window.web3js;
-    window.BN = web3js.utils.BN;
+    window.BN = window.web3js.utils.BN;
 
     if (!window.BN || !window.web3) {
       return errorEmptyMsg('Cannot access wallet. Reload your page, please.');
@@ -507,7 +507,7 @@ async function getAccountWalletConnect() {
 
     window.web3js = await new Web3(window.provider);
     window.web3 = window.web3js;
-    window.BN = web3js.utils.BN;
+    window.BN = window.web3js.utils.BN;
 
     if (!window.BN || !window.web3) {
       return errorEmptyMsg('Cannot access wallet. Reload your page, please.');
@@ -877,11 +877,10 @@ async function deposit() {
     ) {
       wei_val = amount;
 
-      // let wb_bn = new BN(await (web3jsReadersList.get()).eth.getBalance(userObject.account));
-      const wb_bn = new BN(
+      const wb_bn = new window.BN(
         await window.web3js_reader.eth.getBalance(userObject.account)
       );
-      const amount_bn = new BN(amount);
+      const amount_bn = new window.BN(amount);
 
       if (toNumber(wb_bn.cmp(amount_bn)) === -1) {
         modal_add_deposit.isLoadedAfterConfirm(false);
@@ -895,7 +894,7 @@ async function deposit() {
         erc20TokenContractAbi,
         userObject.state.selected_depprofile_token_address
       );
-      const allow = new BN(
+      const allow = new window.BN(
         await token_contract.methods
           .allowance(userObject.account, window.staking_contract_address)
           .call({
@@ -903,9 +902,9 @@ async function deposit() {
           })
       );
 
-      const tokenAmountToApprove = new BN(amount);
+      const tokenAmountToApprove = new window.BN(amount);
       // amount is already adjusted *10**18
-      const calculatedApproveValue = tokenAmountToApprove; // tokenAmountToApprove.mul(new BN(ADJ_CONSTANT.toString()));
+      const calculatedApproveValue = tokenAmountToApprove; // tokenAmountToApprove.mul(new window.BN(ADJ_CONSTANT.toString()));
 
       if (allow < calculatedApproveValue) {
         modal_add_deposit.isLoadedAfterConfirm(false);
@@ -920,8 +919,8 @@ async function deposit() {
         .call({
           from: userObject.account,
         });
-      const erc20_count_bn = new BN(erc20_count);
-      const amount_bn = new BN(amount);
+      const erc20_count_bn = new window.BN(erc20_count);
+      const amount_bn = new window.BN(amount);
 
       if (toNumber(erc20_count_bn.cmp(amount_bn)) === -1) {
         modal_add_deposit.isLoadedAfterConfirm(false);
@@ -1019,7 +1018,7 @@ async function stake_liq() {
     erc20TokenContractAbi,
     userObject.state.liq_pair_address
   );
-  const allow = new BN(
+  const allow = new window.BN(
     await token_contract.methods
       .allowance(userObject.account, window.staking_contract_address)
       .call({
@@ -1027,10 +1026,10 @@ async function stake_liq() {
       })
   );
 
-  const tokenAmountToApprove = new BN(amount);
+  const tokenAmountToApprove = new window.BN(amount);
 
   // amount is already adjusted *10**18
-  const calculatedApproveValue = tokenAmountToApprove; // tokenAmountToApprove.mul(new BN(ADJ_CONSTANT.toString()));
+  const calculatedApproveValue = tokenAmountToApprove; // tokenAmountToApprove.mul(new window.BN(ADJ_CONSTANT.toString()));
 
   if (allow < calculatedApproveValue) {
     modal_add_lliquidity.isLoadedAfterConfirm(false, false);
@@ -1045,8 +1044,8 @@ async function stake_liq() {
     .call({
       from: userObject.account,
     });
-  const erc20_count_bn = new BN(erc20_count);
-  const amount_bn = new BN(amount);
+  const erc20_count_bn = new window.BN(erc20_count);
+  const amount_bn = new window.BN(amount);
 
   if (toNumber(erc20_count_bn.cmp(amount_bn)) === -1) {
     modal_add_lliquidity.isLoadedAfterConfirm(false, false);
@@ -1160,7 +1159,7 @@ async function approveTokenMove(token_address, amount_wei, toAddress, modal) {
   const { BN } = window.web3js_reader.utils;
 
   // Calculate contract compatible value for approve with proper decimal points using BigNumber
-  const tokenAmountToApprove = new BN(amount_wei);
+  const tokenAmountToApprove = new window.BN(amount_wei);
   const calculatedApproveValue =
     window.web3js_reader.utils.toHex(tokenAmountToApprove);
   const token_contract = await new window.web3js.eth.Contract(
@@ -1323,7 +1322,7 @@ function safeFloatToWei(num) {
   // divide adj constant on 10**[num digits after dot]
   let bn_adj = new window.BN(ADJ_CONSTANT.toString());
 
-  bn_adj = bn_adj.div(new window.BN(10).pow(new BN(num_dig)));
+  bn_adj = bn_adj.div(new window.BN(10).pow(new window.BN(num_dig)));
 
   // bn based on float as integer in string form
   let bn_num = new window.BN(num_s);
@@ -3583,12 +3582,10 @@ async function getDepositsDashboard(callback = null) {
 }
 
 async function getNftPrice(contract, vc_contract, token_ids) {
-  const { BN } = window;
-
   const wei_am = await vc_contract.methods.calcNFTTokensValue(token_ids).call({
     from: userObject.account,
   }); // cytr
-  const wei_amount = new BN(wei_am);
+  const wei_amount = new window.BN(wei_am);
 
   const [data, dec] = await Promise.all([
     contract.methods.getData('ETNAUSD').call({
@@ -3599,13 +3596,11 @@ async function getNftPrice(contract, vc_contract, token_ids) {
     }),
   ]);
 
-  // let data = await contract.methods.getData('CYTRUSD').call({from:userObject.account});
-  // let dec = await contract.methods.getDecimals('CYTRUSD').call({from:userObject.account});
-  const usd_bn = new BN(wei_amount.mul(new BN(data)));
+  const usd_bn = new window.BN(wei_amount.mul(new window.BN(data)));
 
-  const base = new BN(10);
-  const div_dec = new BN(base.pow(new BN(dec)));
-  const usd_adj = new BN(usd_bn.div(div_dec));
+  const base = new window.BN(10);
+  const div_dec = new window.BN(base.pow(new window.BN(dec)));
+  const usd_adj = new window.BN(usd_bn.div(div_dec));
 
   const usd_float = parseFloat(
     window.web3js_reader.utils.fromWei(usd_adj, 'ether')
@@ -3622,9 +3617,8 @@ async function getPriceOfTokens(
   const contract = window.data_provider_smartcontract_reader;
   const token = toNumber(tokenType) === NATIVE_ETHEREUM ? 'BNBUSD' : tokenName;
 
-  const { BN } = window;
   const wei_amount = isSafeAmount
-    ? new BN(tokenAmount)
+    ? new window.BN(tokenAmount)
     : safeFloatToWei(tokenAmount); // BN
 
   const [data, dec] = await Promise.all([
@@ -3636,11 +3630,11 @@ async function getPriceOfTokens(
     }),
   ]);
 
-  const usd_bn = new BN(wei_amount.mul(new BN(data)));
+  const usd_bn = new window.BN(wei_amount.mul(new window.BN(data)));
 
-  const base = new BN(10);
-  const div_dec = new BN(base.pow(new BN(dec)));
-  const usd_adj = new BN(usd_bn.div(div_dec));
+  const base = new window.BN(10);
+  const div_dec = new window.BN(base.pow(new window.BN(dec)));
+  const usd_adj = new window.BN(usd_bn.div(div_dec));
 
   return parseFloat(window.web3js_reader.utils.fromWei(usd_adj, 'ether'));
 }
@@ -3685,10 +3679,10 @@ async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
   if (toNumber(userObject.state.selected_credprofile_type) !== ERC721_TOKEN) {
     wei_amount = safeFloatToWei(tokens_amount); // BN
   } else {
-    wei_amount = new BN(tokens_amount);
+    wei_amount = new window.BN(tokens_amount);
   }
 
-  const dep_am = new BN(am_arr[1][dep_id]);
+  const dep_am = new window.BN(am_arr[1][dep_id]);
 
   if (toNumber(wei_amount.cmp(dep_am)) === 1) {
     let tok_float = 0;
@@ -3795,7 +3789,7 @@ async function set_leverage_confirm(ratio, cred_id) {
     const dep_id = res_arr[0];
     const cytr_am = res_arr[1];
 
-    const cytr_am_bn = new BN(cytr_am);
+    const cytr_am_bn = new window.BN(cytr_am);
 
     if (toNumber(window.lev_size_wei.cmp(cytr_am_bn)) === 1) {
       modal_add_leverage.isLoadedAfterConfirm(false);
@@ -4109,7 +4103,7 @@ async function return_credit_confirm(cred_id) {
       erc20TokenContractAbi,
       returned_asset_token_address
     );
-    const allow = new BN(
+    const allow = new window.BN(
       await token_contract.methods
         .allowance(userObject.account, window.credit_contract_address)
         .call({
@@ -4117,10 +4111,9 @@ async function return_credit_confirm(cred_id) {
         })
     );
 
-    const tokenAmountToApprove = new BN(return_amount);
+    const tokenAmountToApprove = new window.BN(return_amount);
 
-    // amount is already adjusted *10**18
-    const calculatedApproveValue = tokenAmountToApprove; // tokenAmountToApprove.mul(new BN(ADJ_CONSTANT.toString()));
+    const calculatedApproveValue = tokenAmountToApprove;
 
     if (allow < calculatedApproveValue) {
       modal_return_credit.isLoadedAfterConfirm(false, false);
@@ -4135,8 +4128,8 @@ async function return_credit_confirm(cred_id) {
       .call({
         from: userObject.account,
       });
-    const erc20_count_bn = new BN(erc20_count);
-    const return_amount_bn = new BN(return_amount);
+    const erc20_count_bn = new window.BN(erc20_count);
+    const return_amount_bn = new window.BN(return_amount);
 
     if (toNumber(erc20_count_bn.cmp(return_amount_bn)) === -1) {
       modal_return_credit.isLoadedAfterConfirm(false);
@@ -4210,7 +4203,7 @@ async function return_fee_confirm(cred_id) {
       erc20TokenContractAbi,
       returned_asset_token_address
     );
-    const allow = new BN(
+    const allow = new window.BN(
       await token_contract.methods
         .allowance(userObject.account, window.credit_contract_address)
         .call({
@@ -4218,10 +4211,9 @@ async function return_fee_confirm(cred_id) {
         })
     );
 
-    const tokenAmountToApprove = new BN(return_amount);
+    const tokenAmountToApprove = new window.BN(return_amount);
 
-    // amount is already adjusted *10**18
-    const calculatedApproveValue = tokenAmountToApprove; // tokenAmountToApprove.mul(new BN(ADJ_CONSTANT.toString()));
+    const calculatedApproveValue = tokenAmountToApprove;
 
     if (allow < calculatedApproveValue) {
       modal_return_fee.isLoadedAfterConfirm(false, false);
@@ -4236,8 +4228,8 @@ async function return_fee_confirm(cred_id) {
       .call({
         from: userObject.account,
       });
-    const erc20_count_bn = new BN(erc20_count);
-    const return_amount_bn = new BN(return_amount);
+    const erc20_count_bn = new window.BN(erc20_count);
+    const return_amount_bn = new window.BN(return_amount);
 
     if (toNumber(erc20_count_bn.cmp(return_amount_bn)) === -1) {
       modal_return_fee.isLoadedAfterConfirm(false);
@@ -4465,12 +4457,12 @@ async function set_leverage(ratio, cred_id) {
     .call({
       from: userObject.account,
     });
-  let lev_needed_size = new BN(lns);
+  let lev_needed_size = new window.BN(lns);
   if ((ratio, 10 > 100 || ratio < 0)) ratio = 100;
   if (ratio !== 100) {
-    const r = new BN(ratio);
+    const r = new window.BN(ratio);
     lev_needed_size = lev_needed_size.mul(r);
-    lev_needed_size = lev_needed_size.div(new BN(100));
+    lev_needed_size = lev_needed_size.div(new window.BN(100));
   }
   window.lev_size_wei = lev_needed_size;
 
