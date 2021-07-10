@@ -19,20 +19,7 @@ const postcss = require('gulp-postcss'),
   concat = require('gulp-concat'),
   plumber = require('gulp-plumber');
 
-const js = [
-  './src/js/libs/*',
-  './src/js/utils.js',
-  './src/js/constants/env.js',
-  './src/js/constants/constant.js',
-  './src/js/constants/token.js',
-  './src/js/components/userObject.js',
-  './src/js/components/customSelect.js',
-  './src/js/components/chart.js',
-  './src/js/components/modal.js',
-  './src/js/staticData/parseNotifData.js',
-  './src/js/common.js',
-  './src/js/custom.js',
-];
+const js = ['./src/js/libs/*', './src/js/index.js'];
 
 function createEmptyStream() {
   var pass = through2.obj();
@@ -55,10 +42,8 @@ function jsTask(envs, buildType) {
       // .pipe(sourcemaps.init())
       .pipe(
         babel({
-          plugins: [
-            'transform-inline-environment-variables',
-            '@babel/plugin-transform-modules-commonjs',
-          ],
+          presets: ['@babel/preset-env'],
+          plugins: ['transform-inline-environment-variables'],
         })
       )
       // .pipe(envs === 'production' ? uglify() : tap(noop))
