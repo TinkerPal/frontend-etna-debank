@@ -1,39 +1,12 @@
 import { ERC721_TOKEN, NATIVE_ETHEREUM, UNISWAP_PAIR } from '../constants';
 
-function toNormalUSDView(data) {
+export function toNormalUSDView(data) {
   return numeral(data).format('$ 0,0.00');
 }
 
-function formatDataForMobile(data) {
+export function formatDataForMobile(data) {
   if (!data) return;
   return data.replace(/<td class="table-cell">(.*)<\/td>/, '$1');
-}
-
-function throttle(func, delay) {
-  let timeout = null;
-  return function (...args) {
-    if (!timeout) {
-      timeout = setTimeout(() => {
-        func.call(this, ...args);
-        timeout = null;
-      }, delay);
-    }
-  };
-}
-
-function isEmptyTable(idContainer) {
-  if (isMobile) {
-    return document.querySelector(`#${idContainer}`).innerHTML === '';
-  }
-
-  return document.querySelector(`#${idContainer} table tbody`).innerHTML === '';
-}
-
-function toggleElement(elementId, event) {
-  const target = event.target;
-  const element = document.querySelector(`#${elementId}`);
-  element.classList.toggle('show');
-  target.classList.toggle('show');
 }
 
 /**
@@ -47,116 +20,38 @@ export function htmlToElement(html) {
   return template.content.firstChild;
 }
 
-function setLdBar(value, part = 0) {
-  const { ldBar } = document.getElementById('debank_load_bar');
-  const ldBarWrapper = document.getElementById('load_bar_cover');
-  const body = document.querySelector('body');
+export function safeFloatToWei(num) {
+  // as string
+  let num_s = num.toString();
 
-  if (!value) {
-    value = Number(ldBar.value) + Number(part);
+  // calc digits after 'dot'
+  let n = num_s.indexOf(',');
+  if (n === -1) n = num_s.indexOf('.');
+  if (n === -1) {
+    num_s += '.0';
+    n = num_s.indexOf('.');
+  }
+  const num_dig = num_s.length - n - 1;
+
+  // float as integer in string form
+  num_s = num_s.substr(n + 1);
+  if (num >= 1) {
+    num_s = toNumber(num).toString() + num_s;
   }
 
-  if (Number(value) > 100) value = 100;
+  // divide adj constant on 10**[num digits after dot]
+  let bn_adj = new window.BN(ADJ_CONSTANT.toString());
 
-  ldBar.set(value);
+  bn_adj = bn_adj.div(new window.BN(10).pow(new BN(num_dig)));
 
-  if (ldBar.value === 100) {
-    setTimeout(() => {
-      ldBarWrapper.style.display = 'none';
-      body.classList.remove('page-loading');
-    }, 1000);
-  } else {
-    ldBarWrapper.style.display = 'block';
-    body.classList.add('page-loading');
-  }
-}
+  // bn based on float as integer in string form
+  let bn_num = new window.BN(num_s);
 
-export const routeHistory = {};
+  // adjust with adj constant
+  bn_num = bn_num.mul(bn_adj);
 
-function openTab(event, tabid, callback, pageName) {
-  if (callback) {
-    const callbackState = callback();
-
-    if (!callbackState) return;
-  }
-
-  safeRemoveClassBySelector('.nav-link', 'active');
-  safeAddClassBySelector('.page', 'hide');
-
-  if (!routeHistory.cur) {
-    routeHistory.cur = {
-      click: () => openTab(event, tabid, callback, pageName),
-      pageName,
-    };
-  } else {
-    routeHistory.prev = { ...routeHistory.cur };
-    routeHistory.cur = {
-      click: () => openTab(event, tabid, callback, pageName),
-      pageName,
-    };
-  }
-
-  if (event.srcElement) {
-    event.srcElement.classList.add('active');
-    const activeButton = document.getElementById(`${tabid}-menu`);
-    activeButton?.classList.add('active');
-
-    document.getElementById(tabid).classList.remove('hide');
-    userObject.state.current_page_id = tabid;
-  } else {
-    openTab(
-      {
-        srcElement: document.getElementById('total-dashboard-tab-menu'),
-      },
-      'total-dashboard-tab'
-    );
-  }
-
-  if (isMobile) {
-    const tabs = document.querySelector('#control-tabs');
-    const tabsElements = document.querySelectorAll(`[data-tab]`);
-    const breadcrumbs = document.querySelector('.header-breadcrumbs');
-    const logo = document.querySelector('#header-logo');
-
-    if (
-      tabid !== 'dashboard-tab' &&
-      tabid !== 'borrow-tab' &&
-      tabid !== 'liq-earn-tab'
-    ) {
-      tabs.classList.add('hidden');
-      breadcrumbs.classList.remove('hidden');
-      logo.classList.add('hidden');
-    } else {
-      tabs.classList.remove('hidden');
-      breadcrumbs.classList.add('hidden');
-      logo.classList.remove('hidden');
-    }
-
-    tabsElements.forEach((item) => {
-      if (item.dataset.tab === tabid) {
-        item.classList.remove('hidden');
-      } else {
-        item.classList.add('hidden');
-      }
-    });
-
-    // Todo: переписать все табы на единый формат истории
-    if (routeHistory?.prev?.pageName) {
-      const tab = document.querySelector('[data-tab="with-page-name"]');
-      tab.classList.remove('hidden');
-      tab.innerHTML = routeHistory.prev.pageName;
-      tab.onclick = routeHistory.prev.click;
-    }
-  }
-}
-
-function setOptionsToSelect(data, select) {
-  data.forEach((asset) => {
-    const option = document.createElement('option');
-    option.value = asset.text;
-    option.innerHTML = asset.text;
-    select.appendChild(option);
-  });
+  // and return in BN form
+  return bn_num;
 }
 
 export function setState(state) {
@@ -166,7 +61,7 @@ export function setState(state) {
   };
 }
 
-function safeSetTableData(id, value, className) {
+export function safeSetTableData(id, value, className) {
   const el = document.getElementById(id);
   if (el) {
     if (value !== '') {
@@ -197,13 +92,13 @@ export function getDepositByTokenId(p_id) {
   return isTokenNft(p_id) ? deposit : toTokens(deposit, 4);
 }
 
-function isMetaMaskInstalled() {
+export function isMetaMaskInstalled() {
   if (typeof window.ethereum !== 'undefined') {
     return Boolean(window.ethereum && window.ethereum.isMetaMask);
   }
 }
 
-function depAmountByProfileId(profile_id) {
+export function depAmountByProfileId(profile_id) {
   if (toNumber(profile_id) !== -1) {
     for (let i = 0; i < userObject?.deposits?.am_arr[0]?.length ?? 0; i++) {
       if (toNumber(userObject.deposits.am_arr[0][i]) === toNumber(profile_id)) {
@@ -222,7 +117,7 @@ export function toNumber(number) {
   return parseInt(number, 10);
 }
 
-function depAmountByProfileIdReal(profile_id) {
+export function depAmountByProfileIdReal(profile_id) {
   for (let i = 0; i < userObject?.deposits?.am_arr[0]?.length ?? 0; i++) {
     if (toNumber(userObject.deposits.am_arr[0][i]) === toNumber(profile_id)) {
       const am = userObject.deposits.am_arr[1][i];
@@ -243,11 +138,11 @@ export function toTokens(wei_am, digs) {
   return parseFloat(n_tokens).toFixed(digs).toString();
 }
 
-function floorDecimals(value, decimals) {
+export function floorDecimals(value, decimals) {
   return Number(`${Math.floor(`${value}e${decimals}`)}e-${decimals}`);
 }
 
-async function getAllProfiles() {
+export async function getAllProfiles() {
   let profiles;
   await getBackendParameter('DEPPROFILES_UI_LIST', (profiles_s) => {
     profiles = JSON.parse(profiles_s);
@@ -255,7 +150,7 @@ async function getAllProfiles() {
   return profiles || [];
 }
 
-async function getAllProfilesWithUniswap() {
+export async function getAllProfilesWithUniswap() {
   let profiles;
   await getBackendParameter('ASSETS_UI_FULL_LIST', (profiles_s) => {
     profiles = JSON.parse(profiles_s);
@@ -263,7 +158,7 @@ async function getAllProfilesWithUniswap() {
   return profiles || [];
 }
 
-async function getAllProfilesUniswap() {
+export async function getAllProfilesUniswap() {
   let profiles;
   await getBackendParameter('ASSETS_UI_LIQ_PAIRS', (profiles_s) => {
     profiles = JSON.parse(profiles_s);
@@ -271,7 +166,7 @@ async function getAllProfilesUniswap() {
   return profiles || [];
 }
 
-async function getAllCreditProfiles() {
+export async function getAllCreditProfiles() {
   let profiles;
   await getBackendParameter('CREDIT_PROFILES_UI_LIST', (profiles_s) => {
     profiles = JSON.parse(profiles_s);
@@ -493,4 +388,50 @@ export async function getBackendParameter(var_name, callback = null) {
     .catch((error) => {
       new Error(error);
     });
+}
+
+export async function getNftPrice(contract, vc_contract, token_ids) {
+  const { BN } = window;
+
+  const wei_am = await vc_contract.methods.calcNFTTokensValue(token_ids).call({
+    from: userObject.account,
+  }); // cytr
+  const wei_amount = new BN(wei_am);
+
+  const [data, dec] = await Promise.all([
+    contract.methods.getData('ETNAUSD').call({
+      from: userObject.account,
+    }),
+    contract.methods.getDecimals('ETNAUSD').call({
+      from: userObject.account,
+    }),
+  ]);
+
+  // let data = await contract.methods.getData('CYTRUSD').call({from:userObject.account});
+  // let dec = await contract.methods.getDecimals('CYTRUSD').call({from:userObject.account});
+  const usd_bn = new BN(wei_amount.mul(new BN(data)));
+
+  const base = new BN(10);
+  const div_dec = new BN(base.pow(new BN(dec)));
+  const usd_adj = new BN(usd_bn.div(div_dec));
+
+  const usd_float = parseFloat(
+    window.web3js_reader.utils.fromWei(usd_adj, 'ether')
+  );
+  return usd_float.toFixed(3);
+}
+
+export async function getWalletBalanceStr(token_address) {
+  const erc20contract = await new window.web3js_reader.eth.Contract(
+    erc20TokenContractAbi,
+    token_address
+  );
+  const erc20_count = await erc20contract.methods
+    .balanceOf(userObject.account)
+    .call({
+      from: userObject.account,
+    });
+
+  const adj_count_str = toTokens(erc20_count, 4);
+  return adj_count_str;
 }

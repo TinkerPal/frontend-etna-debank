@@ -60,5 +60,6 @@ export default {
     liq_pair_name: '',
     liq_pair_address: '',
     liq_pair_fullcode: '',
+    routeHistory: {},
   },
 };

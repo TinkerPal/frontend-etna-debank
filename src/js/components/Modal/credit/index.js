@@ -1,27 +1,3 @@
-/* eslint-disable camelcase */
-import { APY_SCALE } from '../../constants';
-import userObject from '../../store';
-import {
-  getDepositByTokenId,
-  isTokenNft,
-  setState,
-  toNumber,
-} from '../../utils';
-import { Modal } from '../Modal';
-
-export const modalAddCredit = new Modal(
-  'modal-open-new-credit',
-  async () => {
-    await initCollateralDropdown();
-    await initCreditDropdown();
-  },
-  async () => {
-    await collateralDropdownBuild();
-    await creditDropdownBuild();
-    await creditModalDataUpdate();
-  }
-);
-
 async function initCollateralDropdown() {
   const dropdown = modalAddCredit.modal.querySelector('#credprofiles-dropdown');
 
@@ -265,4 +241,56 @@ function getCreditProfilesList() {
     plist.push(option);
   }
   return plist;
+}
+
+async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
+  if (toNumber(dep_id) === 9999999) return;
+
+  const { am_arr } = userObject.deposits;
+
+  const tokens_amount = document.getElementById(tokens_amount_elem).value;
+
+  const { BN } = window;
+  let wei_amount = 0;
+  if (toNumber(userObject.state.selected_credprofile_type) !== ERC721_TOKEN) {
+    wei_amount = safeFloatToWei(tokens_amount); // BN
+  } else {
+    wei_amount = new BN(tokens_amount);
+  }
+
+  const dep_am = new BN(am_arr[1][dep_id]);
+
+  if (toNumber(wei_amount.cmp(dep_am)) === 1) {
+    let tok_float = 0;
+    if (toNumber(userObject.state.selected_credprofile_type) !== ERC721_TOKEN) {
+      tok_float = parseFloat(
+        window.web3js_reader.utils.fromWei(am_arr[1][dep_id], 'ether')
+      );
+    } else {
+      tok_float = parseFloat(am_arr[1][dep_id]);
+    }
+    safeSetValueById(tokens_amount_elem, tok_float.toFixed(3), 'inline');
+    wei_amount = am_arr[1][dep_id];
+  }
+
+  const usd_val = await window.usage_calc_smartcontract_reader.methods
+    .calcUSDValueCollateral(
+      userObject.account,
+      dep_id,
+      wei_amount,
+      userObject.state.selected_credprofile
+    )
+    .call({
+      from: userObject.account,
+    });
+
+  safeSetValueById(usd_val_elem, usd_val, 'inline');
+
+  if (toNumber(userObject.state.getcredit_profile) !== -1) {
+    document.getElementById('tokens_amount_getcredit').innerText =
+      await calcTokensFromUSD(
+        userObject.state.getcredit_profile,
+        document.getElementById('usd_value_collateral').value
+      );
+  }
 }

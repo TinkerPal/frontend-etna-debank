@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { APY_SCALE } from '../constants';
 import { isMobile } from '../constants/env';
-import { calcUSDValueOfDeposit } from '../custom';
+import { calcUSDValueOfDeposit } from '..';
 import {
   getAPY,
   isTokenLiqPairs,

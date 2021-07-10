@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', async function (event) {
+export async function createNotifications() {
   const data = await fetch('/notifications.json')
     .then((response) => {
       if (response.status !== 200) {
@@ -16,30 +16,30 @@ document.addEventListener('DOMContentLoaded', async function (event) {
   if (notifCommon) {
     data.notificationsArr.forEach((i) => {
       notifItem = `
-    <div class="flex w-full notif-block__item" data-id="${[i]}">
-      <div class="w-1/12 flex justify-start h-full">
-        <div class="nofif-icon w-4 h-5">
-          <img src="../images/notif.svg" alt="#">
+      <div class="flex w-full notif-block__item" data-id="${[i]}">
+        <div class="w-1/12 flex justify-start h-full">
+          <div class="nofif-icon w-4 h-5">
+            <img src="../images/notif.svg" alt="#">
+          </div>
+        </div>
+        <div class="w-10/12 h-full ml-2 flex flex-col">
+          <div class="notif-item flex flex-col pb-5 mb-5 border-b border-light-violet">
+            <div class="text-sm font-medium mb-1">
+              ${i.title}
+            </div>
+            <div class="text-sm text-white font-normal text-opacity-50">
+              ${i.text}
+            </div>
+            
+          </div>
+        </div>
+        <div class="w-1/12 flex justify-end h-full">
+          <button class="modal-close modal-exit w-3 h-3">
+            <img src="../images/close.svg" alt="#">
+          </button>
         </div>
       </div>
-      <div class="w-10/12 h-full ml-2 flex flex-col">
-        <div class="notif-item flex flex-col pb-5 mb-5 border-b border-light-violet">
-          <div class="text-sm font-medium mb-1">
-            ${i.title}
-          </div>
-          <div class="text-sm text-white font-normal text-opacity-50">
-            ${i.text}
-          </div>
-          
-        </div>
-      </div>
-      <div class="w-1/12 flex justify-end h-full">
-        <button class="modal-close modal-exit w-3 h-3">
-          <img src="../images/close.svg" alt="#">
-        </button>
-      </div>
-    </div>
-  `;
+    `;
       notifCommon.innerHTML += notifItem;
     });
 
@@ -73,5 +73,18 @@ document.addEventListener('DOMContentLoaded', async function (event) {
         }
       });
     });
+
+    const notifIcon = document.querySelector('.notif');
+    const notifCloseBtns = notifCommon.querySelectorAll('.modal-close');
+
+    notifCloseBtns.forEach((item) => {
+      item.addEventListener('click', () => {
+        notifCommon.classList.add('hidden');
+      });
+    });
+
+    notifIcon.addEventListener('click', () => {
+      notifCommon.classList.remove('hidden');
+    });
   }
-});
+}

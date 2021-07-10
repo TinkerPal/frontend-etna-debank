@@ -1,32 +1,5 @@
-document.addEventListener('DOMContentLoaded', function (event) {
-  const colorSelect = document.querySelectorAll('.color-select');
-
-  colorSelect.forEach((item) => {
-    const itemId = item.id;
-    const select = new CustomSelect({
-      elem: itemId, // id of the original select element
-    });
-  });
-
-  // notification popup
-
-  const notifBlock = document.querySelector('.notif-block');
-  if (notifBlock) {
-    const notifIcon = document.querySelector('.notif');
-    const notifCloseBtns = notifBlock.querySelectorAll('.modal-close');
-
-    notifCloseBtns.forEach((item) => {
-      item.addEventListener('click', () => {
-        notifBlock.classList.add('hidden');
-      });
-    });
-
-    notifIcon.addEventListener('click', () => {
-      notifBlock.classList.remove('hidden');
-    });
-  }
+export function createInfoPopup() {
   const allInfo = document.querySelectorAll('[data-id="infoPopup"]');
-
   const mustBeCut = (field) => {
     const container = field.firstChild;
     const child = container.firstChild;
@@ -51,4 +24,4 @@ document.addEventListener('DOMContentLoaded', function (event) {
       if (infoPopup.innerHTML !== content) infoPopup.innerHTML = content;
     };
   });
-});
+}

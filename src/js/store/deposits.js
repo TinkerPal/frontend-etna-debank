@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { APY_SCALE } from '../constants';
 import { isMobile } from '../constants/env';
-import { calcUSDValueOfDeposit, getWalletBalanceStr } from '../custom';
+import { calcUSDValueOfDeposit, getWalletBalanceStr } from '..';
 import {
   getAPY,
   getPriceOfTokens,
