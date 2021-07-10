@@ -55,8 +55,10 @@ function jsTask(envs, buildType) {
       // .pipe(sourcemaps.init())
       .pipe(
         babel({
-          presets: [ '@babel/preset-env' ],
-          plugins: ['transform-inline-environment-variables'],
+          plugins: [
+            'transform-inline-environment-variables',
+            '@babel/plugin-transform-modules-commonjs',
+          ],
         })
       )
       // .pipe(envs === 'production' ? uglify() : tap(noop))
