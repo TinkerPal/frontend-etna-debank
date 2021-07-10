@@ -1,3 +1,8 @@
+/* eslint-disable camelcase */
+import { userObject } from '.';
+import { errorMsg, resetMsg } from '../components/InfoMessages';
+import { LIQ_PAIRS, WALLETS_API_URL } from '../constants/env';
+import { tokenNameByDepositTokenId } from '../utils';
 import { CRYPTO_ICONS } from './constants';
 
 export const createCellWithIcon = (iconSrc) => {
@@ -94,4 +99,67 @@ export async function calcUSDValueByProfileNonNFT(wei_amount, profile_id) {
       from: userObject.account,
     });
   return usd_val;
+}
+
+export async function getAllProfiles() {
+  let profiles;
+  await getBackendParameter('DEPPROFILES_UI_LIST', (profiles_s) => {
+    profiles = JSON.parse(profiles_s);
+  });
+  return profiles || [];
+}
+
+export async function getAllProfilesWithUniswap() {
+  let profiles;
+  await getBackendParameter('ASSETS_UI_FULL_LIST', (profiles_s) => {
+    profiles = JSON.parse(profiles_s);
+  });
+  return profiles || [];
+}
+
+export async function getAllProfilesUniswap() {
+  let profiles;
+  await getBackendParameter('ASSETS_UI_LIQ_PAIRS', (profiles_s) => {
+    profiles = JSON.parse(profiles_s);
+  });
+  return profiles || [];
+}
+
+export async function getAllCreditProfiles() {
+  let profiles;
+  await getBackendParameter('CREDIT_PROFILES_UI_LIST', (profiles_s) => {
+    profiles = JSON.parse(profiles_s);
+  });
+  return profiles || [];
+}
+
+export async function getBackendParameter(var_name, callback = null) {
+  const myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'application/json');
+
+  const requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow',
+  };
+
+  await fetch(`${WALLETS_API_URL}/get_var/${var_name}`, requestOptions)
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new Error(response.status);
+      } else {
+        return response.clone().json();
+      }
+    })
+    .then((respJson) => {
+      if (respJson.type === 'success') {
+        resetMsg();
+        if (callback) callback(respJson.var);
+      } else {
+        errorMsg('API error');
+      }
+    })
+    .catch((error) => {
+      throw new Error(error);
+    });
 }

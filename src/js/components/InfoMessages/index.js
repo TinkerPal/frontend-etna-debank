@@ -1,3 +1,7 @@
+/* eslint-disable camelcase */
+import { TRANSACTION_LINK } from '../../constants/env';
+import { safeSetInnerHTMLById } from '../../utils/dom';
+
 export function output_transaction(txnHash) {
   infoMsg(
     `<a target="_blank" href="https://${TRANSACTION_LINK}/tx/${txnHash}">last transaction:${txnHash}</a>`

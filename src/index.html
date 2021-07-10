@@ -1,139 +1,152 @@
 <!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta name="theme-color" content="#212121" />
+    <meta name="msapplication-navbutton-color" content="#212121" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#212121" />
+    <link rel="stylesheet" href="/css/libs/simplebar.css" />
+    <!-- Include base CSS (optional) -->
+    <link rel="stylesheet" href="/css/libs/base.min.css" />
+    <!-- Include Choices CSS -->
+    <link rel="stylesheet" href="/css/libs/choices.min.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="icon" href="/images/logo-m.png" />
+    <title>ETNA DeBank</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <meta name="theme-color" content="#212121" />
-  <meta name="msapplication-navbutton-color" content="#212121" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="#212121" />
-  <link rel="stylesheet" href="/css/libs/simplebar.css" />
-  <!-- Include base CSS (optional) -->
-  <link rel="stylesheet" href="/css/libs/base.min.css" />
-  <!-- Include Choices CSS -->
-  <link rel="stylesheet" href="/css/libs/choices.min.css" />
-  <link rel="stylesheet" href="/css/styles.css" />
-  <link rel="icon" href="/images/logo-m.png">
-  <title>
-    ETNA DeBank
-  </title>
-</head>
+  <body class="body" data-simplebar>
+    <header class="header">@@include('./templates/desktop/header.html')</header>
 
-<body class="body" data-simplebar>
+    <!-- start ORIENTATION -->
 
-  <header class="header">
-    @@include('./templates/desktop/header.html')
-  </header>
-
-  <!-- start ORIENTATION -->
-
-  <!-- <div class="orientation-cover fixed top-0 left-0 w-full h-full z-70 bg-black">
+    <!-- <div class="orientation-cover fixed top-0 left-0 w-full h-full z-70 bg-black">
     <div class="h-full flex items-center w-full justify-center text-center">
       <div class="text-3xl leading-9 font-bold mr-4">Please rotate device</div>
     </div>
   </div> -->
 
-  <!-- end ORIENTATION -->
+    <!-- end ORIENTATION -->
 
-  <!-- start LoadBar -->
+    <!-- start LoadBar -->
 
-  <div id="load_bar_cover" class="load-bar-cover">
-    <div class="load-bar__center">
-      <div id="debank_load_bar" class="ldBar label-center" data-value="5" data-preset="circle" data-stroke="#98EF10"
-        data-stroke-lincap="round" style="width: 150px; height: 150px;" data-stroke-trail="#C4C4C4"></div>
-    </div>
-  </div>
-
-  <!-- end LoadBar -->
-
-  <main>
-    <div id="total-dashboard-tab" class="page hide">
-      <div class="main">
-        <div class="dashboard-col">
-          @@include('./templates/desktop/our-dashboard.html')
-        </div>
-        <div class="dashboard-col__rest">
-          @@include('./templates/desktop/our-parallax.html')
-        </div>
-      </div>
-    </div>
-    <div id="dashboard-tab" class="page hide">
-      @@include('./templates/desktop/deposits.html')
-    </div>
-    <div id="borrow-tab" class="page hide">
-      @@include('./templates/desktop/borrow.html')
-    </div>
-    <div id="liq-earn-tab" class="page hide">
-      @@include('./templates/desktop/liquidity.html')
-    </div>
-
-    <div class="empty-access hidden">
-      <div class="empty-access__col">
-        <div class="empty-access__center">
-          <div class="w-48 h-35 mb-8 mx-auto">
-            <img src="../images/empty.svg" class="w-full h-full" alt="#">
-          </div>
-          <div id="empty-error__msg">
-          </div>
-          <div class="empty-access__text">
-            Please, reload your page and try one more time
-          </div>
-        </div>
-        <div class="mt-auto">
-          @@include('./templates/desktop/socials.html')
-        </div>
+    <div id="load_bar_cover" class="load-bar-cover">
+      <div class="load-bar__center">
+        <div
+          id="debank_load_bar"
+          class="ldBar label-center"
+          data-value="5"
+          data-preset="circle"
+          data-stroke="#98EF10"
+          data-stroke-lincap="round"
+          style="width: 150px; height: 150px"
+          data-stroke-trail="#C4C4C4"
+        ></div>
       </div>
     </div>
 
-    <!-- need to add if nowhere metamask wallet -->
+    <!-- end LoadBar -->
 
-    <div class="empty-metamask hidden z-60 fixed w-full flex flex-col bg-black">
-      <div class="empty-metamask__col">
-        <div class="empty-metamask__center">
-          <div class="empty-metamask__img">
-            <div class="empty-metamask__img-animate">
-              <img src="../images/no-metamask-logo.svg" class="w-full h-full" alt="#">
+    <main>
+      <div id="total-dashboard-tab" class="page hide">
+        <div class="main">
+          <div class="dashboard-col">
+            @@include('./templates/desktop/our-dashboard.html')
+          </div>
+          <div class="dashboard-col__rest">
+            @@include('./templates/desktop/our-parallax.html')
+          </div>
+        </div>
+      </div>
+      <div id="dashboard-tab" class="page hide">
+        @@include('./templates/desktop/deposits.html')
+      </div>
+      <div id="borrow-tab" class="page hide">
+        @@include('./templates/desktop/borrow.html')
+      </div>
+      <div id="liq-earn-tab" class="page hide">
+        @@include('./templates/desktop/liquidity.html')
+      </div>
+
+      <div class="empty-access hidden">
+        <div class="empty-access__col">
+          <div class="empty-access__center">
+            <div class="w-48 h-35 mb-8 mx-auto">
+              <img src="../images/empty.svg" class="w-full h-full" alt="#" />
             </div>
-            <img src="../images/no-metamask.png" class="w-full h-full" alt="#">
+            <div id="empty-error__msg"></div>
+            <div class="empty-access__text">
+              Please, reload your page and try one more time
+            </div>
           </div>
-          <div class="text-2xl leading-none font-medium text-grey-100 mb-5" id="empty-error__msg">
-            It seems that you dont have metamask
+          <div class="mt-auto">
+            @@include('./templates/desktop/socials.html')
           </div>
-          <div class="max-w-xl text-lg text-faux mx-auto">
-            To continue using Debank, please install MetaMask extension for your
-            browser <a href="https://metamask.io/" class="font-medium underline hover:text-white transition-all"
-              target="_blank">metamask.io</a> or connect mobile wallet
-            with barcode.
-          </div>
-        </div>
-        <div class="mt-auto">
-          @@include('./templates/desktop/socials.html')
         </div>
       </div>
-    </div>
 
-  </main>
+      <!-- need to add if nowhere metamask wallet -->
 
-  @@include('./templates/desktop/notifications-huge.html')
+      <div
+        class="empty-metamask hidden z-60 fixed w-full flex flex-col bg-black"
+      >
+        <div class="empty-metamask__col">
+          <div class="empty-metamask__center">
+            <div class="empty-metamask__img">
+              <div class="empty-metamask__img-animate">
+                <img
+                  src="../images/no-metamask-logo.svg"
+                  class="w-full h-full"
+                  alt="#"
+                />
+              </div>
+              <img
+                src="../images/no-metamask.png"
+                class="w-full h-full"
+                alt="#"
+              />
+            </div>
+            <div
+              class="text-2xl leading-none font-medium text-grey-100 mb-5"
+              id="empty-error__msg"
+            >
+              It seems that you dont have metamask
+            </div>
+            <div class="max-w-xl text-lg text-faux mx-auto">
+              To continue using Debank, please install MetaMask extension for
+              your browser
+              <a
+                href="https://metamask.io/"
+                class="font-medium underline hover:text-white transition-all"
+                target="_blank"
+                >metamask.io</a
+              >
+              or connect mobile wallet with barcode.
+            </div>
+          </div>
+          <div class="mt-auto">
+            @@include('./templates/desktop/socials.html')
+          </div>
+        </div>
+      </div>
+    </main>
 
-  <footer class="w-full mt-auto fixed bottom-0">
-    @@include('./templates/desktop/socials.html')
-    @@include('./templates/desktop/footer-credit.html')
-  </footer>
+    @@include('./templates/desktop/notifications-huge.html')
 
-  @@include('./templates/desktop/modals.html')
+    <footer class="w-full mt-auto fixed bottom-0">
+      @@include('./templates/desktop/socials.html')
+      @@include('./templates/desktop/footer-credit.html')
+    </footer>
 
-  <!-- connect sentry -->
-  @@include('./templates/desktop/connect-sentry.html')
+    @@include('./templates/desktop/modals.html')
 
-  <script defer src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
-  <script defer src="https://unpkg.com/web3modal@1.9.2/dist/index.js"></script>
-  <script defer src="https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js"></script>
-  <script defer src="https://unpkg.com/@walletconnect/web3-provider@1.3.1/dist/umd/index.min.js"></script>
-
-  <script defer src="/js/common.js"></script>
-
-</body>
-
+    <!-- connect sentry -->
+    @@include('./templates/desktop/connect-sentry.html')
+    <script defer src="/js/common.js"></script>
+  </body>
 </html>

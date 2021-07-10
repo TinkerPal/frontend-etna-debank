@@ -1,3 +1,20 @@
+/* eslint-disable camelcase */
+import { modalAddDeposit } from '../../..';
+import { ERC721_TOKEN, NATIVE_ETHEREUM } from '../../../constants';
+import { userObject } from '../../../store';
+import {
+  getNftPrice,
+  getPriceOfTokens,
+  isTokenBnb,
+  isTokenNft,
+  setState,
+  tokenIdByTokenName,
+  toNumber,
+} from '../../../utils';
+import { safeSetValueById, setOptionsToSelect } from '../../../utils/dom';
+import { nftAssetsSelect } from '../../Dropdown/nft';
+import { initVotesCalcContractReader } from '../../Web3/contracts';
+
 export async function getDepositProfilesList() {
   const plist = [];
 
@@ -69,13 +86,13 @@ export async function depositModalRebuild() {
     selected_depprofile_token_address: currentDepProfile.d_tok_addr,
   });
 
-  if (toNumber(currentDepProfile.d_type) === NATIVE_ETHEREUM) {
+  if (isTokenBnb(currentDepProfile.p_id)) {
     modalAddDeposit.nextStep();
   } else {
     modalAddDeposit.prevStep();
   }
 
-  if (currentDepProfile.text === 'nft') {
+  if (isTokenNft(currentDepProfile.p_id)) {
     nftAssetsDropdownRow.classList.remove('hidden');
     assetsAmountRow.classList.add('hidden');
     updUSDValue('-', 'usd_value');
@@ -102,6 +119,7 @@ export async function initDepositProfilesDropdown() {
   const assetsAmmountValue =
     modalAddDeposit.modal.querySelector('#tokens_amount');
 
+  // todo переделать на чойз
   setOptionsToSelect(ddData, depprofilesDropdown);
 
   new CustomSelect({
@@ -122,40 +140,57 @@ export async function getNFTAssets() {
 
   const flist = [];
 
-  const len = await window.cyclops_nft_smartcontract_reader.methods
+  const balansOfNft = await window.cyclops_nft_smartcontract_reader.methods
     .balanceOf(userObject.account)
     .call({
       from: userObject.account,
     });
 
-  for (let i = 0; i < len; i++) {
-    const t_id = await window.cyclops_nft_smartcontract_reader.methods
-      .tokenOfOwnerByIndex(userObject.account, i)
-      .call({
+  const tokenIdPromise = [];
+  balansOfNft.forEach((nft, i) => {
+    tokenIdPromise.push(
+      window.cyclops_nft_smartcontract_reader.methods
+        .tokenOfOwnerByIndex(userObject.account, i)
+        .call({
+          from: userObject.account,
+        })
+    );
+  });
+  const tokenIdArray = await Promise.all(tokenIdPromise);
+
+  const tokenPricePromise = [];
+  tokenIdPromise.forEach((id) => {
+    tokenPricePromise.push(getNftPrice(contract, vc_contract, [id]));
+  });
+  const tokenPriceArray = await Promise.all(tokenPricePromise);
+
+  const tokenUriPromise = [];
+  tokenIdArray.forEach((tokenId) => {
+    tokenUriPromise.push(
+      window.cyclops_nft_smartcontract_reader.methods.tokenURI(tokenId).call({
         from: userObject.account,
-      });
-    const token_uri = await window.cyclops_nft_smartcontract_reader.methods
-      .tokenURI(t_id)
-      .call({
-        from: userObject.account,
-      });
-    const response = await fetch(token_uri);
-    const json_content = await response.json();
+      })
+    );
+  });
+  const tokenUriArray = await Promise.all(tokenUriPromise);
 
-    const option = {};
-    option.text = json_content.name;
-    option.t_id = t_id;
+  const tokenContenPromise = [];
+  tokenUriArray.forEach((uri) => {
+    tokenContenPromise.push(fetch(uri).then((res) => res.json()));
+  });
+  const tokenContenArray = await Promise.all(tokenContenPromise);
 
-    option.value = i + 1;
-    option.selected = false;
-    option.description = t_id; // json_content.description;
-    option.imageSrc = json_content.image;
-
-    option.price = await getNftPrice(contract, vc_contract, [t_id]);
-
-    flist.push(option);
-  }
-
+  tokenContenArray.forEach((content, i) => {
+    flist.push({
+      text: content.name,
+      t_id: tokenIdArray[i],
+      value: i + 1,
+      selected: false,
+      description: tokenIdArray[i],
+      imageSrc: content.image,
+      price: tokenPriceArray[i],
+    });
+  });
   return flist;
 }
 
@@ -164,7 +199,7 @@ export function initAssetsDropdown(data) {
 
   nftAssetsSelect.passedElement.element.addEventListener(
     'change',
-    function () {
+    () => {
       const values = nftAssetsSelect.getValue(true);
       userObject.state.selectedNFTAssets = values;
       depositModalRebuild();

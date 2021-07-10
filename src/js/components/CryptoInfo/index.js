@@ -1,4 +1,9 @@
-function cryptoInfoBuild(index, breadcrumb, userObjectState) {
+import { ERC20_TOKEN, NATIVE_ETHEREUM } from '../../constants';
+import { userObject } from '../../store';
+import { toNormalUSDView, toNumber } from '../../utils';
+import { openTab } from '../Navigation';
+
+export function cryptoInfoBuild(index, breadcrumb, userObjectState) {
   const options = userObject.state?.[userObjectState]?.[index] ?? {};
   const profile = userObject.deposit_profiles.find(
     (item) => item.p_name.toLowerCase() === options.asset_column.toLowerCase()

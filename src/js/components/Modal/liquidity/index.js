@@ -1,3 +1,25 @@
+/* eslint-disable camelcase */
+import { modalAddLeverage, modalAddLiquidity, modalUnfreeze } from '../../..';
+import { getCYTRProfileId } from '../../../pages/credit';
+import { userObject } from '../../../store';
+import {
+  APYStrByLiqpairsTokenName,
+  depAmountByProfileIdReal,
+  getWalletBalanceStr,
+  setState,
+  toNumber,
+} from '../../../utils';
+import { safeHtmlById } from '../../../utils/dom';
+import {
+  errorMsg,
+  infoMsg,
+  output_transaction,
+  resetMsg,
+} from '../../InfoMessages';
+import { updateData } from '../../Web3';
+import { initLiqLevContract } from '../../Web3/contracts';
+
+/* eslint-disable camelcase */
 export const setApyStr = async (asset) => {
   setState({
     liq_pair_fullcode: `${userObject.state.liq_pair_name}-${asset.code}`,
@@ -21,6 +43,7 @@ export async function initLiqTermsDropdown() {
 
   if (liqTermsData.length === 0) return;
 
+  // TODO переделать на чойз
   setOptionsToSelect(liqTermsData, liqTermsSelect);
 
   new CustomSelect({
@@ -52,6 +75,7 @@ export async function initLiqPairsDropdown() {
 
   if (liqPairsAssetsOptions.length === 0) return;
 
+  // TODO переделать на чойз
   setOptionsToSelect(liqPairsAssetsOptions, liqPairsAssets);
 
   new CustomSelect({
@@ -123,7 +147,7 @@ export async function set_leverage_confirm(ratio, cred_id) {
     const dep_id = res_arr[0];
     const cytr_am = res_arr[1];
 
-    const cytr_am_bn = new BN(cytr_am);
+    const cytr_am_bn = new window.BN(cytr_am);
 
     if (toNumber(window.lev_size_wei.cmp(cytr_am_bn)) === 1) {
       modalAddLeverage.isLoadedAfterConfirm(false);
@@ -138,7 +162,7 @@ export async function set_leverage_confirm(ratio, cred_id) {
           from: userObject.account,
           gasPrice: window.gp,
         },
-        function (error, txnHash) {
+        (error, txnHash) => {
           if (error) {
             modalAddLeverage.isLoadedAfterConfirm(false);
             throw error;
@@ -146,7 +170,7 @@ export async function set_leverage_confirm(ratio, cred_id) {
           output_transaction(txnHash);
         }
       )
-      .on('confirmation', async function (confirmationNumber, receipt) {
+      .on('confirmation', async (confirmationNumber) => {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('set_leverage');
           modalAddLeverage.isLoadedAfterConfirm();
@@ -156,6 +180,7 @@ export async function set_leverage_confirm(ratio, cred_id) {
       .catch((error) => {
         errorMsg('Smartcontract communication error');
         modalAddLeverage.isLoadedAfterConfirm(false);
+        throw new Error(error);
       });
   });
   return true;
@@ -171,7 +196,7 @@ export async function unfreeze_leverage(cred_id) {
           from: userObject.account,
           gasPrice: window.gp,
         },
-        function (error, txnHash) {
+        (error, txnHash) => {
           if (error) {
             modalUnfreeze.isLoadedAfterConfirm(false);
             throw error;
@@ -179,7 +204,7 @@ export async function unfreeze_leverage(cred_id) {
           output_transaction(txnHash);
         }
       )
-      .on('confirmation', async function (confirmationNumber, receipt) {
+      .on('confirmation', async (confirmationNumber) => {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('unfreeze_leverage');
           modalUnfreeze.isLoadedAfterConfirm();
@@ -189,6 +214,7 @@ export async function unfreeze_leverage(cred_id) {
       .catch((error) => {
         errorMsg('Smartcontract communication error');
         modalUnfreeze.isLoadedAfterConfirm(false);
+        throw new Error(error);
       });
   });
   return true;

@@ -1,4 +1,23 @@
-async function initCollateralDropdown() {
+/* eslint-disable camelcase */
+/* eslint-disable prefer-destructuring */
+import { modalAddCredit } from '../../..';
+import { APY_SCALE, ERC721_TOKEN } from '../../../constants';
+import { full_collateral_btn } from '../../../pages/credit';
+import { userObject } from '../../../store';
+import {
+  calcTokensFromUSD,
+  depAmountByProfileId,
+  getDepositByTokenId,
+  isTokenNft,
+  safeFloatToWei,
+  setState,
+  toNumber,
+} from '../../../utils';
+import { safeSetValueById } from '../../../utils/dom';
+import { collateralDropdown } from '../../Dropdown/collateral';
+import { creditDropdown } from '../../Dropdown/credit';
+
+export async function initCollateralDropdown() {
   const dropdown = modalAddCredit.modal.querySelector('#credprofiles-dropdown');
 
   await collateralDropdownBuild();
@@ -6,7 +25,7 @@ async function initCollateralDropdown() {
   dropdown.addEventListener('change', handleCollateralDropdown, false);
 }
 
-async function handleCollateralDropdown(e) {
+export async function handleCollateralDropdown(e) {
   const fullCollateral = modalAddCredit.modal.querySelector('#full_collateral');
   const partCollateral = modalAddCredit.modal.querySelector('#part_collateral');
   const ddData = await getCollateralAvailableTokens();
@@ -32,7 +51,7 @@ async function handleCollateralDropdown(e) {
   await creditModalDataUpdate();
 }
 
-async function initCreditDropdown() {
+export async function initCreditDropdown() {
   const ddData = await getCreditProfilesListCredit();
 
   if (ddData.length === 0) return;
@@ -59,7 +78,7 @@ async function handleCreditDropdown(e) {
   await creditModalDataUpdate();
 }
 
-async function collateralDropdownBuild(clear = true) {
+export async function collateralDropdownBuild(clear = true) {
   const fullCollateral = modalAddCredit.modal.querySelector('#full_collateral');
 
   let ddData = await getCollateralAvailableTokens();
@@ -103,7 +122,7 @@ async function collateralDropdownBuild(clear = true) {
   }
 }
 
-async function creditDropdownBuild(clear = true) {
+export async function creditDropdownBuild(clear = true) {
   let ddData = await getCreditProfilesListCredit();
 
   if (ddData.length === 0) return;
@@ -132,7 +151,7 @@ async function creditDropdownBuild(clear = true) {
   }
 }
 
-async function creditModalDataUpdate() {
+export async function creditModalDataUpdate() {
   const tokensAmmountCollateral = modalAddCredit.modal.querySelector(
     '#tokens_amount_collateral'
   );
@@ -182,7 +201,7 @@ async function creditModalDataUpdate() {
   creditPerc.value = parseFloat(apy_adj).toFixed(2).toString();
 }
 
-const getCollateralAvailableTokens = async () => {
+export const getCollateralAvailableTokens = async () => {
   const ddData = await getCreditProfilesList();
 
   if (ddData.length === 0) return [];
@@ -201,7 +220,7 @@ const getCollateralAvailableTokens = async () => {
     .filter((item) => !!item);
 };
 
-async function getCreditProfilesListCredit() {
+export async function getCreditProfilesListCredit() {
   const full_list = await getCreditProfilesList();
 
   const plist = [];
@@ -243,22 +262,25 @@ function getCreditProfilesList() {
   return plist;
 }
 
-async function updUSDValueCollateral(tokens_amount_elem, usd_val_elem, dep_id) {
+export async function updUSDValueCollateral(
+  tokens_amount_elem,
+  usd_val_elem,
+  dep_id
+) {
   if (toNumber(dep_id) === 9999999) return;
 
   const { am_arr } = userObject.deposits;
 
   const tokens_amount = document.getElementById(tokens_amount_elem).value;
 
-  const { BN } = window;
   let wei_amount = 0;
   if (toNumber(userObject.state.selected_credprofile_type) !== ERC721_TOKEN) {
     wei_amount = safeFloatToWei(tokens_amount); // BN
   } else {
-    wei_amount = new BN(tokens_amount);
+    wei_amount = new window.BN(tokens_amount);
   }
 
-  const dep_am = new BN(am_arr[1][dep_id]);
+  const dep_am = new window.BN(am_arr[1][dep_id]);
 
   if (toNumber(wei_amount.cmp(dep_am)) === 1) {
     let tok_float = 0;

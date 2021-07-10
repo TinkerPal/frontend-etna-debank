@@ -1,3 +1,9 @@
+/* eslint-disable no-param-reassign */
+import numeral from 'numeral';
+import SimpleBar from 'simplebar';
+import { openTab } from '../../components/Navigation';
+import { userObject } from '../../store';
+
 export async function getOurDashbord(callback = null) {
   const ourCryptoList = document.querySelector('#our-crypto-list');
   if (!ourCryptoList) return;
@@ -56,7 +62,7 @@ export async function getOurDashbord(callback = null) {
     );
   });
 
-  new SimpleBar(ourCryptoList, {
+  SimpleBar(ourCryptoList, {
     autoHide: false,
   });
 

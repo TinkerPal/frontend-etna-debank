@@ -1,8 +1,15 @@
 import deposits from './deposits';
 import credits from './credits';
 import liqEarn from './liqEarn';
+import {
+  getAllCreditProfiles,
+  getAllProfiles,
+  getAllProfilesUniswap,
+  getLiqPairs,
+  getLiqTerms,
+} from './utils';
 
-export default {
+export const userObject = {
   loaded: false,
   self: this,
   account: '',

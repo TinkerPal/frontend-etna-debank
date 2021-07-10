@@ -1,4 +1,21 @@
-import { ERC721_TOKEN, NATIVE_ETHEREUM, UNISWAP_PAIR } from '../constants';
+/* eslint-disable camelcase */
+import numeral from 'numeral';
+import SimpleBar from 'simplebar';
+import {
+  ADJ_CONSTANT,
+  APY_SCALE,
+  BAD_DEPOSIT_ID,
+  BAD_DEPOSIT_PROFILE_ID,
+  ERC721_TOKEN,
+  NATIVE_ETHEREUM,
+  UNISWAP_PAIR,
+  ZERO_ADDRESS,
+} from '../constants';
+import { isMobile, LEVERAGE_TOKEN } from '../constants/env';
+import { erc20TokenContractAbi } from '../constants/web3ContractAbi';
+import { userObject } from '../store';
+import { getAllProfiles } from '../store/utils';
+import { isEmptyTable } from './dom';
 
 export function toNormalUSDView(data) {
   return numeral(data).format('$ 0,0.00');
@@ -42,7 +59,7 @@ export function safeFloatToWei(num) {
   // divide adj constant on 10**[num digits after dot]
   let bn_adj = new window.BN(ADJ_CONSTANT.toString());
 
-  bn_adj = bn_adj.div(new window.BN(10).pow(new BN(num_dig)));
+  bn_adj = bn_adj.div(new window.BN(10).pow(new window.BN(num_dig)));
 
   // bn based on float as integer in string form
   let bn_num = new window.BN(num_s);
@@ -68,7 +85,7 @@ export function safeSetTableData(id, value, className) {
       el.innerHTML = value;
     }
     if (!isMobile) {
-      const tableWithScroll = new SimpleBar(el);
+      SimpleBar(el);
     }
     if (isEmptyTable(id)) {
       el.closest('.page').classList.add(className);
@@ -140,38 +157,6 @@ export function toTokens(wei_am, digs) {
 
 export function floorDecimals(value, decimals) {
   return Number(`${Math.floor(`${value}e${decimals}`)}e-${decimals}`);
-}
-
-export async function getAllProfiles() {
-  let profiles;
-  await getBackendParameter('DEPPROFILES_UI_LIST', (profiles_s) => {
-    profiles = JSON.parse(profiles_s);
-  });
-  return profiles || [];
-}
-
-export async function getAllProfilesWithUniswap() {
-  let profiles;
-  await getBackendParameter('ASSETS_UI_FULL_LIST', (profiles_s) => {
-    profiles = JSON.parse(profiles_s);
-  });
-  return profiles || [];
-}
-
-export async function getAllProfilesUniswap() {
-  let profiles;
-  await getBackendParameter('ASSETS_UI_LIQ_PAIRS', (profiles_s) => {
-    profiles = JSON.parse(profiles_s);
-  });
-  return profiles || [];
-}
-
-export async function getAllCreditProfiles() {
-  let profiles;
-  await getBackendParameter('CREDIT_PROFILES_UI_LIST', (profiles_s) => {
-    profiles = JSON.parse(profiles_s);
-  });
-  return profiles || [];
 }
 
 export function depTypeByDepositTokenId(profile_id) {
@@ -300,9 +285,8 @@ export async function getPriceOfTokens(
     (isTokenNft(tokenId) && LEVERAGE_TOKEN) ||
     tokenName;
 
-  const { BN } = window;
   const wei_amount = isSafeAmount
-    ? new BN(tokenAmount)
+    ? new window.BN(tokenAmount)
     : safeFloatToWei(tokenAmount); // BN
 
   const [data, dec] = await Promise.all([
@@ -314,11 +298,11 @@ export async function getPriceOfTokens(
     }),
   ]);
 
-  const usd_bn = new BN(wei_amount.mul(new BN(data)));
+  const usd_bn = new window.BN(wei_amount.mul(new window.BN(data)));
 
-  const base = new BN(10);
-  const div_dec = new BN(base.pow(new BN(dec)));
-  const usd_adj = new BN(usd_bn.div(div_dec));
+  const base = new window.BN(10);
+  const div_dec = new window.BN(base.pow(new window.BN(dec)));
+  const usd_adj = new window.BN(usd_bn.div(div_dec));
 
   return parseFloat(window.web3js_reader.utils.fromWei(usd_adj, 'ether'));
 }
@@ -349,7 +333,7 @@ export async function getAPY(profile_id) {
 
 export async function calcTokensFromUSD(cred_profile_id, amount_usd) {
   if (!amount_usd) return 0;
-  // function calcFromUSDValue(uint256 usd_value, uint256 profile_id) public view returns(uint256 est_tokens)
+
   const tokens = await window.usage_calc_smartcontract_reader.methods
     .calcFromUSDValue(amount_usd, cred_profile_id)
     .call({
@@ -359,44 +343,11 @@ export async function calcTokensFromUSD(cred_profile_id, amount_usd) {
   return parseFloat(n_tokens).toFixed(4).toString();
 }
 
-export async function getBackendParameter(var_name, callback = null) {
-  const myHeaders = new Headers();
-  myHeaders.append('Content-Type', 'application/json');
-
-  const requestOptions = {
-    method: 'GET',
-    headers: myHeaders,
-    redirect: 'follow',
-  };
-
-  await fetch(`${WALLETS_API_URL}/get_var/${var_name}`, requestOptions)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new Error(response.status);
-      } else {
-        return response.clone().json();
-      }
-    })
-    .then((respJson) => {
-      if (respJson.type === 'success') {
-        resetMsg();
-        if (callback) callback(respJson.var);
-      } else {
-        errorMsg('API error');
-      }
-    })
-    .catch((error) => {
-      new Error(error);
-    });
-}
-
 export async function getNftPrice(contract, vc_contract, token_ids) {
-  const { BN } = window;
-
   const wei_am = await vc_contract.methods.calcNFTTokensValue(token_ids).call({
     from: userObject.account,
-  }); // cytr
-  const wei_amount = new BN(wei_am);
+  });
+  const wei_amount = new window.BN(wei_am);
 
   const [data, dec] = await Promise.all([
     contract.methods.getData('ETNAUSD').call({
@@ -407,13 +358,11 @@ export async function getNftPrice(contract, vc_contract, token_ids) {
     }),
   ]);
 
-  // let data = await contract.methods.getData('CYTRUSD').call({from:userObject.account});
-  // let dec = await contract.methods.getDecimals('CYTRUSD').call({from:userObject.account});
-  const usd_bn = new BN(wei_amount.mul(new BN(data)));
+  const usd_bn = new window.BN(wei_amount.mul(new window.BN(data)));
 
-  const base = new BN(10);
-  const div_dec = new BN(base.pow(new BN(dec)));
-  const usd_adj = new BN(usd_bn.div(div_dec));
+  const base = new window.BN(10);
+  const div_dec = new window.BN(base.pow(new window.BN(dec)));
+  const usd_adj = new window.BN(usd_bn.div(div_dec));
 
   const usd_float = parseFloat(
     window.web3js_reader.utils.fromWei(usd_adj, 'ether')

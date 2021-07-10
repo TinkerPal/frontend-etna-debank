@@ -1,13 +1,21 @@
+/* eslint-disable camelcase */
+import {
+  errorMsg,
+  output_transaction,
+  successMsg,
+} from '../components/InfoMessages';
+import { erc20TokenContractAbi } from '../constants/web3ContractAbi';
+import { userObject } from '../store';
+import { toNumber } from '../utils';
+
+/* eslint-disable camelcase */
 export async function approveTokenMove(
   token_address,
   amount_wei,
   toAddress,
   modal
 ) {
-  const { BN } = window.web3js_reader.utils;
-
-  // Calculate contract compatible value for approve with proper decimal points using BigNumber
-  const tokenAmountToApprove = new BN(amount_wei);
+  const tokenAmountToApprove = new window.BN(amount_wei);
   const calculatedApproveValue =
     window.web3js_reader.utils.toHex(tokenAmountToApprove);
   const token_contract = await new window.web3js.eth.Contract(
@@ -27,7 +35,7 @@ export async function approveTokenMove(
         from: userObject.account,
         gasPrice: window.gp,
       },
-      function (error, txnHash) {
+      (error, txnHash) => {
         if (error) {
           modal.isLoadedAfterApprove(false);
           throw error;
@@ -35,7 +43,7 @@ export async function approveTokenMove(
         output_transaction(txnHash);
       }
     )
-    .on('confirmation', function (confirmationNumber, receipt) {
+    .on('confirmation', (confirmationNumber) => {
       if (toNumber(confirmationNumber) === 5) {
         successMsg('Tokens move approved');
         modal.isLoadedAfterApprove();
@@ -44,5 +52,6 @@ export async function approveTokenMove(
     .catch((error) => {
       modal.isLoadedAfterApprove(false);
       errorMsg('Smartcontract communication error');
+      throw new Error(error);
     });
 }

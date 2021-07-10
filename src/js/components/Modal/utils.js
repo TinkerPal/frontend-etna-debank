@@ -1,3 +1,15 @@
+import {
+  modalAddCredit,
+  modalAddDeposit,
+  modalAddLeverage,
+  modalAddLiquidity,
+  modalReturnCredit,
+  modalReturnFee,
+  modalUnfreeze,
+  modalWithdrawDeposit,
+  modalWithdrawYield,
+} from '../..';
+
 export function closeAllModals() {
   const allModals = [
     modalWithdrawDeposit,

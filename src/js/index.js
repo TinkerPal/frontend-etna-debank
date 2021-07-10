@@ -1,9 +1,45 @@
+import EtnaChart from './components/Chart';
+import { createInfoPopup } from './components/InfoPopup';
 import { Modal } from './components/Modal';
+import {
+  collateralDropdownBuild,
+  creditDropdownBuild,
+  creditModalDataUpdate,
+  initCollateralDropdown,
+  initCreditDropdown,
+} from './components/Modal/credit';
+import {
+  depositModalRebuild,
+  depositModalUpdateNftDropdown,
+  initDepositProfilesDropdown,
+} from './components/Modal/deposit';
 import {
   initLiqPairsDropdown,
   initLiqTermsDropdown,
   liqModalBuild,
 } from './components/Modal/liquidity';
+import { setWalletPref } from './components/Navigation';
+import { createNotifications } from './components/Notification';
+import {
+  getAccount,
+  initWeb3jsReader,
+  initWeb3Modal,
+  toggleWeb3Connect,
+  web3jsReadersList,
+} from './components/Web3';
+import {
+  initCyclopsNFTContractReader,
+  initDataProviderContractReader,
+  initUsageCalcContractReader,
+  initVotesCalcContractReader,
+} from './components/Web3/contracts';
+import { isMobile } from './constants/env';
+import { userObject } from './store';
+import { initContractAdress } from './store/contracts';
+import { isMetaMaskInstalled } from './utils';
+import { postWalletCallback } from './utils/dom';
+
+export const walletButton = document.getElementById('enableEthereumButton');
 
 export const modalWithdrawDeposit = new Modal('modal-withdraw-deposit');
 export const modalWithdrawYield = new Modal('modal-withdraw-reward');
@@ -45,7 +81,7 @@ export const modalAddCredit = new Modal(
   }
 );
 
-document.addEventListener('visibilitychange', function () {
+document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') {
     setWalletPref({
       page_id: userObject.state.current_page_id,
@@ -53,8 +89,8 @@ document.addEventListener('visibilitychange', function () {
   }
 });
 
-window.addEventListener('DOMContentLoaded', async function () {
-  await initContractAdrress();
+window.addEventListener('DOMContentLoaded', async () => {
+  await initContractAdress();
 
   await initWeb3jsReader();
 
@@ -71,21 +107,20 @@ window.addEventListener('DOMContentLoaded', async function () {
     window.ethereum.autoRefreshOnNetworkChange = false;
     await getAccount();
 
-    window.ethereum.on('accountsChanged', async function (accounts) {
+    window.ethereum.on('accountsChanged', async () => {
       await getAccount();
     });
 
-    window.ethereum.on('chainChanged', async (chainId) => {
+    window.ethereum.on('chainChanged', async () => {
       window.location.reload();
     });
 
     await postWalletCallback();
   } else {
-    const walletButton = document.getElementById('enableEthereumButton');
     walletButton.style.display = 'block';
     await initWeb3Modal();
     walletButton.addEventListener('click', toggleWeb3Connect);
-    errorEmptyMetamaskMsg();
+    web3jsReadersList();
   }
 
   createInfoPopup();

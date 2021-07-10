@@ -1,3 +1,10 @@
+/* eslint-disable no-param-reassign */
+import { modalAddCredit, modalAddDeposit, modalAddLiquidity } from '..';
+import { getWalletPref, openTab } from '../components/Navigation';
+import { CHAINS } from '../constants';
+import { CHAIN_ID, isMobile } from '../constants/env';
+import { userObject } from '../store';
+
 export function safeSetValueById(id, value, disp = 'block') {
   const el = document.getElementById(id);
   if (el) {
@@ -23,7 +30,7 @@ export function isEmptyTable(idContainer) {
 }
 
 export function toggleElement(elementId, event) {
-  const target = event.target;
+  const { target } = event;
   const element = document.querySelector(`#${elementId}`);
   element.classList.toggle('show');
   target.classList.toggle('show');
@@ -55,7 +62,7 @@ export function safeSetInnerHTMLById(
 export function safeSetValueBySelector(selector, value) {
   const els = document.querySelectorAll(selector);
   if (els) {
-    els.forEach(function (item) {
+    els.forEach((item) => {
       item.value = value;
     });
   }
@@ -64,7 +71,7 @@ export function safeSetValueBySelector(selector, value) {
 export function safeHideBySelector(selector) {
   const els = document.querySelectorAll(selector);
   if (els) {
-    els.forEach(function (item) {
+    els.forEach((item) => {
       item.style.display = 'none';
     });
   }
@@ -73,7 +80,7 @@ export function safeHideBySelector(selector) {
 export function safeShowBySelector(selector, disp = 'block') {
   const els = document.querySelectorAll(selector);
   if (els) {
-    els.forEach(function (item) {
+    els.forEach((item) => {
       item.style.display = disp;
     });
   }
@@ -82,10 +89,9 @@ export function safeShowBySelector(selector, disp = 'block') {
 export function safeSetInnerHTMLBySelector(selector, value, disp = 'block') {
   const els = document.querySelectorAll(selector);
   if (els) {
-    els.forEach(function (el) {
+    els.forEach((el) => {
       el.innerHTML = value;
-      if (value === '') el.style.display = 'none';
-      else el.style.display = disp;
+      el.style.display = value === '' ? 'none' : disp;
     });
   }
 }
@@ -93,7 +99,7 @@ export function safeSetInnerHTMLBySelector(selector, value, disp = 'block') {
 export function safeAddClassBySelector(selector, aclass) {
   const els = document.querySelectorAll(selector);
   if (els) {
-    els.forEach(function (item) {
+    els.forEach((item) => {
       item.classList.add(aclass);
     });
   }
@@ -102,7 +108,7 @@ export function safeAddClassBySelector(selector, aclass) {
 export function safeRemoveClassBySelector(selector, aclass) {
   const els = document.querySelectorAll(selector);
   if (els) {
-    els.forEach(function (item) {
+    els.forEach((item) => {
       item.classList.remove(aclass);
     });
   }

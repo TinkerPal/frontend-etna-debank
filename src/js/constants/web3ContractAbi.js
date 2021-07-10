@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export const erc20TokenContractAbi = [
   {
     constant: true,

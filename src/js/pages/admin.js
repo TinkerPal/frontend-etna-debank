@@ -1,3 +1,9 @@
+/* eslint-disable camelcase */
+import { errorMsg } from '../components/InfoMessages';
+import { WALLETS_API_URL } from '../constants/env';
+import { userObject } from '../store';
+import { isMetaMaskInstalled } from '../utils';
+
 export function loginAdmin() {
   const msgParams = [
     {
@@ -23,9 +29,7 @@ export function loginAdmin() {
       params: [msgParams, userObject.account],
     })
     .then((result) => {
-      encr_message = result;
-
-      checkAdminAuthentification(msgParams, encr_message, 'admin.php');
+      checkAdminAuthentification(msgParams, result, 'admin.php');
     })
     .catch((error) => {
       if (error.code === 4001) {
@@ -36,7 +40,7 @@ export function loginAdmin() {
     });
 }
 
-export function checkAdminButton(token) {
+export function checkAdminButton() {
   // admin functions work only with MM
   if (!isMetaMaskInstalled()) return;
 
@@ -70,14 +74,11 @@ export function checkAdminButton(token) {
           document
             .getElementById('adminButton')
             .addEventListener('click', loginAdmin);
-          document
-            .getElementById('net_txt')
-            .addEventListener('click', loginAdminTst);
         }
       }
     })
     .catch((error) => {
-      new Error(error);
+      throw new Error(error);
     });
 }
 
@@ -111,7 +112,7 @@ export function checkAdminAuthentification(
         return response.clone().json();
       }
     })
-    .then((respJson) => {
+    .then(() => {
       // if we are here, it success (see backend implementation)
       // we store signed message & signed data as token
       window.msg_params = msg_params;
@@ -133,6 +134,7 @@ export function checkAdminAuthentification(
     })
     .catch((error) => {
       errorMsg('This wallet does not have admin access');
+      throw new Error(error);
     });
 }
 

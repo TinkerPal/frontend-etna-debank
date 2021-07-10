@@ -1,5 +1,7 @@
+import Choices from 'choices.js';
+
 const creditSelectElement = document.querySelector('#getcredit-dropdown');
-const creditDropdown =
+export const creditDropdown =
   creditSelectElement &&
   new Choices(creditSelectElement, {
     classNames: {

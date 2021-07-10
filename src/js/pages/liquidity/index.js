@@ -1,10 +1,35 @@
-async function getLiquidityDashboard(callback = null) {
+/* eslint-disable camelcase */
+import { modalAddLiquidity } from '../..';
+import { cryptoInfoBuild } from '../../components/CryptoInfo';
+import {
+  errorMsg,
+  output_transaction,
+  resetMsg,
+} from '../../components/InfoMessages';
+import { openTab } from '../../components/Navigation';
+import { updateData } from '../../components/Web3';
+import { initStakingContract } from '../../components/Web3/contracts';
+import { NONE_FAMER_ID } from '../../constants';
+import { isMobile } from '../../constants/env';
+import { erc20TokenContractAbi } from '../../constants/web3ContractAbi';
+import { userObject } from '../../store';
+import {
+  formatDataForMobile,
+  htmlToElement,
+  safeFloatToWei,
+  safeSetTableData,
+  tokenIdByLiqpairsTokenName,
+  toNormalUSDView,
+  toNumber,
+} from '../../utils';
+import { approveTokenMove } from '../utils';
+
+export async function getLiquidityDashboard(callback = null) {
   let html =
     '<table class="min-w-full">' +
     '<thead>' +
     '<tr>' +
     '<th class="table-title" colspan = "2" scope = "colgroup">Liquidity-Pair</th>' +
-    // '<th>In wallet</th>'+
     '<th class="table-title">Quantity</th>' +
     '<th class="table-title">Lockup</th>' +
     '<th class="table-title">Days till Withdraw</th>' +
@@ -19,11 +44,12 @@ async function getLiquidityDashboard(callback = null) {
     '</tr>' +
     '</thead>' +
     '<tbody>';
-  // let profiles = userObject.deposit_profiles;
+
   const wrapper = document.querySelector('#deposits_uniswap');
   wrapper.innerHTML = '';
   userObject.state.currentLiq = [];
-  const [am_arr, rew_arr] = await Promise.all([
+
+  await Promise.all([
     userObject.deposits.getAmArr(),
     userObject.deposits.getRewArr(),
   ]);
@@ -58,7 +84,6 @@ async function getLiquidityDashboard(callback = null) {
 
   const icon_column_s = new Array(icon_column.length);
   const asset_column_s = new Array(icon_column.length);
-  // let in_wallet_column_s = new Array(profiles.length);
   const dep_column_s = new Array(icon_column.length);
   const lockup_period_s = new Array(icon_column.length);
   const unlock_col_s = new Array(icon_column.length);
@@ -82,7 +107,6 @@ async function getLiquidityDashboard(callback = null) {
     asset_column_s[i] = asset_column[old_index];
     lockup_period_s[i] = lockup_period[old_index];
     unlock_col_s[i] = unlock_col[old_index];
-    // in_wallet_column_s[i] = in_wallet_column[old_index];
     usd_reward_column_s[i] = usd_reward_column[old_index];
     dep_column_s[i] = dep_column[old_index];
     usd_val_column_s[i] = usd_val_column[old_index];
@@ -97,7 +121,6 @@ async function getLiquidityDashboard(callback = null) {
   }
 
   for (let i = 0; i < icon_column?.length ?? 0; i++) {
-    // 0 means max amount for ERC20 compatible and ignored for ERC721
     if (isMobile) {
       const options = {
         icon_column: formatDataForMobile(icon_column_s[i]),
@@ -199,7 +222,7 @@ async function getLiquidityDashboard(callback = null) {
 
       userObject.state.currentLiq = [...userObject.state.currentLiq, options];
       /* eslint no-loop-func: "off" */
-      mobileListEl.onclick = function (e) {
+      mobileListEl.onclick = (e) => {
         openTab(
           e,
           'crypto-info',
@@ -254,7 +277,7 @@ async function getLiquidityDashboard(callback = null) {
     }
   }
 
-  html += '</tbody>' + '</table>';
+  html += '</tbody></table>';
 
   safeSetTableData('deposits_uniswap', isMobile ? '' : html, 'empty');
   if (callback) callback();
@@ -309,7 +332,7 @@ export async function stake_liq() {
     erc20TokenContractAbi,
     userObject.state.liq_pair_address
   );
-  const allow = new BN(
+  const allow = new window.BN(
     await token_contract.methods
       .allowance(userObject.account, window.staking_contract_address)
       .call({
@@ -317,7 +340,7 @@ export async function stake_liq() {
       })
   );
 
-  const tokenAmountToApprove = new BN(amount);
+  const tokenAmountToApprove = new window.BN(amount);
 
   // amount is already adjusted *10**18
   const calculatedApproveValue = tokenAmountToApprove;
@@ -335,8 +358,8 @@ export async function stake_liq() {
     .call({
       from: userObject.account,
     });
-  const erc20_count_bn = new BN(erc20_count);
-  const amount_bn = new BN(amount);
+  const erc20_count_bn = new window.BN(erc20_count);
+  const amount_bn = new window.BN(amount);
 
   if (toNumber(erc20_count_bn.cmp(amount_bn)) === -1) {
     modalAddLiquidity.isLoadedAfterConfirm(false, false);
@@ -355,7 +378,7 @@ export async function stake_liq() {
           value: wei_val,
           gasPrice: window.gp,
         },
-        function (error, txnHash) {
+        (error, txnHash) => {
           if (error) {
             modalAddLiquidity.isLoadedAfterConfirm(false);
             throw error;
@@ -363,7 +386,7 @@ export async function stake_liq() {
           output_transaction(txnHash);
         }
       )
-      .on('confirmation', async function (confirmationNumber, receipt) {
+      .on('confirmation', async (confirmationNumber) => {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('stake_liq');
           modalAddLiquidity.isLoadedAfterConfirm();
@@ -373,6 +396,7 @@ export async function stake_liq() {
       .catch((error) => {
         modalAddLiquidity.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
+        throw new Error(error);
       });
   });
 }

@@ -1,3 +1,44 @@
+/* eslint-disable prefer-destructuring */
+/* eslint-disable camelcase */
+import Web3 from 'web3';
+import WalletConnectProvider from '@walletconnect/web3-provider';
+import Web3Modal from 'web3modal';
+import { walletButton } from '../..';
+import { INFURA_ENDPOINT } from '../../constants';
+import {
+  CHAIN_ID,
+  RPC_LIST,
+  WALLET_OPTION_RPC,
+  WEB3_MODAL_NETWORK,
+} from '../../constants/env';
+import { checkAdminButton } from '../../pages/admin';
+import { getCreditsDashboard } from '../../pages/credit';
+import { getOurDashbord } from '../../pages/dashboard';
+import { getDepositsDashboard } from '../../pages/deposit';
+import { getLiquidityDashboard } from '../../pages/liquidity';
+import { userObject } from '../../store';
+import { isMetaMaskInstalled } from '../../utils';
+import {
+  postWalletCallback,
+  safeSetInnerHTMLBySelector,
+  safeSetValueBySelector,
+  setNetInfo,
+} from '../../utils/dom';
+import {
+  errorEmptyMetamaskMsg,
+  errorEmptyMsg,
+  resetMsg,
+} from '../InfoMessages';
+import { setLdBar } from '../Loader';
+import { closeAllModals } from '../Modal/utils';
+import {
+  initCreditContract,
+  initCyclopsNFTContract,
+  initLiqLevContract,
+  initStakingContract,
+  initStakingContractReader,
+} from './contracts';
+
 export const web3jsReadersList = {
   rpc_list: RPC_LIST,
   web3js_list: [],
@@ -23,9 +64,10 @@ export const web3jsReadersList = {
 
 export async function initWeb3jsReader(callback = null) {
   if (!window.web3js_reader) {
-    window.web3js_reader = await new Web3(
+    window.web3js_reader = new Web3(
       new Web3.providers.HttpProvider(INFURA_ENDPOINT[CHAIN_ID])
     );
+    window.BN = window.web3js_reader.utils.BN;
   }
   // and in any case
   if (callback) callback(window.web3js_reader);
@@ -36,9 +78,10 @@ export async function getAccount() {
   closeAllModals();
 
   try {
-    const accounts = await ethereum.request({
+    const accounts = await window.ethereum.request({
       method: 'eth_requestAccounts',
     });
+
     userObject.account = accounts[0];
 
     setLdBar(10);
@@ -51,9 +94,7 @@ export async function getAccount() {
     );
 
     checkAdminButton();
-    window.web3js = await new Web3(window.ethereum);
-    window.web3 = window.web3js;
-    window.BN = web3js.utils.BN;
+    window.web3js = new Web3(window.ethereum);
 
     await Promise.all([
       initStakingContract(),
@@ -77,6 +118,7 @@ export async function getAccount() {
     window.gp *= 2;
   } catch (error) {
     errorEmptyMsg('Cannot access wallet. Reload your page, please.');
+    throw new Error(error);
   }
 }
 
@@ -85,18 +127,10 @@ export async function getAccountWalletConnect() {
   closeAllModals();
   try {
     errorEmptyMetamaskMsg(false);
-    // Get connected chain id from Ethereum node
-    //  const chainId = '0x38';// await window.web3js.eth.getChainId();
-    // do not rely on automatic..
 
-    // Load chain information over an HTTP API
-    // const chainData = evmChains.getChain(chainId);
-    window.web3js = await new Web3(window.provider);
-    window.web3 = window.web3js;
-    window.BN = web3js.utils.BN;
+    window.web3js = new Web3(window.provider);
 
-    // Get list of accounts of the connected wallet
-    window.accounts = await web3js.eth.getAccounts();
+    const accounts = await window.web3js.eth.getAccounts();
 
     userObject.account = accounts[0];
 
@@ -138,7 +172,7 @@ export async function initWeb3Modal() {
 
   const providerOptions = {
     walletconnect: {
-      package: window.WalletConnectProvider.default,
+      package: WalletConnectProvider,
       options: {
         rpc: WALLET_OPTION_RPC,
       },
@@ -161,17 +195,17 @@ export async function onUniversalConnect() {
     return;
   }
 
-  window.provider.on('accountsChanged', (accounts) => {
+  window.provider.on('accountsChanged', () => {
     getAccountWalletConnect();
   });
 
   // Subscribe to chainId change
-  window.provider.on('chainChanged', (chainId) => {
+  window.provider.on('chainChanged', () => {
     getAccountWalletConnect();
   });
 
   // Subscribe to networkId change
-  window.provider.on('networkChanged', (networkId) => {
+  window.provider.on('networkChanged', () => {
     getAccountWalletConnect();
   });
 }
@@ -188,25 +222,25 @@ export async function connectWeb3() {
     window.ethereum.autoRefreshOnNetworkChange = false;
     getAccount();
 
-    window.ethereum.on('accountsChanged', function (accounts) {
+    window.ethereum.on('accountsChanged', () => {
       getAccount();
     });
 
-    window.ethereum.on('chainChanged', (chainId) => {
+    window.ethereum.on('chainChanged', () => {
       getAccount();
     });
   } else {
     // try to connect with something built-in, like Opera
     try {
       await initWeb3Modal();
-      await window.web3.currentProvider.enable();
-      if (window.web3.currentProvider.isConnected()) {
-        window.provider = window.web3.currentProvider;
+      await window.web3js.currentProvider.enable();
+      if (window.web3js.currentProvider.isConnected()) {
+        window.provider = window.web3js.currentProvider;
         await getAccountWalletConnect();
         return;
       }
     } catch (error) {
-      console.warn(error);
+      throw new Error(error);
     }
 
     await onUniversalConnect();

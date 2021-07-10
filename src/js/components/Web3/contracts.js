@@ -1,3 +1,16 @@
+/* eslint-disable camelcase */
+import { web3jsReadersList } from '.';
+import { CYCLOPS_NFT_CONTRACT_ADDRESS } from '../../constants/env';
+import {
+  credit_contract_abi,
+  data_provider_abi,
+  liqlev_contract_abi,
+  nftpub_contracts_abi,
+  staking_contract_abi,
+  usage_calc_abi,
+  votes_calc_abi,
+} from '../../constants/web3ContractAbi';
+
 export async function initDataProviderContractReader(callback = null) {
   if (!window.data_provider_smartcontract_reader) {
     const reader = web3jsReadersList.get();

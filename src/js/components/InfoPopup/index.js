@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 export function createInfoPopup() {
   const allInfo = document.querySelectorAll('[data-id="infoPopup"]');
   const mustBeCut = (field) => {

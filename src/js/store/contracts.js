@@ -1,4 +1,7 @@
-export async function initContractAdrress() {
+/* eslint-disable camelcase */
+import { getBackendParameter } from './utils';
+
+export async function initContractAdress() {
   const r1 = getBackendParameter('STAKING_CONTRACT', (contract_address) => {
     window.staking_contract_address = contract_address;
   });

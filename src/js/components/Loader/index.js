@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 export function setLdBar(value, part = 0) {
   const { ldBar } = document.getElementById('debank_load_bar');
   const ldBarWrapper = document.getElementById('load_bar_cover');

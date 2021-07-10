@@ -1,3 +1,44 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable prefer-destructuring */
+/* eslint-disable no-unused-vars */
+/* eslint-disable camelcase */
+import { modalAddCredit, modalReturnCredit, modalReturnFee } from '../..';
+import { cryptoInfoBuild } from '../../components/CryptoInfo';
+import {
+  errorMsg,
+  infoMsg,
+  output_transaction,
+  resetMsg,
+} from '../../components/InfoMessages';
+import { updUSDValueCollateral } from '../../components/Modal/credit';
+import { openTab } from '../../components/Navigation';
+import { updateData } from '../../components/Web3';
+import { initCreditContract } from '../../components/Web3/contracts';
+import {
+  APY_SCALE,
+  BAD_DEPOSIT_PROFILE_ID,
+  ERC721_TOKEN,
+  NATIVE_ETHEREUM,
+} from '../../constants';
+import { isMobile, LEVERAGE_TOKEN } from '../../constants/env';
+import { erc20TokenContractAbi } from '../../constants/web3ContractAbi';
+import { userObject } from '../../store';
+import { getAllProfiles } from '../../store/utils';
+import {
+  depAmountByProfileId,
+  depTypeByDepositTokenId,
+  formatDataForMobile,
+  htmlToElement,
+  isTokenBnb,
+  safeFloatToWei,
+  safeSetTableData,
+  tokenAddressByDepositTokenId,
+  toNormalUSDView,
+  toNumber,
+  toTokens,
+} from '../../utils';
+import { approveTokenMove } from '../utils';
+
 export async function getCredit() {
   modalAddCredit.isLoadingAfterConfirm();
 
@@ -55,7 +96,7 @@ export async function getCredit() {
           from: userObject.account,
           gasPrice: window.gp,
         },
-        function (error, txnHash) {
+        (error, txnHash) => {
           if (error) {
             modalAddCredit.isLoadedAfterConfirm(false);
             throw error;
@@ -63,7 +104,7 @@ export async function getCredit() {
           output_transaction(txnHash);
         }
       )
-      .on('confirmation', async function (confirmationNumber, receipt) {
+      .on('confirmation', async (confirmationNumber) => {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('get_credit');
           modalAddCredit.isLoadedAfterConfirm();
@@ -87,7 +128,7 @@ export async function getCreditsDashboard(callback = null) {
     userObject.credits.getCredCCArr(),
   ]);
 
-  const [lev_arr, lev_ratio_arr] = await userObject.credits.getLevArr();
+  const [lev_arr] = await userObject.credits.getLevArr();
 
   const [
     [icon_column, asset_column],
@@ -152,8 +193,6 @@ export async function getCreditsDashboard(callback = null) {
   userObject.state.currentCredits = [];
 
   for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {
-    // i === credit id
-
     if (
       toNumber(cred_arr[1][i]) > 0 ||
       toNumber(cred_arr[2][i]) > 0 ||
@@ -260,7 +299,7 @@ export async function getCreditsDashboard(callback = null) {
         ];
 
         /* eslint no-loop-func: "off" */
-        mobileListEl.onclick = function (e) {
+        mobileListEl.onclick = (e) => {
           openTab(
             e,
             'crypto-info',
@@ -319,7 +358,7 @@ export async function getCreditsDashboard(callback = null) {
     html += '</tr>';
   }
 
-  html += '</tbody>' + '</table>';
+  html += '</tbody></table>';
 
   safeSetTableData('my_credits', isMobile ? '' : html, 'empty');
 
@@ -462,7 +501,7 @@ export async function return_credit_confirm(cred_id) {
       erc20TokenContractAbi,
       returned_asset_token_address
     );
-    const allow = new BN(
+    const allow = new window.BN(
       await token_contract.methods
         .allowance(userObject.account, window.credit_contract_address)
         .call({
@@ -470,7 +509,7 @@ export async function return_credit_confirm(cred_id) {
         })
     );
 
-    const tokenAmountToApprove = new BN(return_amount);
+    const tokenAmountToApprove = new window.BN(return_amount);
 
     // amount is already adjusted *10**18
     const calculatedApproveValue = tokenAmountToApprove;
@@ -488,8 +527,8 @@ export async function return_credit_confirm(cred_id) {
       .call({
         from: userObject.account,
       });
-    const erc20_count_bn = new BN(erc20_count);
-    const return_amount_bn = new BN(return_amount);
+    const erc20_count_bn = new window.BN(erc20_count);
+    const return_amount_bn = new window.BN(return_amount);
 
     if (toNumber(erc20_count_bn.cmp(return_amount_bn)) === -1) {
       modalReturnCredit.isLoadedAfterConfirm(false);
@@ -507,7 +546,7 @@ export async function return_credit_confirm(cred_id) {
           value: return_val,
           gasPrice: window.gp,
         },
-        function (error, txnHash) {
+        (error, txnHash) => {
           if (error) {
             modalReturnCredit.isLoadedAfterConfirm(false);
             throw error;
@@ -515,7 +554,7 @@ export async function return_credit_confirm(cred_id) {
           output_transaction(txnHash);
         }
       )
-      .on('confirmation', async function (confirmationNumber, receipt) {
+      .on('confirmation', async (confirmationNumber) => {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('return_credit');
           modalReturnCredit.isLoadedAfterConfirm();
@@ -525,6 +564,7 @@ export async function return_credit_confirm(cred_id) {
       .catch((error) => {
         modalReturnCredit.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
+        throw new Error(error);
       });
   });
 }
@@ -562,7 +602,7 @@ export async function return_fee_confirm(cred_id) {
       erc20TokenContractAbi,
       returned_asset_token_address
     );
-    const allow = new BN(
+    const allow = new window.BN(
       await token_contract.methods
         .allowance(userObject.account, window.credit_contract_address)
         .call({
@@ -570,7 +610,7 @@ export async function return_fee_confirm(cred_id) {
         })
     );
 
-    const tokenAmountToApprove = new BN(return_amount);
+    const tokenAmountToApprove = new window.BN(return_amount);
 
     const calculatedApproveValue = tokenAmountToApprove;
 
@@ -587,8 +627,8 @@ export async function return_fee_confirm(cred_id) {
       .call({
         from: userObject.account,
       });
-    const erc20_count_bn = new BN(erc20_count);
-    const return_amount_bn = new BN(return_amount);
+    const erc20_count_bn = new window.BN(erc20_count);
+    const return_amount_bn = new window.BN(return_amount);
 
     if (toNumber(erc20_count_bn.cmp(return_amount_bn)) === -1) {
       modalReturnFee.isLoadedAfterConfirm(false);
@@ -606,7 +646,7 @@ export async function return_fee_confirm(cred_id) {
           value: return_val,
           gasPrice: window.gp,
         },
-        function (error, txnHash) {
+        (error, txnHash) => {
           if (error) {
             modalReturnFee.isLoadedAfterConfirm(false);
             throw error;
@@ -614,7 +654,7 @@ export async function return_fee_confirm(cred_id) {
           output_transaction(txnHash);
         }
       )
-      .on('confirmation', async function (confirmationNumber, receipt) {
+      .on('confirmation', async (confirmationNumber) => {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('return_fee');
           modalReturnFee.isLoadedAfterConfirm();
@@ -624,13 +664,17 @@ export async function return_fee_confirm(cred_id) {
       .catch((error) => {
         modalReturnFee.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
+        throw new Error(error);
       });
   });
 }
 
 export function full_collateral_btn(dep_id) {
-  document.getElementById('tokens_amount_collateral').value =
-    depAmountByProfileId(userObject.state.selected_credprofile)[1];
+  const fullCollateralBtn = document.getElementById('tokens_amount_collateral');
+  const { selected_credprofile } = userObject.state;
+
+  fullCollateralBtn.value = depAmountByProfileId(selected_credprofile)[1];
+
   updUSDValueCollateral(
     'tokens_amount_collateral',
     'usd_value_collateral',
@@ -655,7 +699,7 @@ export function return_credit_all_btn(dep_id) {
   document.getElementById('credit_return_input').readOnly = true;
 }
 
-export function return_credit_part_btn(dep_id) {
+export function return_credit_part_btn() {
   document.getElementById('credit_return_input').value = 0;
   document.getElementById('credit_return_input').readOnly = false;
 }
@@ -754,12 +798,12 @@ export async function set_leverage(ratio, cred_id) {
     .call({
       from: userObject.account,
     });
-  let lev_needed_size = new BN(lns);
-  if ((ratio, 10 > 100 || ratio < 0)) ratio = 100;
+  let lev_needed_size = new window.BN(lns);
+  if (ratio > 100 || ratio < 0) ratio = 100;
   if (ratio !== 100) {
-    const r = new BN(ratio);
+    const r = new window.BN(ratio);
     lev_needed_size = lev_needed_size.mul(r);
-    lev_needed_size = lev_needed_size.div(new BN(100));
+    lev_needed_size = lev_needed_size.div(new window.BN(100));
   }
   window.lev_size_wei = lev_needed_size;
 

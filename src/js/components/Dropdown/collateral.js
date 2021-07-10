@@ -1,7 +1,9 @@
+import Choices from 'choices.js';
+
 const collateralSelectElement = document.querySelector(
   '#credprofiles-dropdown'
 );
-const collateralDropdown =
+export const collateralDropdown =
   collateralSelectElement &&
   new Choices(collateralSelectElement, {
     classNames: {

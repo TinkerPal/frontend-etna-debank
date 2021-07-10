@@ -1,4 +1,37 @@
-async function getDepositsDashboard(callback = null) {
+/* eslint-disable camelcase */
+import {
+  modalAddDeposit,
+  modalWithdrawDeposit,
+  modalWithdrawYield,
+} from '../..';
+import { cryptoInfoBuild } from '../../components/CryptoInfo';
+import {
+  errorMsg,
+  infoMsg,
+  output_transaction,
+  resetMsg,
+  successMsg,
+} from '../../components/InfoMessages';
+import { openTab } from '../../components/Navigation';
+import { updateData } from '../../components/Web3';
+import { initStakingContract } from '../../components/Web3/contracts';
+import { NATIVE_ETHEREUM, NONE_FAMER_ID } from '../../constants';
+import { isMobile, NFT_TOKEN_ID } from '../../constants/env';
+import { erc20TokenContractAbi } from '../../constants/web3ContractAbi';
+import { userObject } from '../../store';
+import {
+  formatDataForMobile,
+  htmlToElement,
+  isTokenNft,
+  safeFloatToWei,
+  safeSetTableData,
+  toNormalUSDView,
+  toNumber,
+  toTokens,
+} from '../../utils';
+import { approveTokenMove } from '../utils';
+
+export async function getDepositsDashboard(callback = null) {
   let html =
     '<table class="min-w-full">' +
     '<thead>' +
@@ -188,7 +221,7 @@ async function getDepositsDashboard(callback = null) {
       ];
 
       /* eslint no-loop-func: "off" */
-      mobileListEl.onclick = function (e) {
+      mobileListEl.onclick = (e) => {
         openTab(
           e,
           'crypto-info',
@@ -236,7 +269,7 @@ async function getDepositsDashboard(callback = null) {
       html += '</tr>';
     }
   }
-  html += '</tbody>' + '</table>';
+  html += '</tbody></table>';
 
   safeSetTableData('tokens_balance', isMobile ? '' : html, 'empty');
 
@@ -281,7 +314,7 @@ export async function deposit() {
         return;
       }
     } catch (error) {
-      console.warn(error);
+      throw new Error(error);
     }
 
     const isApproved = await window.cyclops_nft_smartcontract.methods
@@ -332,10 +365,10 @@ export async function deposit() {
     ) {
       wei_val = amount;
 
-      const wb_bn = new BN(
+      const wb_bn = new window.BN(
         await window.web3js_reader.eth.getBalance(userObject.account)
       );
-      const amount_bn = new BN(amount);
+      const amount_bn = new window.BN(amount);
 
       if (toNumber(wb_bn.cmp(amount_bn)) === -1) {
         modalAddDeposit.isLoadedAfterConfirm(false);
@@ -349,7 +382,7 @@ export async function deposit() {
         erc20TokenContractAbi,
         userObject.state.selected_depprofile_token_address
       );
-      const allow = new BN(
+      const allow = new window.BN(
         await token_contract.methods
           .allowance(userObject.account, window.staking_contract_address)
           .call({
@@ -357,7 +390,7 @@ export async function deposit() {
           })
       );
 
-      const tokenAmountToApprove = new BN(amount);
+      const tokenAmountToApprove = new window.BN(amount);
       // amount is already adjusted *10**18
       const calculatedApproveValue = tokenAmountToApprove;
 
@@ -374,8 +407,8 @@ export async function deposit() {
         .call({
           from: userObject.account,
         });
-      const erc20_count_bn = new BN(erc20_count);
-      const amount_bn = new BN(amount);
+      const erc20_count_bn = new window.BN(erc20_count);
+      const amount_bn = new window.BN(amount);
 
       if (toNumber(erc20_count_bn.cmp(amount_bn)) === -1) {
         modalAddDeposit.isLoadedAfterConfirm(false);
@@ -401,7 +434,7 @@ export async function deposit() {
           value: wei_val,
           gasPrice: window.gp,
         },
-        function (error, txnHash) {
+        (error, txnHash) => {
           if (error) {
             modalAddDeposit.isLoadedAfterConfirm(false);
             throw error;
@@ -409,7 +442,7 @@ export async function deposit() {
           output_transaction(txnHash);
         }
       )
-      .on('confirmation', async function (confirmationNumber, receipt) {
+      .on('confirmation', async (confirmationNumber) => {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('make_deposit');
           modalAddDeposit.isLoadedAfterConfirm();
@@ -419,6 +452,7 @@ export async function deposit() {
       .catch((error) => {
         modalAddDeposit.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
+        throw new Error(error);
       });
   });
 }
@@ -431,7 +465,6 @@ export async function approve_deposit() {
     errorMsg('You need to select asset');
     return;
   }
-  const dep_profile_id = userObject.state.selected_depprofile;
 
   if (userObject.state.selected_depprofile_name === 'nft') {
     const isApproved = await window.cyclops_nft_smartcontract.methods
@@ -452,7 +485,7 @@ export async function approve_deposit() {
             from: userObject.account,
             gasPrice: window.gp,
           },
-          function (error, txnHash) {
+          (error, txnHash) => {
             if (error) {
               modalAddDeposit.isLoadedAfterApprove(false);
               throw error;
@@ -460,7 +493,7 @@ export async function approve_deposit() {
             output_transaction(txnHash);
           }
         )
-        .on('confirmation', function (confirmationNumber, receipt) {
+        .on('confirmation', (confirmationNumber) => {
           if (toNumber(confirmationNumber) === 5) {
             successMsg('NFT move approved');
             modalAddDeposit.isLoadedAfterApprove();
@@ -469,6 +502,7 @@ export async function approve_deposit() {
         .catch((error) => {
           errorMsg('Smartcontract communication error');
           modalAddDeposit.isLoadedAfterApprove(false);
+          throw new Error(error);
         });
     }
   } else {
@@ -497,7 +531,7 @@ export function withdraw_reward(dep_id) {
 }
 export function withdraw_reward_confirm(dep_id) {
   modalWithdrawYield.isLoadingAfterConfirm();
-  // alert(dep_id); return;
+
   if (toNumber(userObject.deposits.rew_arr[2][dep_id]) === 0) {
     modalWithdrawYield.isLoadedAfterConfirm(false);
     infoMsg('Reward is not currently exractable');
@@ -512,7 +546,7 @@ export function withdraw_reward_confirm(dep_id) {
           from: userObject.account,
           gasPrice: window.gp,
         },
-        function (error, txnHash) {
+        (error, txnHash) => {
           if (error) {
             modalWithdrawYield.isLoadedAfterConfirm(false);
             throw error;
@@ -520,7 +554,7 @@ export function withdraw_reward_confirm(dep_id) {
           output_transaction(txnHash);
         }
       )
-      .on('confirmation', async function (confirmationNumber, receipt) {
+      .on('confirmation', async (confirmationNumber) => {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('withdraw_deposit_reward');
           modalWithdrawYield.isLoadedAfterConfirm();
@@ -530,11 +564,12 @@ export function withdraw_reward_confirm(dep_id) {
       .catch((error) => {
         modalWithdrawYield.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
+        throw new Error(error);
       });
   });
 }
 export function withdraw_deposit(dep_id) {
-  const deposit = userObject.deposits.am_arr[2][dep_id];
+  const depositAmount = userObject.deposits.am_arr[2][dep_id];
   const depositTokenId = userObject.deposits.am_arr[0][dep_id];
 
   const modalElement = modalWithdrawDeposit.modal;
@@ -544,7 +579,7 @@ export function withdraw_deposit(dep_id) {
 
   const isNft = isTokenNft(depositTokenId);
 
-  const adj_am = isNft ? deposit : toTokens(deposit, 4);
+  const adj_am = isNft ? depositAmount : toTokens(depositAmount, 4);
 
   isNft
     ? partDepositsBtn.parentElement.classList.add('hidden')
@@ -589,7 +624,7 @@ function withdraw_deposit_confirm(dep_id) {
           from: userObject.account,
           gasPrice: window.gp,
         },
-        function (error, txnHash) {
+        (error, txnHash) => {
           if (error) {
             modalWithdrawDeposit.isLoadedAfterConfirm(false);
             throw error;
@@ -597,7 +632,7 @@ function withdraw_deposit_confirm(dep_id) {
           output_transaction(txnHash);
         }
       )
-      .on('confirmation', async function (confirmationNumber, receipt) {
+      .on('confirmation', async (confirmationNumber) => {
         if (toNumber(confirmationNumber) === 5) {
           await updateData('withdraw_deposit');
           modalWithdrawDeposit.isLoadedAfterConfirm();
@@ -607,6 +642,7 @@ function withdraw_deposit_confirm(dep_id) {
       .catch((error) => {
         modalWithdrawDeposit.isLoadedAfterConfirm(false);
         errorMsg('Smartcontract communication error');
+        throw new Error(error);
       });
   });
 }

@@ -1,3 +1,11 @@
+import { isMobile, WALLETS_API_URL } from '../../constants/env';
+import { userObject } from '../../store';
+import {
+  safeAddClassBySelector,
+  safeRemoveClassBySelector,
+} from '../../utils/dom';
+import { errorMsg } from '../InfoMessages';
+
 export function setWalletPref(pref) {
   const myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
@@ -34,6 +42,7 @@ export function setWalletPref(pref) {
     })
     .catch((error) => {
       errorMsg('Set wallet preferences error');
+      throw new Error(error);
     });
 }
 
@@ -75,10 +84,12 @@ export async function getWalletPref() {
     })
     .catch((error) => {
       userObject.state.current_page_id = 'dashboard-tab';
+      throw new Error(error);
     });
 }
 
-function openTab(event, tabid, callback, pageName) {
+// TODO: need refactor
+export function openTab(event, tabid, callback, pageName) {
   if (callback) {
     const callbackState = callback();
 
