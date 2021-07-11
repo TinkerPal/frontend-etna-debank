@@ -1,5 +1,5 @@
 import { ERC20_TOKEN, NATIVE_ETHEREUM } from '../../constants';
-import { userObject } from '../../store';
+import { userObject } from '../../store/userObject';
 import { toNormalUSDView, toNumber } from '../../utils';
 import { openTab } from '../Navigation';
 

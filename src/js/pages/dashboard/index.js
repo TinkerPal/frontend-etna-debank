@@ -2,13 +2,13 @@
 import numeral from 'numeral';
 import SimpleBar from 'simplebar';
 import { openTab } from '../../components/Navigation';
-import { userObject } from '../../store';
+import { userObject } from '../../store/userObject';
 
 export async function getOurDashbord(callback = null) {
   const ourCryptoList = document.querySelector('#our-crypto-list');
   if (!ourCryptoList) return;
 
-  const data = await fetch('/dashboard.json')
+  const data = await fetch(`/dashboard.json?ts=${Date.now()}`)
     .then((response) => {
       if (response.status !== 200) {
         throw new Error(response.status);
@@ -62,7 +62,7 @@ export async function getOurDashbord(callback = null) {
     );
   });
 
-  SimpleBar(ourCryptoList, {
+  new SimpleBar(ourCryptoList, {
     autoHide: false,
   });
 

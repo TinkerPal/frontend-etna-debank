@@ -3,7 +3,7 @@ import { modalAddCredit, modalAddDeposit, modalAddLiquidity } from '..';
 import { getWalletPref, openTab } from '../components/Navigation';
 import { CHAINS } from '../constants';
 import { CHAIN_ID, isMobile } from '../constants/env';
-import { userObject } from '../store';
+import { userObject } from '../store/userObject';
 
 export function safeSetValueById(id, value, disp = 'block') {
   const el = document.getElementById(id);
@@ -112,15 +112,6 @@ export function safeRemoveClassBySelector(selector, aclass) {
       item.classList.remove(aclass);
     });
   }
-}
-
-export function setOptionsToSelect(data, select) {
-  data.forEach((asset) => {
-    const option = document.createElement('option');
-    option.value = asset.text;
-    option.innerHTML = asset.text;
-    select.appendChild(option);
-  });
 }
 
 export async function setNetInfo() {

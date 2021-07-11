@@ -3,6 +3,7 @@ const { watch, series, src, dest } = require('gulp');
 var browserSync = require('browser-sync').create();
 var through2 = require('through2');
 
+const webpack = require('webpack');
 const postcss = require('gulp-postcss'),
   babel = require('gulp-babel'),
   sass = require('gulp-sass'),
@@ -17,9 +18,45 @@ const postcss = require('gulp-postcss'),
   clean = require('gulp-clean'),
   htmlmin = require('gulp-htmlmin'),
   concat = require('gulp-concat'),
+  webpackStream = require('webpack-stream'),
   plumber = require('gulp-plumber');
 
-const js = ['./src/js/libs/*', './src/js/index.js'];
+const js = ['./src/js/index.js'];
+
+const webpackConfig = {
+  optimization: {
+    minimize: false,
+  },
+  entry: ['./src/js/index.js'],
+  output: {
+    filename: 'common.js',
+  },
+  mode: 'production',
+  module: {
+    rules: [
+      {
+        test: /\.(js)$/,
+        exclude: /(node_modules)/,
+        loader: 'babel-loader',
+      },
+    ],
+  },
+  resolve: {
+    fallback: {
+      os: require.resolve('os-browserify/browser'),
+      https: require.resolve('https-browserify'),
+      http: require.resolve('stream-http'),
+      crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify'),
+    },
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env.SITE_VERSION': JSON.stringify('desktop'),
+    }),
+  ],
+};
 
 function createEmptyStream() {
   var pass = through2.obj();
@@ -28,31 +65,12 @@ function createEmptyStream() {
 }
 
 function jsTask(envs, buildType) {
-  return (
-    src(js)
-      .pipe(plumber())
-      .pipe(
-        env({
-          vars: {
-            NODE_ENV: envs,
-            SITE_VERSION: buildType,
-          },
-        })
-      )
-      // .pipe(sourcemaps.init())
-      .pipe(
-        babel({
-          presets: ['@babel/preset-env'],
-          plugins: ['transform-inline-environment-variables'],
-        })
-      )
-      // .pipe(envs === 'production' ? uglify() : tap(noop))
-      .pipe(concat('common.js'))
-      // .pipe(sourcemaps.write('maps'))
-      .pipe(gulp.dest('./public/js/'))
-      .pipe(copyLibs())
-      .pipe(browserSync.stream())
-  );
+  return src(js)
+    .pipe(plumber())
+    .pipe(webpackStream(webpackConfig, webpack))
+    .pipe(gulp.dest('./public/js/'))
+    .pipe(copyLibs())
+    .pipe(browserSync.stream());
 }
 
 function htmlTask() {

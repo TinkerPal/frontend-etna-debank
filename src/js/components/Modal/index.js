@@ -1,5 +1,5 @@
 import { isMobile } from '../../constants/env';
-import { htmlToElement, routeHistory } from '../../utils';
+import { htmlToElement } from '../../utils';
 
 export class Modal {
   constructor(
@@ -180,6 +180,6 @@ export class Modal {
   hideModal = () => {
     this.modal.classList.remove('open');
 
-    if (isMobile) routeHistory?.prev?.click();
+    if (isMobile) userObject.state.routeHistory?.prev?.click();
   };
 }

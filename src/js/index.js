@@ -34,10 +34,12 @@ import {
   initVotesCalcContractReader,
 } from './components/Web3/contracts';
 import { isMobile } from './constants/env';
-import { userObject } from './store';
 import { initContractAdress } from './store/contracts';
+import { userObject } from './store/userObject';
 import { isMetaMaskInstalled } from './utils';
 import { postWalletCallback } from './utils/dom';
+
+window.userObject = userObject;
 
 export const walletButton = document.getElementById('enableEthereumButton');
 
@@ -67,7 +69,6 @@ export const modalAddDeposit = new Modal(
   null,
   depositModalUpdateNftDropdown
 );
-
 export const modalAddCredit = new Modal(
   'modal-open-new-credit',
   async () => {

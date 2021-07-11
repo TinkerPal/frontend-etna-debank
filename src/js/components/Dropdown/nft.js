@@ -1,7 +1,7 @@
 import Choices from 'choices.js';
 import SimpleBar from 'simplebar';
 import { isMobile } from '../../constants/env';
-import { userObject } from '../../store';
+import { userObject } from '../../store/userObject';
 import { toNumber } from '../../utils';
 import { depositModalRebuild } from '../Modal/deposit';
 

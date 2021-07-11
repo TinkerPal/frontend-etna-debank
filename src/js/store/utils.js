@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { userObject } from '.';
+import { userObject } from './userObject';
 import { errorMsg, resetMsg } from '../components/InfoMessages';
 import { LIQ_PAIRS, WALLETS_API_URL } from '../constants/env';
 import { tokenNameByDepositTokenId } from '../utils';

@@ -1,5 +1,5 @@
 import { isMobile, WALLETS_API_URL } from '../../constants/env';
-import { userObject } from '../../store';
+import { userObject } from '../../store/userObject';
 import {
   safeAddClassBySelector,
   safeRemoveClassBySelector,

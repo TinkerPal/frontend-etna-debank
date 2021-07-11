@@ -1,12 +1,14 @@
 /* eslint-disable camelcase */
 import { modalAddLeverage, modalAddLiquidity, modalUnfreeze } from '../../..';
 import { getCYTRProfileId } from '../../../pages/credit';
-import { userObject } from '../../../store';
+import { userObject } from '../../../store/userObject';
 import {
   APYStrByLiqpairsTokenName,
   depAmountByProfileIdReal,
+  getWalletBalance,
   getWalletBalanceStr,
   setState,
+  tokenIdByLiqTokenAdress,
   toNumber,
 } from '../../../utils';
 import { safeHtmlById } from '../../../utils/dom';
@@ -44,11 +46,11 @@ export async function initLiqTermsDropdown() {
   if (liqTermsData.length === 0) return;
 
   // TODO переделать на чойз
-  setOptionsToSelect(liqTermsData, liqTermsSelect);
+  // setOptionsToSelect(liqTermsData, liqTermsSelect);
 
-  new CustomSelect({
-    elem: liqTermsSelect,
-  });
+  // new CustomSelect({
+  //   elem: liqTermsSelect,
+  // });
 
   setApyStr(liqTermsData[0]);
 
@@ -65,7 +67,9 @@ export async function initLiqPairsDropdown() {
       liq_pair_name: asset.text,
       liq_pair_address: asset.addr,
     });
-    const bal = await getWalletBalanceStr(userObject.state.liq_pair_address);
+    const bal = await getWalletBalance(
+      tokenIdByLiqTokenAdress(userObject.state.liq_pair_address)
+    );
     safeHtmlById('liq_pair_in_wallet', bal);
   };
 
@@ -76,11 +80,11 @@ export async function initLiqPairsDropdown() {
   if (liqPairsAssetsOptions.length === 0) return;
 
   // TODO переделать на чойз
-  setOptionsToSelect(liqPairsAssetsOptions, liqPairsAssets);
+  // setOptionsToSelect(liqPairsAssetsOptions, liqPairsAssets);
 
-  new CustomSelect({
-    elem: liqPairsAssets,
-  });
+  // new CustomSelect({
+  //   elem: liqPairsAssets,
+  // });
 
   setBal(liqPairsAssetsOptions[0]);
 
@@ -108,7 +112,9 @@ export async function liqModalBuild() {
       liq_pair_name: asset.text,
       liq_pair_address: asset.addr,
     });
-    const bal = await getWalletBalanceStr(userObject.state.liq_pair_address);
+    const bal = await getWalletBalance(
+      tokenIdByLiqTokenAdress(userObject.state.liq_pair_address)
+    );
     safeHtmlById('liq_pair_in_wallet', bal);
   };
 

@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 import { APY_SCALE } from '../constants';
 import { isMobile } from '../constants/env';
-import { calcUSDValueOfDeposit } from '..';
 import {
   getAPY,
   isTokenLiqPairs,
@@ -14,8 +13,12 @@ import {
   PERIOD_LEN_FROM_CODE,
   PERIOD_NAME_FROM_CODE,
 } from './constants';
-import userObject from '.';
-import { createCellWithIcon, createTableBtnWithIcon } from './utils';
+import { userObject } from './userObject';
+import {
+  calcUSDValueOfDeposit,
+  createCellWithIcon,
+  createTableBtnWithIcon,
+} from './utils';
 
 export default {
   icon_column: [],
@@ -251,7 +254,7 @@ export default {
           if (hasDepYield || hasDepAmount) {
             depositDaysPromise.push(
               hasDepAmount
-                ? window.staking_smartcontract.methods
+                ? window.staking_smartcontract_reader.methods
                     .depositDays(userObject.account, i)
                     .call({
                       from: userObject.account,

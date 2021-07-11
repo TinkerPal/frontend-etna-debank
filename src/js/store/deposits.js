@@ -1,17 +1,21 @@
 /* eslint-disable camelcase */
 import { APY_SCALE } from '../constants';
 import { isMobile } from '../constants/env';
-import { calcUSDValueOfDeposit, getWalletBalanceStr } from '..';
 import {
   getAPY,
   getPriceOfTokens,
+  getWalletBalance,
   isTokenNft,
   toNumber,
   toTokens,
 } from '../utils';
 import { CACHE_TIME } from './constants';
-import userObject from '.';
-import { createCellWithIcon, createTableBtnWithIcon } from './utils';
+import { userObject } from './userObject';
+import {
+  calcUSDValueOfDeposit,
+  createCellWithIcon,
+  createTableBtnWithIcon,
+} from './utils';
 
 export default {
   icon_column: [],
@@ -38,6 +42,8 @@ export default {
     return [this.icon_column, this.assets_column];
   },
 
+  liq_arr: [],
+  dep_arr: [],
   am_arr: [],
   getAmArr_last_call: 0,
   async getAmArr() {
@@ -54,6 +60,25 @@ export default {
       if (!Array.isArray(this.am_arr)) {
         this.am_arr = Object.values(this.am_arr);
       }
+      const depositTokens = userObject.deposit_profiles.map(
+        (token) => token.p_id
+      );
+
+      const depositTokensindex = [];
+      this.am_arr[0].forEach((token, i) => {
+        if (depositTokens.includes(token)) {
+          depositTokensindex.push(i);
+        }
+      });
+
+      this.am_arr.forEach((arr) => {
+        this.dep_arr.push(
+          arr.filter((array, i) => depositTokensindex.includes(i))
+        );
+        this.liq_arr.push(
+          arr.filter((array, i) => !depositTokensindex.includes(i))
+        );
+      });
     }
     return this.am_arr;
   },
@@ -64,6 +89,7 @@ export default {
     const currentTimestamp = Date.now();
     if (currentTimestamp > this.getRewArr_last_call + CACHE_TIME) {
       this.getRewArr_last_call = currentTimestamp;
+
       this.rew_arr = await window.staking_smartcontract.methods
         .rewardsPerDeposits(userObject.account)
         .call({
@@ -119,31 +145,18 @@ export default {
 
       const tokenCountPromise = [];
       userObject.deposit_profiles.forEach((token) => {
-        const { p_id, p_tok_addr } = token;
-
-        if (isTokenNft(p_id)) {
-          tokenCountPromise.push(
-            window.cyclops_nft_smartcontract_reader.methods
-              .balanceOf(userObject.account)
-              .call({
-                from: userObject.account,
-              })
-          );
-        } else {
-          tokenCountPromise.push(getWalletBalanceStr(p_tok_addr));
-        }
+        tokenCountPromise.push(getWalletBalance(token.p_id));
       });
       const tokensCount = await Promise.all(tokenCountPromise);
 
       tokensCount.forEach((amount) => {
         this.in_wallet_column.push(
-          `<td class="rounded-l-lg table-cell">${
-            toNumber(amount) > 0 ? amount : '-'
-          }</td>`
+          `<td class="table-cell">${toNumber(amount) > 0 ? amount : '-'}</td>`
         );
         this.in_wallet_arr.push(amount);
       });
     }
+
     return this.in_wallet_column;
   },
 
@@ -194,6 +207,7 @@ export default {
       this.usd_val_only_col.length = 0;
 
       const profiles = userObject.deposit_profiles;
+      const { dep_arr } = this;
       const { am_arr } = this;
 
       const calcUsdValuePromise = [];
@@ -211,7 +225,7 @@ export default {
       const calcUsdValueData = await Promise.all(calcUsdValuePromise);
 
       profiles.forEach((token, profileIndex) => {
-        const depositTokenIndex = am_arr[0].findIndex(
+        const depositTokenIndex = dep_arr[0].findIndex(
           (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
         );
 
@@ -247,6 +261,7 @@ export default {
       this.duration_col.length = 0;
       const profiles = userObject.deposit_profiles;
       const { am_arr } = this;
+      const { dep_arr } = this;
 
       const depositDaysPromise = [];
       profiles.forEach((token) => {
@@ -270,13 +285,13 @@ export default {
       const depositDaysData = await Promise.all(depositDaysPromise);
 
       profiles.forEach((token) => {
-        const depositTokenIndex = am_arr[0].findIndex(
+        const depositTokenIndex = dep_arr[0].findIndex(
           (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
         );
 
         if (
           depositTokenIndex !== -1 &&
-          toNumber(am_arr[1][depositTokenIndex]) > 0
+          toNumber(dep_arr[1][depositTokenIndex]) > 0
         ) {
           const days = depositDaysData[depositTokenIndex];
 
@@ -395,7 +410,9 @@ export default {
           const i = rew_arr[0].indexOf(depositTokenId);
 
           this.reward_col.push(
-            `<td class="table-cell">${toTokens(rew_arr[1][i], 4)}</td>`
+            `<td class="table-cell">${
+              toNumber(rew_arr[1][i]) > 0 ? toTokens(rew_arr[1][i], 4) : '-'
+            }</td>`
           );
         } else {
           this.reward_col.push(`<td class="table-cell">-</td>`);
@@ -428,7 +445,9 @@ export default {
           const i = rew_arr[0].indexOf(depositTokenId);
 
           this.extractable_reward_col.push(
-            `<td class="table-cell">${toTokens(rew_arr[2][i], 4)}</td>`
+            `<td class="table-cell">${
+              toNumber(rew_arr[2][i]) > 0 ? toTokens(rew_arr[2][i], 4) : '-'
+            }</td>`
           );
         } else {
           this.extractable_reward_col.push(`<td class="table-cell">-</td>`);

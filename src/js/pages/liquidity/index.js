@@ -12,7 +12,7 @@ import { initStakingContract } from '../../components/Web3/contracts';
 import { NONE_FAMER_ID } from '../../constants';
 import { isMobile } from '../../constants/env';
 import { erc20TokenContractAbi } from '../../constants/web3ContractAbi';
-import { userObject } from '../../store';
+import { userObject } from '../../store/userObject';
 import {
   formatDataForMobile,
   htmlToElement,
@@ -49,7 +49,7 @@ export async function getLiquidityDashboard(callback = null) {
   wrapper.innerHTML = '';
   userObject.state.currentLiq = [];
 
-  await Promise.all([
+  const [am_arr, rew_arr] = await Promise.all([
     userObject.deposits.getAmArr(),
     userObject.deposits.getRewArr(),
   ]);
@@ -75,7 +75,6 @@ export async function getLiquidityDashboard(callback = null) {
     userObject.liq_earn.getDurationUnlockCol(),
     userObject.liq_earn.getExtrDepCol(),
     userObject.liq_earn.getWithdrawDepCol(),
-    userObject.liq_earn.getWithdrawDepInputsCol(),
     userObject.liq_earn.getRewardCol(),
     userObject.liq_earn.getExtractableRewardCol(),
     userObject.liq_earn.getWithdrawRewCol(),

@@ -13,7 +13,7 @@ import {
 } from '../constants';
 import { isMobile, LEVERAGE_TOKEN } from '../constants/env';
 import { erc20TokenContractAbi } from '../constants/web3ContractAbi';
-import { userObject } from '../store';
+import { userObject } from '../store/userObject';
 import { getAllProfiles } from '../store/utils';
 import { isEmptyTable } from './dom';
 
@@ -85,7 +85,7 @@ export function safeSetTableData(id, value, className) {
       el.innerHTML = value;
     }
     if (!isMobile) {
-      SimpleBar(el);
+      new SimpleBar(el);
     }
     if (isEmptyTable(id)) {
       el.closest('.page').classList.add(className);
@@ -180,6 +180,30 @@ export function isTokenLiqPairs(tokenId) {
 
 export function isTokenBnb(tokenId) {
   return toNumber(depTypeByDepositTokenId(tokenId)) === NATIVE_ETHEREUM;
+}
+
+export function tokenAddressByLiqTokenId(profile_id) {
+  for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
+    if (
+      toNumber(userObject.deposit_profiles_liqpairs[i].p_id) ===
+      toNumber(profile_id)
+    ) {
+      return userObject.deposit_profiles_liqpairs[i].p_tok_addr;
+    }
+  }
+  return ZERO_ADDRESS;
+}
+
+export function tokenIdByLiqTokenAdress(tokenAddress) {
+  for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
+    if (
+      toNumber(userObject.deposit_profiles_liqpairs[i].p_tok_addr) ===
+      toNumber(tokenAddress)
+    ) {
+      return userObject.deposit_profiles_liqpairs[i].p_id;
+    }
+  }
+  return BAD_DEPOSIT_PROFILE_ID;
 }
 
 export function tokenNameByCreditCredId(credId) {
@@ -370,7 +394,27 @@ export async function getNftPrice(contract, vc_contract, token_ids) {
   return usd_float.toFixed(3);
 }
 
-export async function getWalletBalanceStr(token_address) {
+export async function getWalletBalance(tokenId) {
+  if (isTokenNft(tokenId)) {
+    const balance = await window.cyclops_nft_smartcontract_reader.methods
+      .balanceOf(userObject.account)
+      .call({
+        from: userObject.account,
+      });
+
+    return balance;
+  }
+
+  if (isTokenBnb(tokenId)) {
+    const wb = await window.web3js_reader.eth.getBalance(userObject.account);
+
+    return toTokens(wb, 4);
+  }
+
+  const token_address = isTokenLiqPairs(tokenId)
+    ? tokenAddressByLiqTokenId(tokenId)
+    : tokenAddressByDepositTokenId(tokenId);
+
   const erc20contract = await new window.web3js_reader.eth.Contract(
     erc20TokenContractAbi,
     token_address
@@ -381,6 +425,5 @@ export async function getWalletBalanceStr(token_address) {
       from: userObject.account,
     });
 
-  const adj_count_str = toTokens(erc20_count, 4);
-  return adj_count_str;
+  return toTokens(erc20_count, 4);
 }

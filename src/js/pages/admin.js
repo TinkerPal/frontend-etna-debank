@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { errorMsg } from '../components/InfoMessages';
 import { WALLETS_API_URL } from '../constants/env';
-import { userObject } from '../store';
+import { userObject } from '../store/userObject';
 import { isMetaMaskInstalled } from '../utils';
 
 export function loginAdmin() {

@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { modalAddDeposit } from '../../..';
 import { ERC721_TOKEN, NATIVE_ETHEREUM } from '../../../constants';
-import { userObject } from '../../../store';
+import { userObject } from '../../../store/userObject';
 import {
   getNftPrice,
   getPriceOfTokens,
@@ -11,7 +11,7 @@ import {
   tokenIdByTokenName,
   toNumber,
 } from '../../../utils';
-import { safeSetValueById, setOptionsToSelect } from '../../../utils/dom';
+import { safeSetValueById } from '../../../utils/dom';
 import { nftAssetsSelect } from '../../Dropdown/nft';
 import { initVotesCalcContractReader } from '../../Web3/contracts';
 
@@ -120,11 +120,11 @@ export async function initDepositProfilesDropdown() {
     modalAddDeposit.modal.querySelector('#tokens_amount');
 
   // todo переделать на чойз
-  setOptionsToSelect(ddData, depprofilesDropdown);
+  // setOptionsToSelect(ddData, depprofilesDropdown);
 
-  new CustomSelect({
-    elem: depprofilesDropdown,
-  });
+  // new CustomSelect({
+  //   elem: depprofilesDropdown,
+  // });
 
   assetsAmmountValue.oninput = depositModalRebuild;
   depprofilesDropdown.onchange = depositModalRebuild;
@@ -145,6 +145,8 @@ export async function getNFTAssets() {
     .call({
       from: userObject.account,
     });
+
+  if (balansOfNft === '0') return [];
 
   const tokenIdPromise = [];
   balansOfNft.forEach((nft, i) => {

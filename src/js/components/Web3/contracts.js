@@ -58,6 +58,17 @@ export async function initCreditContract(callback = null) {
   } else if (callback) callback(window.credit_smartcontract);
 }
 
+export async function initCreditContractReader(callback = null) {
+  if (!window.credit_smartcontract_reader) {
+    const reader = web3jsReadersList.get();
+    window.credit_smartcontract_reader = await new reader.eth.Contract(
+      credit_contract_abi,
+      window.credit_contract_address
+    );
+    if (callback) callback(window.credit_smartcontract_reader);
+  } else if (callback) callback(window.credit_smartcontract_reader);
+}
+
 export async function initLiqLevContract(callback = null) {
   if (!window.liqlev_smartcontract) {
     if (window.web3js) {
@@ -68,6 +79,17 @@ export async function initLiqLevContract(callback = null) {
       if (callback) callback(window.liqlev_smartcontract);
     }
   } else if (callback) callback(window.liqlev_smartcontract);
+}
+
+export async function initLiqLevContractReader(callback = null) {
+  if (!window.liqlev_smartcontract_reader) {
+    const reader = web3jsReadersList.get();
+    window.liqlev_smartcontract_reader = await new reader.eth.Contract(
+      liqlev_contract_abi,
+      window.liqlev_contract_address
+    );
+    if (callback) callback(window.liqlev_smartcontract_reader);
+  } else if (callback) callback(window.liqlev_smartcontract_reader);
 }
 
 export async function initVotesCalcContractReader(callback = null) {

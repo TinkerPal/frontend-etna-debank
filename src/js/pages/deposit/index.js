@@ -18,7 +18,7 @@ import { initStakingContract } from '../../components/Web3/contracts';
 import { NATIVE_ETHEREUM, NONE_FAMER_ID } from '../../constants';
 import { isMobile, NFT_TOKEN_ID } from '../../constants/env';
 import { erc20TokenContractAbi } from '../../constants/web3ContractAbi';
-import { userObject } from '../../store';
+import { userObject } from '../../store/userObject';
 import {
   formatDataForMobile,
   htmlToElement,
@@ -55,7 +55,7 @@ export async function getDepositsDashboard(callback = null) {
   userObject.state.currentDeposits = [];
   const profiles = userObject.deposit_profiles;
 
-  await Promise.all([
+  const [am_arr, rew_arr] = await Promise.all([
     userObject.deposits.getAmArr(),
     userObject.deposits.getRewArr(),
   ]);
@@ -300,11 +300,12 @@ export async function deposit() {
     }
 
     try {
-      const isNFTCollateralExists = await window.staking_smartcontract.methods
-        .isNFTCollateralExists(userObject.account)
-        .call({
-          from: userObject.account,
-        });
+      const isNFTCollateralExists =
+        await window.staking_smartcontract_reader.methods
+          .isNFTCollateralExists(userObject.account)
+          .call({
+            from: userObject.account,
+          });
 
       if (isNFTCollateralExists) {
         modalAddDeposit.isLoadedAfterConfirm(false);
@@ -332,7 +333,7 @@ export async function deposit() {
     amount = userObject.state.selectedNFTAssets.length;
 
     const MAX_AMOUNT_OF_NFT = 50;
-    const amounTsPerDeposits = await window.staking_smartcontract.methods
+    const amounTsPerDeposits = await window.staking_smartcontract_reader.methods
       .amountsPerDeposits(userObject.account)
       .call({
         from: userObject.account,

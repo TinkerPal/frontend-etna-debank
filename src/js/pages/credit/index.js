@@ -22,7 +22,7 @@ import {
 } from '../../constants';
 import { isMobile, LEVERAGE_TOKEN } from '../../constants/env';
 import { erc20TokenContractAbi } from '../../constants/web3ContractAbi';
-import { userObject } from '../../store';
+import { userObject } from '../../store/userObject';
 import { getAllProfiles } from '../../store/utils';
 import {
   depAmountByProfileId,
@@ -770,13 +770,13 @@ export async function set_leverage(ratio, cred_id) {
   const cytr_profile_id = await getCYTRProfileId();
   const credit_size = userObject.credits.cred_arr[1][cred_id];
 
-  const cc = await window.credit_smartcontract.methods
+  const cc = await window.credit_smartcontract_reader.methods
     .viewCustomerCredit(userObject.account, 0)
     .call({
       from: userObject.account,
     });
   const cc_index = toNumber(cc.index);
-  const x = await window.credit_smartcontract.methods
+  const x = await window.credit_smartcontract_reader.methods
     .viewCustomerCreditExtraDataByIndex(cc_index, cred_id)
     .call({
       from: userObject.account,

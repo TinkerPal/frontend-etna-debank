@@ -65,7 +65,6 @@ const GLOBAL_VARIABLES = {
 };
 
 const env = process.env.NODE_ENV;
-
 export const isMobile = process.env.SITE_VERSION === 'mobile';
 
 export const {

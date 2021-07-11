@@ -3,7 +3,7 @@
 import { modalAddCredit } from '../../..';
 import { APY_SCALE, ERC721_TOKEN } from '../../../constants';
 import { full_collateral_btn } from '../../../pages/credit';
-import { userObject } from '../../../store';
+import { userObject } from '../../../store/userObject';
 import {
   calcTokensFromUSD,
   depAmountByProfileId,

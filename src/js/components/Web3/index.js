@@ -1,8 +1,8 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable camelcase */
-import Web3 from 'web3';
-import WalletConnectProvider from '@walletconnect/web3-provider';
-import Web3Modal from 'web3modal';
+// import Web3 from 'web3';
+// import WalletConnectProvider from '@walletconnect/web3-provider';
+// import Web3Modal from 'web3modal';
 import { walletButton } from '../..';
 import { INFURA_ENDPOINT } from '../../constants';
 import {
@@ -16,7 +16,7 @@ import { getCreditsDashboard } from '../../pages/credit';
 import { getOurDashbord } from '../../pages/dashboard';
 import { getDepositsDashboard } from '../../pages/deposit';
 import { getLiquidityDashboard } from '../../pages/liquidity';
-import { userObject } from '../../store';
+import { userObject } from '../../store/userObject';
 import { isMetaMaskInstalled } from '../../utils';
 import {
   postWalletCallback,
@@ -33,8 +33,10 @@ import { setLdBar } from '../Loader';
 import { closeAllModals } from '../Modal/utils';
 import {
   initCreditContract,
+  initCreditContractReader,
   initCyclopsNFTContract,
   initLiqLevContract,
+  initLiqLevContractReader,
   initStakingContract,
   initStakingContractReader,
 } from './contracts';
@@ -77,49 +79,42 @@ export async function getAccount() {
   resetMsg();
   closeAllModals();
 
-  try {
-    const accounts = await window.ethereum.request({
-      method: 'eth_requestAccounts',
-    });
+  const accounts = await window.ethereum.request({
+    method: 'eth_requestAccounts',
+  });
 
-    userObject.account = accounts[0];
+  userObject.account = accounts[0];
 
-    setLdBar(10);
+  setLdBar(10);
 
-    safeSetValueBySelector('.current-wallet', userObject.account);
-    safeSetInnerHTMLBySelector(
-      '.current-wallet',
-      userObject.account,
-      ' inline'
-    );
+  safeSetValueBySelector('.current-wallet', userObject.account);
+  safeSetInnerHTMLBySelector('.current-wallet', userObject.account, ' inline');
 
-    checkAdminButton();
-    window.web3js = new Web3(window.ethereum);
+  checkAdminButton();
+  window.web3js = new Web3(window.ethereum);
 
-    await Promise.all([
-      initStakingContract(),
-      initStakingContractReader(),
-      initCreditContract(),
-      initLiqLevContract(),
-      initCyclopsNFTContract(),
-    ]);
+  await Promise.all([
+    initStakingContract(),
+    initStakingContractReader(),
+    initCreditContract(),
+    initCreditContractReader(),
+    initLiqLevContract(),
+    initLiqLevContractReader(),
+    initCyclopsNFTContract(),
+  ]);
 
-    setLdBar(15);
+  setLdBar(15);
 
-    await userObject.load();
+  await userObject.load();
 
-    setLdBar(25);
+  setLdBar(25);
 
-    setNetInfo();
+  setNetInfo();
 
-    await updateData();
+  await updateData();
 
-    window.gp = await window.web3js.eth.getGasPrice();
-    window.gp *= 2;
-  } catch (error) {
-    errorEmptyMsg('Cannot access wallet. Reload your page, please.');
-    throw new Error(error);
-  }
+  window.gp = await window.web3js.eth.getGasPrice();
+  window.gp *= 2;
 }
 
 export async function getAccountWalletConnect() {
@@ -143,8 +138,11 @@ export async function getAccountWalletConnect() {
 
     await Promise.all([
       initStakingContract(),
+      initStakingContractReader(),
       initCreditContract(),
+      initCreditContractReader(),
       initLiqLevContract(),
+      initLiqLevContractReader(),
       initCyclopsNFTContract(),
     ]);
 
@@ -172,7 +170,7 @@ export async function initWeb3Modal() {
 
   const providerOptions = {
     walletconnect: {
-      package: WalletConnectProvider,
+      package: window.WalletConnectProvider.default, // WalletConnectProvider,
       options: {
         rpc: WALLET_OPTION_RPC,
       },
@@ -305,7 +303,7 @@ export async function updateData(action = null) {
       setLdBar(null, '25');
     });
 
-    getOurDashbord();
+    // getOurDashbord();
   } else if (action === 'make_deposit') {
     await getDepositsDashboard();
   } else if (action === 'withdraw_deposit') {

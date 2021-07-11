@@ -9,7 +9,7 @@ import {
   toTokens,
 } from '../utils';
 import { CACHE_TIME } from './constants';
-import userObject from '.';
+import { userObject } from './userObject';
 import { createCellWithIcon, createTableBtnWithIcon } from './utils';
 
 export default {
@@ -21,7 +21,7 @@ export default {
     if (currentTimestamp > this.getCredArr_last_call + CACHE_TIME) {
       this.getCredArr_last_call = currentTimestamp;
 
-      this.cred_arr = await window.credit_smartcontract.methods
+      this.cred_arr = await window.credit_smartcontract_reader.methods
         .dataPerCredits(userObject.account)
         .call({
           from: userObject.account,
@@ -32,7 +32,8 @@ export default {
       }
 
       const credPricePromise = [];
-      this.cred_arr[0].forEach((credTokenId, i) => {
+
+      this.cred_arr?.[0]?.forEach((credTokenId, i) => {
         const creditAmount = toNumber(this.cred_arr[1][i]);
 
         credPricePromise.push(
@@ -53,7 +54,7 @@ export default {
     if (currentTimestamp > this.getCredCCArr_last_call + CACHE_TIME) {
       this.getCredCCArr_last_call = currentTimestamp;
 
-      const cc = await window.credit_smartcontract.methods
+      const cc = await window.credit_smartcontract_reader.methods
         .viewCustomerCredit(userObject.account, 0)
         .call({
           from: userObject.account,
@@ -61,9 +62,9 @@ export default {
       const cc_index = toNumber(cc.index);
 
       const credCCPromise = [];
-      this.cred_arr[0].forEach((item, i) => {
+      this.cred_arr?.[0]?.forEach((item, i) => {
         credCCPromise.push(
-          window.credit_smartcontract.methods
+          window.credit_smartcontract_reader.methods
             .viewCustomerCreditByIndex(cc_index, i)
             .call({
               from: userObject.account,
@@ -83,7 +84,7 @@ export default {
     if (currentTimestamp > this.getCltArr_last_call + CACHE_TIME) {
       this.getCltArr_last_call = currentTimestamp;
 
-      this.clt_arr = await window.credit_smartcontract.methods
+      this.clt_arr = await window.credit_smartcontract_reader.methods
         .amountsPerCollaterals(userObject.account)
         .call({
           from: userObject.account,
@@ -109,9 +110,9 @@ export default {
       this.lev_ratio_arr.length = 0;
 
       const customerLeveragePromise = [];
-      this.cred_arr[0].forEach((item, index) => {
+      this.cred_arr?.[0]?.forEach((item, index) => {
         customerLeveragePromise.push(
-          window.liqlev_smartcontract.methods
+          window.liqlev_smartcontract_reader.methods
             .viewCustomerLeverageByCredId(userObject.account, index) // FYI - method get index of cred_arr[0], not token id. Why? I dont know. :)
             .call({
               from: userObject.account,
@@ -138,7 +139,7 @@ export default {
 
       this.usd_val_column.length = 0;
 
-      this.cred_arr[0].forEach((credTokenId, i) => {
+      this.cred_arr?.[0]?.forEach((credTokenId, i) => {
         this.usd_val_column.push(
           `<td class="table-cell">${this.cred_price_arr[i]}</td>`
         );
@@ -161,7 +162,7 @@ export default {
       this.icon_column.length = 0;
       this.assets_column.length = 0;
 
-      this.cred_arr[0].forEach((item) => {
+      this.cred_arr?.[0]?.forEach((item) => {
         this.icon_column.push(
           `<td class="table-cell">${createCellWithIcon(
             tokenNameByDepositTokenId(item)

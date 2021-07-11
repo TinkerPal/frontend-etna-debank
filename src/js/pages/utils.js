@@ -5,7 +5,7 @@ import {
   successMsg,
 } from '../components/InfoMessages';
 import { erc20TokenContractAbi } from '../constants/web3ContractAbi';
-import { userObject } from '../store';
+import { userObject } from '../store/userObject';
 import { toNumber } from '../utils';
 
 /* eslint-disable camelcase */
