@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import EtnaChart from './components/Chart';
 import { createInfoPopup } from './components/InfoPopup';
 import { Modal } from './components/Modal';
@@ -17,8 +18,9 @@ import {
   initLiqPairsDropdown,
   initLiqTermsDropdown,
   liqModalBuild,
+  show_modal_unfreeze,
 } from './components/Modal/liquidity';
-import { setWalletPref } from './components/Navigation';
+import { openTab, setWalletPref } from './components/Navigation';
 import { createNotifications } from './components/Notification';
 import {
   getAccount,
@@ -34,12 +36,12 @@ import {
   initVotesCalcContractReader,
 } from './components/Web3/contracts';
 import { isMobile } from './constants/env';
+import { return_credit, return_fee } from './pages/credit';
+import { withdraw_deposit, withdraw_reward } from './pages/deposit';
 import { initContractAdress } from './store/contracts';
 import { userObject } from './store/userObject';
 import { isMetaMaskInstalled } from './utils';
 import { postWalletCallback } from './utils/dom';
-
-window.userObject = userObject;
 
 export const walletButton = document.getElementById('enableEthereumButton');
 
@@ -81,6 +83,17 @@ export const modalAddCredit = new Modal(
     await creditModalDataUpdate();
   }
 );
+
+window.userObject = userObject;
+window.openTab = openTab;
+window.modal_add_deposit = modalAddDeposit;
+window.modal_add_credit = modalAddCredit;
+window.modal_add_lliquidity = modalAddLiquidity;
+window.withdraw_deposit = withdraw_deposit;
+window.withdraw_reward = withdraw_reward;
+window.return_credit = return_credit;
+window.return_fee = return_fee;
+window.show_modal_unfreeze = show_modal_unfreeze;
 
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') {

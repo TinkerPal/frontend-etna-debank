@@ -369,7 +369,7 @@ export async function deposit() {
       const wb_bn = new window.BN(
         await window.web3js_reader.eth.getBalance(userObject.account)
       );
-      const amount_bn = new window.BN(amount);
+      const amount_bn = new window.BN(amount.toString());
 
       if (toNumber(wb_bn.cmp(amount_bn)) === -1) {
         modalAddDeposit.isLoadedAfterConfirm(false);
@@ -391,7 +391,7 @@ export async function deposit() {
           })
       );
 
-      const tokenAmountToApprove = new window.BN(amount);
+      const tokenAmountToApprove = new window.BN(amount.toString());
       // amount is already adjusted *10**18
       const calculatedApproveValue = tokenAmountToApprove;
 
@@ -408,8 +408,8 @@ export async function deposit() {
         .call({
           from: userObject.account,
         });
-      const erc20_count_bn = new window.BN(erc20_count);
-      const amount_bn = new window.BN(amount);
+      const erc20_count_bn = new window.BN(erc20_count.toString());
+      const amount_bn = new window.BN(amount.toString());
 
       if (toNumber(erc20_count_bn.cmp(amount_bn)) === -1) {
         modalAddDeposit.isLoadedAfterConfirm(false);

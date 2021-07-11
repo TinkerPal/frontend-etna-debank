@@ -45,7 +45,6 @@ export const userObject = {
       this.deposits.getRewArr(),
       this.credits.getCredArr(),
       this.credits.getCltArr(),
-      this.credits.getCredCCArr(),
     ]);
 
     await this.credits.getLevArr(true); // as depends on cred arr

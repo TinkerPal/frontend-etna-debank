@@ -23,7 +23,7 @@ const postcss = require('gulp-postcss'),
 
 const js = ['./src/js/index.js'];
 
-const webpackConfig = {
+const getWebpackConfig = (envs, buildType) => ({
   optimization: {
     minimize: false,
   },
@@ -52,11 +52,11 @@ const webpackConfig = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production'),
-      'process.env.SITE_VERSION': JSON.stringify('desktop'),
+      'process.env.NODE_ENV': JSON.stringify(envs),
+      'process.env.SITE_VERSION': JSON.stringify(buildType),
     }),
   ],
-};
+});
 
 function createEmptyStream() {
   var pass = through2.obj();
@@ -65,9 +65,10 @@ function createEmptyStream() {
 }
 
 function jsTask(envs, buildType) {
+  const config = getWebpackConfig(envs, buildType);
   return src(js)
     .pipe(plumber())
-    .pipe(webpackStream(webpackConfig, webpack))
+    .pipe(webpackStream(config, webpack))
     .pipe(gulp.dest('./public/js/'))
     .pipe(copyLibs())
     .pipe(browserSync.stream());

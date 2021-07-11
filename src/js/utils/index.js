@@ -121,7 +121,7 @@ export function depAmountByProfileId(profile_id) {
       if (toNumber(userObject.deposits.am_arr[0][i]) === toNumber(profile_id)) {
         let am = userObject.deposits.am_arr[1][i];
         if (toNumber(depTypeByDepositTokenId(profile_id)) !== ERC721_TOKEN) {
-          am = window.web3js_reader.utils.fromWei(am, 'ether');
+          am = window.web3js_reader.utils.fromWei(am.toString(), 'ether');
         }
         return [i, am];
       }
@@ -146,10 +146,10 @@ export function depAmountByProfileIdReal(profile_id) {
 }
 
 export function toTokens(wei_am, digs) {
-  if (wei_am === 0) return 0;
+  if (wei_am === 0 || !wei_am || wei_am === '0') return 0;
 
   const n_tokens = floorDecimals(
-    window.web3js_reader.utils.fromWei(wei_am, 'ether'),
+    window.web3js_reader.utils.fromWei(wei_am.toString(), 'ether'),
     digs
   );
   return parseFloat(n_tokens).toFixed(digs).toString();
@@ -310,7 +310,7 @@ export async function getPriceOfTokens(
     tokenName;
 
   const wei_amount = isSafeAmount
-    ? new window.BN(tokenAmount)
+    ? new window.BN(tokenAmount.toString())
     : safeFloatToWei(tokenAmount); // BN
 
   const [data, dec] = await Promise.all([
@@ -328,7 +328,9 @@ export async function getPriceOfTokens(
   const div_dec = new window.BN(base.pow(new window.BN(dec)));
   const usd_adj = new window.BN(usd_bn.div(div_dec));
 
-  return parseFloat(window.web3js_reader.utils.fromWei(usd_adj, 'ether'));
+  return parseFloat(
+    window.web3js_reader.utils.fromWei(usd_adj.toString(), 'ether')
+  );
 }
 
 export async function getAPY(profile_id) {
@@ -363,7 +365,10 @@ export async function calcTokensFromUSD(cred_profile_id, amount_usd) {
     .call({
       from: userObject.account,
     });
-  const n_tokens = window.web3js_reader.utils.fromWei(tokens, 'ether');
+  const n_tokens = window.web3js_reader.utils.fromWei(
+    tokens.toString(),
+    'ether'
+  );
   return parseFloat(n_tokens).toFixed(4).toString();
 }
 
@@ -371,7 +376,7 @@ export async function getNftPrice(contract, vc_contract, token_ids) {
   const wei_am = await vc_contract.methods.calcNFTTokensValue(token_ids).call({
     from: userObject.account,
   });
-  const wei_amount = new window.BN(wei_am);
+  const wei_amount = new window.BN(wei_am.toString());
 
   const [data, dec] = await Promise.all([
     contract.methods.getData('ETNAUSD').call({
@@ -389,7 +394,7 @@ export async function getNftPrice(contract, vc_contract, token_ids) {
   const usd_adj = new window.BN(usd_bn.div(div_dec));
 
   const usd_float = parseFloat(
-    window.web3js_reader.utils.fromWei(usd_adj, 'ether')
+    window.web3js_reader.utils.fromWei(usd_adj.toString(), 'ether')
   );
   return usd_float.toFixed(3);
 }

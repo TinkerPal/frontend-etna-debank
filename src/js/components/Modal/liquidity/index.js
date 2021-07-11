@@ -127,6 +127,13 @@ export async function liqModalBuild() {
   modalAddLiquidity.prevStep();
 }
 
+export function show_modal_unfreeze(cread_id) {
+  const { confirm } = modalUnfreeze;
+  confirm.onclick = () => unfreeze_leverage(cread_id);
+
+  modalUnfreeze.show();
+}
+
 export async function set_leverage_confirm(ratio, cred_id) {
   modalAddLeverage.isLoadingAfterConfirm();
   if (toNumber(userObject.credits.cred_arr[1][cred_id]) === 0) {
@@ -153,7 +160,7 @@ export async function set_leverage_confirm(ratio, cred_id) {
     const dep_id = res_arr[0];
     const cytr_am = res_arr[1];
 
-    const cytr_am_bn = new window.BN(cytr_am);
+    const cytr_am_bn = new window.BN(cytr_am.toString());
 
     if (toNumber(window.lev_size_wei.cmp(cytr_am_bn)) === 1) {
       modalAddLeverage.isLoadedAfterConfirm(false);

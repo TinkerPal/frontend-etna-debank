@@ -13,6 +13,7 @@ import { userObject } from './userObject';
 import { createCellWithIcon, createTableBtnWithIcon } from './utils';
 
 export default {
+  cred_cc_arr: [],
   cred_arr: [],
   cred_price_arr: [],
   getCredArr_last_call: 0,
@@ -43,22 +44,13 @@ export default {
         );
       });
       this.cred_price_arr = await Promise.all(credPricePromise);
-    }
-    return this.cred_arr;
-  },
-
-  cred_cc_arr: [],
-  getCredCCArr_last_call: 0,
-  async getCredCCArr() {
-    const currentTimestamp = Date.now();
-    if (currentTimestamp > this.getCredCCArr_last_call + CACHE_TIME) {
-      this.getCredCCArr_last_call = currentTimestamp;
 
       const cc = await window.credit_smartcontract_reader.methods
         .viewCustomerCredit(userObject.account, 0)
         .call({
           from: userObject.account,
         });
+
       const cc_index = toNumber(cc.index);
 
       const credCCPromise = [];
@@ -74,7 +66,7 @@ export default {
 
       this.cred_cc_arr = await Promise.all(credCCPromise);
     }
-    return this.cred_cc_arr;
+    return this.cred_arr;
   },
 
   clt_arr: null,
@@ -141,7 +133,7 @@ export default {
 
       this.cred_arr?.[0]?.forEach((credTokenId, i) => {
         this.usd_val_column.push(
-          `<td class="table-cell">${this.cred_price_arr[i]}</td>`
+          `<td class="table-cell">${this.cred_price_arr[i] || '-'}</td>`
         );
       });
     }
@@ -208,7 +200,7 @@ export default {
           const aprAdj = (toNumber(apr) / APY_SCALE) * 100;
           this.apr_column.push(
             `<td class="table-cell">${
-              this.cred_cc_arr[i].is_fixed_apy ? 'V: ' : 'F: '
+              this.cred_cc_arr[i].is_fixed_apy ? 'F: ' : 'V: '
             }${parseFloat(aprAdj).toFixed(2).toString()}%</td>`
           );
         });
@@ -227,12 +219,14 @@ export default {
       this.in_wallet_column.length = 0;
 
       const { cred_arr } = this;
+      await userObject.deposits.getInWalletCol();
 
       cred_arr[0].forEach((credTokenId) => {
         const profileTokenArr = userObject.deposit_profiles.map(
           (token) => token.p_id
         );
         const profileTokenIndex = profileTokenArr.indexOf(credTokenId);
+
         const amount = userObject.deposits.in_wallet_arr[profileTokenIndex];
 
         this.in_wallet_column.push(
@@ -265,7 +259,11 @@ export default {
           `<td class="table-cell">${
             isTokenNft(credTokenId)
               ? depositTokenCount
-              : toTokens(depositTokenCount, 4)
+              : `${
+                  toNumber(depositTokenCount) > 0
+                    ? toTokens(depositTokenCount, 4)
+                    : '-'
+                }`
           }</td>`
         );
       });
@@ -323,7 +321,7 @@ export default {
             : window.usage_calc_smartcontract_reader.methods
                 .calcUSDValueCollateral(
                   userObject.account,
-                  i,
+                  this.cred_cc_arr[i].linked_dep_id,
                   clt_arr[1][i],
                   cred_arr[0][i]
                 )
