@@ -135,7 +135,7 @@ export function toNumber(number) {
 }
 
 export function depAmountByProfileIdReal(profile_id) {
-  for (let i = 0; i < userObject?.deposits?.am_arr[0]?.length ?? 0; i++) {
+  for (let i = 0; i < userObject.deposits.am_arr[0].length; i++) {
     if (toNumber(userObject.deposits.am_arr[0][i]) === toNumber(profile_id)) {
       const am = userObject.deposits.am_arr[1][i];
 
@@ -160,7 +160,7 @@ export function floorDecimals(value, decimals) {
 }
 
 export function depTypeByDepositTokenId(profile_id) {
-  for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
+  for (let i = 0; i < userObject.deposit_profiles.length; i++) {
     if (
       toNumber(userObject.deposit_profiles[i].p_id) === toNumber(profile_id)
     ) {
@@ -175,7 +175,8 @@ export function isTokenNft(tokenId) {
 }
 
 export function isTokenLiqPairs(tokenId) {
-  return toNumber(depTypeByLiqpairsTokenId(tokenId)) === UNISWAP_PAIR;
+  const depType = depTypeByLiqpairsTokenId(tokenId);
+  return toNumber(depType) === UNISWAP_PAIR;
 }
 
 export function isTokenBnb(tokenId) {
@@ -183,7 +184,7 @@ export function isTokenBnb(tokenId) {
 }
 
 export function tokenAddressByLiqTokenId(profile_id) {
-  for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
+  for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
     if (
       toNumber(userObject.deposit_profiles_liqpairs[i].p_id) ===
       toNumber(profile_id)
@@ -195,7 +196,7 @@ export function tokenAddressByLiqTokenId(profile_id) {
 }
 
 export function tokenIdByLiqTokenAdress(tokenAddress) {
-  for (let i = 0; i < userObject.deposit_profiles?.length ?? 0; i++) {
+  for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
     if (
       toNumber(userObject.deposit_profiles_liqpairs[i].p_tok_addr) ===
       toNumber(tokenAddress)
@@ -284,15 +285,16 @@ export function tokenNameByLiqpairsTokenId(profile_id) {
   return null;
 }
 
-async function depTypeByLiqpairsTokenId(profile_id) {
-  for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
+export function depTypeByLiqpairsTokenId(profile_id) {
+  for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
     if (
       toNumber(userObject.deposit_profiles_liqpairs[i].p_id) ===
       toNumber(profile_id)
     ) {
-      return toNumber(userObject.deposit_profiles_liqpairs[i].p_dep_type);
+      return userObject.deposit_profiles_liqpairs[i].p_dep_type;
     }
   }
+
   return BAD_DEPOSIT_PROFILE_ID;
 }
 
@@ -416,7 +418,9 @@ export async function getWalletBalance(tokenId) {
     return toTokens(wb, 4);
   }
 
-  const token_address = isTokenLiqPairs(tokenId)
+  const isliqPairs = isTokenLiqPairs(tokenId);
+
+  const token_address = isliqPairs
     ? tokenAddressByLiqTokenId(tokenId)
     : tokenAddressByDepositTokenId(tokenId);
 
@@ -431,4 +435,13 @@ export async function getWalletBalance(tokenId) {
     });
 
   return toTokens(erc20_count, 4);
+}
+
+export function getIndexOfTokenInAmArr(tokenId) {
+  for (let i = 0; i < userObject.deposits.am_arr[0].length; i++) {
+    if (toNumber(userObject.deposits.am_arr[0][i]) === toNumber(tokenId)) {
+      return i;
+    }
+  }
+  return null;
 }

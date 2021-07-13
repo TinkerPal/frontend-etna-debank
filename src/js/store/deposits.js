@@ -51,6 +51,9 @@ export default {
     if (currentTimestamp > this.getAmArr_last_call + CACHE_TIME) {
       this.getAmArr_last_call = currentTimestamp;
 
+      this.liq_arr.length = 0;
+      this.dep_arr.length = 0;
+
       this.am_arr = await window.staking_smartcontract.methods
         .amountsPerDeposits(userObject.account)
         .call({
@@ -84,11 +87,15 @@ export default {
   },
 
   rew_arr: [],
+  rew_liq_arr: [],
+  rew_dep_arr: [],
   getRewArr_last_call: 0,
   async getRewArr() {
     const currentTimestamp = Date.now();
     if (currentTimestamp > this.getRewArr_last_call + CACHE_TIME) {
       this.getRewArr_last_call = currentTimestamp;
+      this.rew_liq_arr.length = 0;
+      this.rew_dep_arr.length = 0;
 
       this.rew_arr = await window.staking_smartcontract.methods
         .rewardsPerDeposits(userObject.account)
@@ -99,6 +106,25 @@ export default {
       if (!Array.isArray(this.rew_arr)) {
         this.rew_arr = Object.values(this.rew_arr);
       }
+      const depositTokens = userObject.deposit_profiles.map(
+        (token) => token.p_id
+      );
+
+      const depositTokensindex = [];
+      this.rew_arr[0].forEach((token, i) => {
+        if (depositTokens.includes(token)) {
+          depositTokensindex.push(i);
+        }
+      });
+
+      this.rew_arr.forEach((arr) => {
+        this.rew_dep_arr.push(
+          arr.filter((array, i) => depositTokensindex.includes(i))
+        );
+        this.rew_liq_arr.push(
+          arr.filter((array, i) => !depositTokensindex.includes(i))
+        );
+      });
     }
     return this.rew_arr;
   },

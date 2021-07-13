@@ -3,6 +3,7 @@ import { APY_SCALE } from '../constants';
 import { isMobile } from '../constants/env';
 import {
   getAPY,
+  getIndexOfTokenInAmArr,
   isTokenLiqPairs,
   tokenNameByLiqpairsTokenId,
   toNumber,
@@ -36,30 +37,26 @@ export default {
       this.icon_column.length = 0;
       this.asset_column.length = 0;
       this.lockup_period.length = 0;
-      const { am_arr } = userObject.deposits;
-      if (am_arr.length === 0) return [[], [], []];
 
-      const { rew_arr } = userObject.deposits;
+      const { liq_arr } = userObject.deposits;
+      const { rew_liq_arr } = userObject.deposits;
 
-      am_arr[0].forEach((depTokenId, i) => {
-        const isLiqPairs = isTokenLiqPairs(depTokenId);
-        if (isLiqPairs) {
-          const hasDepAmount = toNumber(am_arr[1][i]) > 0;
-          const hasDepYield = toNumber(rew_arr[1][i]) > 0;
+      liq_arr[0].forEach((depTokenId, i) => {
+        const hasDepAmount = toNumber(liq_arr[1][i]) > 0;
+        const hasDepYield = toNumber(rew_liq_arr[1][i]) > 0;
 
-          if (hasDepAmount || hasDepYield) {
-            const tokenName = tokenNameByLiqpairsTokenId(depTokenId);
-            const aname = tokenName.slice(0, -3);
-            const periodCode = tokenName.slice(-2);
+        if (hasDepAmount || hasDepYield) {
+          const tokenName = tokenNameByLiqpairsTokenId(depTokenId);
+          const aname = tokenName.slice(0, -3);
+          const periodCode = tokenName.slice(-2);
 
-            this.icon_column.push(
-              `<td class="table-cell">${createCellWithIcon(tokenName)}</td>`
-            );
-            this.asset_column.push(`<td class="table-cell">${aname}</td>`);
-            this.lockup_period.push(
-              `<td class="table-cell">${PERIOD_NAME_FROM_CODE[periodCode]}</td>`
-            );
-          }
+          this.icon_column.push(
+            `<td class="table-cell">${createCellWithIcon(tokenName)}</td>`
+          );
+          this.asset_column.push(`<td class="table-cell">${aname}</td>`);
+          this.lockup_period.push(
+            `<td class="table-cell">${PERIOD_NAME_FROM_CODE[periodCode]}</td>`
+          );
         }
       });
     }
@@ -75,20 +72,16 @@ export default {
 
       this.apy_column.length = 0;
 
-      const { am_arr } = userObject.deposits;
-      if (am_arr.length === 0) return [[], [], []];
-      const { rew_arr } = userObject.deposits;
+      const { liq_arr } = userObject.deposits;
+      const { rew_liq_arr } = userObject.deposits;
 
       const getAPYPromise = [];
-      am_arr[0].forEach((depTokenId, i) => {
-        const isLiqPairs = isTokenLiqPairs(depTokenId);
-        if (isLiqPairs) {
-          const hasDepAmount = toNumber(am_arr[1][i]) > 0;
-          const hasDepYield = toNumber(rew_arr[1][i]) > 0;
+      liq_arr[0].forEach((depTokenId, i) => {
+        const hasDepAmount = toNumber(liq_arr[1][i]) > 0;
+        const hasDepYield = toNumber(rew_liq_arr[1][i]) > 0;
 
-          if (hasDepAmount || hasDepYield) {
-            getAPYPromise.push(getAPY(am_arr[0][i]));
-          }
+        if (hasDepAmount || hasDepYield) {
+          getAPYPromise.push(getAPY(liq_arr[0][i]));
         }
       });
       const getAPYArray = await Promise.all(getAPYPromise);
@@ -114,22 +107,19 @@ export default {
 
       this.dep_column.length = 0;
 
-      const { am_arr } = userObject.deposits;
-      const { rew_arr } = userObject.deposits;
+      const { liq_arr } = userObject.deposits;
+      const { rew_liq_arr } = userObject.deposits;
 
-      am_arr[0].forEach((depTokenId, i) => {
-        const isLiqPairs = isTokenLiqPairs(depTokenId);
-        if (isLiqPairs) {
-          const hasDepAmount = toNumber(am_arr[1][i]) > 0;
-          const hasDepYield = toNumber(rew_arr[1][i]) > 0;
+      liq_arr[0].forEach((depTokenId, i) => {
+        const hasDepAmount = toNumber(liq_arr[1][i]) > 0;
+        const hasDepYield = toNumber(rew_liq_arr[1][i]) > 0;
 
-          if (hasDepAmount || hasDepYield) {
-            this.dep_column.push(
-              `<td class="table-cell">${
-                hasDepAmount ? toTokens(am_arr[1][i], 4) : '-'
-              }</td>`
-            );
-          }
+        if (hasDepAmount || hasDepYield) {
+          this.dep_column.push(
+            `<td class="table-cell">${
+              hasDepAmount ? toTokens(liq_arr[1][i], 4) : '-'
+            }</td>`
+          );
         }
       });
     }
@@ -147,23 +137,21 @@ export default {
       this.usd_val_column.length = 0;
       this.usd_val_only_col.length = 0;
 
-      const { am_arr } = userObject.deposits;
-      const { rew_arr } = userObject.deposits;
+      const { liq_arr, rew_liq_arr } = userObject.deposits;
 
       const calcUSDValueOfDepositPromise = [];
-      am_arr[0].forEach((depTokenId, i) => {
-        const isLiqPairs = isTokenLiqPairs(depTokenId);
-        if (isLiqPairs) {
-          const depAmount = am_arr[1][i];
+      liq_arr[0].forEach((depTokenId, i) => {
+        const depAmount = liq_arr[1][i];
 
-          const hasDepAmount = toNumber(depAmount) > 0;
-          const hasDepYield = toNumber(rew_arr[1][i]) > 0;
+        const hasDepAmount = toNumber(depAmount) > 0;
+        const hasDepYield = toNumber(rew_liq_arr[1][i]) > 0;
 
-          if (hasDepAmount || hasDepYield) {
-            calcUSDValueOfDepositPromise.push(
-              hasDepAmount ? calcUSDValueOfDeposit(depAmount, i) : 0
-            );
-          }
+        if (hasDepAmount || hasDepYield) {
+          const index = getIndexOfTokenInAmArr(depTokenId);
+
+          calcUSDValueOfDepositPromise.push(
+            hasDepAmount ? calcUSDValueOfDeposit(depAmount, index) : 0
+          );
         }
       });
       const calcUSDValueOfDepositArray = await Promise.all(
@@ -175,7 +163,11 @@ export default {
           val: USDValue,
           ori_index: i,
         });
-        this.usd_val_column.push(`<td class="table-cell">${USDValue}</td>`);
+        this.usd_val_column.push(
+          `<td class="table-cell">${
+            toNumber(USDValue) > 0 ? USDValue : '-'
+          }</td>`
+        );
       });
     }
     return [this.usd_val_column, this.usd_val_only_col];
@@ -193,24 +185,21 @@ export default {
 
       this.usd_reward_column.length = 0;
 
-      const { am_arr } = userObject.deposits;
-      const { rew_arr } = userObject.deposits;
+      const { liq_arr } = userObject.deposits;
+      const { rew_liq_arr } = userObject.deposits;
 
       const calcUSDValueOfYieldPromise = [];
-      am_arr[0].forEach((depTokenId, i) => {
-        const isLiqPairs = isTokenLiqPairs(depTokenId);
-        if (isLiqPairs) {
-          const depYield = rew_arr[1][i];
+      liq_arr[0].forEach((depTokenId, i) => {
+        const depYield = rew_liq_arr[1][i];
 
-          const hasDepYield = toNumber(depYield) > 0;
+        const hasDepYield = toNumber(depYield) > 0;
 
-          if (hasDepYield) {
-            calcUSDValueOfYieldPromise.push(
-              toNumber(rew_arr[2][i]) > 0
-                ? calcUSDValueOfDeposit(depYield, i)
-                : 0
-            );
-          }
+        if (hasDepYield) {
+          calcUSDValueOfYieldPromise.push(
+            toNumber(rew_liq_arr[2][i]) > 0
+              ? calcUSDValueOfDeposit(depYield, i)
+              : 0
+          );
         }
       });
       const calcUSDValueOfYieldArray = await Promise.all(
@@ -238,46 +227,54 @@ export default {
       this.duration_col.length = 0;
       this.unlock_col.length = 0;
 
-      const { am_arr } = userObject.deposits;
-      const { rew_arr } = userObject.deposits;
+      const { liq_arr, rew_liq_arr } = userObject.deposits;
+      const liqVisibleArr = [];
 
       const depositDaysPromise = [];
-      am_arr[0].forEach((depTokenId, i) => {
-        const isLiqPairs = isTokenLiqPairs(depTokenId);
-        if (isLiqPairs) {
-          const depAmount = am_arr[1][i];
-          const depYield = rew_arr[1][i];
+      liq_arr[0].forEach((depTokenId, i) => {
+        const depAmount = liq_arr[1][i];
+        const depYield = rew_liq_arr[1][i];
 
-          const hasDepYield = toNumber(depYield) > 0;
-          const hasDepAmount = toNumber(depAmount) > 0;
+        const hasDepYield = toNumber(depYield) > 0;
+        const hasDepAmount = toNumber(depAmount) > 0;
 
-          if (hasDepYield || hasDepAmount) {
-            depositDaysPromise.push(
-              hasDepAmount
-                ? window.staking_smartcontract_reader.methods
-                    .depositDays(userObject.account, i)
-                    .call({
-                      from: userObject.account,
-                    })
-                : 0
-            );
-          }
+        if (hasDepYield || hasDepAmount) {
+          const index = getIndexOfTokenInAmArr(depTokenId);
+          liqVisibleArr.push(depTokenId);
+          depositDaysPromise.push(
+            hasDepAmount
+              ? window.staking_smartcontract_reader.methods
+                  .depositDays(userObject.account, index)
+                  .call({
+                    from: userObject.account,
+                  })
+              : null
+          );
         }
       });
       const depositDaysArray = await Promise.all(depositDaysPromise);
 
       depositDaysArray.forEach((day, i) => {
-        const periodCode = tokenNameByLiqpairsTokenId(am_arr[0][i]).slice(-2);
-        const dayInNumber = toNumber(day);
+        if (day === null) {
+          this.duration_col.push(`<td class="table-cell">-</td>`);
+          this.unlock_col.push(`<td class="table-cell">-</td>`);
+        } else {
+          const periodCode = tokenNameByLiqpairsTokenId(liqVisibleArr[i]).slice(
+            -2
+          );
+          const dayInNumber = toNumber(day);
 
-        const unlockPeriod = PERIOD_LEN_FROM_CODE[periodCode] - dayInNumber;
+          const unlockPeriod = PERIOD_LEN_FROM_CODE[periodCode] - dayInNumber;
 
-        this.duration_col.push(
-          `<td class="table-cell">${dayInNumber > 0 ? dayInNumber : '-'}</td>`
-        );
-        this.unlock_col.push(
-          `<td class="table-cell">${unlockPeriod > 0 ? unlockPeriod : '-'}</td>`
-        );
+          this.duration_col.push(
+            `<td class="table-cell">${dayInNumber > 0 ? dayInNumber : '-'}</td>`
+          );
+          this.unlock_col.push(
+            `<td class="table-cell">${
+              unlockPeriod > 0 ? unlockPeriod : '-'
+            }</td>`
+          );
+        }
       });
     }
     return [this.duration_col, this.unlock_col];
@@ -292,25 +289,21 @@ export default {
 
       this.extractable_dep_col.length = 0;
 
-      const { am_arr } = userObject.deposits;
-      const { rew_arr } = userObject.deposits;
+      const { liq_arr } = userObject.deposits;
+      const { rew_liq_arr } = userObject.deposits;
 
-      am_arr[0].forEach((depTokenId, i) => {
-        const isLiqPairs = isTokenLiqPairs(depTokenId);
+      liq_arr[0].forEach((depTokenId, i) => {
+        const hasDepAmount = toNumber(liq_arr[1][i]) > 0;
+        const hasDepYield = toNumber(rew_liq_arr[1][i]) > 0;
 
-        if (isLiqPairs) {
-          const hasDepAmount = toNumber(am_arr[1][i]) > 0;
-          const hasDepYield = toNumber(rew_arr[1][i]) > 0;
+        const hasExtractableDepAmount = toNumber(liq_arr[2][i]) > 0;
 
-          const hasExtractableDepAmount = toNumber(am_arr[2][i]) > 0;
-
-          if (hasDepAmount || hasDepYield) {
-            this.extractable_dep_col.push(
-              `<td class="table-cell">${
-                hasExtractableDepAmount ? toTokens(am_arr[2][i], 4) : '-'
-              }</td>`
-            );
-          }
+        if (hasDepAmount || hasDepYield) {
+          this.extractable_dep_col.push(
+            `<td class="table-cell">${
+              hasExtractableDepAmount ? toTokens(liq_arr[2][i], 4) : '-'
+            }</td>`
+          );
         }
       });
     }
@@ -329,39 +322,33 @@ export default {
 
       this.withdraw_dep_col.length = 0;
 
-      const { am_arr } = userObject.deposits;
-      const { rew_arr } = userObject.deposits;
+      const { liq_arr } = userObject.deposits;
+      const { rew_liq_arr } = userObject.deposits;
 
-      am_arr[0].forEach((depTokenId, i) => {
-        const isLiqPairs = isTokenLiqPairs(depTokenId);
+      liq_arr[0].forEach((depTokenId, i) => {
+        const hasDepAmount = toNumber(liq_arr[1][i]) > 0;
+        const hasDepYield = toNumber(rew_liq_arr[1][i]) > 0;
 
-        if (isLiqPairs) {
-          const hasDepAmount = toNumber(am_arr[1][i]) > 0;
-          const hasDepYield = toNumber(rew_arr[1][i]) > 0;
+        const hasExtractableDepAmount = toNumber(liq_arr[2][i]) > 0;
 
-          const hasExtractableDepAmount = toNumber(am_arr[2][i]) > 0;
-
-          if (hasDepAmount || hasDepYield) {
-            this.withdraw_dep_col.push(
-              `<td class="table-cell">${
-                hasExtractableDepAmount
-                  ? `${
-                      isMobile
-                        ? `<td class="table-cell">
-                            <div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))" class="link-arrow">
+        if (hasDepAmount || hasDepYield) {
+          this.withdraw_dep_col.push(
+            `<td class="table-cell">${
+              hasExtractableDepAmount
+                ? `${
+                    isMobile
+                      ? `<div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))" class="link-arrow">
                               <img src="./images/link-arrow.svg" alt="#">
-                            </div>
-                          </td>`
-                        : `<td class="table-cell">${createTableBtnWithIcon(
-                            'withdraw',
-                            'Withdraw deposit',
-                            `withdraw_deposit(${i.toString()})`
-                          )}</td>`
-                    }`
-                  : '-'
-              }</td>`
-            );
-          }
+                            </div>`
+                      : `${createTableBtnWithIcon(
+                          'withdraw',
+                          'Withdraw deposit',
+                          `withdraw_deposit(${i.toString()})`
+                        )}`
+                  }`
+                : '-'
+            }</td>`
+          );
         }
       });
     }
@@ -377,25 +364,21 @@ export default {
 
       this.reward_col.length = 0;
 
-      const { am_arr } = userObject.deposits;
-      const { rew_arr } = userObject.deposits;
+      const { liq_arr } = userObject.deposits;
+      const { rew_liq_arr } = userObject.deposits;
 
-      am_arr[0].forEach((depTokenId, i) => {
-        const isLiqPairs = isTokenLiqPairs(depTokenId);
+      liq_arr[0].forEach((depTokenId, i) => {
+        const depYield = rew_liq_arr[1][i];
 
-        if (isLiqPairs) {
-          const depYield = rew_arr[1][i];
+        const hasDepAmount = toNumber(liq_arr[1][i]) > 0;
+        const hasDepYield = toNumber(depYield) > 0;
 
-          const hasDepAmount = toNumber(am_arr[1][i]) > 0;
-          const hasDepYield = toNumber(depYield) > 0;
-
-          if (hasDepAmount || hasDepYield) {
-            this.reward_col.push(
-              `<td class="table-cell">${
-                hasDepYield ? toTokens(depYield, 4) : '-'
-              }</td>`
-            );
-          }
+        if (hasDepAmount || hasDepYield) {
+          this.reward_col.push(
+            `<td class="table-cell">${
+              hasDepYield ? toTokens(depYield, 4) : '-'
+            }</td>`
+          );
         }
       });
     }
@@ -413,26 +396,22 @@ export default {
       this.getExtractableRewardCol_last_call = currentTimestamp;
       this.extractable_reward_col.length = 0;
 
-      const { am_arr } = userObject.deposits;
-      const { rew_arr } = userObject.deposits;
+      const { liq_arr } = userObject.deposits;
+      const { rew_liq_arr } = userObject.deposits;
 
-      am_arr[0].forEach((depTokenId, i) => {
-        const isLiqPairs = isTokenLiqPairs(depTokenId);
+      liq_arr[0].forEach((depTokenId, i) => {
+        const extractableDepYield = rew_liq_arr[2][i];
 
-        if (isLiqPairs) {
-          const extractableDepYield = rew_arr[2][i];
+        const hasDepAmount = toNumber(liq_arr[1][i]) > 0;
+        const hasDepYield = toNumber(rew_liq_arr[1][i]) > 0;
+        const hasExtractableDepYield = toNumber(extractableDepYield) > 0;
 
-          const hasDepAmount = toNumber(am_arr[1][i]) > 0;
-          const hasDepYield = toNumber(rew_arr[1][i]) > 0;
-          const hasExtractableDepYield = toNumber(extractableDepYield) > 0;
-
-          if (hasDepAmount || hasDepYield) {
-            this.extractable_reward_col.push(
-              `<td class="table-cell">${
-                hasExtractableDepYield ? toTokens(extractableDepYield, 4) : '-'
-              }</td>`
-            );
-          }
+        if (hasDepAmount || hasDepYield) {
+          this.extractable_reward_col.push(
+            `<td class="table-cell">${
+              hasExtractableDepYield ? toTokens(extractableDepYield, 4) : '-'
+            }</td>`
+          );
         }
       });
     }
@@ -451,40 +430,34 @@ export default {
 
       this.withdraw_rew_col.length = 0;
 
-      const { am_arr } = userObject.deposits;
-      const { rew_arr } = userObject.deposits;
+      const { liq_arr } = userObject.deposits;
+      const { rew_liq_arr } = userObject.deposits;
 
-      am_arr[0].forEach((depTokenId, i) => {
-        const isLiqPairs = isTokenLiqPairs(depTokenId);
+      liq_arr[0].forEach((depTokenId, i) => {
+        const extractableDepYield = rew_liq_arr[2][i];
 
-        if (isLiqPairs) {
-          const extractableDepYield = rew_arr[2][i];
+        const hasDepAmount = toNumber(liq_arr[1][i]) > 0;
+        const hasDepYield = toNumber(rew_liq_arr[1][i]) > 0;
+        const hasExtractableDepYield = toNumber(extractableDepYield) > 0;
 
-          const hasDepAmount = toNumber(am_arr[1][i]) > 0;
-          const hasDepYield = toNumber(rew_arr[1][i]) > 0;
-          const hasExtractableDepYield = toNumber(extractableDepYield) > 0;
-
-          if (hasDepAmount || hasDepYield) {
-            this.withdraw_rew_col.push(
-              `<td class="table-cell">${
-                hasExtractableDepYield
-                  ? `${
-                      isMobile
-                        ? `<td class="table-cell">
-                            <div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))" class="link-arrow">
+        if (hasDepAmount || hasDepYield) {
+          this.withdraw_rew_col.push(
+            `<td class="table-cell">${
+              hasExtractableDepYield
+                ? `${
+                    isMobile
+                      ? `<div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))" class="link-arrow">
                               <img src="./images/link-arrow.svg" alt="#">
-                            </div>
-                          </td>`
-                        : `<td class="table-cell">${createTableBtnWithIcon(
-                            'withdraw',
-                            'Withdraw yield',
-                            `withdraw_reward(${i.toString()})`
-                          )}</td>`
-                    }`
-                  : '-'
-              }</td>`
-            );
-          }
+                            </div>`
+                      : `${createTableBtnWithIcon(
+                          'withdraw',
+                          'Withdraw yield',
+                          `withdraw_reward(${i.toString()})`
+                        )}`
+                  }`
+                : '-'
+            }</td>`
+          );
         }
       });
     }

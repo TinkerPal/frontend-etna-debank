@@ -74,9 +74,7 @@ export const modalAddDeposit = new Modal(
   () => {
     depositModalRebuild();
     depositModalUpdateNftDropdown();
-  },
-  null,
-  depositModalUpdateNftDropdown
+  }
 );
 export const modalAddCredit = new Modal(
   'modal-open-new-credit',

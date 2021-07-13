@@ -62,7 +62,6 @@ export async function getLiquidityDashboard(callback = null) {
     [duration_col, unlock_col],
     extractable_dep_col,
     withdraw_dep_col,
-    withdraw_dep_inputs_col,
     reward_col,
     extractable_reward_col,
     withdraw_rew_col,
@@ -113,7 +112,6 @@ export async function getLiquidityDashboard(callback = null) {
     duration_col_s[i] = duration_col[old_index];
     extractable_dep_col_s[i] = extractable_dep_col[old_index];
     withdraw_dep_col_s[i] = withdraw_dep_col[old_index];
-    withdraw_dep_inputs_col_s[i] = withdraw_dep_inputs_col[old_index];
     reward_col_s[i] = reward_col[old_index];
     extractable_reward_col_s[i] = extractable_reward_col[old_index];
     withdraw_rew_col_s[i] = withdraw_rew_col[old_index];
@@ -246,8 +244,6 @@ export async function getLiquidityDashboard(callback = null) {
 
       html += asset_column_s[i];
 
-      // html += in_wallet_column_s[i];
-
       html += dep_column_s[i];
 
       html += lockup_period_s[i];
@@ -263,8 +259,6 @@ export async function getLiquidityDashboard(callback = null) {
       html += extractable_dep_col_s[i];
 
       html += withdraw_dep_col_s[i];
-
-      html += withdraw_dep_inputs_col_s[i];
 
       html += reward_col_s[i];
 
