@@ -143,8 +143,10 @@ export default {
       this.in_wallet_column.length = 0;
       this.in_wallet_arr.length = 0;
 
+      const profiles = userObject.deposit_profiles;
+
       const tokenCountPromise = [];
-      userObject.deposit_profiles.forEach((token) => {
+      profiles.forEach((token) => {
         tokenCountPromise.push(getWalletBalance(token.p_id));
       });
       const tokensCount = await Promise.all(tokenCountPromise);
@@ -183,8 +185,10 @@ export default {
           this.dep_column.push(
             `<td class="table-cell">${
               isTokenNft(depositTokenId)
-                ? am_arr[1][i]
-                : toTokens(am_arr[1][i], 4)
+                ? `${toNumber(am_arr[1][i]) > 0 ? am_arr[1][i] : '-'}`
+                : `${
+                    toNumber(am_arr[1][i]) > 0 ? toTokens(am_arr[1][i], 4) : '-'
+                  }`
             }</td>`
           );
         } else {
@@ -224,28 +228,17 @@ export default {
       });
       const calcUsdValueData = await Promise.all(calcUsdValuePromise);
 
-      profiles.forEach((token, profileIndex) => {
-        const depositTokenIndex = dep_arr[0].findIndex(
-          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
+      calcUsdValueData.forEach((usdValue, i) => {
+        this.usd_val_only_col.push({
+          val: usdValue,
+          ori_index: i,
+        });
+
+        this.usd_val_column.push(
+          `<td class="table-cell">${
+            toNumber(usdValue) > 0 ? usdValue : '-'
+          }</td>`
         );
-
-        if (depositTokenIndex !== -1) {
-          const usdValue = calcUsdValueData[depositTokenIndex];
-
-          this.usd_val_only_col.push({
-            val: usdValue,
-            ori_index: profileIndex,
-          });
-
-          this.usd_val_column.push(`<td class="table-cell">${usdValue}</td>`);
-        } else {
-          this.usd_val_only_col.push({
-            val: 0,
-            ori_index: profileIndex,
-          });
-
-          this.usd_val_column.push(`<td class="table-cell">-</td>`);
-        }
       });
     }
     return [this.usd_val_column, this.usd_val_only_col];
@@ -283,13 +276,7 @@ export default {
       });
       const depositDaysData = await Promise.all(depositDaysPromise);
 
-      profiles.forEach((token) => {
-        const depositTokenIndex = dep_arr[0].findIndex(
-          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
-        );
-
-        const days = depositDaysData[depositTokenIndex];
-
+      depositDaysData.forEach((days) => {
         this.duration_col.push(
           `<td class="table-cell">${toNumber(days) > 0 ? days : '-'}</td>`
         );
@@ -320,10 +307,12 @@ export default {
 
         if (depositTokenId) {
           const i = am_arr[0].indexOf(depositTokenId);
-
+          const hasExtractable = toNumber(am_arr[2][i]) > 0;
           this.extractable_dep_col.push(
             `<td class="table-cell">${
-              isNft ? am_arr[2][i] : toTokens(am_arr[2][i], 4)
+              isNft
+                ? `${hasExtractable ? am_arr[2][i] : '-'}`
+                : `${hasExtractable ? toTokens(am_arr[2][i], 4) : '-'}`
             }</td>`
           );
         } else {
