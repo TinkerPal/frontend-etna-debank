@@ -122,7 +122,7 @@ export async function collateralDropdownBuild(clear = true) {
   }
 }
 
-export async function creditDropdownBuild(clear = true) {
+export async function creditDropdownBuild(setDefaultValue = true) {
   let ddData = await getCreditProfilesListCredit();
 
   if (ddData.length === 0) return;
@@ -141,7 +141,7 @@ export async function creditDropdownBuild(clear = true) {
   creditDropdown.removeActiveItems();
   creditDropdown.setChoices(creditDropdownOptions, 'value', 'label', true);
 
-  if (clear) {
+  if (setDefaultValue) {
     setState({
       getcredit_profile: ddData[0].p_id,
     });

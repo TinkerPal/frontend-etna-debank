@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { modalAddDeposit } from '../../..';
-import { ERC721_TOKEN, NATIVE_ETHEREUM } from '../../../constants';
+import { ERC721_TOKEN } from '../../../constants';
 import { userObject } from '../../../store/userObject';
 import {
   getNftPrice,
@@ -13,6 +13,7 @@ import {
 } from '../../../utils';
 import { safeSetValueById } from '../../../utils/dom';
 import { nftAssetsSelect } from '../../Dropdown/nft';
+import { selectAssetDropdown } from '../../Dropdown/selectAsset';
 import { initVotesCalcContractReader } from '../../Web3/contracts';
 
 export async function getDepositProfilesList() {
@@ -119,15 +120,24 @@ export async function initDepositProfilesDropdown() {
   const assetsAmmountValue =
     modalAddDeposit.modal.querySelector('#tokens_amount');
 
-  // todo переделать на чойз
-  // setOptionsToSelect(ddData, depprofilesDropdown);
+  const selectAssetDropdownOptions = ddData.map((item) => ({
+    value: item.text,
+    label: item.text,
+    p_id: item.p_id,
+  }));
 
-  // new CustomSelect({
-  //   elem: depprofilesDropdown,
-  // });
+  selectAssetDropdown.removeActiveItems();
+  selectAssetDropdown.setChoices(
+    selectAssetDropdownOptions,
+    'value',
+    'label',
+    true
+  );
 
   assetsAmmountValue.oninput = depositModalRebuild;
-  depprofilesDropdown.onchange = depositModalRebuild;
+  depprofilesDropdown.addEventListener('change', depositModalRebuild, false);
+
+  selectAssetDropdown.setChoiceByValue(ddData[0].text);
 }
 
 export async function getNFTAssets() {

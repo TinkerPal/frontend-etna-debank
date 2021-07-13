@@ -153,7 +153,7 @@ export default {
         this.in_wallet_column.push(
           `<td class="table-cell">${toNumber(amount) > 0 ? amount : '-'}</td>`
         );
-        this.in_wallet_arr.push(toNumber(amount));
+        this.in_wallet_arr.push(amount);
       });
     }
 

@@ -31,7 +31,6 @@ const getWebpackConfig = (envs, buildType) => ({
   output: {
     filename: 'common.js',
   },
-  mode: 'production',
   module: {
     rules: [
       {
