@@ -36,11 +36,18 @@ import {
   initVotesCalcContractReader,
 } from './components/Web3/contracts';
 import { isMobile } from './constants/env';
-import { return_credit, return_fee } from './pages/credit';
+import {
+  full_collateral_btn,
+  part_collateral_btn,
+  return_credit,
+  return_fee,
+  set_fixed_credit,
+  set_var_credit,
+} from './pages/credit';
 import { withdraw_deposit, withdraw_reward } from './pages/deposit';
 import { initContractAdress } from './store/contracts';
 import { userObject } from './store/userObject';
-import { isMetaMaskInstalled } from './utils';
+import { depAmountByProfileId, isMetaMaskInstalled } from './utils';
 import { postWalletCallback } from './utils/dom';
 
 export const walletButton = document.getElementById('enableEthereumButton');
@@ -84,6 +91,7 @@ export const modalAddCredit = new Modal(
   }
 );
 
+// Todo need to remove global functions
 window.userObject = userObject;
 window.openTab = openTab;
 window.modal_add_deposit = modalAddDeposit;
@@ -94,6 +102,11 @@ window.withdraw_reward = withdraw_reward;
 window.return_credit = return_credit;
 window.return_fee = return_fee;
 window.show_modal_unfreeze = show_modal_unfreeze;
+window.full_collateral_btn = full_collateral_btn;
+window.part_collateral_btn = part_collateral_btn;
+window.set_fixed_credit = set_fixed_credit;
+window.set_var_credit = set_var_credit;
+window.depAmountByProfileId = depAmountByProfileId;
 
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') {

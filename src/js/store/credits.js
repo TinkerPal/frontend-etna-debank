@@ -131,9 +131,11 @@ export default {
 
       this.usd_val_column.length = 0;
 
-      this.cred_arr?.[0]?.forEach((credTokenId, i) => {
+      this.cred_arr[0].forEach((credTokenId, i) => {
         this.usd_val_column.push(
-          `<td class="table-cell">${this.cred_price_arr[i] || '-'}</td>`
+          `<td class="table-cell">${
+            toNumber(this.cred_price_arr[i]) || '-'
+          }</td>`
         );
       });
     }
