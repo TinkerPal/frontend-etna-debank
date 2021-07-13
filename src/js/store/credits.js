@@ -34,11 +34,11 @@ export default {
 
       const credPricePromise = [];
 
-      this.cred_arr?.[0]?.forEach((credTokenId, i) => {
-        const creditAmount = toNumber(this.cred_arr[1][i]);
+      this.cred_arr[0].forEach((credTokenId, i) => {
+        const creditAmount = this.cred_arr[1][i];
 
         credPricePromise.push(
-          creditAmount > 0
+          toNumber(creditAmount) > 0
             ? getPriceOfTokens(creditAmount, credTokenId, true)
             : 0
         );
@@ -54,7 +54,7 @@ export default {
       const cc_index = toNumber(cc.index);
 
       const credCCPromise = [];
-      this.cred_arr?.[0]?.forEach((item, i) => {
+      this.cred_arr[0].forEach((item, i) => {
         credCCPromise.push(
           window.credit_smartcontract_reader.methods
             .viewCustomerCreditByIndex(cc_index, i)
@@ -283,11 +283,11 @@ export default {
       const { cred_arr } = this;
 
       cred_arr[0].forEach((credTokenId, i) => {
-        const creditAmount = toNumber(cred_arr[1][i]);
+        const creditAmount = cred_arr[1][i];
 
         this.cred_column.push(
           `<td class="table-cell">${
-            creditAmount > 0
+            toNumber(creditAmount) > 0
               ? `${
                   isTokenNft(credTokenId)
                     ? creditAmount
@@ -368,10 +368,12 @@ export default {
       const { cred_arr } = this;
 
       cred_arr[0].forEach((credTokenId, i) => {
-        const duration = toNumber(cred_arr[3][i]);
+        const duration = cred_arr[3][i];
 
         this.duration_col.push(
-          `<td class="table-cell">${duration > 0 ? duration : '-'}</td>`
+          `<td class="table-cell">${
+            toNumber(duration) > 0 ? duration : '-'
+          }</td>`
         );
       });
     }
@@ -390,10 +392,12 @@ export default {
       const { cred_arr } = this;
 
       cred_arr[0].forEach((credTokenId, i) => {
-        const fee = toNumber(cred_arr[2][i]);
+        const fee = cred_arr[2][i];
 
         this.fee_col.push(
-          `<td class="table-cell">${fee > 0 ? toTokens(fee, 4) : '-'}</td>`
+          `<td class="table-cell">${
+            toNumber(fee) > 0 ? toTokens(fee, 4) : '-'
+          }</td>`
         );
       });
     }
@@ -413,7 +417,7 @@ export default {
       const { lev_ratio_arr } = this;
 
       cred_arr[0].forEach((credTokenId, i) => {
-        const lev = toNumber(lev_arr[i]);
+        const lev = lev_arr[i];
 
         this.leverage_column.push(
           `<td class="table-cell">${

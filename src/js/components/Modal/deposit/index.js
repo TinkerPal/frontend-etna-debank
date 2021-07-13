@@ -159,19 +159,20 @@ export async function getNFTAssets() {
   if (balansOfNft === '0') return [];
 
   const tokenIdPromise = [];
-  balansOfNft.forEach((nft, i) => {
+
+  for (let index = 0; index < toNumber(balansOfNft); index++) {
     tokenIdPromise.push(
       window.cyclops_nft_smartcontract_reader.methods
-        .tokenOfOwnerByIndex(userObject.account, i)
+        .tokenOfOwnerByIndex(userObject.account, index)
         .call({
           from: userObject.account,
         })
     );
-  });
+  }
   const tokenIdArray = await Promise.all(tokenIdPromise);
 
   const tokenPricePromise = [];
-  tokenIdPromise.forEach((id) => {
+  tokenIdArray.forEach((id) => {
     tokenPricePromise.push(getNftPrice(contract, vc_contract, [id]));
   });
   const tokenPriceArray = await Promise.all(tokenPricePromise);

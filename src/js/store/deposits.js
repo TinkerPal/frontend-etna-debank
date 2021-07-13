@@ -269,16 +269,15 @@ export default {
           (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
         );
 
-        if (
-          depositTokenIndex !== -1 &&
-          toNumber(am_arr[1][depositTokenIndex]) > 0
-        ) {
+        if (depositTokenIndex !== -1) {
           depositDaysPromise.push(
-            window.staking_smartcontract.methods
-              .depositDays(userObject.account, depositTokenIndex)
-              .call({
-                from: userObject.account,
-              })
+            toNumber(am_arr[1][depositTokenIndex]) > 0
+              ? window.staking_smartcontract.methods
+                  .depositDays(userObject.account, depositTokenIndex)
+                  .call({
+                    from: userObject.account,
+                  })
+              : 0
           );
         }
       });
@@ -289,18 +288,11 @@ export default {
           (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
         );
 
-        if (
-          depositTokenIndex !== -1 &&
-          toNumber(dep_arr[1][depositTokenIndex]) > 0
-        ) {
-          const days = depositDaysData[depositTokenIndex];
+        const days = depositDaysData[depositTokenIndex];
 
-          this.duration_col.push(
-            `<td class="table-cell">${days.toString()}</td>`
-          );
-        } else {
-          this.duration_col.push(`<td class="table-cell">-</td>`);
-        }
+        this.duration_col.push(
+          `<td class="table-cell">${toNumber(days) > 0 ? days : '-'}</td>`
+        );
       });
     }
     return this.duration_col;
@@ -381,9 +373,9 @@ export default {
                 }
               </td>
             `);
+          } else {
+            this.withdraw_dep_col.push(`<td class="table-cell">-</td>`);
           }
-        } else {
-          this.withdraw_dep_col.push(`<td class="table-cell">-</td>`);
         }
       });
     }

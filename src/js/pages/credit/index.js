@@ -784,7 +784,7 @@ export async function set_leverage(ratio, cred_id) {
   const { is_fixed_apy } = x;
 
   const clt_id = userObject.credits.cred_arr[4][cred_id];
-  const clt_profile_id = userObject.credits.clt_arr[0][toNumber(clt_id)];
+  const clt_profile_id = userObject.credits.clt_arr[0][clt_id];
 
   const lns = await window.usage_calc_smartcontract_reader.methods
     .calcNeededLeverageByCreditSize(
