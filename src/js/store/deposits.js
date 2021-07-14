@@ -552,9 +552,9 @@ export default {
                 }
               </td>
             `);
+          } else {
+            this.withdraw_rew_col.push(`<td class="table-cell">-</td>`);
           }
-        } else {
-          this.withdraw_rew_col.push(`<td class="table-cell">-</td>`);
         }
       });
     }

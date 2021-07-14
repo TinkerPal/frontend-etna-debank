@@ -16,6 +16,7 @@ export default {
   cred_cc_arr: [],
   cred_arr: [],
   cred_price_arr: [],
+  cred_cc_extra_arr: {},
   getCredArr_last_call: 0,
   async getCredArr() {
     const currentTimestamp = Date.now();
@@ -65,6 +66,19 @@ export default {
       });
 
       this.cred_cc_arr = await Promise.all(credCCPromise);
+
+      const credCCExtraPromise = [];
+      this.cred_arr[0].forEach((item, i) => {
+        credCCExtraPromise.push(
+          window.credit_smartcontract_reader.methods
+            .viewCustomerCreditExtraDataByIndex(cc_index, i)
+            .call({
+              from: userObject.account,
+            })
+        );
+      });
+
+      this.cred_cc_extra_arr = await Promise.all(credCCExtraPromise);
     }
     return this.cred_arr;
   },
@@ -180,15 +194,14 @@ export default {
 
       this.apr_column.length = 0;
 
-      const { cred_arr } = this;
-      const { clt_arr } = this;
+      const { clt_arr, cred_arr, cred_cc_extra_arr, cred_cc_arr } = this;
 
       if (cred_arr[0].length > 0) {
         const calcVarApyPromise = [];
-        this.cred_cc_arr.forEach((item, i) => {
+        cred_cc_arr.forEach((item, i) => {
           calcVarApyPromise.push(
-            item.is_fixed_apy
-              ? item.fixed_apy
+            cred_cc_extra_arr[i].is_fixed_apy
+              ? cred_cc_extra_arr[i].fixed_apy
               : window.usage_calc_smartcontract_reader.methods
                   .calcVarApy(cred_arr[0][i], clt_arr[0][i])
                   .call({
@@ -202,7 +215,7 @@ export default {
           const aprAdj = (toNumber(apr) / APY_SCALE) * 100;
           this.apr_column.push(
             `<td class="table-cell">${
-              this.cred_cc_arr[i].is_fixed_apy ? 'F: ' : 'V: '
+              cred_cc_extra_arr[i].is_fixed_apy ? 'F: ' : 'V: '
             }${parseFloat(aprAdj).toFixed(2).toString()}%</td>`
           );
         });
