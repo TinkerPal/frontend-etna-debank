@@ -38,7 +38,7 @@ export function initPancakeSwapDropdown() {
             }
 
             return template(/* html */ `
-                <a target="_blank" class="${classNames.item}" href="${link}"><img src="../images/link-inside-li.svg" class="btn-link"><span class="dropdown-text">${text}</span></a>
+                <a target="_blank" class="${classNames.item}" href="${link}"><span class="dropdown-text">${text}</span><img src="../images/link-inside-li.svg" class="btn-link"></a>
             `);
           },
         };
