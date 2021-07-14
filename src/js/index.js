@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import EtnaChart from './components/Chart';
 import { initPancakeSwapDropdown } from './components/Dropdown/pancakeswap';
+import { errorEmptyMsg } from './components/InfoMessages';
 import { createInfoPopup } from './components/InfoPopup';
 import { Modal } from './components/Modal';
 import {
@@ -119,6 +120,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   await initContractAdress();
 
   await initWeb3jsReader();
+
+  if (!web3jsReadersList) {
+    return errorEmptyMsg('Cannot access wallet. Reload your page, please.');
+  }
 
   await web3jsReadersList.init();
 

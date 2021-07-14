@@ -125,17 +125,17 @@ export async function setNetInfo() {
   if (netName && netInfo && netIcon && netTxt) {
     if (chainIdHex === undefined) {
       netName.innerHTML = 'unknown net';
-      netInfo.style.display = 'flex';
+      netInfo.style = 'display: flex; flex-wrap: wrap';
       netIcon.style.color = 'red';
       netTxt.innerHTML = ' wrong network, connect to BSC';
-    } else if (chainIdHex !== CHAIN_ID) {
-      netName.innerHTML = CHAINS[CHAIN_ID];
-      netInfo.style.display = 'flex';
+    } else if (chainIdHex !== window.chainId) {
+      netName.innerHTML = CHAINS[chainIdHex] ?? 'Unknown';
+      netInfo.style = 'display: flex; flex-wrap: wrap';
       netIcon.style.color = 'red';
       netTxt.innerHTML = ' wrong network, connect to BSC';
     } else {
       netIcon.style.color = '#48A68E';
-      netInfo.style.display = 'flex';
+      netInfo.style = 'display: flex; flex-wrap: wrap';
       netName.innerHTML = ' BSC';
     }
   }

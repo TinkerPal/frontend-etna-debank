@@ -75,6 +75,7 @@ module.exports = {
       'green-100-mobile': '#82E717',
       'violet-bg-mobile': '#9696CB',
       'black-mobile': '#060711',
+      transparent: 'transparent',
     }),
     textColor: (theme) => ({
       ...theme('colors'),
@@ -96,6 +97,7 @@ module.exports = {
       'grey-300-mobile': '#C4C4D3',
       'green-4-mobile': '#68891C',
       'grey-400-mobile': '#6B7280',
+      ldbar: 'rgb(152, 239, 15)',
     }),
     borderColor: (theme) => ({
       ...theme('colors'),

@@ -104,6 +104,8 @@ export async function collateralDropdownBuild(clear = true) {
     true
   );
 
+  if (ddData.length === 0) return;
+
   if (clear) {
     setState({
       selected_credprofile: ddData[0].p_id,

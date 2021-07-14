@@ -1,31 +1,69 @@
 <!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1"
-    />
-    <meta name="theme-color" content="#212121" />
-    <meta name="msapplication-navbutton-color" content="#212121" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="#212121" />
-    <link rel="stylesheet" href="/css/libs/simplebar.css" />
-    <!-- Include base CSS (optional) -->
-    <link rel="stylesheet" href="/css/libs/base.min.css" />
-    <!-- Include Choices CSS -->
-    <link rel="stylesheet" href="/css/libs/choices.min.css" />
-    <link rel="stylesheet" href="/css/styles.css" />
-    <link rel="icon" href="/images/logo-m.png" />
-    <title>ETNA DeBank</title>
-  </head>
 
-  <body class="body" data-simplebar>
-    <header class="header">@@include('./templates/desktop/header.html')</header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#212121" />
+  <meta name="msapplication-navbutton-color" content="#212121" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="#212121" />
+  <meta name="msapplication-TileColor" content="ffffff">
+  <link rel="stylesheet" href="/css/libs/simplebar.css" />
+  <!-- Include base CSS (optional) -->
+  <link rel="stylesheet" href="/css/libs/base.min.css" />
+  <!-- Include Choices CSS -->
+  <link rel="stylesheet" href="/css/libs/choices.min.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  
+  <title>ETNA Network crypto -enabled bank.</title>
+  <meta name="description"
+    content="Crypto enabled bank with NFT deposits support, credits, liquidity pools, part of ETNA Network ecosystem.">
+  <meta name="keywords" content="crypto bank, ETNA, ETNA Network, staking, DeFi">
+  <meta itemprop="name" content="ETNA Network crypto -enabled bank.">
+  <meta itemprop="description"
+    content="Crypto enabled bank with NFT deposits support, credits, liquidity pools, part of ETNA Network ecosystem.">
+  <meta itemprop="image" content="/images/logo-company-etna.jpeg">
+  <link rel="alternate" hreflang="en" href="https://debank.etna.network/"><!-- Twitter Card markup-->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="https://debank.etna.network/">
+  <meta name="twitter:title" content="ETNA Network crypto -enabled bank.">
+  <meta name="twitter:description"
+    content="Crypto enabled bank with NFT deposits support, credits, liquidity pools, part of ETNA Network ecosystem.">
+  <meta name="twitter:creator" content=""><!-- Twitter summary card with large image must be at least 280x150px -->
+  <meta name="twitter:image" content="/images/logo-company-etna.jpeg">
+  <meta name="twitter:image:alt"
+    content="Crypto enabled bank with NFT deposits support, credits, liquidity pools, part of ETNA Network ecosystem.">
+  <!-- Open Graph markup (Facebook, Pinterest) -->
+  <meta property="og:title" content="ETNA Network crypto -enabled bank.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://debank.etna.network/">
+  <meta property="og:image" content="/images/logo-company-etna.jpeg">
+  <meta property="og:description"
+    content="Crypto enabled bank with NFT deposits support, credits, liquidity pools, part of ETNA Network ecosystem.">
+  <meta property="og:site_name" content="ETNA Network crypto -enabled bank.">
+  <meta property="article:section" content="ETNA Network crypto -enabled bank.">
+  <meta property="article:tag"
+    content="crypto bank, ETNA, ETNA Network, staking, DeFi">
+  <link rel="shortcut icon" href="/images/logo-company-etna.jpeg" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/images/logo-company-etna.jpeg">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/logo-company-etna.jpeg">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/logo-company-etna.jpeg">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/logo-company-etna.jpeg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/logo-company-etna.jpeg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/logo-company-etna.jpeg">
+</head>
 
-    <!-- start ORIENTATION -->
+<body class="body" data-simplebar>
 
-    <!-- <div class="orientation-cover fixed top-0 left-0 w-full h-full z-70 bg-black">
+  <header class="header">
+    @@include('./templates/desktop/header.html')
+  </header>
+
+  <!-- start ORIENTATION -->
+
+  <!-- <div class="orientation-cover fixed top-0 left-0 w-full h-full z-70 bg-black">
     <div class="h-full flex items-center w-full justify-center text-center">
       <div class="text-3xl leading-9 font-bold mr-4">Please rotate device</div>
     </div>
@@ -73,16 +111,13 @@
         @@include('./templates/desktop/liquidity.html')
       </div>
 
-      <div class="empty-access hidden">
-        <div class="empty-access__col">
-          <div class="empty-access__center">
-            <div class="w-48 h-35 mb-8 mx-auto">
-              <img src="../images/empty.svg" class="w-full h-full" alt="#" />
-            </div>
-            <div id="empty-error__msg"></div>
-            <div class="empty-access__text">
-              Please, reload your page and try one more time
-            </div>
+    <div class="empty-access hidden">
+      <div class="empty-access__col">
+        <div class="empty-access__center">
+          <div class="w-48 h-35 mb-8 mx-auto">
+            <img src="/images/empty.svg" class="w-full h-full" alt="#">
+          </div>
+          <div id="empty-error__msg">
           </div>
           <div class="mt-auto">
             @@include('./templates/desktop/socials.html')
@@ -90,44 +125,19 @@
         </div>
       </div>
 
-      <!-- need to add if nowhere metamask wallet -->
+    <!-- need to add if nowhere metamask wallet -->
 
-      <div
-        class="empty-metamask hidden z-60 fixed w-full flex flex-col bg-black"
-      >
-        <div class="empty-metamask__col">
-          <div class="empty-metamask__center">
-            <div class="empty-metamask__img">
-              <div class="empty-metamask__img-animate">
-                <img
-                  src="../images/no-metamask-logo.svg"
-                  class="w-full h-full"
-                  alt="#"
-                />
-              </div>
-              <img
-                src="../images/no-metamask.png"
-                class="w-full h-full"
-                alt="#"
-              />
+    <div class="empty-metamask hidden z-60 fixed w-full flex flex-col bg-black">
+      <div class="empty-metamask__col">
+        <div class="empty-metamask__center">
+          <div class="empty-metamask__img">
+            <div class="empty-metamask__img-animate">
+              <img src="/images/no-metamask-logo.svg" class="w-full h-full" alt="#">
             </div>
-            <div
-              class="text-2xl leading-none font-medium text-grey-100 mb-5"
-              id="empty-error__msg"
-            >
-              It seems that you dont have metamask
-            </div>
-            <div class="max-w-xl text-lg text-faux mx-auto">
-              To continue using Debank, please install MetaMask extension for
-              your browser
-              <a
-                href="https://metamask.io/"
-                class="font-medium underline hover:text-white transition-all"
-                target="_blank"
-                >metamask.io</a
-              >
-              or connect mobile wallet with barcode.
-            </div>
+            <img src="/images/no-metamask.png" class="w-full h-full" alt="#">
+          </div>
+          <div class="text-2xl leading-none font-medium text-grey-100 mb-5" id="empty-error__msg">
+            It seems that you dont have metamask
           </div>
           <div class="mt-auto">
             @@include('./templates/desktop/socials.html')

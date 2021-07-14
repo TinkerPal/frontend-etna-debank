@@ -42,12 +42,16 @@
     @apply fixed top-0 left-0 w-full h-full bg-black;
   }
 
-  #net_icon {
-    @apply fill-green;
-  }
-
   .notif-block {
     @apply h-auto px-5 pt-5 pb-4 bg-blueish-black flex flex-col rounded-xl border border-light-grey shadow absolute right-0 top-9 z-10;
+
+    &__close {
+      @apply w-3 h-3 ml-4;
+
+      .modal-close {
+        @apply w-3 h-3 focus: outline-none;
+      }
+    }
   }
 
   .notif-amount {
@@ -157,26 +161,8 @@
     @apply border-grey-100-mobile border text-base rounded-md w-full h-12 bg-blueish-black focus: outline-none py-3 px-3 leading-6;
   }
 
-  ._mobile {
-    .without-link .js-Dropdown {
-      @apply border-grey-100-mobile border text-base rounded-md w-full h-12 bg-blueish-black focus: outline-none py-3 px-3 leading-6;
-
-      &-title {
-        @apply h-full;
-      }
-    }
-
-    .dropdown-text {
-      @apply leading-none;
-    }
-
-    .without-link .choices {
-      @apply border-grey-100-mobile border border-solid;
-    }
-  }
-
   .collumn-via-inputs {
-    @apply flex flex-col h-full;
+    @apply flex flex-col h-full mt-auto;
   }
 
   nav {
@@ -358,10 +344,14 @@
   }
 
   .btn-row {
-    @apply fixed bottom-0 left-0 bg-black-mobile py-3;
+    @apply fixed bottom-0 left-0 bg-black-mobile py-3 mx-4;
 
     .btn {
       @apply mb-8 w-full;
+
+      &:first-child {
+        @apply mb-3;
+      }
     }
   }
 
@@ -523,6 +513,14 @@
     }
   }
 
+  .empty-access {
+    @apply left-0;
+
+    &.access-wallet {
+      @apply min-h-screen h-full top-0;
+    }
+  }
+
   #empty-error__msg {
     @apply text-2xl leading-none font-medium text-ford-light mb-5;
   }
@@ -534,434 +532,216 @@
   .attention-cell {
     @apply border border-yellow-400;
   }
-}
 
-.load-bar-cover {
-  z-index: 80;
-}
-
-.text-color {
-  word-break: break-all;
-
-  .info-msg {
-    width: calc(100% - 2rem);
-    margin-right: 0.5rem;
-    margin-left: 0.5rem;
-  }
-}
-
-.links-list {
-  transition: 0.35s height;
-}
-
-.empty-access {
-  top: 232px;
-  height: calc(100% - 236px);
-  left: 0;
-
-  &.access-wallet {
-    min-height: 100vh;
-    height: 100%;
-    top: 0px;
-  }
-}
-
-.empty-metamask {
-  top: 0px;
-  height: 100%;
-  left: 0px;
-}
-
-#add-liquidity-tab {
-  .without-link {
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
+  #new-credit-tab {
+    .collumn-via-inputs {
+      @apply mt-auto overflow-auto;
+    }
   }
 
-  .special-select.without-link .js-Dropdown-list {
-    right: 0rem;
-    width: 100%;
+  .empty-metamask {
+    @apply top-0 left-0 h-full;
   }
-}
 
-._mobile {
-  #add-liquidity-tab .without-link {
-    position: relative;
-    border: 0px;
-    .js-Dropdown {
-      border-top-right-radius: 0px;
-      border-bottom-right-radius: 0px;
-      height: 100%;
+  .custom-getcredit-dropdown .choices__inner {
+    @apply rounded-r-none;
+  }
 
-      &-title {
-        height: 100%;
+  .text-color {
+    @apply break-all;
+
+    .info-msg {
+      @apply mx-2;
+    }
+  }
+
+  ._mobile {
+    .without-link {
+      .js-Dropdown {
+        @apply border-grey-100-mobile border text-base rounded-md w-full h-12 bg-blueish-black focus: outline-none py-3 px-3 leading-6;
+
+        &-title {
+          @apply h-full;
+        }
       }
-    }
-  }
 
-  .choices:not(.is-open) .choices__list.choices__list--multiple:empty {
-    &:after {
-      content: 'Choose NFT';
-      position: absolute;
-      top: 4px;
-    }
-  }
-
-  .input-type,
-  .link-dropdown,
-  .choices__inner {
-    min-height: 48px;
-  }
-
-  .js-Dropdown-list {
-    margin-top: 16px;
-    border: 1px solid rgba(90, 90, 137, 0.67);
-
-    li {
-      line-height: 2;
-      font-size: 16px;
+      .choices {
+        @apply border-grey-100-mobile border border-solid;
+      }
     }
 
     .dropdown-text {
-      line-height: 1.42;
+      @apply leading-none;
     }
-  }
 
-  .js-Dropdown-title {
-    position: relative;
-    width: 100%;
+    #add-liquidity-tab .without-link {
+      @apply relative border-none rounded-r-none;
 
-    &::after {
-      right: 0px;
+      &.special-select .js-Dropdown-list {
+        @apply right-0 w-full;
+      }
+
+      .js-Dropdown {
+        @apply rounded-r-none h-full;
+
+        &-title {
+          @apply h-full;
+        }
+      }
     }
-  }
 
-  .js-Dropdown {
-    min-height: 48px;
-  }
+    .js-Dropdown-title {
+      @apply w-full relative;
 
-  .btn-row {
-    padding-bottom: 24px;
+      &::after {
+        @apply right-0;
+      }
+    }
 
     .btn {
-      margin-bottom: 0rem;
+      @apply h-12;
 
-      &:first-child {
-        margin-bottom: 0rem;
-      }
-    }
-  }
+      &-row {
+        @apply pb-6;
 
-  .btn {
-    height: 3rem;
-  }
+        .btn {
+          @apply mb-0;
 
-  .header-center {
-    position: absolute;
-    content: '';
-    display: flex;
-    left: 50%;
-    top: 1.5rem;
-    transform: translateX(-50%);
-  }
-
-  .without-link {
-    .choices {
-      border-radius: 0.5rem 0rem 0rem 0.5rem;
-
-      &__inner {
-        height: 100%;
+          &:first-child {
+            @apply mb-0;
+          }
+        }
       }
     }
 
-    .js-Dropdown {
-      padding: 0.5rem 0.75rem 0.5rem;
+    .without-link {
+      .choices {
+        @apply rounded-t-lg rounded-l-lg rounded-b-lg rounded-r-lg;
 
-      &-title {
-        height: 100%;
+        &__inner {
+          @apply h-full;
+        }
       }
-    }
-  }
 
-  .creditprofiles-rounded .choices {
-    border-radius: 0.5rem;
-  }
-}
+      .js-Dropdown {
+        @apply py-2 px-3;
 
-.special-select {
-  &.without-link .js-Dropdown-list {
-    right: 1rem;
-    width: calc(100% - 32px);
-  }
-}
-
-.collumn-via-inputs {
-  min-height: calc(100vh - 15rem);
-  margin-top: auto;
-}
-
-.fixed-btn {
-  position: fixed;
-  width: calc(100% - 2rem);
-  padding-bottom: 24px;
-  bottom: 0px;
-  z-index: 70;
-}
-
-#liq-earn-tab .fixed-btn {
-  padding-bottom: 20px;
-  bottom: 0px;
-}
-
-.btn {
-  background: linear-gradient(118.75deg, #3541f1 16.3%, #1f2386 123.67%);
-
-  &:hover {
-    background: linear-gradient(118.75deg, #1f2497 16.3%, #1f2497 123.67%);
-  }
-
-  &:focus {
-    background: linear-gradient(118.75deg, #3541f1 16.3%, #1f2386 123.67%);
-  }
-
-  &:disabled {
-    background: linear-gradient(118.75deg, #23287d 16.3%, #23287d 123.67%);
-  }
-
-  &-load {
-    &:after {
-      content: '';
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'%3E%3Cpath xmlns='http://www.w3.org/2000/svg' d='M8.67504 1.40795C6.84527 1.98325 5.1958 3.02288 3.88745 4.42547C2.57911 5.82806 1.65654 7.54574 1.2097 9.41105C0.762863 11.2764 0.807007 13.2256 1.33783 15.0688C1.86865 16.912 2.86803 18.5861 4.23853 19.928C5.60903 21.27 7.30387 22.2339 9.15781 22.7257C11.0118 23.2176 12.9615 23.2207 14.817 22.7346C16.6725 22.2486 18.3703 21.2901 19.7451 19.9525C21.1198 18.6148 22.1244 16.9438 22.661 15.1024C22.7208 14.9119 22.742 14.7114 22.7233 14.5126C22.7046 14.3138 22.6464 14.1208 22.5521 13.9448C22.4579 13.7688 22.3294 13.6134 22.1743 13.4877C22.0192 13.362 21.8405 13.2685 21.6488 13.2128C21.4571 13.157 21.2562 13.1401 21.0578 13.163C20.8595 13.1859 20.6677 13.2482 20.4938 13.3461C20.3198 13.4441 20.1672 13.5758 20.0448 13.7336C19.9224 13.8913 19.8327 14.0719 19.781 14.2648C19.3891 15.6083 18.6558 16.8273 17.6526 17.8031C16.6493 18.7788 15.4103 19.478 14.0565 19.8324C12.7026 20.1868 11.28 20.1844 9.9273 19.8254C8.57463 19.4664 7.33804 18.7631 6.3381 17.7839C5.33815 16.8048 4.60895 15.5833 4.22159 14.2384C3.83422 12.8936 3.80191 11.4714 4.12779 10.1103C4.45367 8.74929 5.12663 7.49592 6.08107 6.47237C7.03552 5.44882 8.23887 4.69003 9.57384 4.26995C9.76177 4.21086 9.93621 4.11533 10.0872 3.98882C10.2382 3.86231 10.3628 3.70729 10.4539 3.53263C10.545 3.35796 10.6008 3.16706 10.6181 2.97083C10.6354 2.7746 10.6139 2.57688 10.5548 2.38895C10.4957 2.20103 10.4002 2.02659 10.2737 1.87559C10.1472 1.72459 9.99218 1.59998 9.81752 1.50889C9.64285 1.41779 9.45195 1.36199 9.25572 1.34468C9.05949 1.32736 8.86177 1.34886 8.67384 1.40795H8.67504Z' fill='white'%3E%3C/path%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-    }
-  }
-
-  &-done {
-    &:after {
-      content: '';
-      width: 22px;
-      height: 16px;
-      background-image: url('/images/check-btn.svg');
-      background-repeat: no-repeat;
-    }
-  }
-}
-
-// start Loading Bar
-
-.ldBar-label {
-  color: rgb(152, 239, 15);
-  font-family: 'Inter';
-  font-size: 2rem;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.ldBar {
-  position: relative;
-}
-
-.ldBar.label-center > .ldBar-label {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-
-.ldBar-label:after {
-  content: '%';
-  display: inline;
-}
-
-.ldBar.no-percent .ldBar-label:after {
-  content: '';
-}
-
-.ldBar path.mainline {
-  stroke-width: 3;
-  stroke-linecap: round;
-}
-
-.ldBar path.baseline {
-  stroke-width: 1;
-  stroke-linecap: round;
-  stroke: rgb(17, 24, 39);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
-
-// end Loading Bar
-
-.hide {
-  display: none;
-}
-
-.notif-block {
-  max-height: calc(100vh - 100px);
-  overflow: auto;
-  width: calc(100vw - 32px);
-
-  &__icon {
-    width: 16px;
-    height: 18px;
-    margin-right: 12px;
-
-    .nofif-icon {
-      width: 16px;
-      height: 22px;
-      padding-top: 4px;
-    }
-  }
-
-  &__text {
-    width: calc(100% - 28px - 26px);
-  }
-
-  &__close {
-    width: 12px;
-    height: 12px;
-    margin-left: 14px;
-
-    .modal-close {
-      width: 12px;
-      height: 12px;
-
-      &:focus {
-        outline: none;
-      }
-    }
-  }
-
-  &__item {
-    .modal-close {
-      display: none;
-    }
-
-    &:first-child {
-      .modal-close {
-        display: flex;
+        &-title {
+          @apply h-full;
+        }
       }
     }
 
-    &:last-child {
-      .notif-item {
-        border: none;
-        margin-bottom: 4px;
-        padding-bottom: 0px;
-      }
-    }
-  }
-}
-
-.stat-block {
-  height: calc(100vh - 320px);
-  overflow: auto;
-
-  .stat-row {
-    &:last-child {
-      border-bottom: 0px;
+    .creditprofiles-rounded .choices {
+      @apply rounded-lg;
     }
   }
 
-  &#deposits_uniswap {
-    height: calc(100vh - 390px);
-  }
-}
-
-.crypto-info__header {
-  .crypto-icon-no-spaces {
-    height: 55px;
-    margin-right: 20px;
-  }
-}
-
-._with-btns {
-  .crypto-info__data {
-    padding-bottom: 90px;
-  }
-}
-
-.crypto-info {
-  &__data {
-    overflow: auto;
-    max-height: 100%;
-    overflow: auto;
-    padding-bottom: 40px;
+  #liq-earn-tab .fixed-btn {
+    @apply bottom-0 pb-5;
   }
 
-  &__credit {
-    max-height: 316px;
+  .ldBar {
+    @apply relative;
+
+    &-label {
+      @apply text-ldbar font-body text-3xl font-semibold leading-none;
+    }
   }
 
-  &__diagram {
-    width: 100%;
-  }
+  .choices__list {
+    &--single {
+      @apply p-0;
+    }
 
-  &__btn {
     .table-btn {
+      @apply bg-transparent;
+    }
+  }
+
+  .choices__list--multiple {
+    @apply flex flex-wrap;
+
+    .choices__item {
+      @apply flex items-center;
+    }
+  }
+
+  .notif-block {
+    @apply overflow-auto;
+
+    &__icon {
+      @apply w-4 h-5 mr-3;
+
+      .nofif-icon {
+        @apply w-4 h-5 pt-1;
+      }
+    }
+
+    &__item {
+      .modal-close {
+        @apply hidden;
+      }
+
       &:first-child {
-        margin-bottom: 0px;
+        .modal-close {
+          @apply flex;
+        }
       }
 
-      &:nth-child(2) {
-        margin-bottom: 0.5rem;
+      &:last-child {
+        .notif-item {
+          @apply border-0 mb-1 pb-0;
+        }
       }
+    }
+  }
+
+  .stat-block {
+    @apply overflow-auto;
+
+    .stat-row {
+      &:last-child {
+        @apply border-b-0;
+      }
+    }
+  }
+
+  .crypto-info {
+    &__data {
+      @apply overflow-auto max-h-full pb-10;
+    }
+
+    &__diagram {
+      @apply w-full;
+    }
+
+    &__btn {
+      .table-btn {
+        &:first-child {
+          @apply mb-0;
+        }
+
+        &:nth-child(2) {
+          @apply mb-2;
+        }
+      }
+    }
+  }
+
+  #credprofiles-dropdown,
+  #custom-depprofiles-dropdown,
+  .choices-collateral {
+    @apply uppercase;
+
+    .js-Dropdown-title,
+    .choices__item {
+      @apply uppercase;
     }
   }
 }
 
-.btn-row {
-  width: calc(100% - 2rem);
-  margin-left: 1rem;
-  margin-right: 1rem;
-
-  .btn {
-    &:first-child {
-      margin-bottom: 0.75rem;
-    }
-  }
-}
-
-.connected-wallet {
-  &__numb {
-    max-width: 266px;
-    overflow: auto;
-  }
-
-  &__wrapper {
-    width: calc(100% - 60px);
-  }
-}
-
-#credprofiles-dropdown,
-#custom-depprofiles-dropdown,
-.choices-collateral {
-  text-transform: uppercase;
-
-  .js-Dropdown-title,
-  .choices__item {
-    text-transform: uppercase;
-  }
-}
-
-#assets-dropdown {
-  .choices__inner {
-    max-height: 128px;
-    height: 100%;
-    overflow: auto;
-    align-items: flex-start;
-  }
-
-  .choices__list--dropdown .choices__list {
-    max-height: 200px;
-    overflow: auto;
-  }
-}
-
-#modal-return-credit,
-#modal-return-fee {
-  min-height: calc(100vh - 190px);
-}
+// start simple scss
 
 // start multiSelect
 
@@ -1014,16 +794,6 @@
 
   .choices__item--selectable.is-highlighted {
     background-color: rgb(53, 53, 78);
-  }
-}
-
-.choices__list--multiple {
-  display: flex;
-  flex-wrap: wrap;
-
-  .choices__item {
-    display: flex;
-    align-items: center;
   }
 }
 
@@ -1161,20 +931,7 @@
 
 // end multiSelect
 
-.choices__list {
-  &--single {
-    padding: 0px;
-  }
-
-  .table-btn {
-    background-color: transparent;
-  }
-}
-
-.custom-getcredit-dropdown .choices__inner {
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
-}
+// finished review
 
 .link-dropdown__arrow {
   position: absolute;
@@ -1193,17 +950,241 @@
   }
 }
 
-#new-credit-tab {
-  .collumn-via-inputs {
-    max-height: calc(100vh - 16rem);
-    margin-top: auto;
-    overflow: auto;
-    min-height: auto;
-  }
-}
-
 .table-btn.show {
   .link-dropdown__arrow {
     transform: rotate(180deg);
   }
+}
+
+#new-credit-tab {
+  .collumn-via-inputs {
+    max-height: calc(100vh - 16rem);
+    min-height: auto;
+  }
+}
+
+.load-bar-cover {
+  z-index: 80;
+}
+
+.text-color {
+  .info-msg {
+    width: calc(100% - 2rem);
+  }
+}
+
+.links-list {
+  transition: 0.35s height;
+}
+
+.empty-access {
+  top: 232px;
+  height: calc(100% - 236px);
+}
+
+._mobile {
+  .choices:not(.is-open) .choices__list.choices__list--multiple:empty {
+    &:after {
+      content: 'Choose NFT';
+      position: absolute;
+      top: 4px;
+    }
+  }
+
+  .input-type,
+  .link-dropdown,
+  .choices__inner {
+    min-height: 48px;
+  }
+
+  .js-Dropdown-list {
+    margin-top: 16px;
+    border: 1px solid rgba(90, 90, 137, 0.67);
+
+    li {
+      line-height: 2;
+      font-size: 16px;
+    }
+
+    .dropdown-text {
+      line-height: 1.42;
+    }
+  }
+
+  .js-Dropdown {
+    min-height: 48px;
+  }
+
+  .header-center {
+    position: absolute;
+    content: '';
+    display: flex;
+    left: 50%;
+    top: 1.5rem;
+    transform: translateX(-50%);
+  }
+}
+
+.special-select {
+  &.without-link .js-Dropdown-list {
+    right: 1rem;
+    width: calc(100% - 32px);
+  }
+}
+
+.collumn-via-inputs {
+  min-height: calc(100vh - 15rem);
+}
+
+.fixed-btn {
+  position: fixed;
+  width: calc(100% - 2rem);
+  padding-bottom: 24px;
+  bottom: 0px;
+  z-index: 70;
+}
+
+@mixin bg-gradient() {
+  background: linear-gradient(118.75deg, #3541f1 16.3%, #1f2386 123.67%);
+}
+
+.btn {
+  @include bg-gradient();
+
+  &:hover {
+    @include bg-gradient();
+  }
+
+  &:focus {
+    @include bg-gradient();
+  }
+
+  &:disabled {
+    @include bg-gradient();
+  }
+
+  &-load {
+    &:after {
+      content: '';
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'%3E%3Cpath xmlns='http://www.w3.org/2000/svg' d='M8.67504 1.40795C6.84527 1.98325 5.1958 3.02288 3.88745 4.42547C2.57911 5.82806 1.65654 7.54574 1.2097 9.41105C0.762863 11.2764 0.807007 13.2256 1.33783 15.0688C1.86865 16.912 2.86803 18.5861 4.23853 19.928C5.60903 21.27 7.30387 22.2339 9.15781 22.7257C11.0118 23.2176 12.9615 23.2207 14.817 22.7346C16.6725 22.2486 18.3703 21.2901 19.7451 19.9525C21.1198 18.6148 22.1244 16.9438 22.661 15.1024C22.7208 14.9119 22.742 14.7114 22.7233 14.5126C22.7046 14.3138 22.6464 14.1208 22.5521 13.9448C22.4579 13.7688 22.3294 13.6134 22.1743 13.4877C22.0192 13.362 21.8405 13.2685 21.6488 13.2128C21.4571 13.157 21.2562 13.1401 21.0578 13.163C20.8595 13.1859 20.6677 13.2482 20.4938 13.3461C20.3198 13.4441 20.1672 13.5758 20.0448 13.7336C19.9224 13.8913 19.8327 14.0719 19.781 14.2648C19.3891 15.6083 18.6558 16.8273 17.6526 17.8031C16.6493 18.7788 15.4103 19.478 14.0565 19.8324C12.7026 20.1868 11.28 20.1844 9.9273 19.8254C8.57463 19.4664 7.33804 18.7631 6.3381 17.7839C5.33815 16.8048 4.60895 15.5833 4.22159 14.2384C3.83422 12.8936 3.80191 11.4714 4.12779 10.1103C4.45367 8.74929 5.12663 7.49592 6.08107 6.47237C7.03552 5.44882 8.23887 4.69003 9.57384 4.26995C9.76177 4.21086 9.93621 4.11533 10.0872 3.98882C10.2382 3.86231 10.3628 3.70729 10.4539 3.53263C10.545 3.35796 10.6008 3.16706 10.6181 2.97083C10.6354 2.7746 10.6139 2.57688 10.5548 2.38895C10.4957 2.20103 10.4002 2.02659 10.2737 1.87559C10.1472 1.72459 9.99218 1.59998 9.81752 1.50889C9.64285 1.41779 9.45195 1.36199 9.25572 1.34468C9.05949 1.32736 8.86177 1.34886 8.67384 1.40795H8.67504Z' fill='white'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+    }
+  }
+
+  &-done {
+    &:after {
+      content: '';
+      width: 22px;
+      height: 16px;
+      background-image: url('/images/check-btn.svg');
+      background-repeat: no-repeat;
+    }
+  }
+}
+
+.ldBar.label-center > .ldBar-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.ldBar-label:after {
+  content: '%';
+  display: inline;
+}
+
+.ldBar.no-percent .ldBar-label:after {
+  content: '';
+}
+
+.ldBar path.mainline {
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.ldBar path.baseline {
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke: rgb(17, 24, 39);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.hide {
+  display: none;
+}
+
+.notif-block {
+  max-height: calc(100vh - 100px);
+  width: calc(100vw - 32px);
+
+  &__text {
+    width: calc(100% - 28px - 26px);
+  }
+}
+
+.stat-block {
+  height: calc(100vh - 320px);
+
+  &#deposits_uniswap {
+    height: calc(100vh - 390px);
+  }
+}
+
+.crypto-info__header {
+  .crypto-icon-no-spaces {
+    height: 55px;
+    margin-right: 20px;
+  }
+}
+
+._with-btns {
+  .crypto-info__data {
+    padding-bottom: 90px;
+  }
+}
+
+.crypto-info {
+  &__credit {
+    max-height: 316px;
+  }
+}
+
+.btn-row {
+  width: calc(100% - 2rem);
+}
+
+.connected-wallet {
+  &__numb {
+    max-width: 266px;
+    overflow: auto;
+  }
+
+  &__wrapper {
+    width: calc(100% - 60px);
+  }
+}
+
+#assets-dropdown {
+  .choices__inner {
+    max-height: 128px;
+    height: 100%;
+    overflow: auto;
+    align-items: flex-start;
+  }
+
+  .choices__list--dropdown .choices__list {
+    max-height: 200px;
+    overflow: auto;
+  }
+}
+
+#modal-return-credit,
+#modal-return-fee {
+  min-height: calc(100vh - 190px);
+}
+
+#net_icon {
+  fill: currentColor;
 }

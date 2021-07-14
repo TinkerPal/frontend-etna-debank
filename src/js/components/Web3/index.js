@@ -66,7 +66,7 @@ export const web3jsReadersList = {
 
 export async function initWeb3jsReader(callback = null) {
   if (!window.web3js_reader) {
-    window.web3js_reader = new Web3(
+    window.web3js_reader = await new Web3(
       new Web3.providers.HttpProvider(INFURA_ENDPOINT[CHAIN_ID])
     );
     window.BN = window.web3js_reader.utils.BN;
@@ -95,7 +95,7 @@ export async function getAccount() {
     );
 
     checkAdminButton();
-    window.web3js = new Web3(window.ethereum);
+    window.web3js = await new Web3(window.ethereum);
 
     await Promise.all([
       initStakingContract(),
@@ -129,7 +129,7 @@ export async function getAccountWalletConnect() {
   try {
     errorEmptyMetamaskMsg(false);
 
-    window.web3js = new Web3(window.provider);
+    window.web3js = await new Web3(window.provider);
 
     const accounts = await window.web3js.eth.getAccounts();
 
