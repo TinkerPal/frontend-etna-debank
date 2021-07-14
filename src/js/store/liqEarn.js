@@ -4,7 +4,6 @@ import { isMobile } from '../constants/env';
 import {
   getAPY,
   getIndexOfTokenInAmArr,
-  isTokenLiqPairs,
   tokenNameByLiqpairsTokenId,
   toNumber,
   toTokens,

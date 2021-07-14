@@ -121,10 +121,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   await initWeb3jsReader();
 
-  if (!web3jsReadersList) {
-    return errorEmptyMsg('Cannot access wallet. Reload your page, please.');
-  }
-
   await web3jsReadersList.init();
 
   await Promise.all([

@@ -128,7 +128,7 @@ export async function setNetInfo() {
       netInfo.style = 'display: flex; flex-wrap: wrap';
       netIcon.style.color = 'red';
       netTxt.innerHTML = ' wrong network, connect to BSC';
-    } else if (chainIdHex !== window.chainId) {
+    } else if (chainIdHex !== CHAIN_ID) {
       netName.innerHTML = CHAINS[chainIdHex] ?? 'Unknown';
       netInfo.style = 'display: flex; flex-wrap: wrap';
       netIcon.style.color = 'red';

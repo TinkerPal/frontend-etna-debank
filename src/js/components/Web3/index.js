@@ -83,6 +83,8 @@ export async function getAccount() {
       method: 'eth_requestAccounts',
     });
 
+    window.web3js = await new Web3(window.ethereum);
+
     userObject.account = accounts[0];
 
     setLdBar(10);
@@ -95,7 +97,6 @@ export async function getAccount() {
     );
 
     checkAdminButton();
-    window.web3js = await new Web3(window.ethereum);
 
     await Promise.all([
       initStakingContract(),
@@ -154,6 +155,7 @@ export async function getAccountWalletConnect() {
 
     setLdBar(15);
     setNetInfo();
+
     await userObject.load();
 
     setLdBar(25);
