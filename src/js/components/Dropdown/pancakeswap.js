@@ -1,5 +1,4 @@
 import Choices from 'choices.js';
-import { toNumber } from '../../utils';
 
 export function initPancakeSwapDropdown() {
   const pancakeswapSelectElement = document.querySelector('#pancakeswap-poll');
@@ -16,7 +15,7 @@ export function initPancakeSwapDropdown() {
       callbackOnCreateTemplates(template) {
         return {
           item: (classNames, data) => {
-            const { text, link } = data.value;
+            const { text } = data.value;
 
             return template(/* html */ `
                 <div class="${classNames.item} ${

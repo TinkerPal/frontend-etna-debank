@@ -78,43 +78,49 @@ export async function initWeb3jsReader(callback = null) {
 export async function getAccount() {
   resetMsg();
   closeAllModals();
+  try {
+    const accounts = await window.ethereum.request({
+      method: 'eth_requestAccounts',
+    });
 
-  const accounts = await window.ethereum.request({
-    method: 'eth_requestAccounts',
-  });
+    userObject.account = accounts[0];
 
-  userObject.account = accounts[0];
+    setLdBar(10);
 
-  setLdBar(10);
+    safeSetValueBySelector('.current-wallet', userObject.account);
+    safeSetInnerHTMLBySelector(
+      '.current-wallet',
+      userObject.account,
+      ' inline'
+    );
 
-  safeSetValueBySelector('.current-wallet', userObject.account);
-  safeSetInnerHTMLBySelector('.current-wallet', userObject.account, ' inline');
+    checkAdminButton();
+    window.web3js = new Web3(window.ethereum);
 
-  checkAdminButton();
-  window.web3js = new Web3(window.ethereum);
+    await Promise.all([
+      initStakingContract(),
+      initStakingContractReader(),
+      initCreditContract(),
+      initCreditContractReader(),
+      initLiqLevContract(),
+      initLiqLevContractReader(),
+      initCyclopsNFTContract(),
+    ]);
 
-  await Promise.all([
-    initStakingContract(),
-    initStakingContractReader(),
-    initCreditContract(),
-    initCreditContractReader(),
-    initLiqLevContract(),
-    initLiqLevContractReader(),
-    initCyclopsNFTContract(),
-  ]);
+    setLdBar(15);
+    setNetInfo();
 
-  setLdBar(15);
+    await userObject.load();
 
-  await userObject.load();
+    setLdBar(25);
 
-  setLdBar(25);
+    await updateData();
 
-  setNetInfo();
-
-  await updateData();
-
-  window.gp = await window.web3js.eth.getGasPrice();
-  window.gp *= 2;
+    window.gp = await window.web3js.eth.getGasPrice();
+    window.gp *= 2;
+  } catch (error) {
+    errorEmptyMsg('Cannot access wallet. Reload your page, please.');
+  }
 }
 
 export async function getAccountWalletConnect() {
@@ -147,12 +153,10 @@ export async function getAccountWalletConnect() {
     ]);
 
     setLdBar(15);
-
+    setNetInfo();
     await userObject.load();
 
     setLdBar(25);
-
-    setNetInfo();
 
     await updateData();
 
