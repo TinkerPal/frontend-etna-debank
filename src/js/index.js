@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import EtnaChart from './components/Chart';
 import { initPancakeSwapDropdown } from './components/Dropdown/pancakeswap';
-import { errorEmptyMsg } from './components/InfoMessages';
+import { errorEmptyMsg, resetMsg } from './components/InfoMessages';
 import { createInfoPopup } from './components/InfoPopup';
 import { Modal } from './components/Modal';
 import {
@@ -10,6 +10,7 @@ import {
   creditModalDataUpdate,
   initCollateralDropdown,
   initCreditDropdown,
+  updUSDValueCollateral,
 } from './components/Modal/credit';
 import {
   depositModalRebuild,
@@ -40,13 +41,20 @@ import {
 import { isMobile } from './constants/env';
 import {
   full_collateral_btn,
+  getCredit,
   part_collateral_btn,
   return_credit,
   return_fee,
   set_fixed_credit,
   set_var_credit,
 } from './pages/credit';
-import { withdraw_deposit, withdraw_reward } from './pages/deposit';
+import {
+  approve_deposit,
+  deposit,
+  withdraw_deposit,
+  withdraw_reward,
+} from './pages/deposit';
+import { approve_stake_liq, stake_liq } from './pages/liquidity';
 import { initContractAdress } from './store/contracts';
 import { userObject } from './store/userObject';
 import { depAmountByProfileId, isMetaMaskInstalled } from './utils';
@@ -107,6 +115,13 @@ window.part_collateral_btn = part_collateral_btn;
 window.set_fixed_credit = set_fixed_credit;
 window.set_var_credit = set_var_credit;
 window.depAmountByProfileId = depAmountByProfileId;
+window.updUSDValueCollateral = updUSDValueCollateral;
+window.approve_stake_liq = approve_stake_liq;
+window.stake_liq = stake_liq;
+window.getCredit = getCredit;
+window.approve_deposit = approve_deposit;
+window.deposit = deposit;
+window.resetMsg = resetMsg;
 
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') {

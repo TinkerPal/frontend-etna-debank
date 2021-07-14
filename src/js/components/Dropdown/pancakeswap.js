@@ -14,19 +14,9 @@ export function initPancakeSwapDropdown() {
       itemSelectText: '',
       callbackOnCreateTemplates(template) {
         return {
-          item: (classNames, data) => {
-            const { text } = data.value;
-
+          item: (classNames) => {
             return template(/* html */ `
-                <div class="${classNames.item} ${
-              data.highlighted
-                ? classNames.highlightedState
-                : classNames.itemSelectable
-            } ${
-              data.placeholder ? classNames.placeholder : ''
-            }" data-item data-id="${data.id}" data-value="${text}" ${
-              data.active ? 'aria-selected="true"' : ''
-            } ${data.disabled ? 'aria-disabled="true"' : ''}>
+                <div class="${classNames.item}">
                   <span class="dropdown-text">Go to pool at Pancakeswap</span>
                 </div>
               `);

@@ -590,7 +590,7 @@
 
 .choices__inner {
   .choices__item--selectable {
-    cursor: default;
+    cursor: pointer;
   }
 
   .choices__list--multiple .choices__item.is-highlighted {

@@ -12,6 +12,8 @@ import {
   toNumber,
 } from '../../../utils';
 import { safeHtmlById } from '../../../utils/dom';
+import { liqpairsDropdown } from '../../Dropdown/liqpairs';
+import { liqtermsDropdown } from '../../Dropdown/liqterms';
 import {
   errorMsg,
   infoMsg,
@@ -45,12 +47,14 @@ export async function initLiqTermsDropdown() {
 
   if (liqTermsData.length === 0) return;
 
-  // TODO переделать на чойз
-  // setOptionsToSelect(liqTermsData, liqTermsSelect);
+  const dropdownOptions = liqTermsData.map((item) => ({
+    value: item.text,
+    label: item.text,
+  }));
 
-  // new CustomSelect({
-  //   elem: liqTermsSelect,
-  // });
+  liqtermsDropdown.removeActiveItems();
+  liqtermsDropdown.setChoices(dropdownOptions, 'value', 'label', true);
+  liqtermsDropdown.setChoiceByValue(liqTermsData[0].text);
 
   setApyStr(liqTermsData[0]);
 
@@ -79,29 +83,34 @@ export async function initLiqPairsDropdown() {
 
   if (liqPairsAssetsOptions.length === 0) return;
 
-  // TODO переделать на чойз
-  // setOptionsToSelect(liqPairsAssetsOptions, liqPairsAssets);
+  const dropdownOptions = liqPairsAssetsOptions.map((item) => ({
+    value: item.text,
+    label: item.text,
+  }));
 
-  // new CustomSelect({
-  //   elem: liqPairsAssets,
-  // });
+  liqpairsDropdown.removeActiveItems();
+  liqpairsDropdown.setChoices(dropdownOptions, 'value', 'label', true);
+  liqpairsDropdown.setChoiceByValue(liqPairsAssetsOptions[0].text);
 
   setBal(liqPairsAssetsOptions[0]);
+  liqPairsAssets.addEventListener(
+    'change',
+    (e) => {
+      const { value } = e.target;
+      const currentOption = liqPairsAssetsOptions.find(
+        (item) => item.text === value
+      );
+      setBal(currentOption);
 
-  liqPairsAssets.onchange = (e) => {
-    const { value } = e.target;
-    const currentOption = liqPairsAssetsOptions.find(
-      (item) => item.text === value
-    );
-    setBal(currentOption);
-
-    const liqTermsValue =
-      modalAddLiquidity.modal.querySelector('#liqterms-dropdown').value;
-    const currentLiqTerm = userObject.liq_terms.find(
-      (item) => item.text === liqTermsValue
-    );
-    setApyStr(currentLiqTerm);
-  };
+      const liqTermsValue =
+        modalAddLiquidity.modal.querySelector('#liqterms-dropdown').value;
+      const currentLiqTerm = userObject.liq_terms.find(
+        (item) => item.text === liqTermsValue
+      );
+      setApyStr(currentLiqTerm);
+    },
+    false
+  );
 }
 
 export async function liqModalBuild() {

@@ -308,7 +308,7 @@ export async function updateData(action = null) {
       setLdBar(null, '25');
     });
 
-    // getOurDashbord();
+    getOurDashbord();
   } else if (action === 'make_deposit') {
     await getDepositsDashboard();
   } else if (action === 'withdraw_deposit') {
