@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import EtnaChart from './components/Chart';
+import { initPancakeSwapDropdown } from './components/Dropdown/pancakeswap';
 import { createInfoPopup } from './components/InfoPopup';
 import { Modal } from './components/Modal';
 import {
@@ -150,6 +151,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   createInfoPopup();
   createNotifications();
+  initPancakeSwapDropdown();
 
   if (isMobile) {
     customElements.define('etna-chart', EtnaChart);

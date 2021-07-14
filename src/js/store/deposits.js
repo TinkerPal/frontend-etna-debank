@@ -177,9 +177,13 @@ export default {
       });
       const tokensCount = await Promise.all(tokenCountPromise);
 
-      tokensCount.forEach((amount) => {
+      profiles.forEach((token, i) => {
+        const amount = tokensCount[i];
+
         this.in_wallet_column.push(
-          `<td class="table-cell">${toNumber(amount) > 0 ? amount : '-'}</td>`
+          `<td class="table-cell">${
+            tokensCount[i] ? `${toNumber(amount) > 0 ? amount : '-'}` : '-'
+          }</td>`
         );
         this.in_wallet_arr.push(amount);
       });
@@ -237,7 +241,6 @@ export default {
       this.usd_val_only_col.length = 0;
 
       const profiles = userObject.deposit_profiles;
-      const { dep_arr } = this;
       const { am_arr } = this;
 
       const calcUsdValuePromise = [];
@@ -254,15 +257,17 @@ export default {
       });
       const calcUsdValueData = await Promise.all(calcUsdValuePromise);
 
-      calcUsdValueData.forEach((usdValue, i) => {
+      profiles.forEach((token, i) => {
+        const usdValue = calcUsdValueData[i];
+
         this.usd_val_only_col.push({
-          val: usdValue,
+          val: usdValue || 0,
           ori_index: i,
         });
 
         this.usd_val_column.push(
           `<td class="table-cell">${
-            toNumber(usdValue) > 0 ? usdValue : '-'
+            usdValue ? `${toNumber(usdValue) > 0 ? usdValue : '-'}` : '-'
           }</td>`
         );
       });
@@ -280,7 +285,6 @@ export default {
       this.duration_col.length = 0;
       const profiles = userObject.deposit_profiles;
       const { am_arr } = this;
-      const { dep_arr } = this;
 
       const depositDaysPromise = [];
       profiles.forEach((token) => {
@@ -302,9 +306,12 @@ export default {
       });
       const depositDaysData = await Promise.all(depositDaysPromise);
 
-      depositDaysData.forEach((days) => {
+      profiles.forEach((token, i) => {
+        const days = depositDaysData[i];
         this.duration_col.push(
-          `<td class="table-cell">${toNumber(days) > 0 ? days : '-'}</td>`
+          `<td class="table-cell">${
+            days ? `${toNumber(days) > 0 ? days : '-'}` : '-'
+          }</td>`
         );
       });
     }
@@ -391,6 +398,8 @@ export default {
           } else {
             this.withdraw_dep_col.push(`<td class="table-cell">-</td>`);
           }
+        } else {
+          this.withdraw_dep_col.push(`<td class="table-cell">-</td>`);
         }
       });
     }
@@ -555,6 +564,8 @@ export default {
           } else {
             this.withdraw_rew_col.push(`<td class="table-cell">-</td>`);
           }
+        } else {
+          this.withdraw_rew_col.push(`<td class="table-cell">-</td>`);
         }
       });
     }

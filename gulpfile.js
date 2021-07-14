@@ -31,6 +31,7 @@ const getWebpackConfig = (envs, buildType) => ({
   output: {
     filename: 'common.js',
   },
+  mode: envs,
   module: {
     rules: [
       {
@@ -51,7 +52,6 @@ const getWebpackConfig = (envs, buildType) => ({
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(envs),
       'process.env.SITE_VERSION': JSON.stringify(buildType),
     }),
   ],

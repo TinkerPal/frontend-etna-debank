@@ -131,7 +131,7 @@ export function depAmountByProfileId(profile_id) {
 }
 
 export function toNumber(number) {
-  return parseInt(number, 10);
+  return parseFloat(number, 10);
 }
 
 export function depAmountByProfileIdReal(profile_id) {
