@@ -28,44 +28,29 @@ export function initPancakeSwapDropdown() {
             }" data-item data-id="${data.id}" data-value="${text}" ${
               data.active ? 'aria-selected="true"' : ''
             } ${data.disabled ? 'aria-disabled="true"' : ''}>
-                ${
-                  link
-                    ? `<span class="dropdown-link"><a target="_blank" href="${link}"><img src="../images/link.svg" class="btn-link"></a></span>`
-                    : ''
-                }
-                <span class="dropdown-text">${text}</span>
+                  <span class="dropdown-text">Go to pool at Pancakeswap</span>
                 </div>
               `);
           },
           choice: (classNames, data) => {
             const { text, link } = data.value;
-            if (link === null) {
-              return;
+            if (link === '') {
+              return template('<div class="hidden"></div> ');
             }
+
             return template(/* html */ `
-                <div class="${classNames.item} ${classNames.itemChoice} ${
-              data.disabled
-                ? classNames.itemDisabled
-                : classNames.itemSelectable
-            }" data-choice ${
-              data.disabled
-                ? 'data-choice-disabled aria-disabled="true"'
-                : 'data-choice-selectable'
-            } data-id="${data.id}" data-value="${text}">
-            
-                <span class="dropdown-link"><a target="_blank" href="${link}"><img src="../images/link-inside-li.svg" class="btn-link"></a></span>
-                <span class="dropdown-text">${text}</span>
-                
-            </div>
-              `);
+                <a target="_blank" class="${classNames.item}" href="${link}"><img src="../images/link-inside-li.svg" class="btn-link"><span class="dropdown-text">${text}</span></a>
+            `);
           },
         };
       },
     });
+
   const data = [
     {
       text: 'Go to pool at Pancakeswap',
-      link: null,
+      link: '',
+      isDefault: true,
     },
     {
       text: 'BNB-ETNA',
@@ -90,7 +75,8 @@ export function initPancakeSwapDropdown() {
       ...dataItem,
     },
     label: `${dataItem.text}`,
+    disabled: dataItem.isDefault || false,
+    selected: dataItem.isDefault || false,
   }));
   pancakeswapDropdown.setChoices(assetSelectOptions, 'value', 'label', true);
-  pancakeswapDropdown.setChoiceByValue(data[0]);
 }
