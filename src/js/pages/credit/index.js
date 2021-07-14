@@ -187,8 +187,11 @@ export async function getCreditsDashboard(callback = null) {
   </tr> 
   </thead> 
   <tbody>`;
+
   const wrapper = document.querySelector('#my_credits');
-  wrapper.innerHTML = '';
+  if (isMobile) {
+    wrapper.innerHTML = '';
+  }
   userObject.state.currentCredits = [];
 
   for (let i = 0; i < cred_arr[0]?.length ?? 0; i++) {

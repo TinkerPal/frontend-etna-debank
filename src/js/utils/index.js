@@ -198,8 +198,8 @@ export function tokenAddressByLiqTokenId(profile_id) {
 export function tokenIdByLiqTokenAdress(tokenAddress) {
   for (let i = 0; i < userObject.deposit_profiles_liqpairs.length; i++) {
     if (
-      toNumber(userObject.deposit_profiles_liqpairs[i].p_tok_addr) ===
-      toNumber(tokenAddress)
+      userObject.deposit_profiles_liqpairs[i].p_tok_addr.toLowerCase() ===
+      tokenAddress.toLowerCase()
     ) {
       return userObject.deposit_profiles_liqpairs[i].p_id;
     }
@@ -254,7 +254,10 @@ export function tokenIdByTokenName(tokenName) {
 
 export function APYStrByLiqpairsTokenName(profile_name) {
   for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
-    if (userObject.deposit_profiles_liqpairs[i].p_name === profile_name) {
+    if (
+      userObject.deposit_profiles_liqpairs[i].p_name.toLowerCase() ===
+      profile_name.toLowerCase()
+    ) {
       const apy = toNumber(userObject.deposit_profiles_liqpairs[i].init_apy);
       const apy_real = apy / APY_SCALE;
       const apy_str = `${(apy_real * 100).toFixed(1).toString()}%`;
@@ -266,7 +269,10 @@ export function APYStrByLiqpairsTokenName(profile_name) {
 
 export function tokenIdByLiqpairsTokenName(profile_name) {
   for (let i = 0; i < userObject.deposit_profiles_liqpairs?.length ?? 0; i++) {
-    if (userObject.deposit_profiles_liqpairs[i].p_name === profile_name) {
+    if (
+      userObject.deposit_profiles_liqpairs[i].p_name.toLowerCase() ===
+      profile_name.toLowerCase()
+    ) {
       return toNumber(userObject.deposit_profiles_liqpairs[i].p_id);
     }
   }

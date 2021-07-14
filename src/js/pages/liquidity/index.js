@@ -46,7 +46,9 @@ export async function getLiquidityDashboard(callback = null) {
     '<tbody>';
 
   const wrapper = document.querySelector('#deposits_uniswap');
-  wrapper.innerHTML = '';
+  if (isMobile) {
+    wrapper.innerHTML = '';
+  }
   userObject.state.currentLiq = [];
 
   const [am_arr, rew_arr] = await Promise.all([

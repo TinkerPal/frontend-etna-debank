@@ -71,9 +71,11 @@ export async function initLiqPairsDropdown() {
       liq_pair_name: asset.text,
       liq_pair_address: asset.addr,
     });
+
     const bal = await getWalletBalance(
       tokenIdByLiqTokenAdress(userObject.state.liq_pair_address)
     );
+
     safeHtmlById('liq_pair_in_wallet', bal);
   };
 
@@ -100,6 +102,7 @@ export async function initLiqPairsDropdown() {
       const currentOption = liqPairsAssetsOptions.find(
         (item) => item.text === value
       );
+
       setBal(currentOption);
 
       const liqTermsValue =

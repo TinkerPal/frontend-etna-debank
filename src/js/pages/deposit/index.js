@@ -50,9 +50,15 @@ export async function getDepositsDashboard(callback = null) {
     '</tr>' +
     '</thead>' +
     '<tbody>';
+
   const wrapper = document.querySelector('#tokens_balance');
-  wrapper.innerHTML = '';
+
+  if (isMobile) {
+    wrapper.innerHTML = '';
+  }
+
   userObject.state.currentDeposits = [];
+
   const profiles = userObject.deposit_profiles;
 
   const [am_arr, rew_arr] = await Promise.all([
