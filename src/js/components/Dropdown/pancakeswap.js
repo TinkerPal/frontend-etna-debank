@@ -3,37 +3,37 @@ import Choices from 'choices.js';
 export function initPancakeSwapDropdown() {
   const pancakeswapSelectElement = document.querySelector('#pancakeswap-poll');
 
-  const pancakeswapDropdown =
-    pancakeswapSelectElement &&
-    new Choices(pancakeswapSelectElement, {
-      classNames: {
-        containerOuter: 'choices choices-pancakeswap',
-      },
-      searchEnabled: false,
-      shouldSort: false,
-      itemSelectText: '',
-      callbackOnCreateTemplates(template) {
-        return {
-          item: (classNames) => {
-            return template(/* html */ `
+  if (!pancakeswapSelectElement) return;
+
+  const pancakeswapDropdown = new Choices(pancakeswapSelectElement, {
+    classNames: {
+      containerOuter: 'choices choices-pancakeswap',
+    },
+    searchEnabled: false,
+    shouldSort: false,
+    itemSelectText: '',
+    callbackOnCreateTemplates(template) {
+      return {
+        item: (classNames) => {
+          return template(/* html */ `
                 <div class="${classNames.item}">
                   <span class="dropdown-text">Go to pool at Pancakeswap</span>
                 </div>
               `);
-          },
-          choice: (classNames, data) => {
-            const { text, link } = data.value;
-            if (link === '') {
-              return template('<div class="hidden"></div> ');
-            }
+        },
+        choice: (classNames, data) => {
+          const { text, link } = data.value;
+          if (link === '') {
+            return template('<div class="hidden"></div> ');
+          }
 
-            return template(/* html */ `
+          return template(/* html */ `
                 <a target="_blank" class="${classNames.item}" href="${link}"><span class="dropdown-text">${text}</span><img src="../images/link-inside-li.svg" class="btn-link"></a>
             `);
-          },
-        };
-      },
-    });
+        },
+      };
+    },
+  });
 
   const data = [
     {
