@@ -31,7 +31,10 @@ import {
 } from '../../utils';
 import { approveTokenMove } from '../utils';
 
-export async function getDepositsDashboard(callback = null) {
+export async function getDepositsDashboard(
+  callback = null,
+  forceUpdate = false
+) {
   let html =
     '<table class="min-w-full">' +
     '<thead>' +
@@ -62,8 +65,8 @@ export async function getDepositsDashboard(callback = null) {
   const profiles = userObject.deposit_profiles;
 
   const [am_arr, rew_arr] = await Promise.all([
-    userObject.deposits.getAmArr(),
-    userObject.deposits.getRewArr(),
+    userObject.deposits.getAmArr(forceUpdate),
+    userObject.deposits.getRewArr(forceUpdate),
   ]);
 
   // let rew_arr = await userObject.deposits.getRewArr();
@@ -82,18 +85,18 @@ export async function getDepositsDashboard(callback = null) {
     withdraw_rew_col,
     usd_reward_column,
   ] = await Promise.all([
-    userObject.deposits.getIconAssetsCols(),
-    userObject.deposits.getApyCol(),
-    userObject.deposits.getInWalletCol(),
-    userObject.deposits.getDepCol(),
-    userObject.deposits.getUsdValCol(),
-    userObject.deposits.getDurationCol(),
-    userObject.deposits.getExtractableDepCol(),
-    userObject.deposits.getWithdrawDepCol(),
-    userObject.deposits.getRewardCol(),
-    userObject.deposits.getExtractableRewardCol(),
-    userObject.deposits.getWithdrawRewCol(),
-    userObject.deposits.getUsdRewardCol(),
+    userObject.deposits.getIconAssetsCols(forceUpdate),
+    userObject.deposits.getApyCol(forceUpdate),
+    userObject.deposits.getInWalletCol(forceUpdate),
+    userObject.deposits.getDepCol(forceUpdate),
+    userObject.deposits.getUsdValCol(forceUpdate),
+    userObject.deposits.getDurationCol(forceUpdate),
+    userObject.deposits.getExtractableDepCol(forceUpdate),
+    userObject.deposits.getWithdrawDepCol(forceUpdate),
+    userObject.deposits.getRewardCol(forceUpdate),
+    userObject.deposits.getExtractableRewardCol(forceUpdate),
+    userObject.deposits.getWithdrawRewCol(forceUpdate),
+    userObject.deposits.getUsdRewardCol(forceUpdate),
   ]);
 
   const icon_column_s = new Array(profiles.length);
@@ -324,7 +327,7 @@ export async function deposit() {
       throw new Error(error);
     }
 
-    const isApproved = await window.cyclops_nft_smartcontract.methods
+    const isApproved = await window.cyclops_nft_smartcontract_reader.methods
       .isApprovedForAll(userObject.account, window.staking_contract_address)
       .call({
         from: userObject.account,
@@ -474,7 +477,7 @@ export async function approve_deposit() {
   }
 
   if (userObject.state.selected_depprofile_name === 'nft') {
-    const isApproved = await window.cyclops_nft_smartcontract.methods
+    const isApproved = await window.cyclops_nft_smartcontract_reader.methods
       .isApprovedForAll(userObject.account, window.staking_contract_address)
       .call({
         from: userObject.account,

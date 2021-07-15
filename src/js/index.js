@@ -149,7 +149,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     await getAccount();
 
     window.ethereum.on('accountsChanged', async () => {
-      await getAccount();
+      await getAccount(true);
     });
 
     window.ethereum.on('chainChanged', async () => {

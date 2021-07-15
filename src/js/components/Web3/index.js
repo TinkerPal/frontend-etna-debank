@@ -69,7 +69,7 @@ export async function initWeb3jsReader(callback = null) {
   if (callback) callback(window.web3js_reader);
 }
 
-export async function getAccount() {
+export async function getAccount(forceUpdate = false) {
   resetMsg();
   closeAllModals();
   try {
@@ -109,7 +109,7 @@ export async function getAccount() {
 
     setLdBar(25);
 
-    await updateData();
+    await updateData(null, forceUpdate);
 
     window.gp = await window.web3js.eth.getGasPrice();
     window.gp *= 2;
@@ -121,7 +121,7 @@ export async function getAccount() {
   }
 }
 
-export async function getAccountWalletConnect() {
+export async function getAccountWalletConnect(forceUpdate = false) {
   resetMsg();
   closeAllModals();
   try {
@@ -157,7 +157,7 @@ export async function getAccountWalletConnect() {
 
     setLdBar(25);
 
-    await updateData();
+    await updateData(null, forceUpdate);
 
     window.gp = await window.web3js.eth.getGasPrice();
     window.gp *= 2;
@@ -289,22 +289,22 @@ export async function toggleWeb3Connect() {
   }
 }
 
-export async function updateData(action = null) {
+export async function updateData(action = null, forceUpdate = false) {
   await userObject.load();
 
   if (!action) {
     // only when loaded
     await getDepositsDashboard(() => {
       setLdBar(null, '25');
-    });
+    }, forceUpdate);
 
     getLiquidityDashboard(() => {
       setLdBar(null, '25');
-    });
+    }, forceUpdate);
 
     getCreditsDashboard(() => {
       setLdBar(null, '25');
-    });
+    }, forceUpdate);
 
     getOurDashbord();
   } else if (action === 'make_deposit') {

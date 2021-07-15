@@ -24,7 +24,10 @@ import {
 } from '../../utils';
 import { approveTokenMove } from '../utils';
 
-export async function getLiquidityDashboard(callback = null) {
+export async function getLiquidityDashboard(
+  callback = null,
+  forceUpdate = false
+) {
   let html =
     '<table class="min-w-full">' +
     '<thead>' +
@@ -69,17 +72,17 @@ export async function getLiquidityDashboard(callback = null) {
     withdraw_rew_col,
     usd_reward_column,
   ] = await Promise.all([
-    userObject.liq_earn.getIconAssetLockupCols(),
-    userObject.liq_earn.getApyCol(),
-    userObject.liq_earn.getDepCol(),
-    userObject.liq_earn.getUsdValCol(),
-    userObject.liq_earn.getDurationUnlockCol(),
-    userObject.liq_earn.getExtrDepCol(),
-    userObject.liq_earn.getWithdrawDepCol(),
-    userObject.liq_earn.getRewardCol(),
-    userObject.liq_earn.getExtractableRewardCol(),
-    userObject.liq_earn.getWithdrawRewCol(),
-    userObject.liq_earn.getUsdRewardCol(),
+    userObject.liq_earn.getIconAssetLockupCols(forceUpdate),
+    userObject.liq_earn.getApyCol(forceUpdate),
+    userObject.liq_earn.getDepCol(forceUpdate),
+    userObject.liq_earn.getUsdValCol(forceUpdate),
+    userObject.liq_earn.getDurationUnlockCol(forceUpdate),
+    userObject.liq_earn.getExtrDepCol(forceUpdate),
+    userObject.liq_earn.getWithdrawDepCol(forceUpdate),
+    userObject.liq_earn.getRewardCol(forceUpdate),
+    userObject.liq_earn.getExtractableRewardCol(forceUpdate),
+    userObject.liq_earn.getWithdrawRewCol(forceUpdate),
+    userObject.liq_earn.getUsdRewardCol(forceUpdate),
   ]);
 
   const icon_column_s = new Array(icon_column.length);

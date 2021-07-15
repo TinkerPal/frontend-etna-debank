@@ -54,7 +54,7 @@ export default {
       this.liq_arr.length = 0;
       this.dep_arr.length = 0;
 
-      this.am_arr = await window.staking_smartcontract.methods
+      this.am_arr = await window.staking_smartcontract_reader.methods
         .amountsPerDeposits(userObject.account)
         .call({
           from: userObject.account,
@@ -97,7 +97,7 @@ export default {
       this.rew_liq_arr.length = 0;
       this.rew_dep_arr.length = 0;
 
-      this.rew_arr = await window.staking_smartcontract.methods
+      this.rew_arr = await window.staking_smartcontract_reader.methods
         .rewardsPerDeposits(userObject.account)
         .call({
           from: userObject.account,
@@ -297,7 +297,7 @@ export default {
         if (depositTokenIndex !== -1) {
           depositDaysPromise.push(
             toNumber(am_arr[1][depositTokenIndex]) > 0
-              ? window.staking_smartcontract.methods
+              ? window.staking_smartcontract_reader.methods
                   .depositDays(userObject.account, depositTokenIndex)
                   .call({
                     from: userObject.account,

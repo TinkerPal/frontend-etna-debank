@@ -118,16 +118,19 @@ export async function getCredit() {
   });
 }
 
-export async function getCreditsDashboard(callback = null) {
+export async function getCreditsDashboard(
+  callback = null,
+  forceUpdate = false
+) {
   // let profiles = userObject.deposit_profiles;
 
   const [am_arr, cred_arr, clt_arr] = await Promise.all([
     userObject.deposits.getAmArr(),
-    userObject.credits.getCredArr(),
-    userObject.credits.getCltArr(),
+    userObject.credits.getCredArr(forceUpdate),
+    userObject.credits.getCltArr(forceUpdate),
   ]);
 
-  const [lev_arr] = await userObject.credits.getLevArr();
+  const [lev_arr] = await userObject.credits.getLevArr(forceUpdate);
 
   const [
     [icon_column, asset_column],
@@ -144,19 +147,19 @@ export async function getCreditsDashboard(callback = null) {
     return_credit_col,
     return_leverage_visible,
   ] = await Promise.all([
-    userObject.credits.getIconAssetsCols(),
-    userObject.credits.getAPRCol(),
-    userObject.credits.getInWalletCol(),
-    userObject.credits.getDepCol(),
-    userObject.credits.getCredCol(),
-    userObject.credits.getCltCol(),
-    userObject.credits.getUsdValCol(),
-    userObject.credits.getDurationCol(),
-    userObject.credits.getFeeCol(),
-    userObject.credits.getLevCol(),
-    userObject.credits.getSetLevCol(),
-    userObject.credits.getReturnCreditCol(),
-    userObject.credits.returnLeverageVisible(),
+    userObject.credits.getIconAssetsCols(forceUpdate),
+    userObject.credits.getAPRCol(forceUpdate),
+    userObject.credits.getInWalletCol(forceUpdate),
+    userObject.credits.getDepCol(forceUpdate),
+    userObject.credits.getCredCol(forceUpdate),
+    userObject.credits.getCltCol(forceUpdate),
+    userObject.credits.getUsdValCol(forceUpdate),
+    userObject.credits.getDurationCol(forceUpdate),
+    userObject.credits.getFeeCol(forceUpdate),
+    userObject.credits.getLevCol(forceUpdate),
+    userObject.credits.getSetLevCol(forceUpdate),
+    userObject.credits.getReturnCreditCol(forceUpdate),
+    userObject.credits.returnLeverageVisible(forceUpdate),
   ]);
 
   let html = `
