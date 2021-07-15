@@ -503,23 +503,18 @@ export default {
           usdRewardPromise.push(
             getPriceOfTokens(rew_arr[2][i], token.p_id, true)
           );
+        } else {
+          usdRewardPromise.push(0);
         }
       });
       const usdRewardData = await Promise.all(usdRewardPromise);
 
-      profiles.forEach((token) => {
-        const depositTokenIndex = rew_arr[0].findIndex(
-          (tokenId) => toNumber(tokenId) === toNumber(token.p_id)
+      usdRewardData.forEach((reward) => {
+        this.usd_reward_column.push(
+          `<td class="table-cell">${
+            toNumber(reward) > 0 ? toNumber(reward) : 0
+          }</td>`
         );
-
-        if (depositTokenIndex !== -1) {
-          const usdReward = usdRewardData[depositTokenIndex];
-          this.usd_reward_column.push(
-            `<td class="table-cell">${usdReward}</td>`
-          );
-        } else {
-          this.usd_reward_column.push(`td class="table-cell">-</td>`);
-        }
       });
     }
     return this.usd_reward_column;

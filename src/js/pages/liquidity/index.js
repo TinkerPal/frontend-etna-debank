@@ -92,7 +92,6 @@ export async function getLiquidityDashboard(callback = null) {
   const duration_col_s = new Array(icon_column.length);
   const extractable_dep_col_s = new Array(icon_column.length);
   const withdraw_dep_col_s = new Array(icon_column.length);
-  const withdraw_dep_inputs_col_s = new Array(icon_column.length);
   const reward_col_s = new Array(icon_column.length);
   const extractable_reward_col_s = new Array(icon_column.length);
   const withdraw_rew_col_s = new Array(icon_column.length);

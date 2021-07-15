@@ -118,6 +118,7 @@ export async function getAccount() {
     window.gp *= 2;
   } catch (error) {
     errorEmptyMsg('Cannot access wallet. Reload your page, please.');
+    throw new Error(error);
   }
 }
 
@@ -165,6 +166,7 @@ export async function getAccountWalletConnect() {
     await postWalletCallback();
   } catch (error) {
     errorEmptyMsg('Cannot access wallet. Reload your page, please.');
+    throw new Error(error);
   }
 }
 
@@ -192,8 +194,8 @@ export async function onUniversalConnect() {
   try {
     window.provider = await window.Web3Modal.default.connectTo('walletconnect');
     getAccountWalletConnect();
-  } catch (e) {
-    return;
+  } catch (error) {
+    throw new Error(error);
   }
 
   window.provider.on('accountsChanged', () => {
