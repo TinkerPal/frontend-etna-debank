@@ -18,9 +18,9 @@ export default {
   cred_price_arr: [],
   cred_cc_extra_arr: {},
   getCredArr_last_call: 0,
-  async getCredArr() {
+  async getCredArr(flag = false) {
     const currentTimestamp = Date.now();
-    if (currentTimestamp > this.getCredArr_last_call + CACHE_TIME) {
+    if (currentTimestamp > this.getCredArr_last_call + CACHE_TIME || flag) {
       this.getCredArr_last_call = currentTimestamp;
 
       this.cred_arr = await window.credit_smartcontract_reader.methods
@@ -85,9 +85,9 @@ export default {
 
   clt_arr: null,
   getCltArr_last_call: 0,
-  async getCltArr() {
+  async getCltArr(flag = false) {
     const currentTimestamp = Date.now();
-    if (currentTimestamp > this.getCltArr_last_call + CACHE_TIME) {
+    if (currentTimestamp > this.getCltArr_last_call + CACHE_TIME || flag) {
       this.getCltArr_last_call = currentTimestamp;
 
       this.clt_arr = await window.credit_smartcontract_reader.methods

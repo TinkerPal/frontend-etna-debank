@@ -75,7 +75,8 @@ export function cryptoInfoBuild(index, breadcrumb, userObjectState) {
                       ? options.list.dep_column.data
                       : options.list.extractable_reward_col.data
                   } ${
-        options.asset_column === 'nft' && name === 'Withdraw yield'
+        (options.asset_column === 'nft' || userObjectState === 'currentLiq') &&
+        name === 'Withdraw yield'
           ? 'ETNA'
           : options.asset_column
       }

@@ -308,29 +308,29 @@ export async function updateData(action = null, forceUpdate = false) {
 
     getOurDashbord();
   } else if (action === 'make_deposit') {
-    await getDepositsDashboard();
+    await getDepositsDashboard(null, true);
   } else if (action === 'withdraw_deposit') {
-    await getDepositsDashboard();
-    await getLiquidityDashboard();
+    await getDepositsDashboard(null, true);
+    await getLiquidityDashboard(null, true);
   } else if (action === 'withdraw_deposit_reward') {
-    await getDepositsDashboard();
-    await getLiquidityDashboard();
+    await getDepositsDashboard(null, true);
+    await getLiquidityDashboard(null, true);
   } else if (action === 'get_credit') {
-    await getCreditsDashboard();
-    await getDepositsDashboard();
+    await getCreditsDashboard(null, true);
+    await getDepositsDashboard(null, true);
   } else if (action === 'set_leverage') {
-    await getCreditsDashboard();
-    await getDepositsDashboard();
+    await getCreditsDashboard(null, true);
+    await getDepositsDashboard(null, true);
   } else if (action === 'unfreeze_leverage') {
-    await getCreditsDashboard();
-    await getDepositsDashboard();
+    await getCreditsDashboard(null, true);
+    await getDepositsDashboard(null, true);
   } else if (action === 'return_credit') {
-    await getCreditsDashboard();
-    await getDepositsDashboard();
+    await getCreditsDashboard(null, true);
+    await getDepositsDashboard(null, true);
   } else if (action === 'return_fee') {
-    await getCreditsDashboard();
-    await getDepositsDashboard();
+    await getCreditsDashboard(null, true);
+    await getDepositsDashboard(null, true);
   } else if (action === 'stake_liq') {
-    await getLiquidityDashboard();
+    await getLiquidityDashboard(null, true);
   }
 }

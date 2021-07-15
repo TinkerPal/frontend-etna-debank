@@ -4,6 +4,7 @@ import { isMobile } from '../constants/env';
 import {
   getAPY,
   getIndexOfTokenInAmArr,
+  getPriceOfTokens,
   tokenNameByLiqpairsTokenId,
   toNumber,
   toTokens,
@@ -189,14 +190,14 @@ export default {
 
       const calcUSDValueOfYieldPromise = [];
       liq_arr[0].forEach((depTokenId, i) => {
-        const depYield = rew_liq_arr[1][i];
+        const depYield = rew_liq_arr[2][i];
 
         const hasDepYield = toNumber(depYield) > 0;
 
         if (hasDepYield) {
           calcUSDValueOfYieldPromise.push(
             toNumber(rew_liq_arr[2][i]) > 0
-              ? calcUSDValueOfDeposit(depYield, i)
+              ? getPriceOfTokens(rew_liq_arr[2][i], depTokenId, true)
               : 0
           );
         }

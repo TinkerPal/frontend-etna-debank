@@ -46,9 +46,9 @@ export default {
   dep_arr: [],
   am_arr: [],
   getAmArr_last_call: 0,
-  async getAmArr() {
+  async getAmArr(flag = false) {
     const currentTimestamp = Date.now();
-    if (currentTimestamp > this.getAmArr_last_call + CACHE_TIME) {
+    if (currentTimestamp > this.getAmArr_last_call + CACHE_TIME || flag) {
       this.getAmArr_last_call = currentTimestamp;
 
       this.liq_arr.length = 0;
@@ -90,9 +90,9 @@ export default {
   rew_liq_arr: [],
   rew_dep_arr: [],
   getRewArr_last_call: 0,
-  async getRewArr() {
+  async getRewArr(flag = false) {
     const currentTimestamp = Date.now();
-    if (currentTimestamp > this.getRewArr_last_call + CACHE_TIME) {
+    if (currentTimestamp > this.getRewArr_last_call + CACHE_TIME || flag) {
       this.getRewArr_last_call = currentTimestamp;
       this.rew_liq_arr.length = 0;
       this.rew_dep_arr.length = 0;
@@ -501,7 +501,9 @@ export default {
           const i = rew_arr[0].indexOf(depositTokenId);
 
           usdRewardPromise.push(
-            getPriceOfTokens(rew_arr[2][i], token.p_id, true)
+            toNumber(rew_arr[2][i]) > 0
+              ? getPriceOfTokens(rew_arr[2][i], token.p_id, true)
+              : 0
           );
         } else {
           usdRewardPromise.push(0);

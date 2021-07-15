@@ -314,7 +314,7 @@ export async function getPriceOfTokens(
 
   const token =
     (isTokenBnb(tokenId) && 'BNBUSD') ||
-    (isTokenNft(tokenId) && LEVERAGE_TOKEN) ||
+    ((isTokenNft(tokenId) || isTokenLiqPairs(tokenId)) && LEVERAGE_TOKEN) ||
     tokenName;
 
   const wei_amount = isSafeAmount
