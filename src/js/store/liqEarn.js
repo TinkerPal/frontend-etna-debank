@@ -336,13 +336,13 @@ export default {
               hasExtractableDepAmount
                 ? `${
                     isMobile
-                      ? `<div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${i.toString()}))" class="link-arrow">
+                      ? `<div onclick="openTab(event, 'withdraw_deposit-tab', () => withdraw_deposit(${depTokenId.toString()}))" class="link-arrow">
                               <img src="./images/link-arrow.svg" alt="#">
                             </div>`
                       : `${createTableBtnWithIcon(
                           'withdraw',
                           'Withdraw deposit',
-                          `withdraw_deposit(${i.toString()})`
+                          `withdraw_deposit(${depTokenId.toString()})`
                         )}`
                   }`
                 : '-'
@@ -445,13 +445,13 @@ export default {
               hasExtractableDepYield
                 ? `${
                     isMobile
-                      ? `<div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${i.toString()}))" class="link-arrow">
+                      ? `<div onclick="openTab(event, 'withdraw_reward-tab', () => withdraw_reward(${depTokenId.toString()}))" class="link-arrow">
                               <img src="./images/link-arrow.svg" alt="#">
                             </div>`
                       : `${createTableBtnWithIcon(
                           'withdraw',
                           'Withdraw yield',
-                          `withdraw_reward(${i.toString()})`
+                          `withdraw_reward(${depTokenId.toString()})`
                         )}`
                   }`
                 : '-'
