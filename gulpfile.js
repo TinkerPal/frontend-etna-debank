@@ -37,19 +37,30 @@ const getWebpackConfig = (envs, buildType) => ({
       {
         test: /\.(js)$/,
         exclude: /(node_modules)/,
-        loader: 'babel-loader',
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              plugins: [
+                '@babel/plugin-proposal-nullish-coalescing-operator',
+                '@babel/plugin-proposal-optional-chaining',
+                '@babel/plugin-transform-destructuring',
+              ],
+            },
+          },
+        ],
       },
     ],
   },
-  resolve: {
-    fallback: {
-      os: require.resolve('os-browserify/browser'),
-      https: require.resolve('https-browserify'),
-      http: require.resolve('stream-http'),
-      crypto: require.resolve('crypto-browserify'),
-      stream: require.resolve('stream-browserify'),
-    },
-  },
+  // resolve: {
+  //   fallback: {
+  //     os: require.resolve('os-browserify/browser'),
+  //     https: require.resolve('https-browserify'),
+  //     http: require.resolve('stream-http'),
+  //     crypto: require.resolve('crypto-browserify'),
+  //     stream: require.resolve('stream-browserify'),
+  //   },
+  // },
   plugins: [
     new webpack.DefinePlugin({
       'process.env.SITE_VERSION': JSON.stringify(buildType),

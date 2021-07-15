@@ -1,8 +1,5 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable camelcase */
-// import Web3 from 'web3';
-// import WalletConnectProvider from '@walletconnect/web3-provider';
-// import Web3Modal from 'web3modal';
 import { walletButton } from '../..';
 import { INFURA_ENDPOINT } from '../../constants';
 import {
