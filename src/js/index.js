@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import EtnaChart from './components/Chart';
 import { initPancakeSwapDropdown } from './components/Dropdown/pancakeswap';
-import { errorEmptyMsg, resetMsg } from './components/InfoMessages';
+import { errorEmptyMetamaskMsg, resetMsg } from './components/InfoMessages';
 import { createInfoPopup } from './components/InfoPopup';
 import { Modal } from './components/Modal';
 import {
@@ -58,7 +58,6 @@ import { approve_stake_liq, stake_liq } from './pages/liquidity';
 import { initContractAdress } from './store/contracts';
 import { userObject } from './store/userObject';
 import { depAmountByProfileId, isMetaMaskInstalled } from './utils';
-import { postWalletCallback } from './utils/dom';
 
 export const walletButton = document.getElementById('enableEthereumButton');
 
@@ -100,7 +99,6 @@ export const modalAddCredit = new Modal(
 );
 
 // Todo need to remove global functions
-window.Web3Modal = window.Web3Modal.default;
 window.userObject = userObject;
 window.openTab = openTab;
 window.modal_add_deposit = modalAddDeposit;
@@ -161,6 +159,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     walletButton.style.display = 'block';
     await initWeb3Modal();
     walletButton.addEventListener('click', toggleWeb3Connect);
+    errorEmptyMetamaskMsg();
   }
 
   createInfoPopup();

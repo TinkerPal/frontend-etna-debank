@@ -34,9 +34,11 @@ export const BAD_DEPOSIT_PROFILE_ID = 9999999;
 export const BAD_DEPOSIT_ID = 9999999;
 export const NONE_FAMER_ID = 9999999;
 
+const WalletConnectProvider = window.WalletConnectProvider.default;
+
 export const providerOptions = {
   walletconnect: {
-    package: window.WalletConnectProvider.default,
+    package: WalletConnectProvider,
     options: {
       rpc: WALLET_OPTION_RPC,
     },

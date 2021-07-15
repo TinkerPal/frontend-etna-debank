@@ -56,6 +56,8 @@ export const web3jsReadersList = {
   },
 };
 
+export const Web3ModalDefault = window.Web3Modal.default;
+
 export async function initWeb3jsReader(callback = null) {
   if (!window.web3js_reader) {
     window.web3js_reader = await new Web3(
@@ -168,7 +170,7 @@ export async function getAccountWalletConnect() {
 }
 
 export async function initWeb3Modal() {
-  window.Web3Modal = new window.Web3Modal({
+  window.Web3ModalWithProvider = new Web3ModalDefault({
     ...WEB3_MODAL_NETWORK,
     cacheProvider: false, // optional
     providerOptions, // required
@@ -178,7 +180,8 @@ export async function initWeb3Modal() {
 
 export async function onUniversalConnect() {
   try {
-    window.provider = await window.Web3Modal.connectTo();
+    window.provider = await window.Web3ModalWithProvider.connect();
+
     getAccountWalletConnect();
   } catch (error) {
     throw new Error(error);
@@ -220,11 +223,13 @@ export async function connectWeb3() {
     });
   } else {
     try {
-      await window.web3js.currentProvider.enable();
-      if (window.web3js.currentProvider.isConnected()) {
-        window.provider = window.web3js.currentProvider;
-        await getAccountWalletConnect();
-        return;
+      if (window.web3js) {
+        await window.web3js.currentProvider.enable();
+        if (window.web3js.currentProvider.isConnected()) {
+          window.provider = window.web3js.currentProvider;
+          await getAccountWalletConnect();
+          return;
+        }
       }
     } catch (error) {
       throw new Error(error);
@@ -253,7 +258,7 @@ export async function onUniversalDisconnect() {
     // WalletConnect will default to the existing session
     // and does not allow to re-scan the QR code with a new wallet.
     // Depending on your use case you may want or want not his behavir.
-    await window.Web3Modal.default.clearCachedProvider();
+    await window.Web3ModalWithProvider.default.clearCachedProvider();
     window.provider = null;
   }
 

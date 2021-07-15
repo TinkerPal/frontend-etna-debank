@@ -160,6 +160,7 @@ export async function getBackendParameter(var_name, callback = null) {
       }
     })
     .catch((error) => {
+      errorEmptyMsg('Cannot access wallet. Reload your page, please.');
       throw new Error(error);
     });
 }
