@@ -157,13 +157,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     window.ethereum.on('chainChanged', async () => {
       window.location.reload();
     });
-
-    await postWalletCallback();
   } else {
     walletButton.style.display = 'block';
     await initWeb3Modal();
     walletButton.addEventListener('click', toggleWeb3Connect);
-    web3jsReadersList();
   }
 
   createInfoPopup();

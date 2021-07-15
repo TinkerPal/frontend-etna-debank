@@ -111,6 +111,8 @@ export async function getAccount() {
 
     window.gp = await window.web3js.eth.getGasPrice();
     window.gp *= 2;
+
+    await postWalletCallback();
   } catch (error) {
     errorEmptyMsg('Cannot access wallet. Reload your page, please.');
     throw new Error(error);
@@ -217,9 +219,7 @@ export async function connectWeb3() {
       getAccount();
     });
   } else {
-    // try to connect with something built-in, like Opera
     try {
-      await initWeb3Modal();
       await window.web3js.currentProvider.enable();
       if (window.web3js.currentProvider.isConnected()) {
         window.provider = window.web3js.currentProvider;
@@ -230,7 +230,17 @@ export async function connectWeb3() {
       throw new Error(error);
     }
 
-    await onUniversalConnect();
+    try {
+      await initWeb3Modal();
+    } catch (error) {
+      throw new Error(error);
+    }
+
+    try {
+      await onUniversalConnect();
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
 
