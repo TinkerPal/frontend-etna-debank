@@ -304,10 +304,12 @@ export default {
                   })
               : 0
           );
+        } else {
+          depositDaysPromise.push(0);
         }
       });
       const depositDaysData = await Promise.all(depositDaysPromise);
-
+      console.log(depositDaysData);
       profiles.forEach((token, i) => {
         const days = depositDaysData[i];
         this.duration_col.push(
