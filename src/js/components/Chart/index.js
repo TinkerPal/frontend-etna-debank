@@ -1,4 +1,4 @@
-import { Chart } from 'chart.js';
+import { Chart, registerables } from 'chart.js';
 import { getCoinData } from './utils';
 
 export default class EtnaChart extends HTMLElement {
@@ -77,6 +77,10 @@ export default class EtnaChart extends HTMLElement {
       }${percentage}%`;
     }
 
-    Chart(this.querySelector(`[data-chart]`).getContext('2d'), config);
+    Chart.register(...registerables);
+    const myChart = new Chart(
+      this.querySelector(`[data-chart]`).getContext('2d'),
+      config
+    );
   }
 }
