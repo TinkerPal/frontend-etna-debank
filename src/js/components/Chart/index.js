@@ -2,6 +2,11 @@ import { Chart, registerables } from 'chart.js';
 import { getCoinData } from './utils';
 
 export default class EtnaChart extends HTMLElement {
+  constructor() {
+    super();
+    Chart.register(...registerables);
+  }
+
   connectedCallback() {
     this.coin = this.getAttribute('coin');
 
@@ -39,9 +44,7 @@ export default class EtnaChart extends HTMLElement {
       data,
       options: {
         animation: false,
-        responsive: true,
         maintainAspectRatio: false,
-        aspectRatio: 3,
         scales: {
           y: {
             display: false,
@@ -77,10 +80,6 @@ export default class EtnaChart extends HTMLElement {
       }${percentage}%`;
     }
 
-    Chart.register(...registerables);
-    const myChart = new Chart(
-      this.querySelector(`[data-chart]`).getContext('2d'),
-      config
-    );
+    new Chart(this.querySelector(`[data-chart]`).getContext('2d'), config);
   }
 }
