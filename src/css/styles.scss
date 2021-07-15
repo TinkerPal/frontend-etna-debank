@@ -1180,3 +1180,11 @@ button:disabled {
     }
   }
 }
+
+.period-select {
+  .choices__item,
+  .choices__inner,
+  .choices__list {
+    text-transform: none;
+  }
+}
