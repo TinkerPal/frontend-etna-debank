@@ -253,6 +253,8 @@ export default {
           const i = am_arr[0].indexOf(depositTokenId);
 
           calcUsdValuePromise.push(calcUSDValueOfDeposit(am_arr[1][i], i));
+        } else {
+          calcUsdValuePromise.push(0);
         }
       });
       const calcUsdValueData = await Promise.all(calcUsdValuePromise);
