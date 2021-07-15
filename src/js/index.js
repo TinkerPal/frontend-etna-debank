@@ -100,6 +100,7 @@ export const modalAddCredit = new Modal(
 );
 
 // Todo need to remove global functions
+window.Web3Modal = window.Web3Modal.default;
 window.userObject = userObject;
 window.openTab = openTab;
 window.modal_add_deposit = modalAddDeposit;

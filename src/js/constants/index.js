@@ -1,3 +1,5 @@
+import { WALLET_OPTION_RPC } from './env';
+
 export const APY_SCALE = 100000;
 
 export const CHAINS = {
@@ -31,3 +33,12 @@ export const BAD_TOKEN = 99;
 export const BAD_DEPOSIT_PROFILE_ID = 9999999;
 export const BAD_DEPOSIT_ID = 9999999;
 export const NONE_FAMER_ID = 9999999;
+
+export const providerOptions = {
+  walletconnect: {
+    package: window.WalletConnectProvider.default,
+    options: {
+      rpc: WALLET_OPTION_RPC,
+    },
+  },
+};

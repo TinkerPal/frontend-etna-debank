@@ -1,13 +1,8 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable camelcase */
 import { walletButton } from '../..';
-import { INFURA_ENDPOINT } from '../../constants';
-import {
-  CHAIN_ID,
-  RPC_LIST,
-  WALLET_OPTION_RPC,
-  WEB3_MODAL_NETWORK,
-} from '../../constants/env';
+import { INFURA_ENDPOINT, providerOptions } from '../../constants';
+import { CHAIN_ID, RPC_LIST, WEB3_MODAL_NETWORK } from '../../constants/env';
 import { checkAdminButton } from '../../pages/admin';
 import { getCreditsDashboard } from '../../pages/credit';
 import { getOurDashbord } from '../../pages/dashboard';
@@ -171,18 +166,7 @@ export async function getAccountWalletConnect() {
 }
 
 export async function initWeb3Modal() {
-  if (window.web3Modal) return;
-
-  const providerOptions = {
-    walletconnect: {
-      package: window.WalletConnectProvider.default, // WalletConnectProvider,
-      options: {
-        rpc: WALLET_OPTION_RPC,
-      },
-    },
-  };
-
-  window.web3Modal = new Web3Modal({
+  window.Web3Modal = new window.Web3Modal({
     ...WEB3_MODAL_NETWORK,
     cacheProvider: false, // optional
     providerOptions, // required
@@ -192,7 +176,7 @@ export async function initWeb3Modal() {
 
 export async function onUniversalConnect() {
   try {
-    window.provider = await window.Web3Modal.default.connectTo('walletconnect');
+    window.provider = await window.Web3Modal.connectTo();
     getAccountWalletConnect();
   } catch (error) {
     throw new Error(error);
