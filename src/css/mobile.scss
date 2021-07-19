@@ -158,7 +158,7 @@
   }
 
   .input-type {
-    @apply border-grey-100-mobile border text-base rounded-md w-full h-12 bg-blueish-black focus: outline-none py-3 px-3 leading-6;
+    @apply border-grey-100-mobile border text-sm rounded-md w-full h-12 bg-blueish-black focus: outline-none py-3 px-3 leading-6;
   }
 
   .collumn-via-inputs {
@@ -979,7 +979,8 @@
 
 .empty-access {
   top: 232px;
-  height: calc(100% - 236px);
+  height: calc(100% - 382px);
+  overflow: auto;
 }
 
 ._mobile {
@@ -1187,4 +1188,33 @@
 
 #net_icon {
   fill: currentColor;
+}
+
+.non-uppercase {
+  text-transform: none;
+
+  .choices__list--single .choices__item {
+    text-transform: none;
+  }
+
+  .choices__list--dropdown .choices__item--selectable {
+    text-transform: none;
+  }
+}
+
+.without-link.border-none {
+  .choices {
+    border-top-right-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+  }
+
+  &.creditprofiles-rounded .choices {
+    border-top-right-radius: 0.5rem !important;
+    border-bottom-right-radius: 0.5rem !important;
+  }
+}
+
+.custom-getcredit-dropdown .choices {
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
 }
