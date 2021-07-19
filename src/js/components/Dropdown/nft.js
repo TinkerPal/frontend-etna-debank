@@ -70,7 +70,7 @@ function choiseOnInitNft(choice) {
       autoHide: false,
     });
 
-  const rebuildScroll = () => {
+  const rebuildScroll = (selectAll, unSelectAll) => {
     const currentChoices = choice._currentState.choices;
 
     if (!isMobile) {
@@ -89,18 +89,18 @@ function choiseOnInitNft(choice) {
       const isFull = currentChoices.every((item) => item.selected === true);
 
       if (isEmpty) {
-        selectAllBtn.style.display = 'flex';
-        unSelectAllBtn.style.display = 'none';
+        selectAll.style.display = 'flex';
+        unSelectAll.style.display = 'none';
       }
 
       if (!isEmpty && !isFull) {
-        selectAllBtn.style.display = 'flex';
-        unSelectAllBtn.style.display = 'flex';
+        selectAll.style.display = 'flex';
+        unSelectAll.style.display = 'flex';
       }
 
       if (isFull) {
-        selectAllBtn.style.display = 'none';
-        unSelectAllBtn.style.display = 'flex';
+        selectAll.style.display = 'none';
+        unSelectAll.style.display = 'flex';
       }
     }
   };
@@ -118,6 +118,18 @@ function choiseOnInitNft(choice) {
   selectAllBtn.classList.add('table-btn', 'mr-2', 'nft-btn');
   selectAllBtn.innerHTML = 'Select all NFT';
 
+  const unSelectAllBtn = document.createElement('button');
+  unSelectAllBtn.classList.add('table-btn', 'nft-btn');
+  unSelectAllBtn.innerHTML = 'Unselect all NFT';
+
+  unSelectAllBtn.onclick = () => {
+    nftAssetsSelect.removeActiveItems();
+    userObject.state.selectedNFTAssets = [];
+    depositModalRebuild();
+    rebuildScroll(selectAllBtn, unSelectAllBtn);
+    nftAssetsSelect.hideDropdown();
+  };
+
   selectAllBtn.onclick = () => {
     const currentChoices = choice._currentState.choices;
 
@@ -129,19 +141,7 @@ function choiseOnInitNft(choice) {
     const values = nftAssetsSelect.getValue(true);
     userObject.state.selectedNFTAssets = values;
     depositModalRebuild();
-    rebuildScroll();
-    nftAssetsSelect.hideDropdown();
-  };
-
-  const unSelectAllBtn = document.createElement('button');
-  unSelectAllBtn.classList.add('table-btn', 'nft-btn');
-  unSelectAllBtn.innerHTML = 'Unselect all NFT';
-
-  unSelectAllBtn.onclick = () => {
-    nftAssetsSelect.removeActiveItems();
-    userObject.state.selectedNFTAssets = [];
-    depositModalRebuild();
-    rebuildScroll();
+    rebuildScroll(selectAllBtn, unSelectAllBtn);
     nftAssetsSelect.hideDropdown();
   };
 

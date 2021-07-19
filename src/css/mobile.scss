@@ -316,7 +316,7 @@
   }
 
   .crypto-chart {
-    @apply w-full;
+    @apply w-full h-full block;
   }
 
   .btn {
@@ -1034,6 +1034,10 @@
 
 .collumn-via-inputs {
   min-height: calc(100vh - 15rem);
+}
+
+.stat-row .crypto-chart {
+  max-height: 64px;
 }
 
 .fixed-btn {

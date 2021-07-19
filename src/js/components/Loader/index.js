@@ -10,7 +10,7 @@ export function setLdBar(value, part = 0) {
     if (!value) {
       loaderBar.dataset.value = Number(loadingValue) + Number(part);
     } else {
-      loaderBar.dataset.value = Number(loadingValue) + Number(value);
+      loaderBar.dataset.value = Number(value);
     }
 
     if (Number(loaderBar.dataset.value) > 100) loaderBar.dataset.value = 100;

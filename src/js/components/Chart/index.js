@@ -83,10 +83,8 @@ export default class EtnaChart extends HTMLElement {
         }${percentage}%`;
       }
     }
+    const ctx = this.querySelector(`[data-chart]`).getContext('2d');
 
-    const chart = new Chart(
-      this.querySelector(`[data-chart]`).getContext('2d'),
-      config
-    );
+    const chart = new Chart(ctx, config);
   }
 }

@@ -45,6 +45,8 @@ export function cryptoInfoBuild(index, breadcrumb, userObjectState) {
   // graph.innerHTML
 
   const btnWrapper = document.querySelector('#crypto-info .crypto-info__btn');
+  const btnFixedWrapper = document.querySelector('#crypto-info .fixed-btn');
+  btnFixedWrapper.classList.add('hidden');
   btnWrapper.innerHTML = '';
 
   const getBtnStructure = (name, data) => {
@@ -112,6 +114,7 @@ export function cryptoInfoBuild(index, breadcrumb, userObjectState) {
   Object.values(options.list).forEach((item) => {
     if (item.data) {
       if (item.name === 'btn') {
+        btnFixedWrapper.classList.remove('hidden');
         btnWrapper.innerHTML += getBtnStructure(item.name, item.data);
       } else {
         wrapper.innerHTML += getItemStructure(item.name, item.data);
