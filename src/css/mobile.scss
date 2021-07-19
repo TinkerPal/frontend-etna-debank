@@ -208,7 +208,7 @@
   }
 
   .fixed-btn {
-    @apply bg-black-mobile;
+    @apply bg-black-mobile w-full;
   }
 
   .table {
@@ -316,7 +316,7 @@
   }
 
   .crypto-chart {
-    @apply w-full h-full block;
+    @apply w-full h-full block overflow-hidden;
   }
 
   .btn {
@@ -1043,10 +1043,12 @@
 
 .fixed-btn {
   position: fixed;
-  width: calc(100% - 2rem);
   padding-bottom: 24px;
   bottom: 0px;
   z-index: 70;
+  left: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 @mixin bg-gradient() {
