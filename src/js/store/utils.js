@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { userObject } from './userObject';
-import { errorMsg, resetMsg } from '../components/InfoMessages';
+import { errorEmptyMsg, errorMsg, resetMsg } from '../components/InfoMessages';
 import { LIQ_PAIRS, WALLETS_API_URL } from '../constants/env';
 import { tokenNameByDepositTokenId } from '../utils';
 import { CRYPTO_ICONS } from './constants';

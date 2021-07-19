@@ -70,16 +70,23 @@ export default class EtnaChart extends HTMLElement {
       },
     };
 
-    const cryptoStatInDeposit = this.closest('.stat-row')?.querySelector(
-      '.crypto-stat__percent'
-    );
+    const cryptoStatInDepositParrent = this.closest('.stat-row');
 
-    if (cryptoStatInDeposit) {
-      cryptoStatInDeposit.innerHTML = `${
-        percentage > 0 ? '+' : ''
-      }${percentage}%`;
+    if (cryptoStatInDepositParrent) {
+      const cryptoStatInDeposit = cryptoStatInDepositParrent.querySelector(
+        '.crypto-stat__percent'
+      );
+
+      if (cryptoStatInDeposit) {
+        cryptoStatInDeposit.innerHTML = `${
+          percentage > 0 ? '+' : ''
+        }${percentage}%`;
+      }
     }
 
-    new Chart(this.querySelector(`[data-chart]`).getContext('2d'), config);
+    const chart = new Chart(
+      this.querySelector(`[data-chart]`).getContext('2d'),
+      config
+    );
   }
 }
