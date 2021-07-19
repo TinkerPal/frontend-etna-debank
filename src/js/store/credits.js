@@ -355,7 +355,7 @@ export default {
 
         if (isTokenNft(clt_arr[0][i])) {
           this.clt_column.push(
-            `<td class="table-cell">${collateralName}: ${cred_arr[4][i]}</td>`
+            `<td class="table-cell">${collateralName}: ${clt_arr[1][i]}</td>`
           );
         } else {
           const isCollateralCheaperThenCredit =
