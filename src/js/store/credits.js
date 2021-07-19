@@ -353,8 +353,10 @@ export default {
           clt_arr[0][i]
         ).toUpperCase();
 
-        if (isTokenNft(credTokenId)) {
-          this.clt_column.push(`<td class="table-cell">${cred_arr[4][i]}</td>`);
+        if (isTokenNft(clt_arr[0][i])) {
+          this.clt_column.push(
+            `<td class="table-cell">${collateralName}: ${cred_arr[4][i]}</td>`
+          );
         } else {
           const isCollateralCheaperThenCredit =
             toNumber(this.cred_price_arr[i]) * 0.9 >
