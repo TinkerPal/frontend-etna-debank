@@ -1,18 +1,42 @@
 /* eslint-disable no-param-reassign */
 export function setLdBar(value, part = 0) {
-  const { ldBar } = document.getElementById('debank_load_bar');
+  const loaderBar = document.getElementById('debank_load_bar');
   const ldBarWrapper = document.getElementById('load_bar_cover');
   const body = document.querySelector('body');
 
+  if (!loaderBar.ldBar) {
+    const loadingValue = loaderBar.dataset.value;
+
+    if (!value) {
+      loaderBar.dataset.value = Number(loadingValue) + Number(part);
+    } else {
+      loaderBar.dataset.value = Number(loadingValue) + Number(value);
+    }
+
+    if (Number(loaderBar.dataset.value) > 100) loaderBar.dataset.value = 100;
+
+    if (loaderBar.dataset.value === 100) {
+      setTimeout(() => {
+        ldBarWrapper.style.display = 'none';
+        body.classList.remove('page-loading');
+      }, 1000);
+    } else {
+      ldBarWrapper.style.display = 'block';
+      body.classList.add('page-loading');
+    }
+
+    return;
+  }
+
   if (!value) {
-    value = Number(ldBar.value) + Number(part);
+    value = Number(loaderBar.ldBar.value) + Number(part);
   }
 
   if (Number(value) > 100) value = 100;
 
-  ldBar.set(value);
+  loaderBar.ldBar.set(value);
 
-  if (ldBar.value === 100) {
+  if (loaderBar.ldBar.value === 100) {
     setTimeout(() => {
       ldBarWrapper.style.display = 'none';
       body.classList.remove('page-loading');
