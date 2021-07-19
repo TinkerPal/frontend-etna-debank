@@ -4,7 +4,7 @@
   crossorigin="anonymous"
 ></script>
 <script>
-  if (location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+  if (location.hostname !== "localhost" && location.hostname !== "127.0.0.1" && location.hostname !== "dev-new-debank.etna.network") {
     Sentry.init({
     dsn: "https://ef64a3c1aef64e878bfdc7a13add1daf@o639119.ingest.sentry.io/5756522",
     integrations: [new Sentry.Integrations.BrowserTracing()],
