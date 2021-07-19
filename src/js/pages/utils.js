@@ -15,7 +15,9 @@ export async function approveTokenMove(
   toAddress,
   modal
 ) {
-  const tokenAmountToApprove = new window.BN(amount_wei.toString());
+  const tokenAmountToApprove = new window.web3js_reader.utils.BN(
+    amount_wei.toString()
+  );
   const calculatedApproveValue =
     window.web3js_reader.utils.toHex(tokenAmountToApprove);
   const token_contract = await new window.web3js.eth.Contract(

@@ -279,10 +279,12 @@ export async function updUSDValueCollateral(
   if (toNumber(userObject.state.selected_credprofile_type) !== ERC721_TOKEN) {
     wei_amount = safeFloatToWei(tokens_amount); // BN
   } else {
-    wei_amount = new window.BN(tokens_amount.toString());
+    wei_amount = new window.web3js_reader.utils.BN(tokens_amount.toString());
   }
 
-  const dep_am = new window.BN(am_arr[1][dep_id].toString());
+  const dep_am = new window.web3js_reader.utils.BN(
+    am_arr[1][dep_id].toString()
+  );
 
   if (toNumber(wei_amount.cmp(dep_am)) === 1) {
     let tok_float = 0;

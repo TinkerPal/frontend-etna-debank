@@ -172,7 +172,7 @@ export async function set_leverage_confirm(ratio, cred_id) {
     const dep_id = res_arr[0];
     const cytr_am = res_arr[1];
 
-    const cytr_am_bn = new window.BN(cytr_am.toString());
+    const cytr_am_bn = new window.web3js_reader.utils.BN(cytr_am.toString());
 
     if (toNumber(window.lev_size_wei.cmp(cytr_am_bn)) === 1) {
       modalAddLeverage.isLoadedAfterConfirm(false);

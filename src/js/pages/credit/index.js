@@ -506,7 +506,7 @@ export async function return_credit_confirm(cred_id) {
       erc20TokenContractAbi,
       returned_asset_token_address
     );
-    const allow = new window.BN(
+    const allow = new window.web3js_reader.utils.BN(
       await token_contract.methods
         .allowance(userObject.account, window.credit_contract_address)
         .call({
@@ -514,7 +514,9 @@ export async function return_credit_confirm(cred_id) {
         })
     );
 
-    const tokenAmountToApprove = new window.BN(return_amount.toString());
+    const tokenAmountToApprove = new window.web3js_reader.utils.BN(
+      return_amount.toString()
+    );
 
     // amount is already adjusted *10**18
     const calculatedApproveValue = tokenAmountToApprove;
@@ -532,8 +534,12 @@ export async function return_credit_confirm(cred_id) {
       .call({
         from: userObject.account,
       });
-    const erc20_count_bn = new window.BN(erc20_count.toString());
-    const return_amount_bn = new window.BN(return_amount.toString());
+    const erc20_count_bn = new window.web3js_reader.utils.BN(
+      erc20_count.toString()
+    );
+    const return_amount_bn = new window.web3js_reader.utils.BN(
+      return_amount.toString()
+    );
 
     if (toNumber(erc20_count_bn.cmp(return_amount_bn)) === -1) {
       modalReturnCredit.isLoadedAfterConfirm(false);
@@ -607,7 +613,7 @@ export async function return_fee_confirm(cred_id) {
       erc20TokenContractAbi,
       returned_asset_token_address
     );
-    const allow = new window.BN(
+    const allow = new window.web3js_reader.utils.BN(
       await token_contract.methods
         .allowance(userObject.account, window.credit_contract_address)
         .call({
@@ -615,7 +621,9 @@ export async function return_fee_confirm(cred_id) {
         })
     );
 
-    const tokenAmountToApprove = new window.BN(return_amount.toString());
+    const tokenAmountToApprove = new window.web3js_reader.utils.BN(
+      return_amount.toString()
+    );
 
     const calculatedApproveValue = tokenAmountToApprove;
 
@@ -632,8 +640,12 @@ export async function return_fee_confirm(cred_id) {
       .call({
         from: userObject.account,
       });
-    const erc20_count_bn = new window.BN(erc20_count.toString());
-    const return_amount_bn = new window.BN(return_amount.toString());
+    const erc20_count_bn = new window.web3js_reader.utils.BN(
+      erc20_count.toString()
+    );
+    const return_amount_bn = new window.web3js_reader.utils.BN(
+      return_amount.toString()
+    );
 
     if (toNumber(erc20_count_bn.cmp(return_amount_bn)) === -1) {
       modalReturnFee.isLoadedAfterConfirm(false);
@@ -803,12 +815,14 @@ export async function set_leverage(ratio, cred_id) {
     .call({
       from: userObject.account,
     });
-  let lev_needed_size = new window.BN(lns.toString());
+  let lev_needed_size = new window.web3js_reader.utils.BN(lns.toString());
   if (ratio > 100 || ratio < 0) ratio = 100;
   if (ratio !== 100) {
-    const r = new window.BN(ratio);
+    const r = new window.web3js_reader.utils.BN(ratio);
     lev_needed_size = lev_needed_size.mul(r);
-    lev_needed_size = lev_needed_size.div(new window.BN(100));
+    lev_needed_size = lev_needed_size.div(
+      new window.web3js_reader.utils.BN(100)
+    );
   }
   window.lev_size_wei = lev_needed_size;
 

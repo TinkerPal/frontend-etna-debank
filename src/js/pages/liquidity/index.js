@@ -329,7 +329,7 @@ export async function stake_liq() {
     erc20TokenContractAbi,
     userObject.state.liq_pair_address
   );
-  const allow = new window.BN(
+  const allow = new window.web3js_reader.utils.BN(
     await token_contract.methods
       .allowance(userObject.account, window.staking_contract_address)
       .call({
@@ -337,7 +337,9 @@ export async function stake_liq() {
       })
   );
 
-  const tokenAmountToApprove = new window.BN(amount.toString());
+  const tokenAmountToApprove = new window.web3js_reader.utils.BN(
+    amount.toString()
+  );
 
   // amount is already adjusted *10**18
   const calculatedApproveValue = tokenAmountToApprove;
@@ -355,8 +357,10 @@ export async function stake_liq() {
     .call({
       from: userObject.account,
     });
-  const erc20_count_bn = new window.BN(erc20_count.toString());
-  const amount_bn = new window.BN(amount.toString());
+  const erc20_count_bn = new window.web3js_reader.utils.BN(
+    erc20_count.toString()
+  );
+  const amount_bn = new window.web3js_reader.utils.BN(amount.toString());
 
   if (toNumber(erc20_count_bn.cmp(amount_bn)) === -1) {
     modalAddLiquidity.isLoadedAfterConfirm(false, false);
