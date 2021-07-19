@@ -58,6 +58,7 @@ import { approve_stake_liq, stake_liq } from './pages/liquidity';
 import { initContractAdress } from './store/contracts';
 import { userObject } from './store/userObject';
 import { depAmountByProfileId, isMetaMaskInstalled } from './utils';
+import { toggleElement } from './utils/dom';
 
 export const walletButton = document.getElementById('enableEthereumButton');
 
@@ -121,6 +122,7 @@ window.getCredit = getCredit;
 window.approve_deposit = approve_deposit;
 window.deposit = deposit;
 window.resetMsg = resetMsg;
+window.toggleElement = toggleElement;
 
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') {
