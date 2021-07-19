@@ -63,7 +63,7 @@ export async function initWeb3jsReader(callback = null) {
     window.web3js_reader = await new Web3(
       new Web3.providers.HttpProvider(INFURA_ENDPOINT[CHAIN_ID])
     );
-    window.BN = window.web3js_reader.utils.BN;
+    window.BN = window.web3js_reader.utils.BN || window.web3js.utils.BN;
   }
   // and in any case
   if (callback) callback(window.web3js_reader);
@@ -165,7 +165,7 @@ export async function getAccountWalletConnect(forceUpdate = false) {
     await postWalletCallback();
   } catch (error) {
     errorEmptyMsg('Cannot access wallet. Reload your page, please.');
-    throw new Error(error);
+    Error(error);
   }
 }
 
@@ -184,7 +184,7 @@ export async function onUniversalConnect() {
 
     getAccountWalletConnect();
   } catch (error) {
-    throw new Error(error);
+    Error(error);
   }
 
   window.provider.on('accountsChanged', () => {
@@ -232,19 +232,19 @@ export async function connectWeb3() {
         }
       }
     } catch (error) {
-      throw new Error(error);
+      Error(error);
     }
 
     try {
       await initWeb3Modal();
     } catch (error) {
-      throw new Error(error);
+      Error(error);
     }
 
     try {
       await onUniversalConnect();
     } catch (error) {
-      throw new Error(error);
+      Error(error);
     }
   }
 }

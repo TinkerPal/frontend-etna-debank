@@ -324,7 +324,7 @@ export async function deposit() {
         return;
       }
     } catch (error) {
-      throw new Error(error);
+      Error(error);
     }
 
     const isApproved = await window.cyclops_nft_smartcontract_reader.methods
