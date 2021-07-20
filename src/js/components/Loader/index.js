@@ -15,7 +15,7 @@ export function setLdBar(value, part = 0) {
 
     if (Number(loaderBar.dataset.value) > 100) loaderBar.dataset.value = 100;
 
-    if (loaderBar.dataset.value === 100) {
+    if (Number(loaderBar.dataset.value) === 100) {
       setTimeout(() => {
         ldBarWrapper.style.display = 'none';
         body.classList.remove('page-loading');
