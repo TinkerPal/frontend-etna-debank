@@ -167,7 +167,7 @@ function choiseOnInitNft(choice) {
       rebuildEvent,
       () => {
         setTimeout(() => {
-          rebuildScroll();
+          rebuildScroll(selectAllBtn, unSelectAllBtn);
         }, 0);
       },
       false
