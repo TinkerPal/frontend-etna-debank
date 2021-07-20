@@ -111,7 +111,7 @@ export async function getAccount(forceUpdate = false) {
     await updateData(null, forceUpdate);
 
     window.gp = await window.web3js.eth.getGasPrice();
-    window.gp *= 2;
+    // window.gp *= 2;
 
     await postWalletCallback();
   } catch (error) {
@@ -159,7 +159,7 @@ export async function getAccountWalletConnect(forceUpdate = false) {
     await updateData(null, forceUpdate);
 
     window.gp = await window.web3js.eth.getGasPrice();
-    window.gp *= 2;
+    // window.gp *= 2;
 
     await postWalletCallback();
   } catch (error) {
