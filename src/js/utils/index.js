@@ -38,7 +38,6 @@ export function htmlToElement(html) {
 }
 
 export function safeFloatToWei(num) {
-  // as string
   let num_s = num.toString();
 
   // calc digits after 'dot'
@@ -53,7 +52,7 @@ export function safeFloatToWei(num) {
   // float as integer in string form
   num_s = num_s.substr(n + 1);
   if (num >= 1) {
-    num_s = toNumber(num).toString() + num_s;
+    num_s = parseInt(num, 10).toString() + num_s;
   }
 
   // divide adj constant on 10**[num digits after dot]
