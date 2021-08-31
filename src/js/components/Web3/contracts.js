@@ -1,6 +1,9 @@
 /* eslint-disable camelcase */
 import { web3jsReadersList } from '.';
-import { CYCLOPS_NFT_CONTRACT_ADDRESS } from '../../constants/env';
+import {
+  CYCLOPS_NFT_CONTRACT_ADDRESS,
+  MARKETPLACE_CONTRACT_ADDRESS,
+} from '../../constants/env';
 import {
   credit_contract_abi,
   data_provider_abi,
@@ -9,6 +12,7 @@ import {
   staking_contract_abi,
   usage_calc_abi,
   votes_calc_abi,
+  marketplace_contract_abi,
 } from '../../constants/web3ContractAbi';
 
 export async function initDataProviderContractReader(callback = null) {
@@ -125,6 +129,18 @@ export async function initCyclopsNFTContractReader(callback = null) {
 
     if (callback) callback(window.cyclops_nft_smartcontract_reader);
   } else if (callback) callback(window.cyclops_nft_smartcontract_reader);
+}
+
+export async function initMarketplaceContract(callback = null) {
+  if (!window.marketplace_smartcontract_reader) {
+    const reader = web3jsReadersList.get();
+    window.marketplace_smartcontract_reader = await new reader.eth.Contract(
+      marketplace_contract_abi,
+      MARKETPLACE_CONTRACT_ADDRESS
+    );
+
+    if (callback) callback(window.marketplace_smartcontract_reader);
+  } else if (callback) callback(window.marketplace_smartcontract_reader);
 }
 
 export async function initCyclopsNFTContract(callback = null) {

@@ -315,6 +315,9 @@ export async function updUSDValueCollateral(
         .call({
           from: userObject.account,
         }),
+    async () => {
+      return '0';
+    },
   ];
 
   const usd_val = await tryCallFunction(functions);

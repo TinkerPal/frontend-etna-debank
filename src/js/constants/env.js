@@ -2,6 +2,7 @@ const GLOBAL_VARIABLES = {
   production: {
     WALLETS_API_URL: 'https://prod-debank-wallet-api.etna.network',
     cyclops_nft_contract_address: '0x83C454FF387cebbC3CbAa5a7a44F412F4FA63c0E',
+    marketplace_contract_address: '0x7F3854eBDD3f01C8Cb94B4564196042b95BaE3bD',
     chainId: '0x38',
     WALLET_OPTION_RPC: {
       56: 'https://bsc-dataseed.binance.org/',
@@ -35,6 +36,7 @@ const GLOBAL_VARIABLES = {
   development: {
     WALLETS_API_URL: 'https://bsc-debank-wallet-api.etna.network',
     cyclops_nft_contract_address: '0x6ab7E5B00a6e4A7E56160FAc1BCcAcEad1614554',
+    marketplace_contract_address: '0x7F3854eBDD3f01C8Cb94B4564196042b95BaE3bD',
     chainId: '0x61',
     WALLET_OPTION_RPC: {
       97: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
@@ -80,5 +82,8 @@ export const {
 
 export const CYCLOPS_NFT_CONTRACT_ADDRESS =
   GLOBAL_VARIABLES[env].cyclops_nft_contract_address;
+
+export const MARKETPLACE_CONTRACT_ADDRESS =
+  GLOBAL_VARIABLES[env].marketplace_contract_address;
 
 export const CHAIN_ID = GLOBAL_VARIABLES[env].chainId;

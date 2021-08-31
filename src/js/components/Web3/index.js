@@ -31,6 +31,7 @@ import {
   initLiqLevContractReader,
   initStakingContract,
   initStakingContractReader,
+  initMarketplaceContract,
 } from './contracts';
 
 export const web3jsReadersList = {
@@ -99,6 +100,7 @@ export async function getAccount(forceUpdate = false) {
       initLiqLevContract(),
       initLiqLevContractReader(),
       initCyclopsNFTContract(),
+      initMarketplaceContract(),
     ]);
 
     setLdBar(15);
@@ -147,6 +149,7 @@ export async function getAccountWalletConnect(forceUpdate = false) {
       initLiqLevContract(),
       initLiqLevContractReader(),
       initCyclopsNFTContract(),
+      initMarketplaceContract(),
     ]);
 
     setLdBar(15);
