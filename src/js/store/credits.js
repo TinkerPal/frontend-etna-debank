@@ -330,19 +330,29 @@ export default {
 
       const collateralPricePromise = [];
       cred_arr[0].forEach((credTokenId, i) => {
+        const tryCalcUSDValueCollateral = async () => {
+          const result = await new Promise((resolve, reject) => {
+            window.usage_calc_smartcontract_reader.methods
+              .calcUSDValueCollateral(
+                userObject.account,
+                this.cred_cc_arr[i].linked_dep_id,
+                clt_arr[1][i],
+                cred_arr[0][i]
+              )
+              .call({
+                from: userObject.account,
+              })
+              .then((result) => {
+                resolve(result);
+              })
+              .catch((error) => {
+                resolve('0');
+              });
+          });
+          return result;
+        };
         collateralPricePromise.push(
-          isTokenNft(credTokenId)
-            ? 0
-            : window.usage_calc_smartcontract_reader.methods
-                .calcUSDValueCollateral(
-                  userObject.account,
-                  this.cred_cc_arr[i].linked_dep_id,
-                  clt_arr[1][i],
-                  cred_arr[0][i]
-                )
-                .call({
-                  from: userObject.account,
-                })
+          isTokenNft(credTokenId) ? 0 : tryCalcUSDValueCollateral()
         );
       });
       const collateralPriceArray = await Promise.all(collateralPricePromise);

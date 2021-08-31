@@ -13,7 +13,6 @@ import {
   setState,
   toNumber,
   tryCallFunction,
-  getPriceOfTokens,
 } from '../../../utils';
 import { safeSetValueById } from '../../../utils/dom';
 import { collateralDropdown } from '../../Dropdown/collateral';
@@ -317,38 +316,11 @@ export async function updUSDValueCollateral(
           from: userObject.account,
         }),
     async () => {
-      const result = await window.staking_smartcontract_reader.methods
-        .viewCustomerDeposit(userObject.account, dep_id)
-        .call({
-          from: userObject.account,
-        });
-      const nftIds = await window.usage_calc_smartcontract_reader.methods
-        .getDepositNFTs(result.index, dep_id, wei_amount)
-        .call({
-          from: userObject.account,
-        });
-      const promises = [];
-      nftIds.forEach((id) => {
-        promises.push(
-          window.marketplace_smartcontract_reader.methods
-            .getTokenPriceByTokenId(id)
-            .call({
-              from: userObject.account,
-            })
-        );
-      });
-      const results = await Promise.all(promises);
-      let amount = 0;
-      results.forEach((value) => {
-        amount += value / 1e18;
-      });
-      const est_usd = await getPriceOfTokens(amount, 2);
-      return est_usd.toFixed(0);
+      return '0';
     },
   ];
 
   const usd_val = await tryCallFunction(functions);
-
   safeSetValueById(usd_val_elem, usd_val, 'inline');
 
   if (toNumber(userObject.state.getcredit_profile) !== -1) {
