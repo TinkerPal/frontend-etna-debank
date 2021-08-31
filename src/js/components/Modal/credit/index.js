@@ -12,6 +12,7 @@ import {
   safeFloatToWei,
   setState,
   toNumber,
+  tryCallFunction,
 } from '../../../utils';
 import { safeSetValueById } from '../../../utils/dom';
 import { collateralDropdown } from '../../Dropdown/collateral';
@@ -302,16 +303,21 @@ export async function updUSDValueCollateral(
     wei_amount = am_arr[1][dep_id];
   }
 
-  const usd_val = await window.usage_calc_smartcontract_reader.methods
-    .calcUSDValueCollateral(
-      userObject.account,
-      dep_id,
-      wei_amount,
-      userObject.state.selected_credprofile
-    )
-    .call({
-      from: userObject.account,
-    });
+  const functions = [
+    () =>
+      window.usage_calc_smartcontract_reader.methods
+        .calcUSDValueCollateral(
+          userObject.account,
+          dep_id,
+          wei_amount,
+          userObject.state.selected_credprofile
+        )
+        .call({
+          from: userObject.account,
+        }),
+  ];
+
+  const usd_val = await tryCallFunction(functions);
 
   safeSetValueById(usd_val_elem, usd_val, 'inline');
 

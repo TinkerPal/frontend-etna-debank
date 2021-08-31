@@ -2,7 +2,7 @@
 import { userObject } from './userObject';
 import { errorEmptyMsg, errorMsg, resetMsg } from '../components/InfoMessages';
 import { LIQ_PAIRS, WALLETS_API_URL } from '../constants/env';
-import { tokenNameByDepositTokenId } from '../utils';
+import { tokenNameByDepositTokenId, tryCallFunction } from '../utils';
 import { CRYPTO_ICONS } from './constants';
 
 export const createCellWithIcon = (iconSrc) => {
@@ -83,11 +83,16 @@ export function getLiqPairs() {
 }
 
 export async function calcUSDValueOfDeposit(wei_amount, dep_id) {
-  const usd_val = await window.usage_calc_smartcontract_reader.methods
-    .calcUSDValue(userObject.account, dep_id, wei_amount)
-    .call({
-      from: userObject.account,
-    });
+  const funcArray = [
+    () =>
+      window.usage_calc_smartcontract_reader.methods
+        .calcUSDValue(userObject.account, dep_id, wei_amount)
+        .call({
+          from: userObject.account,
+        }),
+  ];
+
+  const usd_val = await tryCallFunction(funcArray);
   return usd_val.est_usd;
 }
 

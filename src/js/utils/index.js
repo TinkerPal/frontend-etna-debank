@@ -462,3 +462,24 @@ export function getIndexOfTokenInAmArr(tokenId) {
   }
   return null;
 }
+
+/**
+ * @name tryCallFunction
+ * @description Run function in array, and return first correct done function
+ * @param {array} functions
+ *
+ * @returns {*}
+ */
+export async function tryCallFunction(functions) {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const func of functions) {
+    try {
+      const response = await func();
+      if (response) {
+        return response;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+}
