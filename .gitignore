@@ -3,3 +3,4 @@ node_modules
 public
 public/**/*
 yarn-error.log
+.idea
