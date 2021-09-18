@@ -2,6 +2,7 @@
 const { watch, series, src, dest } = require('gulp');
 var browserSync = require('browser-sync').create();
 var through2 = require('through2');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 const webpack = require('webpack');
 const postcss = require('gulp-postcss'),
@@ -59,19 +60,12 @@ const getWebpackConfig = (envs, buildType) => ({
       },
     ],
   },
-  // resolve: {
-  //   fallback: {
-  //     os: require.resolve('os-browserify/browser'),
-  //     https: require.resolve('https-browserify'),
-  //     http: require.resolve('stream-http'),
-  //     crypto: require.resolve('crypto-browserify'),
-  //     stream: require.resolve('stream-browserify'),
-  //   },
-  // },
+
   plugins: [
     new webpack.DefinePlugin({
       'process.env.SITE_VERSION': JSON.stringify(buildType),
     }),
+    new NodePolyfillPlugin(),
   ],
 });
 
