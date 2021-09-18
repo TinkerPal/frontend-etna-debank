@@ -98,6 +98,12 @@ function htmlTask() {
         collapseWhitespace: true,
       })
     )
+    .pipe(
+      replace('?timestamp', function () {
+        const timestamp = Date.now();
+        return `?${timestamp}`;
+      })
+    )
     .pipe(gulp.dest('./public/'))
     .pipe(browserSync.stream());
 }
@@ -115,6 +121,12 @@ function htmlMobile() {
         collapseWhitespace: true,
       })
     )
+    .pipe(
+      replace('?timestamp', function () {
+        const timestamp = Date.now();
+        return `?${timestamp}`;
+      })
+    )
     .pipe(gulp.dest('./public/'));
 }
 
@@ -130,6 +142,12 @@ function renameMobileHtml() {
     .pipe(
       htmlmin({
         collapseWhitespace: true,
+      })
+    )
+    .pipe(
+      replace('?timestamp', function () {
+        const timestamp = Date.now();
+        return `?${timestamp}`;
       })
     )
     .pipe(gulp.dest('./public/'));

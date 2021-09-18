@@ -180,6 +180,19 @@ export async function initWeb3Modal() {
 export async function onUniversalConnect() {
   try {
     await window.walletConnectProvider.enable();
+
+    window.walletConnectProvider.on('accountsChanged', () => {
+      window.location.reload();
+    });
+
+    window.walletConnectProvider.on('chainChanged', () => {
+      window.location.reload();
+    });
+
+    window.walletConnectProvider.on('networkChanged', () => {
+      window.location.reload();
+    });
+
     window.provider = window.walletConnectProvider;
     getAccountWalletConnect();
   } catch (error) {
