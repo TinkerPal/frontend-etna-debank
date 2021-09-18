@@ -1,8 +1,9 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable camelcase */
+import WalletConnectProvider from '@walletconnect/web3-provider';
 import { walletButton } from '../..';
-import { INFURA_ENDPOINT, providerOptions } from '../../constants';
-import { CHAIN_ID, RPC_LIST, WEB3_MODAL_NETWORK } from '../../constants/env';
+import { INFURA_ENDPOINT } from '../../constants';
+import { CHAIN_ID, RPC_LIST, WALLET_OPTION_RPC } from '../../constants/env';
 import { checkAdminButton } from '../../pages/admin';
 import { getCreditsDashboard } from '../../pages/credit';
 import { getOurDashbord } from '../../pages/dashboard';
@@ -56,8 +57,6 @@ export const web3jsReadersList = {
     return ret_val;
   },
 };
-
-export const Web3ModalDefault = window.Web3Modal.default;
 
 export async function initWeb3jsReader(callback = null) {
   if (!window.web3js_reader) {
@@ -172,18 +171,16 @@ export async function getAccountWalletConnect(forceUpdate = false) {
 }
 
 export async function initWeb3Modal() {
-  window.Web3ModalWithProvider = new Web3ModalDefault({
-    ...WEB3_MODAL_NETWORK,
-    cacheProvider: false, // optional
-    providerOptions, // required
-    disableInjectedProvider: true, // optional. For MetaMask / Brave / Opera.
+  window.walletConnectProvider = new WalletConnectProvider({
+    rpc: WALLET_OPTION_RPC,
+    chainId: parseInt(CHAIN_ID, 16),
   });
 }
 
 export async function onUniversalConnect() {
   try {
-    window.provider = await window.Web3ModalWithProvider.connect();
-
+    await window.walletConnectProvider.enable();
+    window.provider = window.walletConnectProvider;
     getAccountWalletConnect();
   } catch (error) {
     Error(error);
@@ -253,17 +250,15 @@ export async function connectWeb3() {
 
 export async function onUniversalDisconnect() {
   // TODO: Which providers have close method?
-  if (window.provider.close) {
-    await window.provider.close();
-
-    // If the cached provider is not cleared,
-    // WalletConnect will default to the existing session
-    // and does not allow to re-scan the QR code with a new wallet.
-    // Depending on your use case you may want or want not his behavir.
-    await window.Web3ModalWithProvider.default.clearCachedProvider();
-    window.provider = null;
+  if (typeof window.provider.disconnect === 'function') {
+    await window.provider.disconnect();
   }
 
+  if (window.provider.close) {
+    await window.provider.close();
+  }
+
+  window.provider = null;
   window.account = null;
   window.location.reload();
 }
